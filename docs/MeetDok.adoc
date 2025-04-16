@@ -1,0 +1,33 @@
+= Meeting-Dokumentation
+Georg Richter georg.richter@stud.htw-dresden.de
+
+1.0, 16.04.2025 
+:toc: 
+:toc-title: Inhaltsverzeichnis
+:source-highlighter: highlight.js
+:imagesdir: images
+//:source-highlighter: rouge
+// Platzhalter für weitere Dokumenten-Attribute 
+
+= 1. Iteration
+
+== 1. Meeting 16.04.205
+
+Meeting-Termin: jeden Mittwoch 13:15 Raum: _noch ausstehend_
+Meeting - Protokollierer: Georg Richter
+
+Programmiersprache: Java
+Ergebnisse: 1 Eigenschaft zu User-Interface, 3 zu Front-End-Backend
+Projektideen in Miro
+
+Entdeckung von Miro
+Speicherung: Datenbank für Fragen
+
+Grobes Bild an Vision, Personen in Miro
+
+=== Aufgaben bis nächstes Meeting: 
+
+Über Personen Gedanken machen: 
+* wer könnte Zielgruppe sein(Studienfach)? 
+* Welche Eigenschaften hat diese? 
+* verschiedene Bedürfnisse, welche Ziele
