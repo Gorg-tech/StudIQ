@@ -9,9 +9,9 @@ Georg Richter georg.richter@stud.htw-dresden.de
 //:source-highlighter: rouge
 // Platzhalter für weitere Dokumenten-Attribute 
 
-= 1. Iteration
+== 1. Iteration
 
-== 1. Meeting 16.04.205
+=== 1. Meeting 16.04.205
 
 Meeting-Termin: jeden Mittwoch 13:15 Raum: _noch ausstehend_
 Meeting - Protokollierer: Georg Richter
@@ -25,7 +25,7 @@ Speicherung: Datenbank für Fragen
 
 Grobes Bild an Vision, Personen in Miro
 
-=== Aufgaben bis nächstes Meeting: 
+==== Aufgaben bis nächstes Meeting: 
 
 Über Personen Gedanken machen: 
 * wer könnte Zielgruppe sein(Studienfach)? 
