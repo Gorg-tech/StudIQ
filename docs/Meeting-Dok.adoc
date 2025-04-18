@@ -1,11 +1,9 @@
 = Meeting-Dokumentation
 Georg Richter georg.richter@stud.htw-dresden.de
-
 1.0, 16.04.2025 
 :toc: 
 :toc-title: Inhaltsverzeichnis
 :source-highlighter: highlight.js
-:imagesdir: images
 //:source-highlighter: rouge
 // Platzhalter für weitere Dokumenten-Attribute 
 
@@ -25,9 +23,10 @@ Speicherung: Datenbank für Fragen
 
 Grobes Bild an Vision, Personen in Miro
 
-==== Aufgaben bis nächstes Meeting: 
+*Aufgaben bis nächstes Meeting:*
 
 Über Personen Gedanken machen: 
+
 * wer könnte Zielgruppe sein(Studienfach)? 
 * Welche Eigenschaften hat diese? 
 * verschiedene Bedürfnisse, welche Ziele
