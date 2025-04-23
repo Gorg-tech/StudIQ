@@ -11,19 +11,18 @@ Georg Richter georg.richter@stud.htw-dresden.de
 
 === 1. Meeting 16.04.205
 
-Meeting-Termin: jeden Mittwoch 13:15 Raum: _noch ausstehend_
-Meeting - Protokollierer: Georg Richter
+- Meeting-Termin: *jeden Mittwoch 13:15 Raum: S114*
+- Meeting - Protokollierer: Georg Richter
 
-Programmiersprache: Java
-Ergebnisse: 1 Eigenschaft zu User-Interface, 3 zu Front-End-Backend
-Projektideen in Miro
+- Programmiersprache: Java
+- Ergebnisse: 1 Eigenschaft zu User-Interface, 3 zu Front-End-Backend
+- Projektideen in Miro
 
-Entdeckung von Miro
-Speicherung: Datenbank für Fragen
+- Entdeckung von Miro
+- Speicherung: Datenbank für Fragen
+- Grobes Bild an Vision, Personen in Miro
 
-Grobes Bild an Vision, Personen in Miro
-
-*Aufgaben bis nächstes Meeting:*
+*_Aufgaben bis nächstes Meeting:_* 
 
 Über Personen Gedanken machen: 
 
@@ -33,9 +32,13 @@ Grobes Bild an Vision, Personen in Miro
 
 === 2. Meeting 23.04.
 
-Kurze Besprechung, was heute gemacht wird
->> Beschreibung von Produktvision mithilfe von Grundkurs agiles SE 
+- Kurze Besprechung, was heute gemacht wird                         
+- Beschreibung von Produktvision in Miro mithilfe von Grundkurs agiles SE 
 https://link.springer.com/book/10.1007/978-3-658-37371-9 (S.125-129)
+- Schreiben einer fertigen Produktvision für Vorlage.
+- Erstellen einer Wireframe-Startseite
+- Festhalten von Projektregeln in Miro
+
 
 
 

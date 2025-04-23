@@ -1,5 +1,5 @@
-= Projektplan: {project-name}
-Vorname Nachname <email@domain.org>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
+= Projektplan: {HTW-Prüfungsvorbereiter}
+Georg Richter <georg.richter@stud.htw-dresden.de>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -10,10 +10,21 @@ include::../_includes/default-attributes.inc.adoc[]
 
 
 == Projektorganisation
+.Teammitglieder:
+- Georg Richter
+- Vincent Karmanoczki
+- Eric Wolf
+- Radmir Mullagaliev
+- Hans Brudek
+- Carmina Langer
 //Introduce the project team, team members, and roles that they play during this project. If applicable, introduce work areas, domains, or technical work packages that are assigned to team members. Introduce neighboring projects, relationships, and communication channels. If the project is introduced somewhere else, reference that location with a link.
 
 
 == Praktiken und Bewertung
+.Meeting-Termin:
+*jeden Mittwoch 13:45 Raum 114*
+Meetingprotokollierung erfolgt durch Georg Richter in 
+xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
 
 
