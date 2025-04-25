@@ -13,7 +13,7 @@ include::../_includes/default-attributes.inc.adoc[]
 .Teammitglieder:
 - Georg Richter
 - Vincent Karmanoczki
-- Eric Wolf
+- Eric Wolf  (eric.wolf@stud.htw-dresden.de)
 - Radmir Mullagaliev
 - Hans Brudek
 - Carmina Langer
