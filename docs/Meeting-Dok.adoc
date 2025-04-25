@@ -33,8 +33,8 @@ Georg Richter georg.richter@stud.htw-dresden.de
 === 2. Meeting 23.04.
 
 - Kurze Besprechung, was heute gemacht wird                         
-- Beschreibung von Produktvision in Miro mithilfe von Grundkurs agiles SE 
-https://link.springer.com/book/10.1007/978-3-658-37371-9 (S.125-129)
+- Beschreibung von Produktvision in Miro mithilfe von  
+https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S.125-129)
 - Schreiben einer fertigen Produktvision für Vorlage.
 - Erstellen einer Wireframe-Startseite
 - Festhalten von Projektregeln in Miro
