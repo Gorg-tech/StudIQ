@@ -22,7 +22,7 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Praktiken und Bewertung
 .Meeting-Termin:
-*jeden Mittwoch 13:45 Raum 114*
+*jeden Mittwoch 13:45 Raum S114*
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
