@@ -41,6 +41,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
 *_Aufgaben bis nächstes Meeting:_* +
 - Hans und Carmina fertigen Visiondokument an
+- xref:./project_management/project_plan.adoc[Vorlage Projektplan] ausfüllen
 
 *_Aufgaben für nächstes Meeting:_* +
 - Evtl. neue Iterationsaufgaben
