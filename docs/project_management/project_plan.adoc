@@ -1,5 +1,5 @@
 = Projektplan: {HTW-Prüfungsvorbereiter}
-Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Vorname3 Nachname3 <email3@domain.org>
+Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Vorname3 Nachname3 <email3@domain.org>
 25.04.2025
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
