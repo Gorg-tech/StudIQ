@@ -57,8 +57,10 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
 === 3. Meeting 30.04
 
+- Produktrollen angelegt
+- Project erstellt (versucht)
 - Stakeholder angepasst
-- 2. Iteration angepasst
+- 2. Iteration angeguckt
 
 - Retrospektive:
   * gut: Nutzung von Miro +
@@ -68,7 +70,18 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
     
   * schlecht: Raumbelegtheit für Meeting
   -> in Bibo Raum reservieren?
-  * Peojekt-Name
+  * Projekt-Name
+  
+*_Aufgaben bis nächstes Meeting:_*
+
+  * Hans: Discord-Membern Zugriffsrechte geben (DONE)
+
+  * Georg: Project in Github anlegen
+
+*_Aufgaben für nächstes Meeting_*
+
+  * Stakeholder vervollständigen
+  * User Stories anfangen
     
 
 
