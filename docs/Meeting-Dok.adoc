@@ -55,6 +55,21 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
  
 * Evtl. neue Iterationsaufgaben
 
+=== 3. Meeting 30.04
+
+- Stakeholder angepasst
+- 2. Iteration angepasst
+
+- Retrospektive:
+  * gut: Nutzung von Miro +
+    das meiste gut bis jetzt + 
+    Treffen live
+    
+    
+  * schlecht: Raumbelegtheit
+  -> in Bibo Raum reservieren?
+    
+
 
 
 
