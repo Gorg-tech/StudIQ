@@ -78,10 +78,16 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
   * Georg: Project in Github anlegen
 
+  * alle: In Vorlesung zu User Stories bzw. Stakeholdern schlaumachen
+
 *_Aufgaben für nächstes Meeting_*
 
   * Stakeholder vervollständigen
   * User Stories anfangen
+  * Teams ->live bearbeiten der Aufgaben 
+  - A:User Stories - Georg & Carmina
+  - B:User Stories - Vincent & Radmir
+  - Stakeholder - Eric & Hans
     
 
 
