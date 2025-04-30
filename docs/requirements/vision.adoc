@@ -71,6 +71,7 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 | [Fassen Sie die wesentlichen Verantwortlichkeiten des Stakeholder mit Bezug auf das zu entwickelnde System kurz zusammen, d.h. ihr besonderen Interessen. Beispiele: Dieser Stakeholder sorgt dafür, dass das System gewartet wird / dass die angezeigten Daten aktuell sind / überwacht den Projektfortschritt / usw.]
 | HTW-Student | HTW-Student der die Lernapp zur Prüfungsvorbereitung nutzen möchte. | HTW-Studenten sind die Hauptnutzer des Systems. Sie sind mitverantwortlich für die Erstellung von Quizfragen und -antworten und sorgen für ein interaktives Lernsystem.
 | HTW-Dozent | Dozent der HTW-Dresden, der Lernmaterlialien zur Verfügung stellen möchte. | HTW- Dozenten sorgen für die Qualität der Lerninhalte. Sie sind hauptverantwortlich für die Erstellung von Quizfragen und -antworten und sorgen dafür, dass die Lerninhalte aktuell sind. 
+| Gruppe 2B | Andere Gruppe, die Prüfungsvorbereiter anfertigt | Gibt uns Entwicklungsideen, Feature-ideen, motiviert für Projektfortschritt
 |===
 
 Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mittels Personas vorgenommen.

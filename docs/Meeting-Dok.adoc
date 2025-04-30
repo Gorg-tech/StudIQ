@@ -68,6 +68,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
     
   * schlecht: Raumbelegtheit
   -> in Bibo Raum reservieren?
+  * Peojekt-Name
     
 
 
