@@ -11,12 +11,12 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Projektorganisation
 .Teammitglieder:
-- Georg Richter
-- Vincent Karmanoczki
-- Eric Wolf
-- Radmir Mullagaliev
-- Hans Brudek
-- Carmina Langer
+- Georg Richter - Product Owner
+- Hans Brudek - Scrum Manager
+- Vincent Karmanoczki - Dev
+- Eric Wolf - Dev
+- Radmir Mullagaliev - Dev
+- Carmina Langer - Dev
 //Introduce the project team, team members, and roles that they play during this project. If applicable, introduce work areas, domains, or technical work packages that are assigned to team members. Introduce neighboring projects, relationships, and communication channels. If the project is introduced somewhere else, reference that location with a link.
 
 
