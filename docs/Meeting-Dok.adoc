@@ -76,7 +76,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
   * Hans: Discord-Membern Zugriffsrechte geben (DONE)
 
-  * Georg: Project in Github anlegen
+  * Georg: Project in Github anlegen, Stakeholder ansprechen
 
   * alle: In Vorlesung zu User Stories bzw. Stakeholdern schlaumachen
 
@@ -88,6 +88,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
   - A:User Stories - Georg & Carmina
   - B:User Stories - Vincent & Radmir
   - Stakeholder - Eric & Hans
+  * 1h arbeiten, 30min vergleichen
     
 
 
