@@ -11,7 +11,7 @@ Georg Richter georg.richter@stud.htw-dresden.de
 
 === 1. Meeting 16.04.205
 
-- Meeting-Termin: *jeden Mittwoch 13:15 Raum: S114*
+- Meeting-Termin: *jeden Mittwoch 13:45 Raum: S114*
 - Meeting - Protokollierer: Georg Richter
 
 - Programmiersprache: Java
