@@ -42,6 +42,7 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 | die | in die HTW-Systeme implementiert, intuitiv, gut strukturiert, individualisierbar und smart ist.
 | anders als | Anki oder das Lernen vom Blatt
 | kann unser Produkt |  kompakt, nahbar und sicher beim Lernen für HTW-Prüfungen unterstützen.
+| Gesetzgeber | Staat, der Einhaltung der Gesetze überprüft | will keine Verletzung von Urheberrechten, Datenschutzrechten
 |===
 
 
