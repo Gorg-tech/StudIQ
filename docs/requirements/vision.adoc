@@ -65,13 +65,34 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 [%header, cols="1,3,3"]
 |===
 | Name | Beschreibung | Verantwortlichkeiten
-
 | [Benennung des Stakeholders (als Rolle)]
 | [Kurze Beschreibung des Stakeholders und seiner Ziele]
 | [Fassen Sie die wesentlichen Verantwortlichkeiten des Stakeholder mit Bezug auf das zu entwickelnde System kurz zusammen, d.h. ihr besonderen Interessen. Beispiele: Dieser Stakeholder sorgt dafür, dass das System gewartet wird / dass die angezeigten Daten aktuell sind / überwacht den Projektfortschritt / usw.]
-| HTW-Student | HTW-Student der die Lernapp zur Prüfungsvorbereitung nutzen möchte. | HTW-Studenten sind die Hauptnutzer des Systems. Sie sind mitverantwortlich für die Erstellung von Quizfragen und -antworten und sorgen für ein interaktives Lernsystem.
-| HTW-Dozent | Dozent der HTW-Dresden, der Lernmaterlialien zur Verfügung stellen möchte. | HTW- Dozenten sorgen für die Qualität der Lerninhalte. Sie sind hauptverantwortlich für die Erstellung von Quizfragen und -antworten und sorgen dafür, dass die Lerninhalte aktuell sind. 
-| Gruppe 2B | Andere Gruppe, die Prüfungsvorbereiter anfertigt | Gibt uns Entwicklungsideen, Feature-ideen, motiviert für Projektfortschritt
+
+| HTW-Student
+| Primäre Nutzergruppe des Lernsystems; ihre aktive Teilnahme ist entscheidend für den Erfolg der Plattform. 
+| Hauptnutzer der Plattform. Mitverantwortlich für Erstellung von Quizfragen/Antworten (interaktives Lernen). Geben Feedback zur Verbesserung der Plattform und der Lerninhalte.
+
+| HTW-Dozent
+| Lehrende der HTW, die Qualität und Aktualität der Lerninhalte sicherstellen. 
+| Verantwortlich für Qualität und Aktualität der Lerninhalte. Erstellung von Quizfragen/Antworten. Sicherstellung des didaktischen Mehrwerts. Potentielle Integration der App in Lehrveranstaltungen und Empfehlung an Studierende.
+
+| Gruppe-1A
+| Projektteam. 
+| Betrieb und Wartung des Systems. Implementierung neuer Features basierend auf Nutzerfeedback und technologischen Entwicklungen. Einholen und Berücksichtigen von Nutzerfeedback. Kontinuierliche Plattformpflege und Fehlerbehebung
+
+| HTW 
+| Die Hochschule, deren spezifische Studieninhalte (Module, Studiengänge) die Grundlage für die Lerninhalte der App bilden und deren Studierende und Lehrende die primäre Nutzergruppe darstellen. 
+| Bereitstellung öffentlich zugänglicher Informationen über Module und Studiengänge, die in der App genutzt werden können. Indirektes Interesse an positivem Feedback von Studierenden und Lehrenden zur Unterstützung ihres Lernerfolgs und der Lehrqualität.
+
+| Fachschaftsrat
+| Vertretung studentischer Interessen. 
+| Interesse an Lernfortschrittsdaten/Schwierigkeitsanalysen. Feedbackgeber für allgemeine studentische Bedürfnisse und Anliegen bezüglich der App.
+
+| Gesetzgeber
+| Rechtlicher Rahmen für Nutzerdatenschutz. 
+| Sicherstellung der Einhaltung der DSGVO und anderer relevanter nationaler und internationaler Gesetze und Richtlinien. Schutz der Nutzer vor Datenmissbrauch und Gewährleistung der Datensicherheit.
+
 |===
 
 Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mittels Personas vorgenommen.
