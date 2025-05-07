@@ -89,8 +89,22 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
   - B:User Stories - Vincent & Radmir
   - Stakeholder - Eric & Hans
   * 1h arbeiten, 30min vergleichen
-    
 
+== 2. Iteration 
+
+=== 4. Meeting 
+
+== 1. Meeting 07.05
+
+  - Stakeholder in Miro beschrieben
+  - User Stories in Miro beschrieben
+  - Diskussion über Iterationslänge
+    -> 4 Meetings (Wochen) pro Iteration mit Retrospektive am Ende des 4. Meetings
+  - 
+  
+*_Aufgaben bis nächstes Meeting_*
+
+ - Eric: Stakeholder in vision.adoc reinschreiben
 
 
 
