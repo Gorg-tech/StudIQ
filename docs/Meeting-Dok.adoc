@@ -105,6 +105,11 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 *_Aufgaben bis nächstes Meeting_*
 
  - Eric: Stakeholder in vision.adoc reinschreiben
+ - Carmina & Hans : Aufgaben für nächstes Meeting überlegen
+
+ *_Aufgaben für nächstes Meeting_*
+
+- stehen dann im Discord
 
 
 
