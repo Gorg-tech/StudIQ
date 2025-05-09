@@ -92,9 +92,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
 == 2. Iteration 
 
-=== 4. Meeting 
-
-== 1. Meeting 07.05
+=== 1. Meeting 07.05
 
   - Stakeholder in Miro beschrieben
   - User Stories in Miro beschrieben
@@ -110,6 +108,8 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
  *_Aufgaben für nächstes Meeting_*
 
 - stehen dann im Discord
+
+=== 2. Meeting 14.05.
 
 
 
