@@ -85,7 +85,7 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 | Die Hochschule, deren spezifische Studieninhalte (Module, Studiengänge) die Grundlage für die Lerninhalte der App bilden und deren Studierende und Lehrende die primäre Nutzergruppe darstellen. 
 | Bereitstellung öffentlich zugänglicher Informationen über Module und Studiengänge, die in der App genutzt werden können. Indirektes Interesse an positivem Feedback von Studierenden und Lehrenden zur Unterstützung ihres Lernerfolgs und der Lehrqualität.
 
-| Fachschaftsrat
+| Studierendenrat
 | Vertretung studentischer Interessen. 
 | Interesse an Lernfortschrittsdaten/Schwierigkeitsanalysen. Feedbackgeber für allgemeine studentische Bedürfnisse und Anliegen bezüglich der App.
 
