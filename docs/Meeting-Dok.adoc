@@ -112,7 +112,20 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
 === 2. Meeting 14.05.
 
+- Diskussion über User Stories und User Task, was was ist
 
+- Aufteilen von wichtigsten User Stories in kleine Teile für Wireframes
+- Marlene: User Stories, die nicht wichtig sind, nicht groß beachten
+
+*_Aufgaben für nächstes Meeting_*
+
+- Teams für Wireframes erstellen
+- Wireframes aus zerstückelten User-Stories erstellen, danach können wir andere Gruppe einlademn
+- Demnächst Gedanken über Risikomanagement machen
+
+*_Aufgaben bis nächstes Meeting_*
+
+- Carmina, Hans, Georg zu Review von anderer Gruppe gehen(in Discord), davor darauf vorbereiten
 
 
 

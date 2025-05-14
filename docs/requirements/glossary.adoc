@@ -13,7 +13,9 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Begriff | Definition und Erläuterung | Synonyme
 //| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
-| xx | xx | xx
+| Fach | xx | Modul
+| Lernset | Sammlung von Antworten und Fragen zu Thema von speziellem Modul | xx
+| Quiz | Beantwortung von Fragen | 
 |===
 
 
