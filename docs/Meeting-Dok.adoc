@@ -108,6 +108,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 *_Aufgaben für nächstes Meeting_*
 
 - stehen dann im Discord
+- Entscheiden, wer Montag zum Meeting von anderer Gruppe da ist
 
 === 2. Meeting 14.05.
 
