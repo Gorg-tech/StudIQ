@@ -13,9 +13,18 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Begriff | Definition und Erläuterung | Synonyme
 //| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
-| Fach | xx | Modul
-| Lernset | Sammlung von Antworten und Fragen zu Thema von speziellem Modul | xx
-| Quiz | Beantwortung von Fragen | 
+|Anki | Anki ist eine freie Software, die das Lernen mit Karteikarten ermöglicht. | Karteikartenprogramm
+|Benutzername | Eindeutiger Name für einen Benutzer im System | Nutzername, User
+| Dozent*in | Lehrkraft an der HTW | Lehrperson, Lehrer*in, Professor*in
+| Gamifiziertes Lernen | Lernen mit spielerischen Elementen | spielerisches Lernen
+|HTW | Hochschule für Technik und Wirtschaft | Hochschule
+|Leaderboard | Rangliste der Quiz-Teilnehmer | Bestenliste
+|Lernset | Sammlung von Antworten und Fragen zu einem Thema von speziellem Modul | Karteikarten, Thema
+|Modul | ein Fach eines Studiengangs | Kurs
+| Quiz | Beantwortung von Fragen | Abfrage, Test
+|Semester | Studienabschnitt an der HTW | 
+|Studiengang | Studienrichtung an der HTW | Studienfach
+|Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
 |===
 
 
