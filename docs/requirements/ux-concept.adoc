@@ -1,5 +1,5 @@
 = UX-Konzept: {project-name}
-Vorname Nachname <email@domain.org>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
+Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -16,6 +16,71 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 == Personas
 // Fügen Sie hier als Tabelle oder Bild die Persons der wichtigsten Stakeholder ein
+[cols="1,1,1,1,1"]
+|===
+| Name | Rolle | Eigenschaften | Bedürfnisse | Bild
+// Beispiel
+| Lena
+a| * Endbenutzer
+* 20 Jahre alt
+* Bachelor-Studentin in Informatik
+a|
+* introvertiert, geht nicht gerne raus
+* hat ADHS, kann sich nicht lange konzentrieren
+* nutzt viel Social Media
+* hat gute technische Kenntnisse
+* hat Spaß an gamifizierten Elementen
+a| * möchte Fakten einfach lernen
+* möchte sich auf Prüfungen vorbereiten, trotz geringer Konzentrationsfähigkeit
+* möchte ihren Lernfortschritt sehen
+* möchte ihr Studium bestehen bzw. gute Noten schreiben
+a| image::../images/persona-lena.png[Lena Persona]
+| Jana 
+a| * Endbenutzer
+* 21 Jahre alt
+* Master-Studentin in Informatik
+a| 
+* extravertiert, teilt gerne Wissen
+* hat keine Konzentrationsschwierigkeiten
+* hat sehr gute technische Kenntnisse; kennt sich mit Datenbanken und UX-Design aus
+* ist auf GitHub, Figma und Notion aktiv
+* erstellt gerne selbst Fragenkataloge und teilt sie mit ihrer Community
+a| * möchte Fragen- und Antwortkataloge erstellen
+* sucht nach konstruktiven Austausch über Lerninhalte
+* möchte Fragen- und Antwortqualität sicherstellen
+* will Feedback geben und ihre Meinung äußern
+* möchte Lernprozesse mitgestalten
+* wünscht sich Transparenz und Fairness im Bewertungssystem
+a| image::../images/persona-jana.png[Jana Persona]
+| Justus
+a| * Endbenutzer
+* 21 Jahre alt
+* BWL Student
+a| 
+* extravertiert
+* hat keine Konzentrationsschwierigkeiten
+* hat sehr schlechte technische Kenntnisse
+* lernt am besten durch Hören von Fakten
+a| * will Prüfungen mit möglichst wenig Zeitaufwand bestehen
+* möchte sich mit anderen vergleichen und besser sein als andere
+* möchte Quizze mit anderen teilen
+a| image::../images/persona-justus.png[Justus Persona]
+| Prof. Klaus Berger
+a| * Endbenutzer
+* 62 Jahre alt
+* Dozent in Wirtschaftsinformatik
+a| 
+* ambivertiert
+* hat mäßige technische Kenntnisse mit Windows und Office
+* besitzt ein iPad und nutzt es gelegentlich
+a| * sucht eine Plattform, auf der er Fragen einpflegen und freigeben kann
+* möchte Leistungsfortschritte anonymisiert analysieren
+* will seinen Studierenden ein nachhaltiges Prüfungstraining ermöglichen
+* will Studierende aktivieren, aber scheut komplizierte Systeme
+* möchte eine gute Reputation als Dozent
+* legt Wert auf Qualität und Nachvollziehbarkeit der Lehrinhalte
+a| image::../images/persona-prof-klaus.png[Prof. Klaus Persona]
+|===
 
 == Nutzungskontext
 // Beschreiben Sie die Arbeitsaufgaben, Arbeitsmittel, physische und soziale Umgebung, in der das Produkt genutzt wird. 
