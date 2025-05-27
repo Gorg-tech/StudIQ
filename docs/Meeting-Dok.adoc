@@ -137,6 +137,7 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 
 - Diskussion über Fortschritt von Spendex-Gruppe
 - Diskussion über Transformation von Fortschritten nach Github
+- Besprechen und bearbeiten von bereits erstellten Wireframes
 
 
 
