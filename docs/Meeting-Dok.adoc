@@ -146,6 +146,9 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 - Module werden von uns vorher erstellt, nicht individuell möglich
 - Quizze von gelöschtem Account bleiben nach Löschung bestehen, können aber gelöscht werden
 
+- Aufschlussreicher Treff mit Stakeholder
+- Mögliche Konkorrenz-App Gizmo.ai
+
 
 
 
