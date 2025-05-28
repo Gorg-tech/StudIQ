@@ -77,7 +77,7 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 | Lehrende der HTW, die Qualität und Aktualität der Lerninhalte sicherstellen. 
 | Verantwortlich für Qualität und Aktualität der Lerninhalte. Erstellung von Quizfragen/Antworten. Sicherstellung des didaktischen Mehrwerts. Potentielle Integration der App in Lehrveranstaltungen und Empfehlung an Studierende.
 
-| Gruppe-1A
+| Gruppe-2A
 | Projektteam. 
 | Betrieb und Wartung des Systems. Implementierung neuer Features basierend auf Nutzerfeedback und technologischen Entwicklungen. Einholen und Berücksichtigen von Nutzerfeedback. Kontinuierliche Plattformpflege und Fehlerbehebung
 
