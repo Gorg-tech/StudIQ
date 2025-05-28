@@ -19,10 +19,12 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Gamifiziertes Lernen | Lernen mit spielerischen Elementen | spielerisches Lernen
 |HTW | Hochschule für Technik und Wirtschaft | Hochschule
 |Leaderboard | Rangliste der Quiz-Teilnehmer | Bestenliste
-|Lernset | Sammlung von Antworten und Fragen zu einem Thema von speziellem Modul | Karteikarten, Thema
-|Modul | ein Fach eines Studiengangs | Kurs
-| Quiz | Beantwortung von Fragen | Abfrage, Test
-|Semester | Studienabschnitt an der HTW | 
+|Lernset | Sammlung von Antworten und Fragen zu einem Thema von speziellem Modul, kleiner Themenbereich eines Moduls | Karteikarten, Thema
+|Modul | ein großer Themenbereich eines Studiengangs | Kurs, Fach
+|Quiz | Beantwortung von Fragen | Abfrage, Test
+|Rating | Bewertung eines Quiz | Bewertung
+|Semester | Studienabschnitt an der HTW | -
+|Streaks | Anzahl der Tage, die der Nutzer die App kontinuierlich nutzt | -
 |Studiengang | Studienrichtung an der HTW | Studienfach
 |Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
 |===
