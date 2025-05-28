@@ -139,6 +139,13 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 - Diskussion über Transformation von Fortschritten nach Github
 - Besprechen und bearbeiten von bereits erstellten Wireframes
 
+=== 4. Meeting 28.05.
+
+- Besprechen zum Teamnahmen -> StudIQ
+- Besprechen von Wireframes
+- Module werden von uns vorher erstellt, nicht individuell möglich
+- Quizze von gelöschtem Account bleiben nach Löschung bestehen, können aber gelöscht werden
+
 
 
 
