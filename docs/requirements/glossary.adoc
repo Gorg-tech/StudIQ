@@ -14,6 +14,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Begriff | Definition und Erläuterung | Synonyme
 //| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
 |Anki | Anki ist eine freie Software, die das Lernen mit Karteikarten ermöglicht. | Karteikartenprogramm
+|Account | Profil eines Nutzers; ist in der Lage, Quizzes auf seinen Namen zu erstellen und dieses zu löschen | 
 |Benutzername | Eindeutiger Name für einen Benutzer im System | Nutzername, User
 | Dozent*in | Lehrkraft an der HTW | Lehrperson, Lehrer*in, Professor*in
 | Gamifiziertes Lernen | Lernen mit spielerischen Elementen | spielerisches Lernen
@@ -27,6 +28,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |Streaks | Anzahl der Tage, die der Nutzer die App kontinuierlich nutzt | -
 |Studiengang | Studienrichtung an der HTW | Studienfach
 |Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
+|Streak | Folge (von zB eingeloggten Tagen in der App), erzeugt Punkte-Boni |
 |===
 
 

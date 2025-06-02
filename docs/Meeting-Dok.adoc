@@ -149,6 +149,14 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 - Aufschlussreicher Treff mit Stakeholder
 - Mögliche Konkorrenz-App Gizmo.ai
 
+=== 5. Meeting 02.06. )
+(verschoben von 04.06. wegen Dies Academicus)
+
+- Erstellte Wireframes von Carmina angucken
+- Kritik von Stakeholdern diskutieren -> Ergebnisse in Miro 
+- Auf Frameworks in architecture/architexture-notebook.adoc
+
+
 
 
 
