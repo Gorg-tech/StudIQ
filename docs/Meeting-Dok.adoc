@@ -153,8 +153,11 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 (verschoben von 04.06. wegen Dies Academicus)
 
 - Erstellte Wireframes von Carmina angucken
+-> Stakeholder nach Feedback fragen
 - Kritik von Stakeholdern diskutieren -> Ergebnisse in Miro 
-- Auf Frameworks in architecture/architexture-notebook.adoc
+- Auf Frameworks in architecture/architexture-notebook.adoc geeinigt
+- Leute für Sprint-review ausgewählt
+- Aufgaben zugeteilt
 
 
 
