@@ -159,6 +159,22 @@ https://link.springer.com/book/10.1007/978-3-658-37371-9[Grundkurs agiles SE] (S
 - Leute für Sprint-review ausgewählt
 - Aufgaben zugeteilt
 
+== 3. Iteration
+
+=== 1. Meeting 11.06.
+Retrospektive:
+  - Hindernisse:
+    * Teammitglied angekündigt nicht da
+      -> Gelöst über Online-Zuschaltung
+    * Bib-Raum zu buchen wird schwieriger
+      -> Bib-Raum solange buchen wie es noch geht
+      -> sonst Sucht Georg bis Montag vor Meeting Raum zum Treffen raus
+    * zu viel Input von Stakeholdern zu Sprint Review
+  - Positives
+    * Mitglieder arbeiten freiwillig mehr, gute Harmonie
+    * gute Präsentation vor Stakeholder
+
+Erstes Quellcode-Basisprojekt angeguckt und Ordnung versucht nachzuvolziehen
 
 
 
