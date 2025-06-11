@@ -28,7 +28,6 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |Streaks | Anzahl der Tage, die der Nutzer die App kontinuierlich nutzt | -
 |Studiengang | Studienrichtung an der HTW | Studienfach
 |Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
-|Streak | Folge (von zB eingeloggten Tagen in der App), erzeugt Punkte-Boni |
 |===
 
 
