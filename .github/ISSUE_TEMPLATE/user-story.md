@@ -1,5 +1,5 @@
 ---
-name: User Story
+name: user-story
 about: A template that should be used when creating user stories in GitHub Issues.
 title: ''
 labels: user story
