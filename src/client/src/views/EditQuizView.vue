@@ -264,7 +264,7 @@ const cancelDelete = () => {
   margin-bottom: 6px;
 }
 .question-index {
-  color: var(--color-primary, #1976d2);
+  color: var(--color-primary);
   font-size: 1.05rem;
 }
 .question-type {
