@@ -216,20 +216,16 @@ const cancelDelete = () => {
 .plus-btn {
   background: none;
   border: none;
-  margin-left: 12px;
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   border-radius: 50%;
   min-width: 32px;
   min-height: 32px;
 }
-.plus-btn svg {
-  display: block;
-  width: 28px;
-  height: 28px;
-}
+
 .plus-btn:hover,
 .plus-btn:focus {
   background: #e3f2fd;
