@@ -30,7 +30,7 @@ const router = createRouter({
     },
     {
       path: '/editQuestion',
-      name: 'editQuestion',
+      name: 'edit-question',
       component: EditQuestionView,
     },
   ],
