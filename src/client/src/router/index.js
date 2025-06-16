@@ -4,6 +4,9 @@ import SearchView from '../views/SearchView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import EditQuizView from '@/views/EditQuizView.vue'
 import EditQuestionView from '@/views/EditQuestionView.vue'
+import QuizOverview from '@/views/QuizOverview.vue'
+import QuizresultatView from '@/views/QuizresultatView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +36,18 @@ const router = createRouter({
       name: 'editQuestion',
       component: EditQuestionView,
     },
+
+    {
+      path: '/QuizOverview',
+      name: 'quizoverview',
+      component: QuizOverview,
+    },
+
+    {
+      path: '/quizresultat',
+      name: 'quizresultat',
+      component: QuizresultatView,
+    }
   ],
 })
 
