@@ -22,6 +22,17 @@ import BottomNavigation from './components/layout/BottomNavigation.vue'
   --color-bg: #f5f5f5;
   --color-text: #333;
   --color-muted: #666;
+
+  /*Colors for EditQuestionView*/
+  --color-bg-light: #f9f9f9;
+  --color-bg-hover: #f5f5f5;
+  --color-border: #eee;
+  --color-border-dark: #ddd;
+  --color-blue: #2196f3;
+  --color-blue-dark: #1976d2;
+  --color-red: #f44336;
+  --color-green: #4caf50;
+  --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
 }
 
 * {
