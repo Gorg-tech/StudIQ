@@ -1,33 +1,36 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
-// Plus-Icon als Komponente
-const PlusIcon = {
-  name: 'PlusIcon',
-  template: `<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="11" stroke="#1976d2" fill="#e3f2fd"/>
-    <path d="M12 8v8M8 12h8" stroke="#1976d2" stroke-width="2" stroke-linecap="round"/>
-  </svg>`
-}
+import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 
 const router = useRouter()
 
 const quizTitle = ref('Mein erstes Quiz')
 const questions = ref([
-  {
-    id: 1,
-    text: 'Was ist die Hauptstadt von Deutschland?',
-    type: 'Multiple Choice'
-  }
+  { id: 1, text: 'Was ist die Hauptstadt von Deutschland?', type: 'Multiple Choice' }
 ])
 
+const showDeleteModal = ref(false)
+const questionToDelete = ref(null)
+const questionToDeleteText = ref('')
+
+const showBackModal = ref(false)
+
 const goBack = () => {
+  showBackModal.value = true
+}
+const confirmBack = () => {
+  showBackModal.value = false
   router.push('/')
 }
+const cancelBack = () => {
+  showBackModal.value = false
+}
+
 const saveQuiz = () => {
   router.push('/')
 }
+
 const addQuestion = () => {
   questions.value.push({
     id: questions.value.length + 1,
@@ -35,9 +38,27 @@ const addQuestion = () => {
     type: 'Multiple Choice'
   })
 }
-// Navigiere auf Detailseite der Frage
+
 const goToQuestion = (questionId) => {
   router.push(`/editQuestion`)
+}
+
+const confirmDelete = (event, questionId) => {
+  event.stopPropagation()
+  questionToDelete.value = questionId
+  questionToDeleteText.value = questions.value.find(q => q.id === questionId).text
+  showDeleteModal.value = true
+}
+const deleteQuestion = () => {
+  questions.value = questions.value.filter(q => q.id !== questionToDelete.value)
+  showDeleteModal.value = false
+  questionToDelete.value = null
+  questionToDeleteText.value = ''
+}
+const cancelDelete = () => {
+  showDeleteModal.value = false
+  questionToDelete.value = null
+  questionToDeleteText.value = ''
 }
 </script>
 
@@ -81,16 +102,9 @@ const goToQuestion = (questionId) => {
             <span class="question-type">{{ question.type }}</span>
           </div>
           <div class="question-preview">
-            <span class="question-text">{{ question.text || `Fragetext für Frage ${idx + 1}` }}
-            </span>
-            <span class="question-delete">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
+            <span class="question-text">{{ question.text || `Fragetext für Frage ${idx + 1}` }}</span>
+            <span class="question-delete" @click.stop="confirmDelete($event, question.id, question.text)">
+              <IconTrashcan />
             </span>
           </div>
         </div>
@@ -98,7 +112,6 @@ const goToQuestion = (questionId) => {
 
       <div class="edit-actions">
         <button class="btn btn-secondary" @click="goBack">
-          <IconArrowLeft style="vertical-align: middle; margin-right: 5px;" />
           Zurück
         </button>
         <button class="btn btn-primary" @click="saveQuiz">
@@ -106,6 +119,37 @@ const goToQuestion = (questionId) => {
         </button>
       </div>
     </main>
+
+    <!-- Delete confirmation modal -->
+    <Teleport to="body">
+      <div v-if="showDeleteModal" class="modal-backdrop">
+        <div class="modal">
+          <h3>Frage löschen?</h3>
+          <p>Möchtest du diese Frage wirklich löschen?</p>
+          <p class="modal-question-text">
+            <b>{{ questionToDeleteText }}</b>
+          </p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" @click="cancelDelete">Abbrechen</button>
+            <button class="btn btn-danger" @click="deleteQuestion">Löschen</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Back confirmation modal -->
+    <Teleport to="body">
+      <div v-if="showBackModal" class="modal-backdrop">
+        <div class="modal">
+          <h3>Zurück ohne Speichern?</h3>
+          <p>Ungespeicherte Änderungen gehen verloren. Möchtest du wirklich zurückgehen?</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" @click="cancelBack">Abbrechen</button>
+            <button class="btn btn-danger" @click="confirmBack">Zurück</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -177,7 +221,6 @@ const goToQuestion = (questionId) => {
   padding: 0;
   display: flex;
   align-items: center;
-  /*transition: background 0.15s;*/
   border-radius: 50%;
   min-width: 32px;
   min-height: 32px;
@@ -235,7 +278,21 @@ const goToQuestion = (questionId) => {
   font-size: 1.04rem;
   color: #333;
   padding: 6px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+.question-delete {
+  margin-left: 14px;
+  cursor: pointer;
+  color: #ba1a1a;
+  display: flex;
+  align-items: center;
+}
+.question-delete:hover {
+  color: #ff1744;
+}
+
 .edit-actions {
   display: flex;
   justify-content: space-between;
@@ -249,7 +306,6 @@ const goToQuestion = (questionId) => {
   font-size: 1.03rem;
   cursor: pointer;
   font-weight: 500;
-  /*transition: background 0.18s;*/
 }
 .btn-secondary {
   background: #f3f3f3;
@@ -265,5 +321,53 @@ const goToQuestion = (questionId) => {
 }
 .btn-primary:hover {
   background: #1565c0;
+}
+.btn-danger {
+  background: #ba1a1a;
+  color: #fff;
+  border: none;
+}
+.btn-danger:hover {
+  background: #ff1744;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 28px 24px 28px;
+  box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14);
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 1.15rem;
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 28px;
+}
+.modal-question-text {
+  margin: 20px 0 0 0;
+  color: #222;
+  font-size: 1.04rem;
+  word-break: break-word;
+  background: #e3f2fd;
+  padding: 8px 10px;
+  border-radius: 7px;
 }
 </style>
