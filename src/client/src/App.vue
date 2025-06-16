@@ -16,23 +16,21 @@ import BottomNavigation from './components/layout/BottomNavigation.vue'
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 
 :root {
-  --color-primary: #ff4b28b9; 
-  --color-secondary: #f1f3f4;
   --color-accent: #222;
   --color-bg: #f5f5f5;
-  --color-text: #333;
-  --color-muted: #666;
-
-  /*Colors for EditQuestionView*/
-  --color-bg-light: #f9f9f9;
   --color-bg-hover: #f5f5f5;
-  --color-border: #eee;
-  --color-border-dark: #ddd;
+  --color-bg-light: #f9f9f9;
   --color-blue: #2196f3;
   --color-blue-dark: #1976d2;
-  --color-red: #f44336;
+  --color-border: #eee;
+  --color-border-dark: #ddd;
   --color-green: #4caf50;
+  --color-muted: #666;
+  --color-primary: #fc7960;
+  --color-red: #f44336;
+  --color-secondary: #f1f3f4;
   --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
+  --color-text: #333;
 }
 
 * {
