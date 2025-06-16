@@ -21,6 +21,16 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
     },
+    {
+      path: '/editQuiz',
+      name: 'editQuiz',
+      component: ProfileView,
+    },
+    {
+      path: '/editQuestion',
+      name: 'editQuestion',
+      component: ProfileView,
+    },
   ],
 })
 
