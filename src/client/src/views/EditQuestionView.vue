@@ -81,6 +81,29 @@
       </div>
     </div>
 
+    <!-- Delete Confirmation Popup -->
+    <div v-if="deletePopup.open" class="edit-popup-overlay">
+      <div class="edit-popup">
+        <h3>Möchtest du wirklich folgende Antwortmöglichkeit löschen?</h3>
+        <p class="popup-answer-text">{{ deletePopup.text }}</p>
+        <div class="edit-popup-actions">
+          <button class="cancel-btn" @click="closeDeletePopup">Abbrechen</button>
+          <button class="delete-btn" @click="confirmDelete">Löschen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancel Confirmation Popup -->
+    <div v-if="cancelPopup.open" class="edit-popup-overlay">
+      <div class="edit-popup">
+        <h3>Alle Änderungen werden gelöscht</h3>
+        <div class="edit-popup-actions">
+          <button class="cancel-btn" @click="closeCancelPopup">Abbrechen</button>
+          <button class="delete-btn" @click="confirmCancel">OK</button>
+        </div>
+      </div>
+    </div>
+
     <div class="footer-buttons">
       <button class="cancel-btn" @click="cancelEdit">
         Abbrechen
@@ -159,8 +182,58 @@ function applyEdit() {
   closeEditPopup()
 }
 
+const deletePopup = ref({
+  open: false,
+  idx: null,
+  text: '',
+})
+
+function openDeletePopup(idx) {
+  deletePopup.value.open = true
+  deletePopup.value.idx = idx
+  deletePopup.value.text = options.value[idx].text
+}
+function closeDeletePopup() {
+  deletePopup.value.open = false
+  deletePopup.value.idx = null
+  deletePopup.value.text = ''
+}
+function confirmDelete() {
+  if (deletePopup.value.idx !== null) {
+    options.value.splice(deletePopup.value.idx, 1)
+  }
+  closeDeletePopup()
+}
+
+const cancelPopup = ref({
+  open: false,
+})
+function openCancelPopup() {
+  cancelPopup.value.open = true
+}
+function closeCancelPopup() {
+  cancelPopup.value.open = false
+}
+function confirmCancel() {
+  cancelPopup.value.open = false
+  router.push('/editQuiz')
+}
+
+// Update delete button in option-actions:
 function deleteOption(idx) {
-  options.value.splice(idx, 1)
+  openDeletePopup(idx)
+}
+
+// Update cancelEdit to open popup:
+function cancelEdit() {
+  openCancelPopup()
+}
+
+// Update saveQuestion to redirect:
+function saveQuestion() {
+  // TODO: Save logic
+  alert('Frage gespeichert!')
+  router.push('/editQuiz')
 }
 
 function toggleCorrect(idx) {
@@ -169,15 +242,6 @@ function toggleCorrect(idx) {
   } else {
     options.value[idx].correct = !options.value[idx].correct
   }
-}
-
-function cancelEdit() {
-  router.push('/editQuiz')
-}
-
-function saveQuestion() {
-  // TODO: Save logic
-  alert('Frage gespeichert!')
 }
 
 function truncate(text, maxLength) {
@@ -436,5 +500,15 @@ input[type="checkbox"] {
 }
 .edit-popup .save-btn:hover {
   background: var(--color-blue-dark);
+}
+
+.popup-answer-text {
+  background: var(--color-bg-light);
+  border-radius: 6px;
+  padding: 10px;
+  margin: 12px 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  word-break: break-word;
 }
 </style>
