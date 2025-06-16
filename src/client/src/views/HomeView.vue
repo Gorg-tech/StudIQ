@@ -156,7 +156,7 @@ const suggestedQuizzes = ref([
       </section>
       <div class="quiz-options">
         <button class="btn btn-primary" @click="router.push('/search')">
-          <span class="btn-icon"><IconSearch /></span>
+          <IconSearch />
           <span>Quiz suchen</span>
         </button>
       </div>
@@ -408,7 +408,7 @@ const suggestedQuizzes = ref([
   display: block;
   margin-top: 8px;
   width: 196px;
-  height: 196px;
+  height: auto;
   overflow: visible;  
 }
 

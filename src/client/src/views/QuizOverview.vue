@@ -170,12 +170,6 @@ function formatDate(ts) {
   text-align: left;
 }
 
-.quiz-card-penguin {
-  margin-left: 32px;
-  display: flex;
-  align-items: flex-start;
-}
-
 .quiz.card h2 {
   color: var(--color-accent);
   margin-bottom: 16px;

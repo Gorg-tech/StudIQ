@@ -3,7 +3,7 @@
     xmlns="http://www.w3.org/2000/svg"
     width="120"
     height="128"
-    viewBox="0 0 409 439"
+    viewBox="-20 -20 449 479"
     fill="none"
   >
     <ellipse cx="207" cy="374.5" rx="161" ry="64.5" fill="black" fill-opacity="0.09" />
