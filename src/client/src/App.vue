@@ -128,6 +128,26 @@ body {
   background-color: rgba(255, 75, 40, 0.1);
 }
 
+/* Icon Button */
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.btn-icon:hover,
+.btn-icon:focus {
+  background-color: #e3f2fd;
+  outline: none;
+}
+
 @media (min-width: 1024px) {
   .app-container {
     display: flex;

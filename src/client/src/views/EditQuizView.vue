@@ -81,7 +81,7 @@ const cancelDelete = () => {
       <section class="quiz-questions-section card">
         <div class="questions-header">
           <h2 class="questions-section-title">Deine Quiz-Fragen</h2>
-          <button class="plus-btn" type="button" @click="addQuestion" aria-label="Frage hinzufügen">
+          <button class="btn-icon" type="button" @click="addQuestion" aria-label="Frage hinzufügen">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" stroke="#2196f3"/>
               <path d="M12 8v8M8 12h8" stroke="#2196f3" stroke-linecap="round"/>
@@ -213,24 +213,7 @@ const cancelDelete = () => {
   color: var(--color-accent);
   margin: 0;
 }
-.plus-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  min-width: 32px;
-  min-height: 32px;
-}
 
-.plus-btn:hover,
-.plus-btn:focus {
-  background: #e3f2fd;
-  outline: none;
-}
 .question-field {
   margin-bottom: 22px;
   border: 1.5px solid #e3f2fd;
