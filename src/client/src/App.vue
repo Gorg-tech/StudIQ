@@ -28,7 +28,7 @@ import BottomNavigation from './components/layout/BottomNavigation.vue'
   --color-muted: #666;
   --color-primary: #fc7960;
   --color-red: #f44336;
-  --color-secondary: #f1f3f4;
+  --color-secondary: #2196f3;
   --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
   --color-text: #333;
 }
@@ -74,7 +74,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 12px 22px;
   border-radius: 8px;
   border: none;
   font-size: 1rem;
@@ -94,8 +94,9 @@ body {
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  color: var(--color-text);
+  background-color: transparent;
+  color: var(--color-secondary);
+  border: 1px solid #bcdffb;
 }
 
 .btn-text {
@@ -107,6 +108,7 @@ body {
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  filter: brightness(0.93);
 }
 
 .btn:active {
@@ -119,7 +121,7 @@ body {
 }
 
 .btn-secondary:hover {
-  background-color: #e5e7e8;
+  background-color: #e3f2fd;
 }
 
 .btn-text:hover {
