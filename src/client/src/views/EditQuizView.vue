@@ -103,9 +103,13 @@ const cancelDelete = () => {
           </div>
           <div class="question-preview">
             <span class="question-text">{{ question.text || `Fragetext für Frage ${idx + 1}` }}</span>
-            <span class="question-delete" @click.stop="confirmDelete($event, question.id, question.text)">
+            <button 
+              class="btn-icon question-delete" 
+              @click.stop="confirmDelete($event, question.id, question.text)"
+              aria-label="Frage löschen"
+            >
               <IconTrashcan />
-            </span>
+            </button>
           </div>
         </div>
       </section>
