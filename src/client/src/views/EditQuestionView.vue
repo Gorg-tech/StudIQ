@@ -251,21 +251,6 @@ function truncate(text, maxLength) {
 </script>
 
 <style scoped>
-:root {
-  --color-bg: #fff;
-  --color-bg-light: #f9f9f9;
-  --color-bg-hover: #f5f5f5;
-  --color-border: #eee;
-  --color-border-dark: #ddd;
-  --color-blue: #2196f3;
-  --color-blue-dark: #1976d2;
-  --color-red: #f44336;
-  --color-green: #4caf50;
-  --color-text: #222;
-  --color-muted: #888;
-  --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
-}
-
 .edit-question {
   max-width: 600px;
   margin: 0 auto;
