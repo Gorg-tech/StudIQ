@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import EditQuizView from '@/views/EditQuizView.vue'
+import EditQuestionView from '@/views/EditQuestionView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,12 +26,12 @@ const router = createRouter({
     {
       path: '/editQuiz',
       name: 'editQuiz',
-      component: ProfileView,
+      component: EditQuizView,
     },
     {
       path: '/editQuestion',
       name: 'editQuestion',
-      component: ProfileView,
+      component: EditQuestionView,
     },
   ],
 })
