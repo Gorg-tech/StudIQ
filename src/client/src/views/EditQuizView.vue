@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
+import IconSave from '@/components/icons/IconSave.vue'
+
 
 const router = useRouter()
 
@@ -119,6 +121,7 @@ const cancelDelete = () => {
           Zurück
         </button>
         <button class="btn btn-primary" @click="saveQuiz">
+          <IconSave style="color: white"/>
           Speichern
         </button>
       </div>

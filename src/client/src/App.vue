@@ -74,7 +74,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 22px;
+  padding: 12px 24px;
   border-radius: 8px;
   border: none;
   font-size: 1rem;

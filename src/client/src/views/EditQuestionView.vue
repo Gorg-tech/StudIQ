@@ -1,66 +1,76 @@
 <template>
   <div class="edit-question">
-    <h1>Frage Bearbeiten</h1>
-    <div class="section">
-      <h3>Fragetext eingeben</h3>
-      <textarea
-        v-model="questionText"
-        class="question-input"
-        placeholder="z.B. Was ist das Ergebnis von 2 + 2?"
-        rows="3"
-      />
-    </div>
+    <!-- Move title outside the main card -->
+    <h1 class="page-title">Frage Bearbeiten</h1>
+    
+    <div class="edit-question-card">
+      <div class="section">
+        <h3>Fragetext eingeben</h3>
+        <textarea
+          v-model="questionText"
+          class="question-input"
+          placeholder="z.B. Was ist das Ergebnis von 2 + 2?"
+          rows="3"
+        />
+      </div>
 
-    <div class="section type-row">
-      <div class="type-label">
-        <h3>Typ der Frage</h3>
-        <button class="arrow-btn" @click="showTypeDropdown = !showTypeDropdown">
-          <span>&#x25BC;</span>
+      <div class="section type-row">
+        <div class="type-label">
+          <h3>Typ der Frage</h3>
+          <button class="btn-icon" @click="showTypeDropdown = !showTypeDropdown">
+            <span>&#x25BC;</span>
+          </button>
+          <div v-if="showTypeDropdown" class="dropdown">
+            <div
+              v-for="type in questionTypes"
+              :key="type"
+              class="dropdown-item"
+              @click="selectType(type)"
+            >
+              {{ type }}
+            </div>
+          </div>
+          <span class="selected-type">{{ selectedType }}</span>
+        </div>
+        <button class="btn-icon" @click="addOption" aria-label="Antwort hinzufügen">
+          <IconPlus />
         </button>
-        <div v-if="showTypeDropdown" class="dropdown">
-          <div
-            v-for="type in questionTypes"
-            :key="type"
-            class="dropdown-item"
-            @click="selectType(type)"
-          >
-            {{ type }}
+      </div>
+
+      <div class="options-list">
+        <div v-for="(option, idx) in options" :key="option.id" class="option-item">
+          <div class="option-title">
+            <span class="option-text" :title="option.text">
+              {{ truncate(option.text, 30) }}
+            </span>
+            <button class="btn-icon" @click="openEditPopup(idx)" aria-label="Antwort bearbeiten">
+              <IconPen />
+            </button>
+          </div>
+          <div class="option-actions">
+            <input
+              v-if="selectedType !== 'Freitext'"
+              type="checkbox"
+              :checked="option.correct"
+              @change="toggleCorrect(idx)"
+              :aria-label="option.correct ? 'Richtige Antwort' : 'Falsche Antwort'"
+            />
+            <button class="btn-icon delete-option" @click="deleteOption(idx)" aria-label="Antwort löschen">
+              <IconTrash />
+            </button>
           </div>
         </div>
-        <span class="selected-type">{{ selectedType }}</span>
       </div>
-      <button class="add-option-btn" @click="addOption" aria-label="Antwort hinzufügen">
-        <!-- Plus Icon SVG -->
-        <IconPlus style="color: var(--color-blue)" />
-      </button>
-    </div>
 
-    <div class="options-list">
-      <div
-        v-for="(option, idx) in options"
-        :key="option.id"
-        class="option-item"
-      >
-        <div class="option-title">
-          <span class="option-text" :title="option.text">
-            {{ truncate(option.text, 30) }}
-          </span>
-          <button class="edit-btn" @click="openEditPopup(idx)" aria-label="Antwort bearbeiten">
-            <IconPen style="color: var(--color-blue)"/>
-          </button>
-        </div>
-        <div class="option-actions">
-          <input
-            v-if="selectedType !== 'Freitext'"
-            type="checkbox"
-            :checked="option.correct"
-            @change="toggleCorrect(idx)"
-            :aria-label="option.correct ? 'Richtige Antwort' : 'Falsche Antwort'"
-          />
-          <button class="delete-btn" @click="deleteOption(idx)" aria-label="Antwort löschen">
-             <IconTrash style="color: var(--color-red)" />
-          </button>
-        </div>
+      <div class="footer-buttons">
+        <button class="cancel-btn" @click="cancelEdit">
+          Abbrechen
+        </button>
+        <button class="save-btn" @click="saveQuestion">
+          <!-- Save Icon SVG, white -->
+          <IconSave style="color: white"/>
+          Speichern
+        </button>
       </div>
     </div>
 
@@ -102,17 +112,6 @@
           <button class="delete-btn" @click="confirmCancel">OK</button>
         </div>
       </div>
-    </div>
-
-    <div class="footer-buttons">
-      <button class="cancel-btn" @click="cancelEdit">
-        Abbrechen
-      </button>
-      <button class="save-btn" @click="saveQuestion">
-        <!-- Save Icon SVG, white -->
-        <IconSave style="color: var(--color-text)"/>
-        Speichern
-      </button>
     </div>
   </div>
 </template>
@@ -254,17 +253,38 @@ function truncate(text, maxLength) {
 .edit-question {
   max-width: 600px;
   margin: 0 auto;
-  padding: 32px 16px;
-  background: var(--color-bg);
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-align: center;
+  margin: 0;
+  padding: 24px 0;
+}
+
+.edit-question-card {
+  background: #fff; 
   border-radius: 16px;
   box-shadow: var(--color-shadow);
+  padding: 32px 16px;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
-.section {
-  margin-bottom: 12px;
+
+.section h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--color-muted);
 }
+
 .question-input {
   width: 100%;
   border-radius: 8px;
@@ -273,9 +293,10 @@ function truncate(text, maxLength) {
   font-size: 1rem;
   margin-top: 8px;
   resize: vertical;
-  background: var(--color-bg);
+  background: #fff; 
   color: var(--color-text);
 }
+
 .type-row {
   display: flex;
   align-items: center;
@@ -289,19 +310,13 @@ function truncate(text, maxLength) {
   gap: 8px;
   position: relative;
 }
-.arrow-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  margin-left: 4px;
-  color: var(--color-blue);
-}
+
 .selected-type {
   margin-left: 12px;
   font-weight: 500;
   color: var(--color-blue);
 }
+
 .dropdown {
   position: absolute;
   top: 2.5em;
@@ -321,38 +336,23 @@ function truncate(text, maxLength) {
 .dropdown-item:hover {
   background: var(--color-bg-hover);
 }
-.add-option-btn {
-  background: none;
-  border: none;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-blue);
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: none;
-}
-.add-option-btn:hover {
-  background: var(--color-bg-hover);
-}
+
 .options-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 .option-item {
-  background: var(--color-bg-light);
+  background: #fff; /* Changed from var(--color-bg-light) */
   border-radius: 10px;
-  padding: 12px 12px 28px 12px;
+  padding: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
   min-height: 48px;
   border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08); /* Added consistent shadow */
 }
 .option-title {
   display: flex;
@@ -369,16 +369,7 @@ function truncate(text, maxLength) {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.edit-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-left: 4px;
-  color: var(--color-blue);
-  padding: 2px;
-  display: flex;
-  align-items: center;
-}
+
 .option-actions {
   display: flex;
   align-items: center;
@@ -390,55 +381,8 @@ input[type="checkbox"] {
   height: 20px;
   accent-color: var(--color-blue);
 }
-.delete-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  position: static;
-  color: var(--color-red);
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-}
-.footer-buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 24px;
-  gap: 12px;
-}
-.cancel-btn {
-  background: var(--color-border);
-  color: var(--color-text);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.cancel-btn:hover {
-  background: var(--color-border-dark);
-}
-.save-btn {
-  background: var(--color-blue);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.save-btn:hover {
-  background: var(--color-blue-dark);
-}
 
-/* Edit Option Popup */
+/* Update popup styling to match other modals */
 .edit-popup-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -446,19 +390,28 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1000; /* Changed from 100 to match other modals */
 }
+
 .edit-popup {
-  background: var(--color-bg);
-  border-radius: 14px;
-  box-shadow: var(--color-shadow);
-  padding: 28px 24px 18px 24px;
+  background: #fff; /* Changed from var(--color-bg) */
+  border-radius: 12px; /* Changed from 14px to match other modals */
+  box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14); /* Updated to match other modals */
+  padding: 32px 28px 24px 28px; /* Updated to match other modals */
   min-width: 320px;
   max-width: 90vw;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  text-align: center; /* Added to match other modals */
 }
+
+.edit-popup h3 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 1.15rem;
+}
+
 .edit-popup-input {
   width: 100%;
   border-radius: 8px;
@@ -466,34 +419,88 @@ input[type="checkbox"] {
   padding: 10px;
   font-size: 1rem;
   color: var(--color-text);
-  background: var(--color-bg);
+  background: #fff; /* Changed from var(--color-bg) */
 }
+
 .edit-popup-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-.edit-popup .cancel-btn {
-  background: var(--color-border);
-  color: var(--color-text);
-  padding: 8px 18px;
-}
-.edit-popup .save-btn {
-  background: var(--color-blue);
-  color: #fff;
-  padding: 8px 18px;
-}
-.edit-popup .save-btn:hover {
-  background: var(--color-blue-dark);
+  justify-content: space-between; /* Changed from flex-end to match other modals */
+  gap: 18px; /* Changed from 12px to match other modals */
+  margin-top: 28px; /* Added to match other modals */
 }
 
 .popup-answer-text {
-  background: var(--color-bg-light);
-  border-radius: 6px;
-  padding: 10px;
-  margin: 12px 0;
-  color: var(--color-text);
-  font-size: 1rem;
+  background: #e3f2fd; /* Changed from var(--color-bg-light) to match other views */
+  border-radius: 7px; /* Changed from 6px to match other modals */
+  padding: 8px 10px; /* Changed to match other modals */
+  margin: 20px 0 0 0; /* Changed to match other modals */
+  color: #222; /* Changed from var(--color-text) to match other modals */
+  font-size: 1.04rem; /* Changed from 1rem to match other modals */
   word-break: break-word;
+}
+
+/* Update footer buttons to use consistent btn classes */
+.footer-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  gap: 18px; /* Changed from 12px to match other views */
+}
+
+/* Remove old button styles and use consistent btn classes */
+.cancel-btn {
+  background: transparent;
+  color: var(--color-secondary);
+  border: 1px solid #bcdffb;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.cancel-btn:hover {
+  background-color: #e3f2fd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn {
+  background: var(--color-secondary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  filter: brightness(0.93);
+}
+
+.delete-btn {
+  background-color: var(--color-red);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  filter: brightness(0.93);
 }
 </style>
