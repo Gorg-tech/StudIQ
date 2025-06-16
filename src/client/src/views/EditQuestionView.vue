@@ -1,8 +1,6 @@
 <template>
   <div class="edit-question">
-    <!-- Move title outside the main card -->
     <h1 class="page-title">Frage Bearbeiten</h1>
-    
     <div class="edit-question-card">
       <div class="section">
         <h3>Fragetext eingeben</h3>
@@ -343,7 +341,7 @@ function truncate(text, maxLength) {
   gap: 12px;
 }
 .option-item {
-  background: #fff; /* Changed from var(--color-bg-light) */
+  background: #fff; 
   border-radius: 10px;
   padding: 12px;
   display: flex;
@@ -352,7 +350,7 @@ function truncate(text, maxLength) {
   position: relative;
   min-height: 48px;
   border: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08); /* Added consistent shadow */
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08); 
 }
 .option-title {
   display: flex;
@@ -382,7 +380,6 @@ input[type="checkbox"] {
   accent-color: var(--color-blue);
 }
 
-/* Update popup styling to match other modals */
 .edit-popup-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -390,20 +387,20 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Changed from 100 to match other modals */
+  z-index: 1000;
 }
 
 .edit-popup {
-  background: #fff; /* Changed from var(--color-bg) */
-  border-radius: 12px; /* Changed from 14px to match other modals */
-  box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14); /* Updated to match other modals */
-  padding: 32px 28px 24px 28px; /* Updated to match other modals */
+  background: #fff;
+  border-radius: 12px; 
+  box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14); 
+  padding: 32px 28px 24px 28px;
   min-width: 320px;
   max-width: 90vw;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  text-align: center; /* Added to match other modals */
+  text-align: center; 
 }
 
 .edit-popup h3 {
@@ -419,36 +416,34 @@ input[type="checkbox"] {
   padding: 10px;
   font-size: 1rem;
   color: var(--color-text);
-  background: #fff; /* Changed from var(--color-bg) */
+  background: #fff; 
 }
 
 .edit-popup-actions {
   display: flex;
-  justify-content: space-between; /* Changed from flex-end to match other modals */
-  gap: 18px; /* Changed from 12px to match other modals */
-  margin-top: 28px; /* Added to match other modals */
+  justify-content: space-between; 
+  gap: 18px; 
+  margin-top: 28px; 
 }
 
 .popup-answer-text {
-  background: #e3f2fd; /* Changed from var(--color-bg-light) to match other views */
-  border-radius: 7px; /* Changed from 6px to match other modals */
-  padding: 8px 10px; /* Changed to match other modals */
-  margin: 20px 0 0 0; /* Changed to match other modals */
-  color: #222; /* Changed from var(--color-text) to match other modals */
-  font-size: 1.04rem; /* Changed from 1rem to match other modals */
+  background: #e3f2fd;
+  border-radius: 7px;
+  padding: 8px 10px;
+  margin: 20px 0 0 0;
+  color: #222;
+  font-size: 1.04rem;
   word-break: break-word;
 }
 
-/* Update footer buttons to use consistent btn classes */
 .footer-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 24px;
-  gap: 18px; /* Changed from 12px to match other views */
+  gap: 18px;
 }
 
-/* Remove old button styles and use consistent btn classes */
 .cancel-btn {
   background: transparent;
   color: var(--color-secondary);
