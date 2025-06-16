@@ -16,23 +16,21 @@ import BottomNavigation from './components/layout/BottomNavigation.vue'
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 
 :root {
-  --color-primary: #ff4b28b9; 
-  --color-secondary: #f1f3f4;
   --color-accent: #222;
   --color-bg: #f5f5f5;
-  --color-text: #333;
-  --color-muted: #666;
-
-  /*Colors for EditQuestionView*/
-  --color-bg-light: #f9f9f9;
   --color-bg-hover: #f5f5f5;
-  --color-border: #eee;
-  --color-border-dark: #ddd;
+  --color-bg-light: #f9f9f9;
   --color-blue: #2196f3;
   --color-blue-dark: #1976d2;
-  --color-red: #f44336;
+  --color-border: #eee;
+  --color-border-dark: #ddd;
   --color-green: #4caf50;
+  --color-muted: #666;
+  --color-primary: #fc7960;
+  --color-red: #f44336;
+  --color-secondary: #2196f3;
   --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
+  --color-text: #333;
 }
 
 * {
@@ -76,7 +74,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 12px 24px;
   border-radius: 8px;
   border: none;
   font-size: 1rem;
@@ -96,8 +94,9 @@ body {
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  color: var(--color-text);
+  background-color: transparent;
+  color: var(--color-secondary);
+  border: 1px solid #bcdffb;
 }
 
 .btn-text {
@@ -109,6 +108,7 @@ body {
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  filter: brightness(0.93);
 }
 
 .btn:active {
@@ -116,16 +116,32 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary:hover {
-  background-color: #ff3615;
-}
-
 .btn-secondary:hover {
-  background-color: #e5e7e8;
+  background-color: #e3f2fd;
 }
 
 .btn-text:hover {
   background-color: rgba(255, 75, 40, 0.1);
+}
+
+/* Icon Button */
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.btn-icon:hover,
+.btn-icon:focus {
+  background-color: #e3f2fd;
+  outline: none;
 }
 
 @media (min-width: 1024px) {

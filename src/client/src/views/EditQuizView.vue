@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
+import IconSave from '@/components/icons/IconSave.vue'
+
 
 const router = useRouter()
 
@@ -81,7 +83,7 @@ const cancelDelete = () => {
       <section class="quiz-questions-section card">
         <div class="questions-header">
           <h2 class="questions-section-title">Deine Quiz-Fragen</h2>
-          <button class="plus-btn" type="button" @click="addQuestion" aria-label="Frage hinzufügen">
+          <button class="btn-icon" type="button" @click="addQuestion" aria-label="Frage hinzufügen">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" stroke="#2196f3"/>
               <path d="M12 8v8M8 12h8" stroke="#2196f3" stroke-linecap="round"/>
@@ -103,9 +105,13 @@ const cancelDelete = () => {
           </div>
           <div class="question-preview">
             <span class="question-text">{{ question.text || `Fragetext für Frage ${idx + 1}` }}</span>
-            <span class="question-delete" @click.stop="confirmDelete($event, question.id, question.text)">
+            <button 
+              class="btn-icon question-delete" 
+              @click.stop="confirmDelete($event, question.id, question.text)"
+              aria-label="Frage löschen"
+            >
               <IconTrashcan />
-            </span>
+            </button>
           </div>
         </div>
       </section>
@@ -115,6 +121,7 @@ const cancelDelete = () => {
           Zurück
         </button>
         <button class="btn btn-primary" @click="saveQuiz">
+          <IconSave style="color: white"/>
           Speichern
         </button>
       </div>
@@ -210,31 +217,10 @@ const cancelDelete = () => {
 .questions-section-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--color-accent, #1976d2);
+  color: var(--color-accent);
   margin: 0;
 }
-.plus-btn {
-  background: none;
-  border: none;
-  margin-left: 12px;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  border-radius: 50%;
-  min-width: 32px;
-  min-height: 32px;
-}
-.plus-btn svg {
-  display: block;
-  width: 28px;
-  height: 28px;
-}
-.plus-btn:hover,
-.plus-btn:focus {
-  background: #e3f2fd;
-  outline: none;
-}
+
 .question-field {
   margin-bottom: 22px;
   border: 1.5px solid #e3f2fd;
@@ -251,7 +237,7 @@ const cancelDelete = () => {
   user-select: none;
 }
 .question-interactive:hover, .question-interactive:focus {
-  border: 1.5px solid #1976d2;
+  border: 1.5px solid var(--color-secondary);
   box-shadow: 0 2px 10px 2px rgba(25, 118, 210, 0.08);
   background: #f2f8fd;
   outline: none;
@@ -264,13 +250,13 @@ const cancelDelete = () => {
   margin-bottom: 6px;
 }
 .question-index {
-  color: var(--color-primary, #1976d2);
+  color: var(--color-primary);
   font-size: 1.05rem;
 }
 .question-type {
   font-size: 0.97rem;
   background: #e3f2fd;
-  color: #1976d2;
+  color: var(--color-secondary);
   border-radius: 6px;
   padding: 2px 10px;
 }
@@ -285,12 +271,8 @@ const cancelDelete = () => {
 .question-delete {
   margin-left: 14px;
   cursor: pointer;
-  color: #ba1a1a;
   display: flex;
   align-items: center;
-}
-.question-delete:hover {
-  color: #ff1744;
 }
 
 .edit-actions {
@@ -299,36 +281,16 @@ const cancelDelete = () => {
   gap: 18px;
   margin-top: 10px;
 }
-.btn {
-  padding: 12px 22px;
-  border-radius: 9px;
-  border: none;
-  font-size: 1.03rem;
-  cursor: pointer;
-  font-weight: 500;
-}
-.btn-secondary {
-  background: #f3f3f3;
-  color: #1976d2;
-  border: 1px solid #bcdffb;
-}
-.btn-secondary:hover {
-  background: #e3f2fd;
-}
+
 .btn-primary {
-  background: #1976d2;
+  background: var(--color-secondary);
   color: #fff;
 }
-.btn-primary:hover {
-  background: #1565c0;
-}
+
 .btn-danger {
-  background: #ba1a1a;
+  background-color: var(--color-red);
   color: #fff;
   border: none;
-}
-.btn-danger:hover {
-  background: #ff1744;
 }
 
 /* Modal styles */
