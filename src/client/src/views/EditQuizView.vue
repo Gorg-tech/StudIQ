@@ -58,10 +58,13 @@ const goToQuestion = (questionId) => {
       </section>
 
       <section class="quiz-questions-section card">
-        <div class="questions-section-title-row">
+        <div class="questions-header">
           <h2 class="questions-section-title">Deine Quiz-Fragen</h2>
           <button class="plus-btn" type="button" @click="addQuestion" aria-label="Frage hinzufügen">
-            <PlusIcon />
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" stroke="#2196f3"/>
+              <path d="M12 8v8M8 12h8" stroke="#2196f3" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
         <div
@@ -139,15 +142,17 @@ const goToQuestion = (questionId) => {
   margin-top: 8px;
   margin-bottom: 4px;
 }
+
+.questions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .quiz-questions-section {
   margin-top: 10px;
 }
-.questions-section-title-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-  gap: 10px;
-}
+
 .questions-section-title {
   font-size: 1.2rem;
   font-weight: 600;
@@ -159,10 +164,10 @@ const goToQuestion = (questionId) => {
   border: none;
   margin-left: 12px;
   cursor: pointer;
-  padding: 3px 6px;
+  padding: 0;
   display: flex;
   align-items: center;
-  transition: background 0.15s;
+  /*transition: background 0.15s;*/
   border-radius: 50%;
   min-width: 32px;
   min-height: 32px;
@@ -234,7 +239,7 @@ const goToQuestion = (questionId) => {
   font-size: 1.03rem;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.18s;
+  /*transition: background 0.18s;*/
 }
 .btn-secondary {
   background: #f3f3f3;
