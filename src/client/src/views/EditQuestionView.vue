@@ -31,7 +31,7 @@
       </div>
       <button class="add-option-btn" @click="addOption" aria-label="Antwort hinzufügen">
         <!-- Plus Icon SVG -->
-        <IconPlus />
+        <IconPlus style="color: var(--color-blue)" />
       </button>
     </div>
 
@@ -46,7 +46,7 @@
             {{ truncate(option.text, 30) }}
           </span>
           <button class="edit-btn" @click="openEditPopup(idx)" aria-label="Antwort bearbeiten">
-            <IconPen />
+            <IconPen style="color: var(--color-blue)"/>
           </button>
         </div>
         <div class="option-actions">
@@ -58,7 +58,7 @@
             :aria-label="option.correct ? 'Richtige Antwort' : 'Falsche Antwort'"
           />
           <button class="delete-btn" @click="deleteOption(idx)" aria-label="Antwort löschen">
-            <!-- TODO: Implement Trash Icon from Georg -->
+             <IconTrash style="color: var(--color-red)" />
           </button>
         </div>
       </div>
@@ -87,7 +87,7 @@
       </button>
       <button class="save-btn" @click="saveQuestion">
         <!-- Save Icon SVG, white -->
-        <IconSave />
+        <IconSave style="color: var(--color-text)"/>
         Speichern
       </button>
     </div>
@@ -100,7 +100,7 @@ import { useRouter } from 'vue-router'
 import IconPen from '@/components/icons/IconPen.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 import IconSave from '@/components/icons/IconSave.vue'
-import IconTrash from '@/components/icons/IconTrashCan.vue' // Assuming you have a Trash icon component
+import IconTrash from '@/components/icons/IconTrashcan.vue'
 
 const router = useRouter()
 
