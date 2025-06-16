@@ -116,10 +116,6 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary:hover {
-  background-color: #ff3615;
-}
-
 .btn-secondary:hover {
   background-color: #e3f2fd;
 }
