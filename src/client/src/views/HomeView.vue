@@ -408,7 +408,7 @@ const suggestedQuizzes = ref([
   display: block;
   margin-top: 8px;
   width: 196px;
-  height: 196px;
+  height: auto;
   overflow: visible;  
 }
 
