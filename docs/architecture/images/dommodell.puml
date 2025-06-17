@@ -9,6 +9,7 @@ class User {
   +id: UUID
   +name: String
   +email: String
+  +password: String
   +role: UserRole
   +registrationDate: Date
 }
@@ -19,7 +20,7 @@ enum UserRole {
   LECTURER
 }
 
-class Module {
+class Modul {
   +id: UUID
   +name: String
   +semester: String
@@ -32,17 +33,17 @@ class Topic {
   +description: String
 }
 
-class Question {
+class Quiz {
   +id: UUID
-  +text: String
+  +Question: String
   +type: QuestionType
   +difficulty: DifficultyLevel
   +explanation: String
   +createdAt: Date
-  +isApproved: Boolean
+  +rating_score: int
 }
 
-enum QuestionType {
+enum QuizType {
   MULTIPLE_CHOICE
   FREITEXT
   ZUORDNUNG
@@ -60,7 +61,7 @@ class AnswerOption {
   +isCorrect: Boolean
 }
 
-class LearningProgress {
+class QuizProgress {
   +id: UUID
   +correctAnswers: int
   +wrongAnswers: int
@@ -68,11 +69,21 @@ class LearningProgress {
   +strengthScore: float
 }
 
+class LearningHistory {
+  +id: UUID
+  +iq_level: int
+  +correctAnswers: int
+  +wrongAnswers: int
+  +solvedQuizzes: int 
+  'zusätzliche Speicherung der solvedQuizzes, 
+  'da bei Referenz auf Quiz nach Löschen dieses Probleme entstehen
+  +login_streak: int
+}
+
 class Badge {
   +id: UUID
   +name: String
   +description: String
-  +earnedAt: Date
 }
 
 class QuizSession {
@@ -108,20 +119,21 @@ class StudyGroup {
 ' ----------------------------
 '      Beziehungen
 ' ----------------------------
+User "1" *-- "0..*" QuizProgress : erhält individualisierten\n Quizvorschlag durch
+User "1" *-- "1" LearningHistory : gespeicherte QuizHistory in
+'User "1" *-- "0..*" QuizSession
+'User "1" o-- "0..*" Feedback
+'User "1" o-- "0..*" Badge
+User "1" o-- "0..*" Quiz : erstellt
 
-User "1" -- "0..*" LearningProgress
-User "1" -- "0..*" QuizSession
-User "1" -- "0..*" Feedback
-User "1" -- "0..*" Badge
-User "1" -- "0..*" Question : erstellt
+'User "1" -- "0..*" StudyGroup : istMitglied
+'StudyGroup "1" -- "0..*" QuizSession : gemeinsameQuizze
 
-User "1" -- "0..*" StudyGroup : istMitglied
-StudyGroup "1" -- "0..*" QuizSession : gemeinsameQuizze
-
-Module "1" -- "1..*" Topic
-Topic "1" -- "1..*" Question
-Question "1" -- "0..*" AnswerOption
-Question "1" -- "0..*" Feedback
-Question "1" -- "0..*" LearningProgress
+Modul "1" o-- "1..*" Topic
+Topic "1" o-- "1..*" Quiz
+Quiz "1" *-- "1..*" AnswerOption : besteht aus
+'Quiz "1" *-- "0..*" Feedback
+Quiz "1" --o "0..*" QuizProgress : Abarbeitungsdaten gespeichert in
+'Quiz "0..*" -- "1" LearningHistory : Referenz auf 
 
 @enduml
