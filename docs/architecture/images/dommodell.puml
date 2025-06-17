@@ -1,0 +1,127 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' ----------------------------
+'      Entitäten / Klassen
+' ----------------------------
+
+class User {
+  +id: UUID
+  +name: String
+  +email: String
+  +role: UserRole
+  +registrationDate: Date
+}
+
+enum UserRole {
+  STUDENT
+  MODERATOR
+  LECTURER
+}
+
+class Module {
+  +id: UUID
+  +name: String
+  +semester: String
+  +description: String
+}
+
+class Topic {
+  +id: UUID
+  +title: String
+  +description: String
+}
+
+class Question {
+  +id: UUID
+  +text: String
+  +type: QuestionType
+  +difficulty: DifficultyLevel
+  +explanation: String
+  +createdAt: Date
+  +isApproved: Boolean
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  FREITEXT
+  ZUORDNUNG
+}
+
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+class AnswerOption {
+  +id: UUID
+  +text: String
+  +isCorrect: Boolean
+}
+
+class LearningProgress {
+  +id: UUID
+  +correctAnswers: int
+  +wrongAnswers: int
+  +lastReviewed: Date
+  +strengthScore: float
+}
+
+class Badge {
+  +id: UUID
+  +name: String
+  +description: String
+  +earnedAt: Date
+}
+
+class QuizSession {
+  +id: UUID
+  +startTime: DateTime
+  +endTime: DateTime
+  +score: int
+  +mode: QuizMode
+}
+
+enum QuizMode {
+  PRACTICE
+  SIMULATION
+  FLASHCARDS
+  CHALLENGE
+}
+
+class Feedback {
+  +id: UUID
+  +rating: int
+  +comment: String
+  +submittedAt: Date
+}
+
+class StudyGroup {
+  +id: UUID
+  +name: String
+  +description: String
+  +createdAt: Date
+}
+
+
+' ----------------------------
+'      Beziehungen
+' ----------------------------
+
+User "1" -- "0..*" LearningProgress
+User "1" -- "0..*" QuizSession
+User "1" -- "0..*" Feedback
+User "1" -- "0..*" Badge
+User "1" -- "0..*" Question : erstellt
+
+User "1" -- "0..*" StudyGroup : istMitglied
+StudyGroup "1" -- "0..*" QuizSession : gemeinsameQuizze
+
+Module "1" -- "1..*" Topic
+Topic "1" -- "1..*" Question
+Question "1" -- "0..*" AnswerOption
+Question "1" -- "0..*" Feedback
+Question "1" -- "0..*" LearningProgress
+
+@enduml

@@ -22,7 +22,8 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Praktiken und Bewertung
 .Meeting-Termin:
-*jeden Mittwoch 13:45 Raum S114*
+*jeden Mittwoch 13:45 in der Bib*
+Falls Raum nicht verfügar, dann spontane Entsheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 
