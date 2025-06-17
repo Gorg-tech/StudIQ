@@ -4,8 +4,8 @@ import SearchView from '../views/SearchView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import EditQuizView from '@/views/EditQuizView.vue'
 import EditQuestionView from '@/views/EditQuestionView.vue'
-import QuizOverview from '@/views/QuizOverview.vue'
-import QuizresultatView from '@/views/QuizresultatView.vue'
+import QuizOverviewView from '@/views/QuizOverviewView.vue'
+import QuizResultView from '@/views/QuizResultView.vue'
 
 
 const router = createRouter({
@@ -27,26 +27,24 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/editQuiz',
-      name: 'editQuiz',
+      path: '/edit-quiz',
+      name: 'edit-quiz',
       component: EditQuizView,
     },
     {
-      path: '/editQuestion',
+      path: '/edit-question',
       name: 'edit-question',
       component: EditQuestionView,
     },
-
     {
-      path: '/QuizOverview',
-      name: 'quizoverview',
-      component: QuizOverview,
+      path: '/quiz-overview',
+      name: 'quiz-overview',
+      component: QuizOverviewView,
     },
-
     {
-      path: '/quizresultat',
-      name: 'quizresultat',
-      component: QuizresultatView,
+      path: '/quiz-result',
+      name: 'quiz-result',
+      component: QuizResultView,
     }
   ],
 })
