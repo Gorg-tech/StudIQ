@@ -48,7 +48,7 @@ const suggestedQuizzes = ref([
         </h1>
         <p class="tagline">Dein Begleiter für die Prüfungsvorbereitung</p>
       </div>
-      <button class="settings-btn" @click="router.push('/editQuiz')" aria-label="Einstellungen">
+      <button class="settings-btn" @click="router.push('/edit-quiz')" aria-label="Einstellungen">
         <IconSettings />
       </button>
     </header>
@@ -166,7 +166,7 @@ const suggestedQuizzes = ref([
         <h3>Vorgeschlagene Quizze</h3>
         <div class="quiz-suggestions-row">
           <div
-            v-for="(quiz, index) in suggestedQuizzes":key="index" class="quiz-suggestion-item"@click="router.push('/QuizOverview')">
+            v-for="(quiz, index) in suggestedQuizzes":key="index" class="quiz-suggestion-item"@click="router.push('/quiz-overview')">
             <div class="quiz-suggestion-icon" :style="{ backgroundColor: quiz.iconColor + '1A' }">
               <!-- Different icon based on quiz type -->
               <IconTimer v-if="quiz.iconType === 'timer'" :color="quiz.iconColor" />

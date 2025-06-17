@@ -121,7 +121,7 @@ function setRating(star) {
 }
 
 function startQuiz() {
-  router.push('/quizresultat')
+  router.push('/quiz-result')
 }
 
 function goToLernset() {

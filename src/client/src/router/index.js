@@ -27,25 +27,23 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/editQuiz',
-      name: 'editQuiz',
+      path: '/edit-quiz',
+      name: 'edit-quiz',
       component: EditQuizView,
     },
     {
-      path: '/editQuestion',
+      path: '/edit-question',
       name: 'edit-question',
       component: EditQuestionView,
     },
-
     {
-      path: '/QuizOverview',
-      name: 'quizoverview',
+      path: '/quiz-overview',
+      name: 'quiz-overview',
       component: QuizOverview,
     },
-
     {
-      path: '/quizresultat',
-      name: 'quizresultat',
+      path: '/quiz-result',
+      name: 'quiz-result',
       component: QuizresultatView,
     }
   ],

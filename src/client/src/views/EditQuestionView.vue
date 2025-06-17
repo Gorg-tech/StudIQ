@@ -213,7 +213,7 @@ function closeCancelPopup() {
 }
 function confirmCancel() {
   cancelPopup.value.open = false
-  router.push('/editQuiz')
+  router.push('/edit-quiz')
 }
 
 // Update delete button in option-actions:
@@ -230,7 +230,7 @@ function cancelEdit() {
 function saveQuestion() {
   // TODO: Save logic
   alert('Frage gespeichert!')
-  router.push('/editQuiz')
+  router.push('/edit-quiz')
 }
 
 function toggleCorrect(idx) {

@@ -42,7 +42,7 @@ const addQuestion = () => {
 }
 
 const goToQuestion = (questionId) => {
-  router.push(`/editQuestion`)
+  router.push(`/edit-question`)
 }
 
 const confirmDelete = (event, questionId) => {
