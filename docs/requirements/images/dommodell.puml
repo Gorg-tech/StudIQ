@@ -12,6 +12,14 @@ class User {
   +password: String
   +role: UserRole
   +registrationDate: Date
+  +iq_level: int
+  +correctAnswers: int
+  +wrongAnswers: int
+  +solvedQuizzes: int 
+  +lastLogin: Date
+  'zusätzliche Speicherung der solvedQuizzes, 
+  'da bei Referenz auf Quiz nach Löschen dieses Probleme entstehen
+  +login_streak: int
 }
 
 enum UserRole {
@@ -45,7 +53,7 @@ class Quiz {
 
 enum QuizType {
   MULTIPLE_CHOICE
-  FREITEXT
+  'FREITEXT
   ZUORDNUNG
 }
 
@@ -56,38 +64,23 @@ enum DifficultyLevel {
 }
 
 class AnswerOption {
-  +id: UUID
   +text: String
   +isCorrect: Boolean
 }
 
 class QuizProgress {
-  +id: UUID
   +correctAnswers: int
   +wrongAnswers: int
   +lastReviewed: Date
   +strengthScore: float
 }
 
-class LearningHistory {
-  +id: UUID
-  +iq_level: int
-  +correctAnswers: int
-  +wrongAnswers: int
-  +solvedQuizzes: int 
-  'zusätzliche Speicherung der solvedQuizzes, 
-  'da bei Referenz auf Quiz nach Löschen dieses Probleme entstehen
-  +login_streak: int
-}
-
 class Badge {
-  +id: UUID
   +name: String
   +description: String
 }
 
 class QuizSession {
-  +id: UUID
   +startTime: DateTime
   +endTime: DateTime
   +score: int
@@ -102,7 +95,6 @@ enum QuizMode {
 }
 
 class Feedback {
-  +id: UUID
   +rating: int
   +comment: String
   +submittedAt: Date
@@ -120,12 +112,11 @@ class Studiengang {
 '      Beziehungen
 ' ----------------------------
 User "1" *-- "0..*" QuizProgress : erhält individualisierten\n Quizvorschlag durch
-User "1" *-- "1" LearningHistory : gespeicherte QuizHistory in
 'User "1" *-- "0..*" QuizSession
 'User "1" o-- "0..*" Feedback
 'User "1" o-- "0..*" Badge
 User "1" o-- "0..*" Quiz : erstellt
-Studiengang "1"o-- User"0..*" 
+Studiengang "1" o-- "0..*" User
 
 'User "1" -- "0..*" StudyGroup : istMitglied
 'StudyGroup "1" -- "0..*" QuizSession : gemeinsameQuizze
@@ -136,5 +127,5 @@ Quiz "1" *-- "1..*" AnswerOption : besteht aus
 'Quiz "1" *-- "0..*" Feedback
 Quiz "1" --o "0..*" QuizProgress : Abarbeitungsdaten gespeichert in
 'Quiz "0..*" -- "1" LearningHistory : Referenz auf 
-
+Studiengang "1..*" o-- "1..*" Modul 
 @enduml
