@@ -6,11 +6,23 @@ import EditQuizView from '@/views/EditQuizView.vue'
 import EditQuestionView from '@/views/EditQuestionView.vue'
 import QuizOverviewView from '@/views/QuizOverviewView.vue'
 import QuizResultView from '@/views/QuizResultView.vue'
+import LoginView from '@/views/LoginView.vue'
+import RegistrationView from '@/views/RegistrationView.vue'
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegistrationView,
+    },
     {
       path: '/',
       name: 'home',
