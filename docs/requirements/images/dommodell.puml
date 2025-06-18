@@ -19,7 +19,7 @@ class User {
   +lastLogin: Date
   'zusätzliche Speicherung der solvedQuizzes, 
   'da bei Referenz auf Quiz nach Löschen dieses Probleme entstehen
-  +login_streak: int
+  +streak: int
 }
 
 enum UserRole {
