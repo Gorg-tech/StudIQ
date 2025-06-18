@@ -68,6 +68,11 @@ const isAuthenticated = () => {
   return !!token
 }
 
+
+/*
+
+ Erstmal auskommentiert, da Authentifizierung noch nicht implementiert ist
+
 // Router guard for authentication
 router.beforeEach((to, from, next) => {
   // Login and Register routes are always accessible
@@ -84,5 +89,7 @@ router.beforeEach((to, from, next) => {
 
   next()
 })
+
+*/
 
 export default router
