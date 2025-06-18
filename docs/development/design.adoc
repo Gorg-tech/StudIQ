@@ -10,6 +10,12 @@ Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komp
  
 == Ausgewählte Sichten
 //Entwurfsklassendiagramme, Sequenzdiagramme
+Domänenmodell:
+[plantuml, Domänenmodell, png]
+----
+include::images/dommodell.puml[]
+----
+
 
 == Schnittstellen
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs
