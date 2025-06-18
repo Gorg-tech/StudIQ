@@ -29,9 +29,9 @@ enum UserRole {
 }
 
 class Modul {
-  +id: UUID
+  +modulId: String
   +name: String
-  +semester: String
+  '+semester: String
   +description: String
 }
 
@@ -101,7 +101,7 @@ class Feedback {
 }
 
 class Studiengang {
-  +id: UUID
+  +id: String
   +name: String
   +description: String
   +createdAt: Date
