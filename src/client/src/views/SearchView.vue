@@ -1,5 +1,3 @@
-<!-- src/views/SearchView.vue -->
-
 <template>
   <div class="search-view">
     <h2 class="search-heading">Quiz suchen</h2>
