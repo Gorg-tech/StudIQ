@@ -44,7 +44,7 @@ class Lernset {
 class Quiz {
   +id: UUID
   +Question: String
-  +type: QuestionType
+  +type: QuizType
   +difficulty: DifficultyLevel
   +explanation: String
   +createdAt: Date
