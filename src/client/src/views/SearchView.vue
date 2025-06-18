@@ -1,16 +1,60 @@
 <!-- src/views/SearchView.vue -->
+
 <template>
   <div class="search-view">
-    <h2>Quiz suchen</h2>
-    <input v-model="searchQuery" placeholder="Titel eingeben..." class="search-input" />
-    
+    <h2 class="search-heading">Quiz suchen</h2>
+
+    <!-- Search bar -->
+    <input
+      v-model="searchQuery"
+      placeholder="Gib einen Titel ein..."
+      class="search-input"
+    />
+
+    <!-- Filter buttons -->
+    <div class="filter-buttons">
+      <button
+        class="btn"
+        :class="{ 'btn-primary': activeFilter === 'Alle' }"
+        @click="activeFilter = 'Alle'"
+      >
+        Alle
+      </button>
+      <button
+        class="btn"
+        :class="{ 'btn-primary': activeFilter === 'Modul' }"
+        @click="activeFilter = 'Modul'"
+      >
+        Modul
+      </button>
+      <button
+        class="btn"
+        :class="{ 'btn-primary': activeFilter === 'Lernset' }"
+        @click="activeFilter = 'Lernset'"
+      >
+        Lernset
+      </button>
+      <button
+        class="btn"
+        :class="{ 'btn-primary': activeFilter === 'Quiz' }"
+        @click="activeFilter = 'Quiz'"
+      >
+        Quiz
+      </button>
+    </div>
+
+    <!-- Filtered list -->
     <div v-if="filteredQuizzes.length">
-      <div v-for="quiz in filteredQuizzes" :key="quiz.id" class="quiz-item">
+      <div
+        v-for="quiz in filteredQuizzes"
+        :key="quiz.id"
+        class="quiz-item"
+      >
         <h3>{{ quiz.title }}</h3>
-        <p>{{ quiz.questions }} Fragen, {{ quiz.duration }} Minuten</p>
+        <p>{{ quiz.questions }} Fragen – {{ quiz.duration }} Min ({{ quiz.type }})</p>
       </div>
     </div>
-    <p v-else>Keine Quizze gefunden.</p>
+    <p v-else>Keine passenden Einträge gefunden.</p>
   </div>
 </template>
 
@@ -18,17 +62,19 @@
 import { ref, computed } from 'vue'
 
 const searchQuery = ref('')
-
-// Testdaten – später durch echte Daten ersetzen oder per Prop übergeben
+const activeFilter = ref('Alle')
+ // Simulierte Daten aus Modulux
 const quizzes = ref([
-  { id: 1, title: 'Laufzeitberechnung', questions: 10, duration: 5 },
-  { id: 2, title: 'Analysis', questions: 15, duration: 7 },
-  { id: 3, title: 'C - Programmierung', questions: 33, duration: 13 },
+  { id: 1, title: 'Laufzeitberechnung', type: 'Modul', questions: 10, duration: 5 },
+  { id: 2, title: 'Analysis Basics', type: 'Lernset', questions: 12, duration: 6 },
+  { id: 3, title: 'C-Programmierung', type: 'Quiz', questions: 33, duration: 13 },
+  { id: 4, title: 'Diskrete Mathematik', type: 'Modul', questions: 14, duration: 7 },
 ])
 
 const filteredQuizzes = computed(() =>
   quizzes.value.filter(q =>
-    q.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+    q.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+    (activeFilter.value === 'Alle' || q.type === activeFilter.value)
   )
 )
 </script>
@@ -38,13 +84,18 @@ const filteredQuizzes = computed(() =>
   padding: 20px;
 }
 
+.search-heading {
+  color: var(--color-accent);
+  margin-bottom: 12px;
+}
+
 .search-input {
-  border: 2px solid var(--color-primary);
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 1rem;
-  outline: none;
   width: 100%;
+  padding: 10px;
+  border: 2px solid var(--color-primary);
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 16px;
   background-color: white;
   color: var(--color-text);
 }
@@ -54,17 +105,18 @@ const filteredQuizzes = computed(() =>
   border-color: var(--color-primary);
 }
 
+.filter-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
 
 .quiz-item {
   padding: 12px;
-  margin-bottom: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
-}
-
-.quiz-item:focus {
-  box-shadow: 0 0 5px var(--color-primary);
-  border-color: var(--color-primary);
+  margin-bottom: 12px;
+  background-color: white;
 }
 </style>
-
