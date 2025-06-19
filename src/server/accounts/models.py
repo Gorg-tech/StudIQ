@@ -1,9 +1,26 @@
-from django.contrib.auth.models import AbstractUser
+import uuid
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+class UserRole(models.TextChoices):
+    STUDENT = 'STUDENT', 'Student'
+    MODERATOR = 'MODERATOR', 'Moderator'
+    LECTURER = 'LECTURER', 'Lecturer'
 
-class CustomUser(AbstractUser):
-    studiengang = models.CharField(max_length=100, blank=True)
-    gruppe = models.CharField(max_length=20, blank=True)
-    rolle = models.IntegerField(null=True, blank=True)
+class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    role = models.CharField(max_length=10, choices=UserRole.choices, default=UserRole.STUDENT)
+    iq_level = models.IntegerField(default=0)
+    correct_answers = models.IntegerField(default=0)
+    wrong_answers = models.IntegerField(default=0)
+    solved_quizzes = models.IntegerField(default=0)
+    streak = models.IntegerField(default=0)
+    registration_date = models.DateField(auto_now_add=True)
+    # last_login is already part of AbstractUser
+    
+    # Will be linked to Studiengang later
+    studiengang = models.CharField(max_length=100, null=True, blank=True)
+    semester = models.IntegerField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.username
