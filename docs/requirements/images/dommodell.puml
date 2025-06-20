@@ -52,6 +52,13 @@ class Quiz {
   +rating_count: int
   +estimatedDuration: int
   +isPublished: Boolean
+  +totalAttempts: int
+  +completionRate: float
+  +avgScore: float
+  +avgTimeSpent: int
+  +difficultyRating: float
+  +mostMissedQuestionId: UUID
+  +lastUpdated: Date
 }
 
 class Statistics {
@@ -143,7 +150,7 @@ Quiz "1" o-- "1..*" Question : besteht aus
 Question "1" *-- "1..*" AnswerOption : hat
 'Quiz "1" *-- "0..*" Feedback
 Quiz "1" --o "0..*" QuizProgress : Abarbeitungsdaten gespeichert in
-Quiz "1" -- "1" Statistics : aggregierte Nutzungsdaten
+'Quiz "1" -- "1" Statistics : aggregierte Nutzungsdaten
 'Quiz "0..*" -- "1" LearningHistory : Referenz auf 
 Studiengang "1..*" o-- "1..*" Modul 
 @enduml
