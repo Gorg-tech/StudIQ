@@ -51,13 +51,14 @@ class Quiz {
   +ratingScore: int
   +ratingCount: int
   +isPublished: Boolean
+  +lastContentUpdate: Date 
   +totalAttempts: int
   +completionRate: float
   +avgScore: float
   +avgTimeSpent: int
   +difficultyRating: float
   +mostMissedQuestionId: UUID
-  +lastUpdated: Date
+  +lastStatsUpdate: Date
 }
 
 class Statistics {
