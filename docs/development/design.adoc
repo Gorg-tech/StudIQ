@@ -1,5 +1,5 @@
 = Design: {project-name}
-Vorname Nachname <email@domain.org>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
+Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -16,6 +16,6 @@ Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komp
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs
 Verwendung von Vue für Frontend, Django für BackEnd
 
-Client-Server-Schnnittstelle: REST-API
+Client-Server-Schnnittstelle: REST-API über FastAPI
 
 == Datenmodell
