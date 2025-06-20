@@ -50,7 +50,7 @@ class Quiz {
   +createdBy: User
   +ratingScore: int
   +ratingCount: int
-  +isPublished: Boolean
+  +isPublic: Boolean
   +lastContentUpdate: Date 
   +totalAttempts: int
   +completionRate: float
