@@ -1,0 +1,1 @@
+Hier fehlen noch die Implementierungen von Funktionen, die die oben genannten API-Endpunkte nutzen. Diese Funktionen (wie z.B. `getQuiz(quizId)`, `login(userData)` usw.) können wir nach und nach ergänzen
