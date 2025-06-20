@@ -1,0 +1,154 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' ----------------------------
+'      Entitäten / Klassen
+' ----------------------------
+
+class User {
+  +id: UUID
+  +name: String
+  +email: String
+  +passwordHash: String
+  +role: UserRole
+  +registrationDate: Date
+  +iq_level: int
+  +correctAnswers: int
+  +wrongAnswers: int
+  +solvedQuizzes: int 
+  +lastLogin: Date
+  'zusätzliche Speicherung der solvedQuizzes, 
+  'da bei Referenz auf Quiz nach Löschen dieses Probleme entstehen
+  +streak: int
+}
+
+enum UserRole {
+  STUDENT
+  MODERATOR
+  LECTURER
+}
+
+class Modul {
+  +modulId: String
+  +name: String
+  +semester: int
+  +description: String
+  +credits: int
+  +moduluxURL: String
+}
+
+class Lernset {
+  +id: UUID
+  +title: String
+  +description: String
+  +createdAt: Date
+  +createdBy: User
+}
+
+class Quiz {
+  +id: UUID
+  +title: String
+  +description: String
+  +createdAt: Date
+  +createdBy: User
+  +rating_score: int
+  +rating_count: int
+  +estimatedDuration: int
+  +isPublished: Boolean
+}
+
+class Statistics {
+  +id: UUID
+  +totalAttempts: int
+  +completionRate: float
+  +avgScore: float
+  +avgTimeSpent: int
+  +difficultyRating: float
+  +mostMissedQuestionId: UUID
+  +lastUpdated: Date
+}
+
+class Question {
+  +id: UUID
+  +text: String
+  +type: QuestionType
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  'FREITEXT
+  ZUORDNUNG
+}
+
+class AnswerOption {
+  +text: String
+  +isCorrect: Boolean
+}
+
+class QuizProgress {
+  +correctAnswers: int
+  +wrongAnswers: int
+  +lastReviewed: Date
+  +strengthScore: float
+}
+
+class Achievement {
+  +id: UUID
+  +name: String
+  +description: String
+  +unlockCriteria: String
+  +iconUrl: String
+  +unlockedAt: Date
+}
+
+class QuizSession {
+  +startTime: DateTime
+  +endTime: DateTime
+  +score: int
+  +mode: QuizMode
+}
+
+enum QuizMode {
+  PRACTICE
+  SIMULATION
+  FLASHCARDS
+}
+
+class Feedback {
+  +rating: int
+  +comment: String
+  +submittedAt: Date
+}
+
+class Studiengang {
+  +id: String
+  +name: String
+  +description: String
+  +createdAt: Date
+  +moduluxURL: String
+}
+
+
+' ----------------------------
+'      Beziehungen
+' ----------------------------
+User "1" *-- "0..*" QuizProgress : erhält individualisierten\n Quizvorschlag durch
+'User "1" *-- "0..*" QuizSession
+'User "1" o-- "0..*" Feedback
+'User "1" o-- "0..*" Achievement : erhält
+User "1" o-- "0..*" Quiz : erstellt
+Studiengang "1" o-- "0..*" User
+
+'User "1" -- "0..*" StudyGroup : istMitglied
+'StudyGroup "1" -- "0..*" QuizSession : gemeinsameQuizze
+
+Modul "1" o-- "1..*" Lernset
+Lernset "1" o-- "1..*" Quiz
+Quiz "1" o-- "1..*" Question : besteht aus
+Question "1" *-- "1..*" AnswerOption : hat
+'Quiz "1" *-- "0..*" Feedback
+Quiz "1" --o "0..*" QuizProgress : Abarbeitungsdaten gespeichert in
+Quiz "1" -- "1" Statistics : aggregierte Nutzungsdaten
+'Quiz "0..*" -- "1" LearningHistory : Referenz auf 
+Studiengang "1..*" o-- "1..*" Modul 
+@enduml

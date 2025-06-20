@@ -22,7 +22,8 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Praktiken und Bewertung
 .Meeting-Termin:
-*jeden Mittwoch 13:45 Raum S114*
+*jeden Mittwoch 13:45 in der Bib*
+Falls Raum nicht verfügar, dann spontane Entsheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 
@@ -36,6 +37,8 @@ Aufgaben sind in Github festgehalten. Dort sollte jeder wöchentlich nachgucken,
 // Listen Sie hier die Kriterien auf, die ein Product Backlog Item (z.B. User Story) erfüllen muss, damit es bei der Sprint-Planung berücksichtigt werden kann
 
 === Definition of Done
+
+Geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
 
 == Deployment
@@ -43,4 +46,17 @@ Aufgaben sind in Github festgehalten. Dort sollte jeder wöchentlich nachgucken,
 
 
 == Erkenntnisse (Lessons learned)
+=== 1. Iteration:
+Raum S128 manchmal belegt, dann etwas nervend spontan einen neuen Raum zu finden und diesen zu kommunizieren.
+-> Nutzung der Bib-Räume, sind vorher buchbar und meist frei
+
+=== 2. Iteration 
+Die Nutzung des Bib-Raums für das Meeting könnte gegen Prüfungsphase schwieriger werden.
+-> Dann wieder spontane Raumfestlegung durch Georg wie am Anfang
+
+Zuschaltung eines Teammitglieds online ist möglich und gut machbar, treff in Präsenz ist trotzdem noch die angenehmste Variante.
+
+Bei Sprint Review sind Stakeholder sehr kritikfreudig. So hilfreich der Input auch ist, ging die Kritik jedoch oft sehr ins Detail, wo es noch nicht sinnvoll darüber nachzudenken.
+-> Stakeholder etwas bremsen, klar sagen, wo Feedback gebraucht wird
+
 // Führen Sie hier die wesentlichen Erkenntnisse auf, die Sie in den Retrospektiven gewonnen haben. Legen Sie besonderen Fokus auf die Maßnahmen, die Sie getroffen haben um Verbesserungen in den verschiedenen Aspekten des Projekts zu erzielen, z.B. dem Entwicklungsprozess, der technischen und organisatorischen Umgebung oder der Zusammenarbeit im Team.

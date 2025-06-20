@@ -176,6 +176,10 @@ Retrospektive:
 
 Erstes Quellcode-Basisprojekt angeguckt und Ordnung versucht nachzuvolziehen
 
+=== 2. Meeting 18.06.
+
+Diskussion über Wireframes durch "Quiz Bearbeiten/Erstellen" - Template
+
 
 
 

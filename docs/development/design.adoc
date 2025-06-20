@@ -11,7 +11,11 @@ Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komp
 == Ausgewählte Sichten
 //Entwurfsklassendiagramme, Sequenzdiagramme
 
+
 == Schnittstellen
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs
+Verwendung von Vue für Frontend, Django für BackEnd
+
+Client-Server-Schnnittstelle: REST-API
 
 == Datenmodell

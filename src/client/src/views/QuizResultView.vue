@@ -29,7 +29,7 @@
         </ul>
         <div class="button-row">
             <button class="btn btn-primary" @click="restartQuiz">Quiz erneut starten</button>
-            <button class="btn btn-secondary" @click="$router.push('/quizOverview')">Zur Quizübersicht</button>
+            <button class="btn btn-secondary" @click="$router.push('/quiz-overview')">Zur Quizübersicht</button>
         </div>
       </div>
     </template>
