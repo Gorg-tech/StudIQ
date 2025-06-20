@@ -48,8 +48,8 @@ class Quiz {
   +description: String
   +createdAt: Date
   +createdBy: User
-  +rating_score: int
-  +rating_count: int
+  +ratingScore: int
+  +ratingCount: int
   +isPublished: Boolean
   +totalAttempts: int
   +completionRate: float
