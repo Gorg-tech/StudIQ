@@ -6,7 +6,6 @@ skinparam classAttributeIconSize 0
 ' ----------------------------
 
 class User {
-  +id: UUID
   +name: String
   +email: String
   +passwordHash: String
@@ -38,7 +37,6 @@ class Modul {
 }
 
 class Lernset {
-  +id: UUID
   +title: String
   +description: String
   +createdAt: Date
@@ -46,7 +44,6 @@ class Lernset {
 }
 
 class Quiz {
-  +id: UUID
   +title: String
   +description: String
   +createdAt: Date
@@ -58,7 +55,6 @@ class Quiz {
 }
 
 class Statistics {
-  +id: UUID
   +totalAttempts: int
   +completionRate: float
   +avgScore: float
@@ -69,7 +65,6 @@ class Statistics {
 }
 
 class Question {
-  +id: UUID
   +text: String
   +type: QuestionType
 }
@@ -93,7 +88,6 @@ class QuizProgress {
 }
 
 class Achievement {
-  +id: UUID
   +name: String
   +description: String
   +unlockCriteria: String
@@ -137,6 +131,7 @@ User "1" *-- "0..*" QuizProgress : erhält individualisierten\n Quizvorschlag du
 'User "1" o-- "0..*" Feedback
 'User "1" o-- "0..*" Achievement : erhält
 User "1" o-- "0..*" Quiz : erstellt
+User "1" o-- "0..*" Lernset : erstellt
 Studiengang "1" o-- "0..*" User
 
 'User "1" -- "0..*" StudyGroup : istMitglied
