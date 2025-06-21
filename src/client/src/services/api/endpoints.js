@@ -4,55 +4,57 @@ export const API_ENDPOINTS = {
     LOGIN: '/api/auth/login/',
     LOGOUT: '/api/auth/logout/',
   },
-  
+
   USER: {
     ME: '/api/users/me/',
   },
-  
+
   STUDIENGAENGE: {
     BASE: '/api/studiengaenge/',
-    DETAIL: (id) => `/api/studiengaenge/${id}/`,
+    DETAIL: (studiengangId) => `/api/studiengaenge/${studiengangId}/`,
   },
-  
-  MODULE: {
-    BASE: '/api/module/',
-    DETAIL: (id) => `/api/module/${id}/`,
+
+  MODULES: {
+    BASE: '/api/modules/',
+    DETAIL: (moduleId) => `/api/modules/${moduleId}/`,
+    LERNSETS: (moduleId) => `/api/modules/${moduleId}/lernsets/`,
   },
-  
+
   LERNSETS: {
     BASE: '/api/lernsets/',
-    DETAIL: (id) => `/api/lernsets/${id}/`,
+    DETAIL: (lernsetId) => `/api/lernsets/${lernsetId}/`,
+    QUIZZES: (lernsetId) => `/api/lernsets/${lernsetId}/quizzes/`,
   },
-  
+
   QUIZZES: {
     BASE: '/api/quizzes/',
-    DETAIL: (id) => `/api/quizzes/${id}/`,
+    DETAIL: (quizId) => `/api/quizzes/${quizId}/`,
     QUESTIONS: (quizId) => `/api/quizzes/${quizId}/questions/`,
-    QUESTION_DETAIL: (quizId, questionId) => `/api/quizzes/${quizId}/questions/${questionId}/`, // idk brauchen wir wahrscheinlich nicht
+    QUESTION_DETAIL: (quizId, questionId) => `/api/quizzes/${quizId}/questions/${questionId}/`,
   },
-  
+
   QUESTIONS: {
     BASE: '/api/questions/',
-    DETAIL: (id) => `/api/questions/${id}/`,
+    DETAIL: (questionId) => `/api/questions/${questionId}/`,
     ANSWERS: (questionId) => `/api/questions/${questionId}/answers/`,
     ANSWER_DETAIL: (questionId, answerId) => `/api/questions/${questionId}/answers/${answerId}/`,
   },
-  
+
   PROGRESS: {
     BASE: '/api/progress/',
-    DETAIL: (quizId) => `/api/progress/${quizId}/`,
+    DETAIL: (progressId) => `/api/progress/${progressId}/`,
   },
-  
+
   SESSIONS: {
     BASE: '/api/sessions/',
-    COMPLETE: (id) => `/api/sessions/${id}/complete/`,
+    COMPLETE: (sessionId) => `/api/sessions/${sessionId}/complete/`,
   },
-  
+
   FEEDBACK: {
     BASE: '/api/feedback/',
-    DETAIL: (id) => `/api/feedback/${id}/`,
+    DETAIL: (feedbackId) => `/api/feedback/${feedbackId}/`,
   },
-  
+
   ACHIEVEMENTS: {
     BASE: '/api/achievements/',
     USER: '/api/achievements/user/',
