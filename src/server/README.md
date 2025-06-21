@@ -61,11 +61,12 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `DELETE /api/studiengaenge/{id}/` – Studiengang löschen (nur Moderator/Lecturer)
 
 ### Module
-- `GET /api/module/` – Alle Module abrufen
-- `GET /api/module/{id}/` – Einzelnes Modul abrufen
-- `POST /api/module/` – Neues Modul anlegen (nur Moderator/Lecturer)
-- `PUT /api/module/{id}/` – Modul aktualisieren (nur Moderator/Lecturer)
-- `DELETE /api/module/{id}/` – Modul löschen (nur Moderator/Lecturer)
+- `GET /api/modules/` – Alle Module abrufen
+- `GET /api/modules/{id}/` – Einzelnes Modul abrufen
+- `POST /api/modules/` – Neues Modul anlegen (nur Moderator/Lecturer)
+- `PUT /api/modules/{id}/` – Modul aktualisieren (nur Moderator/Lecturer)
+- `DELETE /api/modules/{id}/` – Modul löschen (nur Moderator/Lecturer)
+- `GET /api/modules/{moduleId}/lernsets/` – Alle Lernsets eines Moduls abrufen
 
 ### Lernsets
 - `GET /api/lernsets/` – Alle Lernsets abrufen
