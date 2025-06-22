@@ -1,9 +1,11 @@
 # StudIQ API
 ---
 # todo (api etwas abändern)
+```
 POST /api/quizzes/{id}/start/     – Quiz starten
 POST /api/quizzes/{id}/complete/  – Quiz beenden
 GET /api/quizzes/{id}/session/    – Aktuelle Session abrufen (falls vorhanden)
+```
 ---
 
 ## Datenbank & Administration
