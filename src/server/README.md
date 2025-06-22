@@ -1,10 +1,15 @@
 # StudIQ API
 ---
-# todo (api etwas abändern)
+# todo (fehlt noch)
 ```
 POST /api/quizzes/{id}/start/     – Quiz starten
 POST /api/quizzes/{id}/complete/  – Quiz beenden
 GET /api/quizzes/{id}/session/    – Aktuelle Session abrufen (falls vorhanden)
+POST /api/quizzes/{id}/start/     – Quiz starten
+POST /api/quizzes/{id}/complete/  – Quiz beenden
+GET /api/quizzes/{id}/session/    – Aktuelle Session abrufen (falls vorhanden)
+GET /api/studiengaenge/{id}/modules/           – Module eines Studiengangs
+GET /api/lernsets/{lernsetId}/quizzes/         – Quizze eines Lernsets  
 ```
 ---
 
