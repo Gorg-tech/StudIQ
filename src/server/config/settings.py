@@ -56,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [ #Hier Adresse von Client eingeben (nur für Development)
-    "http://localhost:5173/search",
+    "http://localhost:5173",
 ]
 
 ROOT_URLCONF = 'config.urls'
