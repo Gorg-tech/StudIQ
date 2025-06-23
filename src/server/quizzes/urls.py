@@ -1,27 +1,38 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet
-from .views import LernsetsByModuleView, QuizzesByLernsetView, QuestionsByQuizView
-from . import views
 
+from django.urls import path
+from rest_framework.routers import DefaultRouter
+
+from .views import (
+    QuizViewSet,
+    QuestionViewSet,
+    LernsetViewSet,
+    QuizProgressViewSet,
+    AchievementViewSet,
+    QuizSessionViewSet,
+    FeedbackViewSet,
+    StudiengangViewSet,
+    ModulViewSet,
+    LernsetsByModuleView,
+    QuizzesByLernsetView,
+    QuestionsByQuizView,
+)
 
 router = DefaultRouter()
-router.register(r'modules', ModulViewSet, basename='modules')
-router.register(r'lernsets', LernsetViewSet, basename='lernsets')
-router.register(r'quizzes', QuizViewSet, basename='quizzes')
-router.register(r'questions', QuestionViewSet, basename='questions')
-router.register(r'achievements', AchievementViewSet)
-router.register(r'sessions', QuizSessionViewSet, basename='sessions')
+router.register(r'modules', ModulViewSet, basename='module')
+router.register(r'lernsets', LernsetViewSet, basename='lernset')
+router.register(r'quizzes', QuizViewSet, basename='quiz')
+router.register(r'questions', QuestionViewSet, basename='question')
+router.register(r'achievements', AchievementViewSet, basename='achievement')
+router.register(r'sessions', QuizSessionViewSet, basename='session')
 router.register(r'feedback', FeedbackViewSet, basename='feedback')
-router.register(r'studiengaenge', StudiengangViewSet)
-router.register(r'module', ModulViewSet)
+router.register(r'studiengaenge', StudiengangViewSet, basename='studiengang')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    # Nested: /api/module/<module_id>/lernsets/
-    path('modules/<int:module_id>/lernsets/', views.LernsetsByModuleView.as_view(), name='module-lernsets'),
-    # Nested: /api/lernsets/<int:lernset_id>/quizzes/
-    path('lernsets/<int:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
-    # Nested: /api/quizzes/<int:quiz_id>/questions/
-    path('quizzes/<int:quiz_id>/questions/', views.QuestionsByQuizView.as_view(), name='quiz-questions'),
+    # alle automatisch vom Router erzeugten Endpunkte
+    *router.urls,
+
+    # verschachtelte Hilfs-Endpunkte
+    path('modules/<int:module_id>/lernsets/', LernsetsByModuleView.as_view(), name='module-lernsets'),
+    path('lernsets/<int:lernset_id>/quizzes/', QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
+    path('quizzes/<int:quiz_id>/questions/', QuestionsByQuizView.as_view(), name='quiz-questions'),
 ]

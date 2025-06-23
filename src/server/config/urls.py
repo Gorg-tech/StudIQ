@@ -17,9 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from quizzes.views import csrf, login_view   # CSRF‑ und Login‑Views aus der App
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('accounts.urls')),
-    path('api/users/', include('accounts.urls')),  
+
+    # Öffentliche Auth‑ und CSRF‑Endpunkte
+    path('api/csrf/',  csrf,       name='api-csrf'),
+    path('api/login/', login_view, name='api-login'),
+
+    # Accounts‑Routen (bleiben unverändert)
+    path('api/auth/',  include('accounts.urls')),
+    path('api/users/', include('accounts.urls')),
+
+    # Alle übrigen Quiz‑API‑Endpunkte
     path('api/', include('quizzes.urls')),
 ]

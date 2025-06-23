@@ -1,86 +1,90 @@
 <template>
-  <div class="search-view">
-    <h2 class="search-heading">Quiz suchen</h2>
-
-    <!-- Search bar -->
+  <div class="search-view p-4 md:p-6 lg:p-8">
+    <!-- Suchfeld -->
     <input
-      v-model="searchQuery"
-      placeholder="Gib einen Titel ein..."
-      class="search-input"
+      v-model="searchTerm"
+      type="text"
+      placeholder="Suche nach Quiz‑Titel …"
+      class="border-2 border-orange-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500 rounded-lg p-3 w-full mb-6 text-base md:text-lg shadow-sm"
     />
 
-    <!-- Filter buttons -->
-    <div class="filter-buttons">
-      <button
-        class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Alle' }"
-        @click="activeFilter = 'Alle'"
-      >
-        Alle
-      </button>
-      <button
-        class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Quiz' }"
-        @click="activeFilter = 'Quiz'"
-      >
-        Quiz
-      </button>
+    <!-- Lade‑ & Fehlermeldungen -->
+    <div v-if="loading" class="text-center py-12 text-lg">Lade …</div>
+    <div v-else-if="error" class="text-red-600 text-center text-lg">{{ error }}</div>
+
+    <!-- Kein Ergebnis -->
+    <div v-if="filteredQuizzes.length === 0 && !loading" class="text-center text-gray-500 text-base md:text-lg">
+      Keine passenden Quizzes gefunden.
     </div>
 
-    <!-- Fetch quizzes button -->
-    <button class="btn btn-primary" @click="fetchQuizzes">Quiz abrufen</button>
-
-    <!-- Display quizzes -->
-    <div v-if="loading">Lade Quiz-Daten...</div>
-    <div v-if="error">{{ error }}</div>
-    <div v-if="filteredQuizzes.length">
+    <!-- Ergebnisliste -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <div
         v-for="quiz in filteredQuizzes"
         :key="quiz.id"
-        class="quiz-item"
+        class="border border-orange-200 rounded-xl p-6 shadow hover:shadow-lg hover:bg-orange-50 transition"
       >
-        <h3>{{ quiz.title }}</h3>
-        <p>{{ quiz.questions }} Fragen – {{ quiz.duration }} Min</p>
+        <h3 class="font-semibold text-xl mb-2 text-orange-700">{{ quiz.title }}</h3>
+        <p class="text-base text-gray-600 mb-4 line-clamp-3">{{ quiz.description }}</p>
+
+        <router-link
+          :to="{ name: 'quiz-overview', query: { id: quiz.id } }"
+          class="inline-block bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium px-4 py-2 rounded-md transition"
+        >
+          Öffnen
+        </router-link>
       </div>
     </div>
-    <p v-else>Keine passenden Einträge gefunden.</p>
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-import apiClient from '@/services/api/client'
 
-const searchQuery = ref('')
-const activeFilter = ref('Alle')
-const quizzes = ref([]) // Store quizzes fetched from the server
-const loading = ref(false)
-const error = ref(null)
+<script>
+import api from '@/services/api/client';
 
-// Fetch quizzes from the server
-async function fetchQuizzes() {
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiClient.get('/api/quizzes/')
-    console.log('API resoponse', response)
-    quizzes.value = response // Update the quizzes list
-  } catch (err) {
-    error.value = 'Fehler beim Abrufen der Quiz-Daten.'
-    console.error(err)
-  } finally {
-    loading.value = false
-  }
-}
-
-// Filter quizzes based on search query and active filter
-const filteredQuizzes = computed(() =>
-  quizzes.value.filter(q =>
-    q.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-    (activeFilter.value === 'Alle' || q.type === activeFilter.value)
-  )
-)
+export default {
+  name: 'SearchView',
+  data() {
+    return {
+      searchTerm: '',
+      quizzes: [],
+      loading: false,
+      error: null,
+    };
+  },
+  computed: {
+    filteredQuizzes() {
+      if (!this.searchTerm.trim()) {
+        return this.quizzes;
+      }
+      const term = this.searchTerm.toLowerCase();
+      return this.quizzes.filter((q) =>
+        q.title.toLowerCase().includes(term) ||
+        (q.description && q.description.toLowerCase().includes(term))
+      );
+    },
+  },
+  methods: {
+    async fetchQuizzes() {
+      this.loading = true;
+      this.error = null;
+      try {
+        // Endpoint wird vom DRF‑Router bereitgestellt → /quizzes/
+        this.quizzes = await api.get('quizzes/');
+      } catch (err) {
+        this.error = 'Fehler beim Laden der Quizzes.';
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
+  mounted() {
+    this.fetchQuizzes();
+  },
+};
 </script>
+
 
 <style scoped>
 .search-view {

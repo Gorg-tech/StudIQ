@@ -1,140 +1,80 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 import { handleApiError } from './errors';
 import { API_ENDPOINTS } from './endpoints';
 
+// zentrale Basis-URL (kann via Vite-Env überschrieben werden)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
 /**
- * Notiz zu CSRF in Django:
- * 
- * Django verwendet zwei Arten von Cookies:
- * 
- * 1. sessionid: 
- *    - HTTP-only (kann nicht von JS gelesen werden)
- *    - Für Auth zuständig
- *    - Wird automatisch bei jedem Request mitgeschickt
- * 
- * 2. csrftoken:
- *    - Nicht HTTP-only, damit JS es lesen kann
- *    - Muss im X-CSRFToken Header mitgeschickt werden
- *    - Verhindert CSRF-Angriffe 
- * 
- * Workflow:
- * - Server setzt csrftoken Cookie
- * - Wir lesen es mit getCookie aus
- * - Wir schicken es bei POST/PUT/etc. im Header mit
- * - Django prüft ob Header und Cookie übereinstimmen
- * 
- * Dabei wird 'credentials: include' für die Session-Cookies verwendet, 
- * und der CSRF-Token wird manuell ausgelesen und mitgeschickt.
- * 
- * Wichtig: 
- * - CSRF-Token wird NUR bei nicht-GET Requests benötigt (POST, PUT, DELETE, etc.)
- * - GET Requests verändern keine Daten und benötigen daher keinen CSRF-Schutz
- * - 'credentials: include' wird bei ALLEN Requests verwendet (für die Session-Cookies)
- * - Django ignoriert CSRF-Token bei GET Requests, fordert ihn aber bei allen anderen
+ * ApiClient – ein Singleton für alle Fetch‑Aufrufe.
+ *  - Schickt bei jedem Request credentials: 'include' (sessionid, csrftoken)
+ *  - Fügt bei Schreib-Methoden automatisch X‑CSRFToken hinzu
+ *  - login(username, password) setzt zunächst den CSRF‑Cookie, dann Session
  */
-
-export class ApiClient {
+class ApiClient {
   constructor(baseURL = API_URL) {
-    this.baseURL = baseURL;
+    this.baseURL = baseURL.replace(/\/$/, '');
   }
 
+  /* ───── Hilfsfunktionen ─────────────────────────────────────────── */
   getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    return document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(name + '='))
+      ?.split('=')[1];
   }
 
-  async request(endpoint, method = 'GET', data = null, customHeaders = {}) {
-    let url = `${this.baseURL}/${endpoint}`;
-    const headers = {
-      'Content-Type': 'application/json',
-      ...customHeaders
-    };
+  async getCsrfToken() {
+    await fetch(`${this.baseURL}/csrf/`, {
+      credentials: 'include',
+    });
+  }
 
-    // For non-GET requests, get CSRF token from cookie
+  async login(username, password) {
+    // 1) CSRF Versuch
+    await this.getCsrfToken();
+    // 2) Prüfen, ob Cookie wirklich gesetzt wurde
+    if (!this.getCookie('csrftoken')) {
+      throw new Error('CSRF-Cookie konnte nicht gesetzt werden');
+    }
+    // 3) Login
+    return this.post('login/', { username, password });
+    }
+
+  /* ───── zentrale Request‑Methode ────────────────────────────────── */
+  async request(endpoint, method = 'GET', data = null, extraHeaders = {}) {
+    const url = new URL(endpoint, this.baseURL + '/').toString();
+
+    const headers = { 'Content-Type': 'application/json', ...extraHeaders };
+
     if (method !== 'GET') {
-      const csrfToken = this.getCookie('csrftoken');
-      if (csrfToken) {
-        headers['X-CSRFToken'] = csrfToken;
-      }
+      const token = this.getCookie('csrftoken');
+      if (token) headers['X-CSRFToken'] = token;
     }
 
-    const options = {
-      method,
-      headers,
-      credentials: 'include', // This is critical - it ensures cookies are sent with requests
-    };
-
-    // Add body for non-GET requests
-    if (data && method !== 'GET') {
-      options.body = JSON.stringify(data);
-    }
-
-    // Handle query params for GET requests
+    const options = { method, headers, credentials: 'include' };
+    if (data && method !== 'GET') options.body = JSON.stringify(data);
     if (data && method === 'GET') {
-      const params = new URLSearchParams();
-      Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          params.append(key, value);
-        }
-      });
-      
-      const queryString = params.toString();
-      if (queryString) {
-        url += `?${queryString}`;
-      }
+      const qs = new URLSearchParams(data).toString();
+      if (qs) url += `?${qs}`;
     }
 
-    try {
-      const response = await fetch(url, options);
-      
-      // Handle 401 Unauthorized globally
-      if (response.status === 401) {
-        // Just redirect to login - no need to clear token since it's a cookie
-        window.location.href = '/login';
-        throw new Error('Session expired. Please log in again.');
-      }
-      
-      // Check for other HTTP errors
-      if (!response.ok) {
-        return handleApiError(response);
-      }
-      
-      // Handle empty responses
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        return await response.json();
-      }
-      
-      return await response.text();
-    } catch (error) {
-      console.error('API request error:', error);
-      throw error;
+    const res = await fetch(url, options);
+    if (res.status === 401) {
+      window.location.href = '/login';
+      throw new Error('Bitte erneut einloggen');
     }
+    if (!res.ok) return handleApiError(res);
+
+    const type = res.headers.get('content-type');
+    return type && type.includes('application/json') ? res.json() : res.text();
   }
 
-  // Convenience methods remain the same
-  get(endpoint, params) {
-    return this.request(endpoint, 'GET', params);
-  }
-
-  post(endpoint, data) {
-    return this.request(endpoint, 'POST', data);
-  }
-
-  put(endpoint, data) {
-    return this.request(endpoint, 'PUT', data);
-  }
-
-  patch(endpoint, data) {
-    return this.request(endpoint, 'PATCH', data);
-  }
-
-  delete(endpoint) {
-    return this.request(endpoint, 'DELETE');
-  }
+  /* ───── Convenience‑Wrapper ─────────────────────────────────────── */
+  get(ep, params)   { return this.request(ep, 'GET',    params); }
+  post(ep, data)    { return this.request(ep, 'POST',   data);   }
+  put(ep, data)     { return this.request(ep, 'PUT',    data);   }
+  patch(ep, data)   { return this.request(ep, 'PATCH',  data);   }
+  delete(ep)        { return this.request(ep, 'DELETE');        }
 }
 
-// Create and export default instance
 export default new ApiClient();
