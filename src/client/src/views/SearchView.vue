@@ -20,20 +20,6 @@
       </button>
       <button
         class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Modul' }"
-        @click="activeFilter = 'Modul'"
-      >
-        Modul
-      </button>
-      <button
-        class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Lernset' }"
-        @click="activeFilter = 'Lernset'"
-      >
-        Lernset
-      </button>
-      <button
-        class="btn"
         :class="{ 'btn-primary': activeFilter === 'Quiz' }"
         @click="activeFilter = 'Quiz'"
       >
@@ -41,7 +27,12 @@
       </button>
     </div>
 
-    <!-- Filtered list -->
+    <!-- Fetch quizzes button -->
+    <button class="btn btn-primary" @click="fetchQuizzes">Quiz abrufen</button>
+
+    <!-- Display quizzes -->
+    <div v-if="loading">Lade Quiz-Daten...</div>
+    <div v-if="error">{{ error }}</div>
     <div v-if="filteredQuizzes.length">
       <div
         v-for="quiz in filteredQuizzes"
@@ -49,7 +40,7 @@
         class="quiz-item"
       >
         <h3>{{ quiz.title }}</h3>
-        <p>{{ quiz.questions }} Fragen – {{ quiz.duration }} Min ({{ quiz.type }})</p>
+        <p>{{ quiz.questions }} Fragen – {{ quiz.duration }} Min</p>
       </div>
     </div>
     <p v-else>Keine passenden Einträge gefunden.</p>
@@ -58,17 +49,31 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import apiClient from '@/services/api/client'
 
 const searchQuery = ref('')
 const activeFilter = ref('Alle')
- // Simulierte Daten aus Modulux
-const quizzes = ref([
-  { id: 1, title: 'Laufzeitberechnung', type: 'Modul', questions: 10, duration: 5 },
-  { id: 2, title: 'Analysis Basics', type: 'Lernset', questions: 12, duration: 6 },
-  { id: 3, title: 'C-Programmierung', type: 'Quiz', questions: 33, duration: 13 },
-  { id: 4, title: 'Diskrete Mathematik', type: 'Modul', questions: 14, duration: 7 },
-])
+const quizzes = ref([]) // Store quizzes fetched from the server
+const loading = ref(false)
+const error = ref(null)
 
+// Fetch quizzes from the server
+async function fetchQuizzes() {
+  loading.value = true
+  error.value = null
+  try {
+    const response = await apiClient.get('/api/quizzes/')
+    console.log('API resoponse', response)
+    quizzes.value = response // Update the quizzes list
+  } catch (err) {
+    error.value = 'Fehler beim Abrufen der Quiz-Daten.'
+    console.error(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Filter quizzes based on search query and active filter
 const filteredQuizzes = computed(() =>
   quizzes.value.filter(q =>
     q.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
