@@ -15,6 +15,7 @@ router.register(r'feedback', FeedbackViewSet, basename='feedback')
 router.register(r'studiengaenge', StudiengangViewSet)
 router.register(r'module', ModulViewSet)
 
+
 urlpatterns = [
     path('', include(router.urls)),
     # Nested: /api/module/<module_id>/lernsets/
