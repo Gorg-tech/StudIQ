@@ -21,12 +21,14 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |HTW | Hochschule für Technik und Wirtschaft | Hochschule
 |Leaderboard | Rangliste der Quiz-Teilnehmer | Bestenliste
 |Lernset | Sammlung von Antworten und Fragen zu einem Thema von speziellem Modul, kleiner Themenbereich eines Moduls | Karteikarten, Thema
+| Level | Kategorie, die anzeigt wie gut man ist und wie viel man gemacht hat | Ranking
 |Modul | ein großer Themenbereich eines Studiengangs | Kurs, Fach
+| Multiple Choice | mehrere Antwortmöglichkeiten werden vorgegeben, eine davon ist richtig | -
 |Quiz | Beantwortung von Fragen | Abfrage, Test
 |Rating | Bewertung eines Quiz | Bewertung
 |Semester | Studienabschnitt an der HTW | -
 |Streaks | Anzahl der Tage, die der Nutzer die App kontinuierlich nutzt | -
-|Studiengang | Studienrichtung an der HTW | Studienfach
+|Studiengang | Studienrichtung an der HTW bestehend aus Modulen | Studienfach
 |Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
 |===
 
