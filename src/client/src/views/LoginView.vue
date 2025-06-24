@@ -1,25 +1,3 @@
-<template>
-  <div class="login">
-    <h1>Login</h1>
-    <form @submit.prevent="handleLogin">
-      <div>
-        <label for="username">Benutzername:</label>
-        <input id="username" v-model="username" required />
-      </div>
-      <div>
-        <label for="password">Passwort:</label>
-        <input id="password" type="password" v-model="password" required />
-      </div>
-      <button type="submit">Einloggen</button>
-    </form>
-
-    <p>
-      Noch keinen Account?
-      <router-link to="/register">Registrieren</router-link>
-    </p>
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -30,8 +8,6 @@ import LogoStudIQ from '@/components/LogoStudIQ.vue'
 const username = ref('')
 const password = ref('')
 const router = useRouter()
-const username = ref('')
-const password = ref('')
 const error = ref('')
 
   async function handleLogin() {
