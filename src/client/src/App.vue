@@ -8,11 +8,6 @@ apiClient.ensureCsrf()
 
 <template>
   <div class="app-container">
-    <!-- Logout-Knopf oben rechts -->
-    <div class="logout-container">
-      <button class="btn btn-secondary" @click="logout">Logout</button>
-    </div>
-
     <main class="content">
       <RouterView />
     </main>

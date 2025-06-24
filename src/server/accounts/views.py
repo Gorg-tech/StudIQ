@@ -10,16 +10,13 @@ from django.http import JsonResponse
 
 class RegisterView(APIView):
     permission_classes = []  # Allow unauthenticated access
-
+    
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            tokens = get_tokens_for_user(user)
-            return Response({
-                'user': UserSerializer(user).data,
-                'tokens': tokens,
-            }, status=status.HTTP_201_CREATED)
+            login(request, user)  # Log the user in (creates session)
+            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
