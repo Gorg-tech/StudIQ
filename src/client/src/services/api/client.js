@@ -97,8 +97,10 @@ export class ApiClient {
 
       // Handle 401 Unauthorized globally
       if (response.status === 401) {
-        // Just redirect to login - no need to clear token since it's a cookie
-        window.location.href = '/login';
+        // Only redirect if not already on /login
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         throw new Error('Session expired. Please log in again.');
       }
 
@@ -118,6 +120,12 @@ export class ApiClient {
       console.error('API request error:', error);
       throw error;
     }
+  }
+
+
+  //Ruft den CSRF-Endpoint auf, um das CSRF-Cookie zu setzen.
+  async ensureCsrf() {
+    await this.get(API_ENDPOINTS.AUTH.CSRF);
   }
 
   // Convenience methods remain the same

@@ -1,14 +1,9 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import BottomNavigation from './components/layout/BottomNavigation.vue'
-import { logout } from '@/services/auth'
-import { ref, onMounted } from 'vue'
+import apiClient from '@/services/api/client'
 
-const isLoggedIn = ref(false)
-
-onMounted(() => {
-  isLoggedIn.value = !!localStorage.getItem('access_token')
-})
+apiClient.ensureCsrf()
 </script>
 
 <template>
