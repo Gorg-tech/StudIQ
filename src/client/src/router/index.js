@@ -8,6 +8,7 @@ import QuizOverviewView from '@/views/QuizOverviewView.vue'
 import QuizResultView from '@/views/QuizResultView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegistrationView from '@/views/RegistrationView.vue'
+import { isAuthenticated } from '@/services/auth.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,19 +62,6 @@ const router = createRouter({
 })
 
 
-const isAuthenticated = () => {
-  // Hier kommt Authentifizierungslogik hin :)
-  // z.B. Token aus localStorage/sessionStorage cookies... prüfen 
-  const token = localStorage.getItem('authToken')
-  return !!token
-}
-
-
-/*
-
- Erstmal auskommentiert, da Authentifizierung noch nicht implementiert ist
-
-// Router guard for authentication
 router.beforeEach((to, from, next) => {
   // Login and Register routes are always accessible
   if (to.name === 'login' || to.name === 'register') {
@@ -82,14 +70,12 @@ router.beforeEach((to, from, next) => {
   }
 
   // For all other routes, check if authenticated
-  if (!isAuthenticated()) {
+  if (!isAuthenticated.value) {
     next({ name: 'login' })
     return
   }
 
   next()
 })
-
-*/
 
 export default router

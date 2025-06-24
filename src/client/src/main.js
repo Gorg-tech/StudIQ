@@ -5,11 +5,14 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import { checkAuth } from './services/auth'
 
-const app = createApp(App)
-app.config.devtools = false; // Disable Vue DevTools
+checkAuth().then(() => {
+  const app = createApp(App)
+  app.config.devtools = false; // Disable Vue DevTools
 
-app.use(createPinia())
-app.use(router)
+  app.use(createPinia())
+  app.use(router)
 
-app.mount('#app')
+  app.mount('#app')
+})
