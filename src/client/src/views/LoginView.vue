@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { login } from '@/services/auth'
+import { login, checkAuth } from '@/services/auth'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 
 const router = useRouter()
