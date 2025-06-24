@@ -20,6 +20,8 @@ const error = ref('')
     const user = await login({ username: username.value, password: password.value });
      console.log('User:' + user)
      if (user) {
+      // Auth-Status aktualisieren
+      await checkAuth()
       router.push('/')
     } else {
       error.value = 'Falscher Benutzername oder Passwort.'
