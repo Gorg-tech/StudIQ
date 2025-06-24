@@ -26,7 +26,7 @@
 
         <div class="form-group">
           <label for="studiengruppe">Studiengruppe <span class="hint">(Immat.jahr/Studiengang/Gruppe)</span>:</label>
-          <input id="studiengruppe" v-model="studiengruppe" placeholder="z.B. 2022/INF/1" required />
+          <input id="studiengruppe" v-model="studiengruppe" placeholder="z.B. 22/041/61" required />
         </div>
 
         <button type="submit" class="btn btn-primary register-btn">Registrieren</button>
