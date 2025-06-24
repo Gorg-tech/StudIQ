@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts',
     'quizzes',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -142,3 +144,6 @@ REST_FRAMEWORK = {
 SESSION_COOKIE_SECURE = False  # Set to False for development without HTTPS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'Strict' for more security
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
