@@ -6,6 +6,9 @@
     <div class="register-card">
       <h1 class="register-title">Registrierung</h1>
       <form @submit.prevent="handleRegister" class="register-form">
+        <div v-if="errorMsg" class="register-error">
+          {{ errorMsg }}
+        </div>
         <div class="form-group">
           <label for="username">Benutzername:</label>
           <input id="username" v-model="username" required />
@@ -47,13 +50,15 @@ const username = ref('')
 const email = ref('')
 const password = ref('')
 const studiengruppe = ref('')
+const errorMsg = ref('')
 const router = useRouter()
 
 async function handleRegister() {
+  errorMsg.value = ''
   try {
     const [immatJahr, studiengang, gruppe] = studiengruppe.value.split('/')
 
-    const response = await register({
+    await register({
       username: username.value,
       email: email.value,
       password: password.value,
@@ -64,8 +69,17 @@ async function handleRegister() {
 
     router.push('/')
   } catch (err) {
-    if (err.data) {
-      console.log('Registrierung fehlgeschlagen: ' + JSON.stringify(err.data))
+    // Fehler ausgeben, falls vorhanden
+    if (err?.data) {
+      // Zeige das erste Fehlerfeld oder alles als JSON
+      if (typeof err.data === 'object') {
+        // Fasse alle Fehler zusammen
+        errorMsg.value = Object.values(err.data).flat().join(' ')
+      } else {
+        errorMsg.value = err.data
+      }
+    } else {
+      errorMsg.value = 'Unbekannter Fehler bei der Registrierung.'
     }
   }
 }
@@ -163,5 +177,15 @@ async function handleRegister() {
   color: var(--color-primary);
   text-decoration: underline;
   margin-left: 4px;
+}
+
+.register-error {
+  color: #d32f2f;
+  background: #fff0f0;
+  border: 1px solid #f8bbbb;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 1rem;
 }
 </style>
