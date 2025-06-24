@@ -1,39 +1,39 @@
 <template>
-  <div class="register">
-    <h1>Registrierung</h1>
-    <form @submit.prevent="handleRegister">
-      <div>
-        <label for="username">Benutzername:</label>
-        <input id="username" v-model="username" required />
-      </div>
+  <div class="register-container">
+    <div class="logo-top">
+      <LogoStudIQ />
+    </div>
+    <div class="register-card">
+      <h1 class="register-title">Registrierung</h1>
+      <form @submit.prevent="handleRegister" class="register-form">
+        <div class="form-group">
+          <label for="username">Benutzername:</label>
+          <input id="username" v-model="username" required />
+        </div>
 
-      <div>
-        <label for="email">E-Mail:</label>
-        <input id="email" type="email" v-model="email" required />
-      </div>
+        <div class="form-group">
+          <label for="email">E-Mail:</label>
+          <input id="email" type="email" v-model="email" required />
+        </div>
 
-      <div>
-        <label for="password">Passwort:</label>
-        <input id="password" type="password" v-model="password" required />
-      </div>
+        <div class="form-group">
+          <label for="password">Passwort:</label>
+          <input id="password" type="password" v-model="password" required />
+        </div>
 
-      <div>
-        <label for="studiengang">Studiengang:</label>
-        <input id="studiengang" v-model="studiengang" />
-      </div>
+        <div class="form-group">
+          <label for="studiengruppe">Studiengruppe <span class="hint">(Immat.jahr/Studiengang/Gruppe)</span>:</label>
+          <input id="studiengruppe" v-model="studiengruppe" placeholder="z.B. 2022/INF/1" required />
+        </div>
 
-      <div>
-        <label for="semester">Semester:</label>
-        <input id="semester" type="number" v-model.number="semester" />
-      </div>
+        <button type="submit" class="btn btn-primary register-btn">Registrieren</button>
+      </form>
 
-      <button type="submit">Registrieren</button>
-    </form>
-
-    <p>
-      Schon registriert?
-      <router-link to="/login">Zum Login</router-link>
-    </p>
+      <p class="register-login-hint">
+        Schon registriert?
+        <router-link to="/login" class="login-link">Zum Login</router-link>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -41,29 +41,29 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '@/services/auth'
+import LogoStudIQ from '@/components/LogoStudIQ.vue'
 
 const username = ref('')
 const email = ref('')
 const password = ref('')
-const studiengang = ref('')
-const semester = ref(1)
+const studiengruppe = ref('')
 const router = useRouter()
 
 async function handleRegister() {
   try {
+    const [immatJahr, studiengang, gruppe] = studiengruppe.value.split('/')
+
     const response = await register({
       username: username.value,
       email: email.value,
       password: password.value,
-      studiengang: studiengang.value,
-      semester: semester.value,
+      immatJahr,
+      studiengang,
+      gruppe,
     })
-
-    console.log(response.data)
 
     router.push('/')
   } catch (err) {
-    // Zeige die genaue Fehlermeldung aus dem Backend an
     if (err.data) {
       console.log('Registrierung fehlgeschlagen: ' + JSON.stringify(err.data))
     }
@@ -72,21 +72,96 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.register {
-  max-width: 500px;
-  margin: auto;
-  padding: 1rem;
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  background: none;
 }
-.register label {
-  display: block;
-  margin-top: 1rem;
+
+.logo-top {
+  margin-bottom: 18px;
+  font-size: 2.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.register input {
+
+.register-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+  padding: 32px 24px 24px 24px;
+  max-width: 420px;
   width: 100%;
-  padding: 0.5rem;
+  margin: 32px 0;
+  text-align: center;
 }
-.register button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
+
+.register-title {
+  margin-bottom: 18px;
+  color: var(--color-accent);
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.form-group .hint {
+  font-size: 0.9em;
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  font-size: 1rem;
+  background: #f9f9f9;
+  transition: border 0.2s;
+}
+
+.form-group input:focus {
+  border: 1.5px solid var(--color-primary);
+  outline: none;
+  background: #fff;
+}
+
+.register-btn {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 12px 0;
+}
+
+.register-login-hint {
+  margin-top: 18px;
+  color: var(--color-muted);
+  font-size: 1rem;
+}
+
+.login-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  margin-left: 4px;
 }
 </style>
