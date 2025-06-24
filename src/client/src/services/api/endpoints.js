@@ -3,6 +3,7 @@ export const API_ENDPOINTS = {
     REGISTER: 'api/auth/register/',
     LOGIN: 'api/auth/login/',
     LOGOUT: 'api/auth/logout/',
+    CSRF: 'api/auth/csrf/', 
   },
 
   USER: {

@@ -144,6 +144,22 @@ REST_FRAMEWORK = {
 SESSION_COOKIE_SECURE = False  # Set to False for development without HTTPS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'Strict' for more security
+CSRF_COOKIE_SECURE = False  # For development only
+
+# Trage hier alle lokalen Frontend-URLs ein, die CSRF-geschützte POSTs machen dürfen.
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+    "http://localhost:5050",
+    "http://127.0.0.1:5050",
+]
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
