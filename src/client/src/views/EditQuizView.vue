@@ -1,22 +1,45 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+import api from '@/services/api/client'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 
 
 const router = useRouter()
+const route = useRoute()
+const quizId = ref(route.params.quizId || null)
 
 const quizTitle = ref('Mein erstes Quiz')
-const questions = ref([
-  { id: 1, text: 'Was ist die Hauptstadt von Deutschland?', type: 'Multiple Choice' }
-])
+const questions = ref([])
 
 const showDeleteModal = ref(false)
 const questionToDelete = ref(null)
 const questionToDeleteText = ref('')
 
 const showBackModal = ref(false)
+
+onMounted(async () => {
+  if (!quizId.value) {
+    // Kein Quiz vorhanden, neues Quiz anlegen
+    const newQuiz = await api.post('api/quizzes/', { title: quizTitle.value })
+    quizId.value = newQuiz.id
+    router.replace({ name: 'edit-quiz', params: { quizId: newQuiz.id } })
+    // Nach router.replace wird der Code unten nicht mehr ausgeführt
+    return
+  }
+  // Quiz laden
+  const quiz = await api.get(`api/quizzes/${quizId}/`)
+  quizTitle.value = quiz.title
+  // Fragen laden
+  const serverQuestions = await api.get(`api/quizzes/${quizId}/questions/`)
+  questions.value = serverQuestions.map(q => ({
+    id: q.id,
+    text: q.text,
+    type: q.type
+  }))
+})
 
 const goBack = () => {
   showBackModal.value = true
@@ -29,20 +52,26 @@ const cancelBack = () => {
   showBackModal.value = false
 }
 
-const saveQuiz = () => {
+const saveQuiz = async () => {
+  await api.put(`api/quizzes/${quizId}/`, { title: quizTitle.value })
   router.push('/')
 }
 
-const addQuestion = () => {
-  questions.value.push({
-    id: questions.value.length + 1,
+const addQuestion = async () => {
+  const newQ = await api.post('api/questions/', {
+    quiz: quizId,
     text: '',
     type: 'Multiple Choice'
-  })
+  });
+  questions.value.push({
+    id: newQ.id,
+    text: newQ.text,
+    type: newQ.type
+  });
 }
 
 const goToQuestion = (questionId) => {
-  router.push(`/edit-question`)
+  router.push(`/edit-question/${questionId}`)
 }
 
 const confirmDelete = (event, questionId) => {
@@ -51,7 +80,8 @@ const confirmDelete = (event, questionId) => {
   questionToDeleteText.value = questions.value.find(q => q.id === questionId).text
   showDeleteModal.value = true
 }
-const deleteQuestion = () => {
+const deleteQuestion = async () => {
+  await api.delete(`api/questions/${questionToDelete.value}/`)
   questions.value = questions.value.filter(q => q.id !== questionToDelete.value)
   showDeleteModal.value = false
   questionToDelete.value = null

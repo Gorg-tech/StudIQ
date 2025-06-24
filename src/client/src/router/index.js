@@ -38,12 +38,12 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/edit-quiz',
+      path: '/edit-quiz/:quizId?',
       name: 'edit-quiz',
       component: EditQuizView,
     },
     {
-      path: '/edit-question',
+      path: '/edit-question/:questionId?',
       name: 'edit-question',
       component: EditQuestionView,
     },
