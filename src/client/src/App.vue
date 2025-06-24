@@ -1,6 +1,9 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import BottomNavigation from './components/layout/BottomNavigation.vue'
+import apiClient from '@/services/api/client'
+
+apiClient.ensureCsrf()
 </script>
 
 <template>

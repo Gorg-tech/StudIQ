@@ -13,9 +13,6 @@ const username = ref('')
 const password = ref('')
 const error = ref('')
 
-// Login-Funktion, hier sollte der API-Call erfolgen
-
-
   async function handleLogin() {
     if (username.value === '' || password.value === '') {
     error.value = 'Bitte Email und Passwort eingeben.'

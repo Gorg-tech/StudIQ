@@ -65,7 +65,7 @@ export class ApiClient {
       headers,
       credentials: 'include', // This is critical - it ensures cookies are sent with requests
     };
-
+    
     // Add body for non-GET requests
     if (data && method !== 'GET') {
       options.body = JSON.stringify(data);
@@ -112,6 +112,12 @@ export class ApiClient {
       console.error('API request error:', error);
       throw error;
     }
+  }
+
+  
+  //Ruft den CSRF-Endpoint auf, um das CSRF-Cookie zu setzen.
+  async ensureCsrf() {
+    await this.get(API_ENDPOINTS.AUTH.CSRF);
   }
 
   // Convenience methods remain the same
