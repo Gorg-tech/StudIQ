@@ -65,7 +65,7 @@ export class ApiClient {
       headers,
       credentials: 'include', // This is critical - it ensures cookies are sent with requests
     };
-    
+
     // Add body for non-GET requests
     if (data && method !== 'GET') {
       options.body = JSON.stringify(data);
@@ -79,7 +79,7 @@ export class ApiClient {
           params.append(key, value);
         }
       });
-      
+
       const queryString = params.toString();
       if (queryString) {
         url += `?${queryString}`;
@@ -88,25 +88,27 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, options);
-      
+
       // Handle 401 Unauthorized globally
       if (response.status === 401) {
-        // Just redirect to login - no need to clear token since it's a cookie
-        window.location.href = '/login';
+        // Only redirect if not already on /login
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         throw new Error('Session expired. Please log in again.');
       }
-      
+
       // Check for other HTTP errors
       if (!response.ok) {
         return handleApiError(response);
       }
-      
+
       // Handle empty responses
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       }
-      
+
       return await response.text();
     } catch (error) {
       console.error('API request error:', error);
@@ -114,7 +116,7 @@ export class ApiClient {
     }
   }
 
-  
+
   //Ruft den CSRF-Endpoint auf, um das CSRF-Cookie zu setzen.
   async ensureCsrf() {
     await this.get(API_ENDPOINTS.AUTH.CSRF);

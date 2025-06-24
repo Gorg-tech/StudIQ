@@ -1,38 +1,39 @@
 <script setup>
-// Importiere benötigte Funktionen von Vue
 import { ref } from 'vue'
-// Importiere Router für Navigation
 import { useRouter } from 'vue-router'
 
 import { login } from '@/services/auth'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 
-// Router-Instanz initialisieren
 const router = useRouter()
-// Reaktive Variablen für E-Mail und Passwort
 const username = ref('')
 const password = ref('')
 const error = ref('')
 
   async function handleLogin() {
+    error.value = ''
     if (username.value === '' || password.value === '') {
     error.value = 'Bitte Benutzername und Passwort eingeben.'
     return
   }
   try {
-    //übergeben die Strings zum Server
     const user = await login({ username: username.value, password: password.value });
      console.log('User:' + user)
      if (user) {
       router.push('/')
     } else {
       error.value = 'Falscher Benutzername oder Passwort.'
-
     }
-    // Weiterleitung oder User speichern
   } catch (err) {
-    error.value = 'Fehler beim Login.'
-
+    if (err?.data) {
+      if (typeof err.data === 'object') {
+        error.value = Object.values(err.data).flat().join(' ')
+      } else {
+        error.value = err.data
+      }
+    } else {
+      error.value = 'Fehler beim Login.'
+    }
   }
 }
 
@@ -70,13 +71,9 @@ const error = ref('')
         <button class="btn btn-primary login-btn" type="submit">
           Einloggen
         </button>
-        <div
-  v-if="error"
-  class="login-error"
-  :style="{ opacity: error ? 1 : 0 }"
->
-  {{ error }}
-</div>
+        <div v-if="error" class="login-error">
+          {{ error }}
+        </div>
       </form>
       <p class="login-register-hint">
         Noch kein Account?
@@ -175,13 +172,12 @@ const error = ref('')
 }
 
 .login-error {
-  color: red;
-  margin-top: 10px;
-  opacity: 0;
-  transition: opacity 0.7s;
-  min-height: 24px;
-}
-.login-error[style] {
-  opacity: 1 !important;
+  color: #d32f2f;
+  background: #fff0f0;
+  border: 1px solid #f8bbbb;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 1rem;
 }
 </style>
