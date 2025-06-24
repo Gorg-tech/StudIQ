@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views
 from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet
 from .views import LernsetsByModuleView, QuizzesByLernsetView, QuestionsByQuizView
 

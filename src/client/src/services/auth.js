@@ -8,7 +8,7 @@ export async function register({ username, email, password, studiengang, semeste
     email,
     password,
     studiengang,
-    semester  
+    semester
 });
 }
 
@@ -18,6 +18,18 @@ export async function login({ username, password }) {
     username,
     password,
   });
+}
+
+export async function refreshToken(refresh) {
+  return apiClient.post(API_ENDPOINTS.AUTH.REFRESH, {
+    refresh,
+  })
+}
+
+export function logout() {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('user')
+  window.location.href = '/login'
 }
 
 /* Verwendung:

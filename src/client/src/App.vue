@@ -1,10 +1,23 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import BottomNavigation from './components/layout/BottomNavigation.vue'
+import { logout } from '@/services/auth'
+import { ref, onMounted } from 'vue'
+
+const isLoggedIn = ref(false)
+
+onMounted(() => {
+  isLoggedIn.value = !!localStorage.getItem('access_token')
+})
 </script>
 
 <template>
   <div class="app-container">
+    <!-- Logout-Knopf oben rechts -->
+    <div class="logout-container">
+      <button class="btn btn-secondary" @click="logout">Logout</button>
+    </div>
+
     <main class="content">
       <RouterView />
     </main>

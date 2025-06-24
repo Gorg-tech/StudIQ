@@ -63,11 +63,21 @@ const router = createRouter({
 
 const isAuthenticated = () => {
   // Hier kommt Authentifizierungslogik hin :)
-  // z.B. Token aus localStorage/sessionStorage cookies... prüfen 
+  // z.B. Token aus localStorage/sessionStorage cookies... prüfen
   const token = localStorage.getItem('authToken')
   return !!token
 }
 
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('access_token')
+
+  // if route requires autorization, but token doesn't here - redirect to /login
+  if (to.meta.requiresAuth && !token) {
+    next('/login')
+  } else {
+    next()
+  }
+})
 
 /*
 
