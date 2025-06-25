@@ -1,5 +1,18 @@
+import { ref } from 'vue'
 import apiClient from './api/client';
 import { API_ENDPOINTS } from './api/endpoints';
+
+export const isAuthenticated = ref(false)
+
+export async function checkAuth() {
+  try {
+    // Call the backend "me" endpoint
+    await apiClient.get(API_ENDPOINTS.USER.ME)
+    isAuthenticated.value = true
+  } catch {
+    isAuthenticated.value = false
+  }
+}
 
 // Registrierung
 export async function register({ username, email, password, studiengang, semester }) {
@@ -8,7 +21,7 @@ export async function register({ username, email, password, studiengang, semeste
     email,
     password,
     studiengang,
-    semester  
+    semester
 });
 }
 
@@ -18,6 +31,11 @@ export async function login({ username, password }) {
     username,
     password,
   });
+}
+
+// Logout
+export async function logout() {
+  return apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
 }
 
 /* Verwendung:

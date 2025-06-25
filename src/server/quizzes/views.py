@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Quiz, Question, Lernset, QuizProgress, Achievement, QuizSession, Feedback, Studiengang, Modul
 from .serializers import QuizSerializer, QuestionSerializer, LernsetSerializer, QuizProgressSerializer, AchievementSerializer, QuizSessionSerializer, FeedbackSerializer, StudiengangSerializer, ModulSerializer
@@ -64,28 +63,3 @@ class ModulViewSet(viewsets.ModelViewSet):
     queryset = Modul.objects.all()
     serializer_class = ModulSerializer
     permission_classes = [IsAuthenticated]
-
-
-class LernsetsByModuleView(ListAPIView):
-    serializer_class = LernsetSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        module_id = self.kwargs['module_id']
-        return Lernset.objects.filter(modul_id=module_id)
-
-class QuizzesByLernsetView(ListAPIView):
-    serializer_class = QuizSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        lernset_id = self.kwargs['lernset_id']
-        return Quiz.objects.filter(lernset_id=lernset_id)
-
-class QuestionsByQuizView(ListAPIView):
-    serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        quiz_id = self.kwargs['quiz_id']
-        return Question.objects.filter(quiz_id=quiz_id)

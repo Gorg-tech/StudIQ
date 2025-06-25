@@ -47,7 +47,6 @@
           </div>
           <div class="option-actions">
             <input
-              v-if="selectedType !== 'Freitext'"
               type="checkbox"
               :checked="option.correct"
               @change="toggleCorrect(idx)"
@@ -116,30 +115,43 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+import api from '@/services/api/client'
 import IconPen from '@/components/icons/IconPen.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 import IconTrash from '@/components/icons/IconTrashcan.vue'
 
 const router = useRouter()
+const route = useRoute()
+const questionId = ref(route.params.questionId || null)
 
 const questionText = ref('')
-const questionTypes = ['Single Choice', 'Multiple Choice', 'Freitext']
+const questionTypes = ['Single Choice', 'Multiple Choice']
 const selectedType = ref('Single Choice')
 const showTypeDropdown = ref(false)
 
-const options = ref([
-  { id: 1, text: 'Antwort A', correct: false },
-  { id: 2, text: 'Antwort B', correct: false },
-])
+const options = ref([])
+
+onMounted(async () => {
+  // Frage laden
+  const q = await api.get(`api/questions/${questionId}/`)
+  questionText.value = q.text
+  selectedType.value = q.type
+
+  // Antwortmöglichkeiten laden
+  const ans = await api.get(`api/questions/${questionId}/answers/`)
+  options.value = ans.map(a => ({
+    id: a.id,
+    text: a.text,
+    correct: a.correct
+  }))
+})
 
 function selectType(type) {
   selectedType.value = type
   showTypeDropdown.value = false
-  if (type === 'Freitext') {
-    options.value = []
-  }
 }
 
 function addOption() {
@@ -227,10 +239,26 @@ function cancelEdit() {
 }
 
 // Update saveQuestion to redirect:
-function saveQuestion() {
-  // TODO: Save logic
-  alert('Frage gespeichert!')
-  router.push('/edit-quiz')
+async function saveQuestion() {
+  await api.put(`api/questions/${questionId}/`, {
+    text: questionText.value,
+    type: selectedType.value
+  })
+  // Antworten aktualisieren
+  for (const opt of options.value) {
+    if (opt.id) {
+      await api.put(`api/questions/${questionId}/answers/${opt.id}/`, {
+        text: opt.text,
+        correct: opt.correct
+      })
+    } else {
+      await api.post(`api/questions/${questionId}/answers/`, {
+        text: opt.text,
+        correct: opt.correct
+      })
+    }
+  }
+  router.push(`/edit-quiz/${q.quiz}`)
 }
 
 function toggleCorrect(idx) {

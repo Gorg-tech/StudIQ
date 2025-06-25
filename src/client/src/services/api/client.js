@@ -5,29 +5,29 @@ import { API_ENDPOINTS } from './endpoints';
 
 /**
  * Notiz zu CSRF in Django:
- * 
+ *
  * Django verwendet zwei Arten von Cookies:
- * 
- * 1. sessionid: 
+ *
+ * 1. sessionid:
  *    - HTTP-only (kann nicht von JS gelesen werden)
  *    - Für Auth zuständig
  *    - Wird automatisch bei jedem Request mitgeschickt
- * 
+ *
  * 2. csrftoken:
  *    - Nicht HTTP-only, damit JS es lesen kann
  *    - Muss im X-CSRFToken Header mitgeschickt werden
- *    - Verhindert CSRF-Angriffe 
- * 
+ *    - Verhindert CSRF-Angriffe
+ *
  * Workflow:
  * - Server setzt csrftoken Cookie
  * - Wir lesen es mit getCookie aus
  * - Wir schicken es bei POST/PUT/etc. im Header mit
  * - Django prüft ob Header und Cookie übereinstimmen
- * 
- * Dabei wird 'credentials: include' für die Session-Cookies verwendet, 
+ *
+ * Dabei wird 'credentials: include' für die Session-Cookies verwendet,
  * und der CSRF-Token wird manuell ausgelesen und mitgeschickt.
- * 
- * Wichtig: 
+ *
+ * Wichtig:
  * - CSRF-Token wird NUR bei nicht-GET Requests benötigt (POST, PUT, DELETE, etc.)
  * - GET Requests verändern keine Daten und benötigen daher keinen CSRF-Schutz
  * - 'credentials: include' wird bei ALLEN Requests verwendet (für die Session-Cookies)
@@ -60,6 +60,12 @@ export class ApiClient {
       }
     }
 
+    // this necessary for work with JWT
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const options = {
       method,
       headers,
@@ -79,7 +85,7 @@ export class ApiClient {
           params.append(key, value);
         }
       });
-      
+
       const queryString = params.toString();
       if (queryString) {
         url += `?${queryString}`;
@@ -88,30 +94,38 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, options);
-      
+
       // Handle 401 Unauthorized globally
       if (response.status === 401) {
-        // Just redirect to login - no need to clear token since it's a cookie
-        window.location.href = '/login';
+        // Only redirect if not already on /login
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         throw new Error('Session expired. Please log in again.');
       }
-      
+
       // Check for other HTTP errors
       if (!response.ok) {
         return handleApiError(response);
       }
-      
+
       // Handle empty responses
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       }
-      
+
       return await response.text();
     } catch (error) {
       console.error('API request error:', error);
       throw error;
     }
+  }
+
+
+  //Ruft den CSRF-Endpoint auf, um das CSRF-Cookie zu setzen.
+  async ensureCsrf() {
+    await this.get(API_ENDPOINTS.AUTH.CSRF);
   }
 
   // Convenience methods remain the same
