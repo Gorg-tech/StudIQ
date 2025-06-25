@@ -1,49 +1,45 @@
 <template>
       <div class="result-card card">
-        <h2>Dein Quiz-Ergebnis</h2>
+        <h2>Dein Ergebnis</h2>
         <div class="result-summary">
-          <div class="result-score">
-            <span class="score">{{ correctAnswers }}</span> / {{ totalQuestions }} richtig
-          </div>
-          <div class="result-percentage">
-            <span>{{ percentage }}%</span> korrekt beantwortet
-          </div>
-        </div>
-        <div class ="rating">
-          <span v-if="percentage >= 80" class="badge badge-success">Super!</span>
-          <span v-else-if="percentage >= 50" class="badge badge-warning">Gut gemacht!</span>
-          <span v-else class="badge badge-danger">Versuche es nochmal!</span>
+          <div class="result-score">{{ correctAnswers }} / {{ totalQuestions }} richtig</div>
+          <div class="result-percentage">({{ percentage }}%)</div>
         </div>
         <ul class="result-list">
           <li v-for="(result, idx) in results" :key="idx" class="result-item">
             <div class="question">{{ result.question }}</div>
             <div class="answers">
               <span :class="['user-answer', result.isCorrect ? 'correct' : 'incorrect']">
-                Deine Antwort: {{ result.userAnswer }}
+                Deine Antwort: {{ result.selected }}
               </span>
               <span v-if="!result.isCorrect" class="correct-answer">
-                Richtige Antwort: {{ result.correctAnswer }}
+                (Richtig: {{ result.correct }})
               </span>
             </div>
           </li>
         </ul>
         <div class="button-row">
-            <button class="btn btn-primary" @click="restartQuiz">Quiz erneut starten</button>
-            <button class="btn btn-secondary" @click="$router.push('/quiz-overview')">Zur Quizübersicht</button>
+          <button class="btn-primary" @click="restartQuiz">Quiz erneut starten</button>
+          <button class="btn-secondary" @click="goToOverview">Zur Quizübersicht</button>
         </div>
       </div>
     </template>
     
     <script setup>
-    import { ref, computed } from 'vue'
-    import { useRouter } from 'vue-router'
+    import { ref, computed, onMounted } from 'vue'
+    import { useRouter, useRoute } from 'vue-router'
     
     const router = useRouter()
-
-    const results = ref([
-      { question: 'Was ist 2 + 2?', userAnswer: '4', correctAnswer: '4', isCorrect: true },
-      { question: 'Hauptstadt von Frankreich?', userAnswer: 'Berlin', correctAnswer: 'Paris', isCorrect: false }
-    ])
+    const route = useRoute()
+    
+    const results = ref([])
+    
+    onMounted(() => {
+      const stored = localStorage.getItem('quizResults')
+      if (stored) {
+        results.value = JSON.parse(stored)
+      }
+    })
     
     const correctAnswers = computed(() => results.value.filter(r => r.isCorrect).length)
     const totalQuestions = computed(() => results.value.length)
@@ -54,12 +50,13 @@
     )
     
     function restartQuiz() {
-      // Hier Quiz-Logik einfügen
-      alert('Quiz wird neu gestartet!')
-    }
-
-    function goToOverview() {
+      // Quiz zurücksetzen und zur Quiz-Startseite navigieren
+      localStorage.removeItem('quizResults')
       router.push('/quiz')
+    }
+    
+    function goToOverview() {
+      router.push('/quiz-overview')
     }
     </script>
     
@@ -147,23 +144,19 @@
     .btn-primary {
       padding: 12px 20px;
       font-size: 1.1rem;
-      background: var(--color-accent);
+      background: var(--color-primary);
       color: #fff;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       margin-top: 12px;
       transition: background 0.2s;
-    }
-    
-    .btn-primary:hover {
-      background: var(--color-primary);
     }
 
     .btn-secondary {
       padding: 12px 20px;
       font-size: 1.1rem;
-      background: var(--color-accent);
+      background: var(--color-primary);
       color: #fff;
       border: none;
       border-radius: 8px;
@@ -172,7 +165,4 @@
       transition: background 0.2s;
     }
 
-    .btn-secondary:hover {
-      background: var(--color-primary);
-    }
     </style>

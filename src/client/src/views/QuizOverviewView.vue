@@ -121,7 +121,7 @@ function setRating(star) {
 }
 
 function startQuiz() {
-  router.push('/quiz-result')
+  router.push('/quiz')
 }
 
 function goToLernset() {
@@ -254,23 +254,19 @@ function formatDate(ts) {
 .btn-primary {
   padding: 12px 20px;
   font-size: 1.1rem;
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 12px;
   transition: background 0.2s;
-}
-
-.btn-primary:hover {
-  background: var(--color-primary);
 }
 
 .btn-secondary {
   padding: 12px 20px;
   font-size: 1.1rem;
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -279,9 +275,6 @@ function formatDate(ts) {
   transition: background 0.2s;
 }
 
-.btn-secondary:hover {
-  background: var(--color-primary);
-}
 
 .history-section {
   margin-top: 32px;
