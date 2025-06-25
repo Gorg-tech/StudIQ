@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from './api/endpoints';
 
 // Login
 export async function getQuizzes(lernsetID) {
-  return apiClient.post(API_ENDPOINTS.LERNSETS.QUIZZES, {
+  return apiClient.get(API_ENDPOINTS.LERNSETS.QUIZZES, {
   lernsetID
   });
 }
