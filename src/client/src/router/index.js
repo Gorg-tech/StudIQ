@@ -8,6 +8,7 @@ import QuizOverviewView from '@/views/QuizOverviewView.vue'
 import QuizResultView from '@/views/QuizResultView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegistrationView from '@/views/RegistrationView.vue'
+import Quizview from '@/views/QuizView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,7 +57,12 @@ const router = createRouter({
       path: '/quiz-result',
       name: 'quiz-result',
       component: QuizResultView,
-    }
+    },
+    { 
+      path: '/quiz',
+      name: 'quiz',
+      component: Quizview,
+    },
   ],
 })
 
