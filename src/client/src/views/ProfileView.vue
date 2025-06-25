@@ -15,7 +15,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { logout } from '@/services/auth'
+import { logout, isAuthenticated } from '@/services/auth'
 
 const showMenu = ref(false)
 const router = useRouter()
@@ -23,6 +23,7 @@ const router = useRouter()
 async function handleLogout() {
   try {
     await logout()
+    isAuthenticated.value = false;
     router.push('/login')
   } catch (e) {
     // Fehlerbehandlung (optional)
