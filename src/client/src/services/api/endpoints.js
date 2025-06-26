@@ -10,6 +10,15 @@ export const API_ENDPOINTS = {
     ME: 'api/users/me/',
   },
 
+  SEARCH: (searchQuery, filter) => {
+    let url = 'api/search/';
+    const params = [];
+    if (searchQuery) params.push(`q=${encodeURIComponent(searchQuery)}`);
+    if (filter) params.push(`filter=${encodeURIComponent(filter)}`);
+    if (params.length) url += `?${params.join('&')}`;
+    return url;
+  },
+
   STUDIENGAENGE: {
     BASE: 'api/studiengaenge/',
     DETAIL: (studiengangId) => `api/studiengaenge/${studiengangId}/`,

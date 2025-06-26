@@ -8,6 +8,11 @@ export async function getQuizzes(lernsetID) {
   return apiClient.get(API_ENDPOINTS.LERNSETS.QUIZZES(lernsetID));
 }
 
+export async function getSearch({ searchQuery, filter}) {
+  return apiClient.get(API_ENDPOINTS.SEARCH( searchQuery, filter));
+}
+
+
 /* Usage Example:
 
 import { getQuizzes } from '@/services/auth';
