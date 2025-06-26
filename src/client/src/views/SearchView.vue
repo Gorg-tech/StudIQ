@@ -63,7 +63,8 @@ const searchQuery = ref('')
 const activeFilter = ref('Alle')
  // Simulierte Daten aus Modulux
 const quizzes = ref([])
-quizzes.value = await getQuizzes()
+quizzes.value = await getQuizzes('e3b639d8-b316-4282-a149-4744407d2d90')
+
 
 const filteredQuizzes = computed(() =>
   quizzes.value.filter(q =>
