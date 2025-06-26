@@ -8,7 +8,9 @@ import QuizOverviewView from '@/views/QuizOverviewView.vue'
 import QuizResultView from '@/views/QuizResultView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegistrationView from '@/views/RegistrationView.vue'
-import Quizview from '@/views/QuizView.vue'
+import QuizView from '@/views/QuizView.vue'
+import ModulView from '@/views/ModulView.vue'
+import LernsetView from '@/views/LernsetView.vue'
 import { isAuthenticated } from '@/services/auth.js'
 
 const router = createRouter({
@@ -62,7 +64,17 @@ const router = createRouter({
     { 
       path: '/quiz',
       name: 'quiz',
-      component: Quizview,
+      component: QuizView,
+    },
+    { 
+      path: '/modul-overview',
+      name: 'modul-overview',
+      component: ModulView,
+    },
+    { 
+      path: '/lernset-overview',
+      name: 'lernset-overview',
+      component: LernsetView,
     },
   ],
 })
