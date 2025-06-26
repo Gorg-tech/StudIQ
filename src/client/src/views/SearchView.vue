@@ -60,6 +60,8 @@
         v-for="quiz in filteredQuizzes" 
         :key="quiz.id" 
         class="quiz-item"
+        @click="$router.push({ name: 'quiz-overview', params: { quizId: quiz.id } })"
+        style="cursor: pointer;"
       >
         <div class="quiz-header">
           <h3>{{ quiz.title }}</h3>
