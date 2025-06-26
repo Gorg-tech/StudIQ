@@ -19,7 +19,7 @@ const lernsets = ref([
 
 const goToLernset = (lernsetId) => {
   // Du kannst auch lernsetId im Pfad übergeben, z.B. `/lernset-view/${lernsetId}`
-  router.push('/lernset-overview/')
+  router.push('/lernset/')
 }
 </script>
 
