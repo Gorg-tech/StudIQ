@@ -99,18 +99,7 @@ async function fetchFilteredQuizzes() {
   error.value = null;
 
   try {
-    const params = { searchTerm: searchQuery.value };
-
-    // Dynamically add filter parameters based on activeFilter
-    if (activeFilter.value === 'Studiengang') {
-      params.studiengangID = 1; // Replace with actual Studiengang ID logic
-    } else if (activeFilter.value === 'Modul') {
-      params.modulID = 1; // Replace with actual Modul ID logic
-    } else if (activeFilter.value === 'Lernset') {
-      params.lernsetID = 1; // Replace with actual Lernset ID logic
-    } else if (activeFilter.value === 'Quiz') {
-      params.quizID = 1; // Replace with actual Quiz ID logic
-    }
+    const params = { searchTerm: searchQuery.value, filter: activeFilter.value.toLowerCase() };
 
     // Fetch filtered quizzes
     quizzes.value = await getSearch(params);

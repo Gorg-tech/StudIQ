@@ -8,6 +8,12 @@ export async function getQuizzes(lernsetID) {
   return apiClient.get(API_ENDPOINTS.LERNSETS.QUIZZES(lernsetID));
 }
 
+export async function getSearch({ searchQuery, filter}) {
+
+  return apiClient.get(API_ENDPOINTS.SEARCH({ searchQuery, filter}));
+}
+
+
 /* Usage Example:
 
 import { getQuizzes } from '@/services/auth';
@@ -23,14 +29,3 @@ async function handleFetchQuizzes() {
 }
 
 */
-
-export async function getSearch({ searchTerm, modulID, lernsetID, studiengangID }) {
-  const params = {};
-
-  if (searchTerm) params.search = searchTerm;
-  if (modulID) params.modul = modulID;
-  if (lernsetID) params.lernset = lernsetID;
-  if (studiengangID) params.studiengang = studiengangID;
-
-  return apiClient.get(API_ENDPOINTS.QUIZZES.SEARCH, params);
-}
