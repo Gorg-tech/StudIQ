@@ -17,48 +17,47 @@ class ModulAdmin(admin.ModelAdmin):
 
 @admin.register(Lernset)
 class LernsetAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_by', 'created_at', 'modul')
+    list_display = ('id', 'title', 'created_by', 'created_at', 'modul')
     search_fields = ('title', 'description')
     list_filter = ('created_at', 'modul')
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    # Change is_published to is_public
-    list_display = ('title', 'created_by', 'is_public', 'created_at')
+    list_display = ('id', 'title', 'created_by', 'is_public', 'created_at')
     search_fields = ('title', 'description')
     list_filter = ('is_public', 'created_at')
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('text', 'type', 'quiz')
+    list_display = ('id', 'text', 'type', 'quiz')
     list_filter = ('type', 'quiz')
     search_fields = ('text',)
 
 @admin.register(AnswerOption)
 class AnswerOptionAdmin(admin.ModelAdmin):
-    list_display = ('text', 'is_correct', 'question')
+    list_display = ('id', 'text', 'is_correct', 'question')
     list_filter = ('is_correct', 'question')
 
 @admin.register(QuizProgress)
 class QuizProgressAdmin(admin.ModelAdmin):
-    list_display = ('user', 'quiz', 'correct_answers', 'wrong_answers', 'last_reviewed', 'strength_score')
+    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers', 'last_reviewed', 'strength_score')
     list_filter = ('user', 'quiz')
 
 @admin.register(Achievement)
 class AchievementAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'unlock_criteria')
+    list_display = ('id', 'name', 'description', 'unlock_criteria')
 
 @admin.register(UserAchievement)
 class UserAchievementAdmin(admin.ModelAdmin):
-    list_display = ('user', 'achievement', 'unlocked_at')
+    list_display = ('id', 'user', 'achievement', 'unlocked_at')
     list_filter = ('achievement', 'unlocked_at')
 
 @admin.register(QuizSession)
 class QuizSessionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'quiz', 'start_time', 'end_time', 'score', 'mode')
+    list_display = ('id', 'user', 'quiz', 'start_time', 'end_time', 'score', 'mode')
     list_filter = ('mode', 'user')
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('user', 'quiz', 'rating', 'submitted_at')
+    list_display = ('id', 'user', 'quiz', 'rating', 'submitted_at')
     list_filter = ('rating',)
