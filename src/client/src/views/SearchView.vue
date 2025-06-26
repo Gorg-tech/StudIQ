@@ -1,9 +1,9 @@
 <template>
   <div class="search-view">
-    <h2 class="search-heading">Quiz suchen</h2>
+    <h2 class="search-heading">Suche</h2>
 
     <!-- Search bar -->
-    <input v-model="searchQuery" placeholder="Gib einen Titel ein..." class="search-input" />
+    <input v-model="searchQuery" placeholder="Suche nach Studiengang, Lernset, Modul oder Quiz ..." class="search-input" />
 
     <!-- Filter buttons -->
     <div class="filter-buttons">
@@ -12,8 +12,15 @@
         :class="{ 'btn-primary': activeFilter === 'Alle' }"
         @click="activeFilter = 'Alle'"
       >
-        Alle
-      </button>
+      Alle
+    </button>
+    <button
+      class="btn"
+      :class="{ 'btn-primary': activeFilter === 'Studiengang' }"
+      @click="activeFilter = 'Studiengang'"
+    >
+      Studiengang
+    </button>
       <button
         class="btn"
         :class="{ 'btn-primary': activeFilter === 'Modul' }"
@@ -97,7 +104,11 @@ const filteredQuizzes = computed(() =>
   quizzes.value.filter(
     (q) =>
       q.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-      (activeFilter.value === 'Alle' || q.type === activeFilter.value)
+      (
+        activeFilter.value === 'Alle' ||
+        q.type === activeFilter.value ||
+        (activeFilter.value === 'Studiengang' && q.study_program)
+      )
   )
 )
 
