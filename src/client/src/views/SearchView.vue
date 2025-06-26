@@ -13,36 +13,36 @@
     <div class="filter-buttons">
       <button
         class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Alle' }"
-        @click="activeFilter = 'Alle'; fetchFilteredQuizzes()"
+        :class="{ 'btn-primary': activeFilter === 'alle' }"
+        @click="activeFilter = 'alle'; fetchFilteredQuizzes()"
       >
         Alle
       </button>
       <button
         class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Studiengang' }"
-        @click="activeFilter = 'Studiengang'; fetchFilteredQuizzes()"
+        :class="{ 'btn-primary': activeFilter === 'studiengang' }"
+        @click="activeFilter = 'studiengang'; fetchFilteredQuizzes()"
       >
         Studiengang
       </button>
       <button
         class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Modul' }"
-        @click="activeFilter = 'Modul'; fetchFilteredQuizzes()"
+        :class="{ 'btn-primary': activeFilter === 'modul' }"
+        @click="activeFilter = 'modul'; fetchFilteredQuizzes()"
       >
         Modul
       </button>
       <button
         class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Lernset' }"
-        @click="activeFilter = 'Lernset'; fetchFilteredQuizzes()"
+        :class="{ 'btn-primary': activeFilter === 'lernset' }"
+        @click="activeFilter = 'lernset'; fetchFilteredQuizzes()"
       >
         Lernset
       </button>
       <button
         class="btn"
-        :class="{ 'btn-primary': activeFilter === 'Quiz' }"
-        @click="activeFilter = 'Quiz'; fetchFilteredQuizzes()"
+        :class="{ 'btn-primary': activeFilter === 'quiz' }"
+        @click="activeFilter = 'quiz'; fetchFilteredQuizzes()"
       >
         Quiz
       </button>
@@ -58,65 +58,152 @@
       {{ error }}
     </div>
 
-    <!-- Filtered list -->
-    <div v-else-if="filteredQuizzes.length" class="quiz-list">
-      <div
-        v-for="quiz in filteredQuizzes"
-        :key="quiz.id"
-        class="quiz-item"
-        @click="$router.push({ name: 'quiz-overview', params: { quizId: quiz.id } })"
-        style="cursor: pointer;"
-      >
-        <div class="quiz-header">
-          <h3>{{ quiz.title }}</h3>
-          <span class="quiz-type">{{ quiz.type || 'Quiz' }}</span>
+    <!-- Results state -->
+    <template v-else>
+      <!-- Filtered list when we have results -->
+      <div v-if="filteredResults.length" class="quiz-list">
+        <div
+          v-for="item in filteredResults"
+          :key="item.id"
+          class="quiz-item"
+          @click="navigateToItem(item)"
+          style="cursor: pointer;"
+        >
+          <div class="quiz-header">
+            <h3>{{ item.title }}</h3>
+            <span class="quiz-type">{{ item.type }}</span>
+          </div>
+          
+          <div v-if="item.type === 'Quiz'" class="quiz-stats">
+            {{ item.questions?.length || 0 }} Fragen – {{ item.avg_time_spent || 0 }} Min
+          </div>
+          <div v-else-if="item.type === 'Modul'" class="quiz-stats">
+            Semester: {{ item.semester }} – Credits: {{ item.credits }}
+          </div>
+          <div v-else-if="item.type === 'Studiengang'" class="quiz-stats">
+            {{ item.created_at ? new Date(item.created_at).toLocaleDateString() : '' }}
+          </div>
+          
+          <p v-if="item.description" class="quiz-description">
+            {{ item.description }}
+          </p>
         </div>
-        <p class="quiz-stats">
-          {{ quiz.questions?.length || 0 }} Fragen – {{ quiz.avg_time_spent || 0 }} Min
-        </p>
-        <p v-if="quiz.description" class="quiz-description">
-          {{ quiz.description }}
-        </p>
       </div>
-    </div>
-    <p v-else class="no-results">Keine passenden Einträge gefunden.</p>
+      
+      <!-- No results message -->
+      <p v-else class="no-results">Keine passenden Einträge gefunden.</p>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { getSearch } from '@/services/quizzes';
 
+const router = useRouter();
 const searchQuery = ref('');
-const activeFilter = ref('Alle');
-const quizzes = ref([]);
+const activeFilter = ref('alle');
+const results = ref({});
 const loading = ref(false);
 const error = ref(null);
 
-// Fetch quizzes based on active filter and search query
+// Mapping von Button-Label zu Server-Filter
+const filterMap = {
+  alle: null,
+  studiengang: 'studiengaenge',
+  modul: 'modules',
+  lernset: 'lernsets',
+  quiz: 'quizzes',
+};
+
+// Fetch search results
 async function fetchFilteredQuizzes() {
   loading.value = true;
   error.value = null;
-
   try {
-    const params = { searchTerm: searchQuery.value, filter: activeFilter.value.toLowerCase() };
-
-    // Fetch filtered quizzes
-    quizzes.value = await getSearch(params);
+    const filter = filterMap[activeFilter.value.toLowerCase()];
+    
+    results.value = await getSearch({
+      searchQuery: searchQuery.value, 
+      filter
+    });
   } catch (err) {
-    error.value = 'Fehler beim Abrufen der Quiz-Daten.';
+    error.value = 'Fehler beim Abrufen der Suchergebnisse.';
     console.error(err);
   } finally {
     loading.value = false;
   }
 }
 
-// Filtered quizzes based on search query
-const filteredQuizzes = computed(() =>
-  quizzes.value.filter((quiz) =>
-    quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-);
+// Return all filtered results based on the active filter type
+const filteredResults = computed(() => {
+  const filter = activeFilter.value.toLowerCase();
+  
+  if (filter === 'alle') {
+    // Flatten all result types into a single array
+    const allResults = [
+      ...(results.value.quizzes || []).map(item => ({ ...item, type: 'Quiz' })),
+      ...(results.value.lernsets || []).map(item => ({ ...item, type: 'Lernset' })),
+      ...(results.value.modules || []).map(item => ({ ...item, type: 'Modul', title: item.name, description: item.description })),
+      ...(results.value.studiengaenge || []).map(item => ({ ...item, type: 'Studiengang', title: item.name })),
+    ];
+    
+    return allResults.filter(item => 
+      item.title?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+  
+  // Otherwise, return just the requested type
+  const filterKey = filterMap[filter];
+  if (!filterKey || !results.value[filterKey]) {
+    return [];
+  }
+  
+  // Map fields to a consistent format
+  if (filterKey === 'studiengaenge') {
+    return results.value[filterKey].map(item => ({ 
+      ...item, 
+      type: 'Studiengang',
+      title: item.name
+    }));
+  } else if (filterKey === 'modules') {
+    return results.value[filterKey].map(item => ({
+      ...item,
+      type: 'Modul',
+      title: item.name
+    }));
+  } else if (filterKey === 'lernsets') {
+    return results.value[filterKey].map(item => ({
+      ...item,
+      type: 'Lernset'
+    }));
+  } else {
+    return results.value[filterKey].map(item => ({
+      ...item,
+      type: 'Quiz'
+    }));
+  }
+});
+
+// Navigation function for quiz items
+function navigateToItem(item) {
+  if (item.type === 'Quiz') {
+    router.push({ name: 'quiz-overview', params: { quizId: item.id } });
+  } else if (item.type === 'Lernset') {
+    router.push({ name: 'lernset-overview', params: { lernsetId: item.id } });
+  } else if (item.type === 'Modul') {
+    router.push({ name: 'modul-overview', params: { modulId: item.modulId } });
+  } else if (item.type === 'Studiengang') {
+    router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } });
+  }
+}
+
+// Add this section to make initial request when component mounts
+onMounted(() => {
+  fetchFilteredQuizzes();
+});
 </script>
 
 <style scoped>

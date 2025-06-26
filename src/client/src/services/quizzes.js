@@ -9,7 +9,7 @@ export async function getQuizzes(lernsetID) {
 }
 
 export async function getSearch({ searchQuery, filter}) {
-  return apiClient.get(API_ENDPOINTS.SEARCH({ searchQuery, filter}));
+  return apiClient.get(API_ENDPOINTS.SEARCH( searchQuery, filter));
 }
 
 
