@@ -20,7 +20,7 @@ urlpatterns = [
     # Nested: /api/module/<module_id>/lernsets/
     # path('modules/<int:module_id>/lernsets/', views.LernsetsByModuleView.as_view(), name='module-lernsets'),
     # Nested: /api/lernsets/<int:lernset_id>/quizzes/
-    # path('lernsets/<int:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
+    path('lernsets/<uuid:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
     # Nested: /api/quizzes/<int:quiz_id>/questions/
     #path('quizzes/<int:quiz_id>/questions/', views.QuestionsByQuizView.as_view(), name='quiz-questions'),
 ]
