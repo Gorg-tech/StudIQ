@@ -58,16 +58,12 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-
+import { getQuizzes } from '@/services/quizzes'
 const searchQuery = ref('')
 const activeFilter = ref('Alle')
  // Simulierte Daten aus Modulux
-const quizzes = ref([
-  { id: 1, title: 'Laufzeitberechnung', type: 'Modul', questions: 10, duration: 5 },
-  { id: 2, title: 'Analysis Basics', type: 'Lernset', questions: 12, duration: 6 },
-  { id: 3, title: 'C-Programmierung', type: 'Quiz', questions: 33, duration: 13 },
-  { id: 4, title: 'Diskrete Mathematik', type: 'Modul', questions: 14, duration: 7 },
-])
+const quizzes = ref([])
+quizzes.value = await getQuizzes()
 
 const filteredQuizzes = computed(() =>
   quizzes.value.filter(q =>
