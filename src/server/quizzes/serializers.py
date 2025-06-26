@@ -19,8 +19,8 @@ class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = ['id', 'title', 'description', 'created_at', 'created_by',
-                 'rating_score', 'rating_count', 'estimated_duration', 
-                 'is_published', 'lernset', 'questions']
+                 'rating_score', 'rating_count', 'avg_time_spent', 
+                 'is_public', 'lernset', 'questions']
 
 class LernsetSerializer(serializers.ModelSerializer):
     quizzes = QuizSerializer(many=True, read_only=True)
