@@ -3,42 +3,46 @@
     <h2 class="search-heading">Suche</h2>
 
     <!-- Search bar -->
-    <input v-model="searchQuery" placeholder="Suche nach Studiengang, Lernset, Modul oder Quiz ..." class="search-input" />
+    <input
+      v-model="searchQuery"
+      placeholder="Suche nach Studiengang, Lernset, Modul oder Quiz ..."
+      class="search-input"
+    />
 
     <!-- Filter buttons -->
     <div class="filter-buttons">
       <button
         class="btn"
         :class="{ 'btn-primary': activeFilter === 'Alle' }"
-        @click="activeFilter = 'Alle'"
+        @click="activeFilter = 'Alle'; fetchFilteredQuizzes()"
       >
-      Alle
-    </button>
-    <button
-      class="btn"
-      :class="{ 'btn-primary': activeFilter === 'Studiengang' }"
-      @click="activeFilter = 'Studiengang'"
-    >
-      Studiengang
-    </button>
+        Alle
+      </button>
+      <button
+        class="btn"
+        :class="{ 'btn-primary': activeFilter === 'Studiengang' }"
+        @click="activeFilter = 'Studiengang'; fetchFilteredQuizzes()"
+      >
+        Studiengang
+      </button>
       <button
         class="btn"
         :class="{ 'btn-primary': activeFilter === 'Modul' }"
-        @click="activeFilter = 'Modul'"
+        @click="activeFilter = 'Modul'; fetchFilteredQuizzes()"
       >
         Modul
       </button>
       <button
         class="btn"
         :class="{ 'btn-primary': activeFilter === 'Lernset' }"
-        @click="activeFilter = 'Lernset'"
+        @click="activeFilter = 'Lernset'; fetchFilteredQuizzes()"
       >
         Lernset
       </button>
       <button
         class="btn"
         :class="{ 'btn-primary': activeFilter === 'Quiz' }"
-        @click="activeFilter = 'Quiz'"
+        @click="activeFilter = 'Quiz'; fetchFilteredQuizzes()"
       >
         Quiz
       </button>
@@ -56,9 +60,9 @@
 
     <!-- Filtered list -->
     <div v-else-if="filteredQuizzes.length" class="quiz-list">
-      <div 
-        v-for="quiz in filteredQuizzes" 
-        :key="quiz.id" 
+      <div
+        v-for="quiz in filteredQuizzes"
+        :key="quiz.id"
         class="quiz-item"
         @click="$router.push({ name: 'quiz-overview', params: { quizId: quiz.id } })"
         style="cursor: pointer;"
@@ -80,40 +84,50 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { getQuizzes } from '@/services/quizzes'
+import { ref, computed } from 'vue';
+import { getSearch } from '@/services/quizzes';
 
-const searchQuery = ref('')
-const activeFilter = ref('Alle')
-const quizzes = ref([])
-const loading = ref(true)
-const error = ref(null)
+const searchQuery = ref('');
+const activeFilter = ref('Alle');
+const quizzes = ref([]);
+const loading = ref(false);
+const error = ref(null);
 
-// Load quizzes when component mounts
-onMounted(async () => {
+// Fetch quizzes based on active filter and search query
+async function fetchFilteredQuizzes() {
+  loading.value = true;
+  error.value = null;
+
   try {
-    loading.value = true
-    quizzes.value = await getQuizzes('e3b639d8-b316-4282-a149-4744407d2d90')
-    loading.value = false
+    const params = { searchTerm: searchQuery.value };
+
+    // Dynamically add filter parameters based on activeFilter
+    if (activeFilter.value === 'Studiengang') {
+      params.studiengangID = 1; // Replace with actual Studiengang ID logic
+    } else if (activeFilter.value === 'Modul') {
+      params.modulID = 1; // Replace with actual Modul ID logic
+    } else if (activeFilter.value === 'Lernset') {
+      params.lernsetID = 1; // Replace with actual Lernset ID logic
+    } else if (activeFilter.value === 'Quiz') {
+      params.quizID = 1; // Replace with actual Quiz ID logic
+    }
+
+    // Fetch filtered quizzes
+    quizzes.value = await getSearch(params);
   } catch (err) {
-    console.error('Failed to load quizzes:', err)
-    error.value = 'Fehler beim Laden der Quizze. Bitte versuche es später erneut.'
-    loading.value = false
+    error.value = 'Fehler beim Abrufen der Quiz-Daten.';
+    console.error(err);
+  } finally {
+    loading.value = false;
   }
-})
+}
 
+// Filtered quizzes based on search query
 const filteredQuizzes = computed(() =>
-  quizzes.value.filter(
-    (q) =>
-      q.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-      (
-        activeFilter.value === 'Alle' ||
-        q.type === activeFilter.value ||
-        (activeFilter.value === 'Studiengang' && q.study_program)
-      )
+  quizzes.value.filter((quiz) =>
+    quiz.title.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
-)
-
+);
 </script>
 
 <style scoped>
