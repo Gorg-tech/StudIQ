@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import IconPlus from '@/components/icons/IconPlus.vue' // Passe ggf. den Pfad an
 
 // Beispiel-Daten
 const lernsetName = ref('Graphentheorie Grundlagen')
@@ -52,6 +53,10 @@ const goToQuizOverview = (quizId) => {
   router.push('/quiz-overview/')
 }
 
+const goToEditQuiz = () => {
+  router.push('/edit-quiz/0')
+}
+
 // Hilfsfunktion für Sterne
 const getStars = (rating) => {
   const fullStars = Math.floor(rating)
@@ -96,7 +101,16 @@ const getStars = (rating) => {
 
     <!-- Normale Quizze -->
     <section class="quizzes-section">
-      <h2 class="section-title">Quizze</h2>
+      <div class="quizze-title-row">
+        <h2 class="section-title">Quizze</h2>
+        <button
+          class="plus-btn"
+          @click="goToEditQuiz"
+          aria-label="Quiz hinzufügen"
+        >
+          <IconPlus />
+        </button>
+      </div>
       <div class="quizzes-list">
         <button
           v-for="quiz in quizzes"
@@ -189,6 +203,32 @@ const getStars = (rating) => {
   font-weight: 600;
   color: var(--color-accent, #1565c0);
   margin-bottom: 14px;
+}
+
+.quizze-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.plus-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--color-primary, #1976d2);
+  display: flex;
+  align-items: center;
+  transition: color 0.18s;
+}
+.plus-btn:hover,
+.plus-btn:focus {
+  color: #1565c0;
+}
+.plus-btn svg {
+  width: 2.1rem;
+  height: 2.1rem;
 }
 
 .quick-quiz-list {
