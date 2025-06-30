@@ -197,11 +197,11 @@ const filteredResults = computed(() => {
 // Navigation function for quiz items
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ name: 'quiz-overview', params: { quizId: item.id } });
+    router.push({ name: 'quiz', params: { quizId: item.id } });
   } else if (item.type === 'Lernset') {
-    router.push({ name: 'lernset-overview', params: { lernsetId: item.id } });
+    router.push({ path: '/lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
-    router.push({ name: 'modul-overview', params: { modulId: item.modulId } });
+    router.push({ path: '/modul', params: { modulId: item.modulId } });
   } else if (item.type === 'Studiengang') {
     router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } });
   }
