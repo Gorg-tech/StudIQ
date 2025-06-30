@@ -56,7 +56,7 @@
     }
     
     function goToOverview() {
-      router.push('/quiz-overview')
+      router.push({ name: 'quiz-overview', params: { quizId: 1 } }) // Hardcoded quizId
     }
     </script>
     
