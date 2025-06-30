@@ -29,10 +29,10 @@
             <button class="btn btn-primary" @click="startQuiz">
               Quiz starten
             </button>
-            <button class="btn btn-secondary" @click="goToLernset">
+            <button class="btn" @click="goToLernset">
               Zum Lernset
             </button>
-            <button class="btn btn-tertiary" @click="showStats = true">
+            <button class="btn" @click="showStats = true">
               Statistiken
             </button>
           </div>
@@ -225,46 +225,6 @@ function formatDate(ts) {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.btn {
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  font-size: 1rem;
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
-}
-
-.btn-secondary {
-  background-color: #f0f0f0;
-  color: var(--color-text);
-}
-
-.btn-secondary:hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
-}
-
-.btn-tertiary {
-  background-color: #e3f2fd;
-  color: var(--color-primary);
-}
-
-.btn-tertiary:hover {
-  background-color: #bbdefb;
-  transform: translateY(-2px);
 }
 
 .stats-row {
