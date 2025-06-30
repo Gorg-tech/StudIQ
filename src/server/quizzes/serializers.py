@@ -14,13 +14,17 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ['id', 'text', 'type', 'answer_options', 'quiz']
 
 class QuizSerializer(serializers.ModelSerializer):
+    lernset_title = serializers.CharField(source='lernset.title', read_only=True)
+
     questions = QuestionSerializer(many=True, read_only=True)
     
     class Meta:
         model = Quiz
-        fields = ['id', 'title', 'description', 'created_at', 'created_by',
-                 'rating_score', 'rating_count', 'avg_time_spent', 
-                 'is_public', 'lernset', 'questions']
+        fields = [
+            'id', 'title', 'description', 'created_at', 'created_by',
+            'rating_score', 'rating_count', 'avg_time_spent', 
+            'is_public', 'lernset', 'lernset_title', 'questions'
+        ]
 
 class LernsetSerializer(serializers.ModelSerializer):
     quizzes = QuizSerializer(many=True, read_only=True)
