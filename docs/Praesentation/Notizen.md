@@ -13,7 +13,7 @@ So wollen wir Studierende durch einen einfachen Zugang zum Lehrmaterial und das 
 - Die Quizzes lassen sich natürlich auch lösen, wobei es für die Abwechslung verschiedene Fragetypen gibt, z.B. Multiple-Choice oder Drag-and-Drop von Fragen und entsprechenden Antworten.
 - Ein weiteres Feature sind die persönlichen Statistiken, damit jeder Nutzer seine Statistiken und seine erreichten Punkte sehen kann.
 - Für eine schnelle Orientierung lassen sich Quizze, Module, Lernsets oder Studiengänge auch gezielt über die Suchfunktion finden.
-- Und eins der wichtigsten Elemente ist das Leaderboard und Streaks, damit jeder sich mit anderen Lernenden vergleichen kann und dadurch motiviert wird, noch besser zu werden um eines Tages an der Spitze zu stehen.
+- Und eins der wichtigsten Elemente ist das Leaderboard, damit jeder sich mit anderen Lernenden vergleichen kann und dadurch motiviert wird, noch besser zu werden um eines Tages an der Spitze zu stehen.
 
 **Unsere Architektur haben wir wie folgt gewählt:** 
 Wir entwickeln eine Web-App, da unserer Meinung nach so der Zugang zum Lernen am einfachsten und schnellsten ist. Für dessen Entwicklung haben wir als Frontend Vue verwendet, weil es uns am Einsteigerfreundlichsten erschien. Als Backend-Framework haben wir uns für Django entschieden, da es eine schnelle Prototypentwicklung ermöglicht und bereits viele fertige Komponenten mitbringt. Als Schnittstelle zwischen dem Frontend-Client und dem Backend-Server dient das Django REST Framework.
