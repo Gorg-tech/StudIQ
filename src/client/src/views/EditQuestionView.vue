@@ -117,7 +117,8 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { onMounted } from 'vue'
-import api from '@/services/api/client'
+import { useQuizEditStore } from '@/stores/editQuiz'
+import { getQuestionAnswer, getQuestionAnswers } from '@/services/quizzes'
 import IconPen from '@/components/icons/IconPen.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 import IconSave from '@/components/icons/IconSave.vue'
@@ -125,7 +126,11 @@ import IconTrash from '@/components/icons/IconTrashcan.vue'
 
 const router = useRouter()
 const route = useRoute()
-const questionId = ref(route.params.questionId || null)
+
+const quizEdit = useQuizEditStore()
+
+const questionId = Number(route.params.questionId)
+const question = ref(null)
 
 const questionText = ref('')
 const questionTypes = ['Single Choice', 'Multiple Choice']
@@ -135,18 +140,43 @@ const showTypeDropdown = ref(false)
 const options = ref([])
 
 onMounted(async () => {
-  // Frage laden
-  const q = await api.get(`api/questions/${questionId}/`)
-  questionText.value = q.text
-  selectedType.value = q.type
 
-  // Antwortmöglichkeiten laden
-  const ans = await api.get(`api/questions/${questionId}/answers/`)
-  options.value = ans.map(a => ({
-    id: a.id,
-    text: a.text,
-    correct: a.correct
-  }))
+  // Frage laden
+  question.value = quizEdit.getQuestion(questionId)
+  if(!question.value) {
+    console.error('Frage nicht gefunden:', questionId)
+    router.push('/edit-quiz')
+    return
+  }
+
+  questionText.value = question.value.text || ''
+  selectedType.value = question.value.type || 'Single Choice'
+
+  if(question.value._status === 'unchanged') {
+    // Wenn die Frage noch nicht geändert wurde, aus der Datenbank laden
+    const loadedAnswers = await getQuestionAnswers(questionId)
+    if (!loadedAnswers) {
+      console.error('Frage konnte nicht geladen werden:', questionId)
+      router.push('/edit-quiz')
+      return
+    }
+    // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getQuestionAnswer correct Variable laden und in options speichern
+    for (const answer of loadedAnswers) {
+      const answerDetails = await getQuestionAnswer(questionId, answer.id)
+      options.value.push({
+        id: answer.id,
+        text: answer.text,
+        correct: answerDetails.correct
+      })
+    }
+    
+  } else {
+    options.value = question.value.options.map(opt => ({
+      id: opt.id,
+      text: opt.text,
+      correct: opt.correct
+    }))
+  }
 })
 
 function selectType(type) {
@@ -240,25 +270,13 @@ function cancelEdit() {
 
 // Update saveQuestion to redirect:
 async function saveQuestion() {
-  await api.put(`api/questions/${questionId}/`, {
+  quizEdit.updateQuestion(question.value.id, {
     text: questionText.value,
-    type: selectedType.value
+    type: selectedType.value,
+    options: options.value.map(opt => ({ ...opt })),
+    _status: question.value._status === 'new' ? 'new' : 'edited'
   })
-  // Antworten aktualisieren
-  for (const opt of options.value) {
-    if (opt.id) {
-      await api.put(`api/questions/${questionId}/answers/${opt.id}/`, {
-        text: opt.text,
-        correct: opt.correct
-      })
-    } else {
-      await api.post(`api/questions/${questionId}/answers/`, {
-        text: opt.text,
-        correct: opt.correct
-      })
-    }
-  }
-  router.push(`/edit-quiz/${q.quiz}`)
+  router.push(`/edit-quiz`)
 }
 
 function toggleCorrect(idx) {

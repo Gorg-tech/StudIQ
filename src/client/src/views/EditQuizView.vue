@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { onMounted } from 'vue'
-import api from '@/services/api/client'
+import { getQuiz, getQuizQuestions, createQuiz, deleteQuizQuestion, updateQuiz, updateQuizQuestion } from '@/services/quizzes'
+import { useQuizEditStore } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 
@@ -11,33 +12,59 @@ const router = useRouter()
 const route = useRoute()
 const quizId = ref(route.params.quizId || null)
 
-const quizTitle = ref('Mein erstes Quiz')
-const questions = ref([])
+const quizEdit = useQuizEditStore()
+
+// const quizTitle = ref('Mein Quiz')
+// const questions = ref([])
 
 const showDeleteModal = ref(false)
 const questionToDelete = ref(null)
 const questionToDeleteText = ref('')
 
 const showBackModal = ref(false)
+const isNewQuiz = ref(!route.params.quizId)
 
 onMounted(async () => {
-  if (!quizId.value) {
-    // Kein Quiz vorhanden, neues Quiz anlegen
-    const newQuiz = await api.post('api/quizzes/', { title: quizTitle.value })
-    quizId.value = newQuiz.id
-    router.replace({ name: 'edit-quiz', params: { quizId: newQuiz.id } })
-    // Nach router.replace wird der Code unten nicht mehr ausgeführt
+  if (isNewQuiz.value) {
+    // Nur lokal initialisieren - Speicherung erst bei Click auf den Button "Speichern"
+    if(!quizEdit.quizLoaded.value) {
+      quizEdit.quizLoaded = true
+      quizEdit.quizTitle = 'Mein Quiz'
+      quizEdit.questions = [
+        {
+          id: Date.now(), // temporäre ID
+          text: 'Frage 1',
+          type: 'Multiple Choice',
+          options: [
+            { id: Date.now() + 1, text: 'Antwort 1', correct: false },
+            { id: Date.now() + 2, text: 'Antwort 2', correct: true },
+            { id: Date.now() + 3, text: 'Antwort 3', correct: false }
+          ],
+          _status: 'new'
+        },
+        {
+          id: Date.now() + 1, // temporäre ID
+          text: 'Frage 2',
+          type: 'Multiple Choice',
+          options: [
+            { id: Date.now() + 4, text: 'Antwort A', correct: true },
+            { id: Date.now() + 5, text: 'Antwort B', correct: false },
+            { id: Date.now() + 6, text: 'Antwort C', correct: false }
+          ],
+          _status: 'new'
+        }
+      ]
+    }
     return
   }
-  // Quiz laden
-  const quiz = await api.get(`api/quizzes/${quizId}/`)
-  quizTitle.value = quiz.title
-  // Fragen laden
-  const serverQuestions = await api.get(`api/quizzes/${quizId}/questions/`)
-  questions.value = serverQuestions.map(q => ({
+  const quiz = await getQuiz(quizId.value)
+  quizEdit.quizTitle.value = quiz.title
+  const serverQuestions = await getQuizQuestions(quizId.value)
+  quizEdit.questions.value = serverQuestions.map(q => ({
     id: q.id,
     text: q.text,
-    type: q.type
+    type: q.type,
+    _status: 'unchanged'
   }))
 })
 
@@ -45,6 +72,8 @@ const goBack = () => {
   showBackModal.value = true
 }
 const confirmBack = () => {
+  quizEdit.resetQuiz()
+  quizEdit.quizLoaded = false
   showBackModal.value = false
   router.push('/')
 }
@@ -53,36 +82,124 @@ const cancelBack = () => {
 }
 
 const saveQuiz = async () => {
-  await api.put(`api/quizzes/${quizId}/`, { title: quizTitle.value })
+  let realQuizId = quizId.value
+
+  // TODO: API Requests zum Speichern des Quiz
+  // Auskommentiert, da Speicherung noch nicht funktioniert, weil:
+  // - created_by keinen gültigen User bekommt; müsste die UUID des jetzigen Users sein
+  // - Lernset bzw. Lernset ID nicht bekannt ist
+
+  // if (isNewQuiz.value) {
+  //   // Neues Quiz auf Server anlegen
+  //   // ['id', 'title', 'description', 'created_at', 'created_by', 'rating_score', 'rating_count', 'avg_time_spent', 'is_public', 'lernset', 'questions']
+  //   const newQuiz = await createQuiz({
+  //     title: quizEdit.quizTitle,
+  //     description: '', // Description nicht in UI implementiert
+  //     created_at: new Date().toISOString(),
+  //     created_by: 1234, // TODO: Muss mit dem jetzigen User ersetzt werden; aber keine Ahnung, woher ich den bekomme
+  //     rating_score: 0,
+  //     rating_count: 0,
+  //     avg_time_spent: 0,
+  //     is_public: true, // Standardmäßig öffnetlich
+  //     lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Beispielhaftes Lernset (MUSS VALIDE SEIN)
+  //     questions: []
+  //   })
+  //   realQuizId = newQuiz.id
+  //   quizId.value = realQuizId
+  //   isNewQuiz.value = false
+  // } else {
+  //   await updateQuiz(realQuizId, {
+  //     title: quizEdit.quizTitle
+  //   })
+  // }
+
+  // for (const q of quizEdit.questions.value) {
+  //   // Alle Fragen auf Server speichern
+  //   // ['id', 'text', 'type', 'answer_options', 'quiz']
+  //   if (q._status === 'new') {
+  //     await createQuizQuestion(realQuizId, {
+  //       text: q.text,
+  //       type: q.type,
+  //       answer_options: [], // wird später von Server generiert
+  //       quiz: realQuizId
+  //     })
+  //   } else if (q._status === 'edited') {
+  //     await updateQuizQuestion(realQuizId, q.id, { 
+  //       text: q.text, 
+  //       type: q.type,
+  //       answer_options: [], // wird später von Server generiert
+  //       quiz: realQuizId
+  //     })
+  //   } else if (q._status === 'deleted') {
+  //     await deleteQuizQuestion(realQuizId, q.id)
+  //   }
+
+  //   // Antwortoptionen speichern (nur für neue/geänderte Fragen)
+  //   // ['id', 'text', 'is_correct']
+  //   if (q.options && (q._status === 'new' || q._status === 'edited')) {
+  //     for (const opt of q.options) {
+  //       // Wenn Option keine ID hat, ist sie neu
+  //       if (!opt.id) {
+  //         await createQuestionAnswer(questionId, {
+  //           text: opt.text,
+  //           is_correct: opt.correct
+  //         })
+  //       } else {
+  //         await updateQuestionAnswer(questionId, opt.id, {
+  //           id: opt.id,
+  //           text: opt.text,
+  //           is_correct: opt.correct
+  //         })
+  //       }
+  //     }
+  //   }
+
+  // }
+
+  alert('Speicherung noch nicht implementiert!')
+
+  quizEdit.resetQuiz()
   router.push('/')
 }
 
 const addQuestion = async () => {
-  const newQ = await api.post('api/questions/', {
-    quiz: quizId,
+  quizEdit.addQuestion({
+    id: Date.now(), // temporäre ID
     text: '',
-    type: 'Multiple Choice'
-  });
-  questions.value.push({
-    id: newQ.id,
-    text: newQ.text,
-    type: newQ.type
-  });
+    type: 'Multiple Choice',
+    options: [
+            { id: Date.now() + 4, text: 'Antwort A', correct: true },
+            { id: Date.now() + 5, text: 'Antwort B', correct: false },
+            { id: Date.now() + 6, text: 'Antwort C', correct: false }
+          ],
+    _status: 'new'
+  })
+}
+
+const deleteLocalQuestion = (id) => {
+
+  const q = quizEdit.getQuestion(id)
+  if (q._status === 'new') {
+    quizEdit.removeQuestion(id)
+  } else {
+    q._status = 'deleted'
+  }
 }
 
 const goToQuestion = (questionId) => {
-  router.push(`/edit-question/${questionId}`)
+  // Immer lokale Frage suchen und ID an EditQuestionView übergeben
+  router.push({ name: 'edit-question', params: { questionId } })
 }
 
 const confirmDelete = (event, questionId) => {
   event.stopPropagation()
   questionToDelete.value = questionId
-  questionToDeleteText.value = questions.value.find(q => q.id === questionId).text
+  questionToDeleteText.value = quizEdit.getQuestion(questionToDelete.value).text
   showDeleteModal.value = true
 }
 const deleteQuestion = async () => {
-  await api.delete(`api/questions/${questionToDelete.value}/`)
-  questions.value = questions.value.filter(q => q.id !== questionToDelete.value)
+  deleteLocalQuestion(questionToDelete.value)
+  quizEdit.questions.value = quizEdit.getQuestion(questionToDelete.value)
   showDeleteModal.value = false
   questionToDelete.value = null
   questionToDeleteText.value = ''
@@ -104,7 +221,7 @@ const cancelDelete = () => {
         <label class="block-label" for="quizTitle">Dein Quiz-Titel</label>
         <input
           id="quizTitle"
-          v-model="quizTitle"
+          v-model="quizEdit.quizTitle"
           class="input-title"
           placeholder="Quiz-Titel hier eingeben"
         />
@@ -121,7 +238,7 @@ const cancelDelete = () => {
           </button>
         </div>
         <div
-          v-for="(question, idx) in questions"
+          v-for="(question, idx) in quizEdit.questions"
           :key="question.id"
           class="question-field question-interactive"
           @click="goToQuestion(question.id)"
