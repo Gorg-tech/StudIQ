@@ -20,7 +20,7 @@ Als Prüfungsvorbereiter ist StudIQ in erster Linie für Studenten gemacht. Ihne
 - Und eins der wichtigsten Elemente ist das Leaderboard, damit jeder sich mit anderen Lernenden vergleichen kann und dadurch motiviert wird noch besser zu werden um eines Tages an der Spitze zu stehen.
 
 Unsere Architektur haben wir wie folgt gewählt: 
-Wir entwickeln eine Web-App, da unserer Meinung nach so der Zugang zum Lernen am einfachsten und schnellsten ist. Für dessen Entwicklung haben wir als Frontend Vue verwendet, weil es uns am Einsteigerfreundlichsten erschien. Als Backend-Framework haben wir uns für Django entschieden, welches auch unsere Datenbank verwaltet, die SQLite verwendet. Als Schnittstelle zwischen Dem Fronend-Client und dem Backend-Server dient FastAPI.
+Wir entwickeln eine Web-App, da unserer Meinung nach so der Zugang zum Lernen am einfachsten und schnellsten ist. Für dessen Entwicklung haben wir als Frontend Vue verwendet, weil es uns am Einsteigerfreundlichsten erschien. Als Backend-Framework haben wir uns für Django entschieden, welches auch unsere Datenbank verwaltet, die SQLite verwendet. Als Schnittstelle zwischen dem Frontend-Client und dem Backend-Server dient das Django REST Framework.
 Unsere Architektur ist darauf ausgelegt, skalierbar zu sein und neue Features wie z. B. gemeinsame Study-Groups einfach integrieren zu können.
 
 
