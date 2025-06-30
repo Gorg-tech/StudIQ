@@ -4,3 +4,8 @@
 .DS_Store
 *~
 .vscode
+
+# Bytecode-Dateien
+*.pyc
+*.pyo
+*.pyd
