@@ -10,9 +10,9 @@ Kommen wir zum Produktkonzept:
 Als Prüfungsvorbereiter ist StudIQ in erster Linie für Studenten gemacht. Ihnen sollen durch spielerische Elemnte das Lernen für die Prüfung erlechtert werden. In zweiter Linie auch die Professoren, die qualitative Quizzes für ihre Studenten erstellen können.
 So wollen wir Studenten durch einen einfachen Zugang zum Lehrmaterial und das Hinzufügen von spielerischen und kompetitiven Elementen zum Lernen motivieren. Das Lehrmaterial wird dabei größtenteils durch die Nutzer erzeugt, die Studenten.
 - Denn die Quizzes werden von Studenten für Studenten erstellt, so ist die Aktualität der Themen am besten garantiert. Die Überprüfung der Quizzes erfolgt durch ein Votingsystem, indem Studenten nach dem Lösen des Quizzes dieses up-oder downvoten können, wie ihnen das Quiz gefallen hat.
-- Die Quizzes lassen sich natürlich auch lösen, wobei es für die Abwechslung verschiedene Fragetypen gibt, zB Multiple-Choice oder Drag-and-Drop von Fragen und entsprechenden Antworten
+- Die Quizzes lassen sich natürlich auch lösen, wobei es für die Abwechslung verschiedene Fragetypen gibt, z.B. Multiple-Choice oder Drag-and-Drop von Fragen und entsprechenden Antworten
 - Ein weiteres Feature sind die persönlichen Statistiken, damit jeder Nutzer seine Statistiken und seine erreichten Punkte sehen kann.
-- Für eine bessere Übersichtlichkeit lassen sich die Quizzes auch suchen und nach Modul bzw. Lernset filtern
+- Für eine schnelle Orientierung lassen sich Quizze, Module, Lernsets oder Studiengänge auch gezielt über die Suchfunktion finden.
 - Und eins der wichtigsten Elemente ist das Leaderboard, damit jeder sich mit anderen Lernenden vergleichen kann und dadurch motiviert wird noch besser zu werden um eines Tages an der Spitze zu stehen.
 
 Unsere Architektur haben wir wie folgt gewählt: 
