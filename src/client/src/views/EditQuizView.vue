@@ -14,9 +14,6 @@ const quizId = ref(route.params.quizId || null)
 
 const quizEdit = useQuizEditStore()
 
-// const quizTitle = ref('Mein Quiz')
-// const questions = ref([])
-
 const showDeleteModal = ref(false)
 const questionToDelete = ref(null)
 const questionToDeleteText = ref('')
@@ -27,7 +24,7 @@ const isNewQuiz = ref(!route.params.quizId)
 onMounted(async () => {
   if (isNewQuiz.value) {
     // Nur lokal initialisieren - Speicherung erst bei Click auf den Button "Speichern"
-    if(!quizEdit.quizLoaded.value) {
+    if(!quizEdit.quizLoaded) {
       quizEdit.quizLoaded = true
       quizEdit.quizTitle = 'Mein Quiz'
       quizEdit.questions = [
