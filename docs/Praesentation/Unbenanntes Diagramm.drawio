@@ -16,7 +16,7 @@
             <mxPoint x="280" y="500" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="gq_gBnLXF5JIvPRgBTMn-4" value="&lt;div&gt;Kommunikation über&lt;/div&gt;&lt;div&gt;&lt;b&gt;FastAPI&lt;/b&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="gq_gBnLXF5JIvPRgBTMn-3">
+        <mxCell id="gq_gBnLXF5JIvPRgBTMn-4" value="&lt;div&gt;Kommunikation über&lt;/div&gt;&lt;div&gt;&lt;b&gt;REST-API&lt;/b&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="gq_gBnLXF5JIvPRgBTMn-3">
           <mxGeometry x="0.0802" y="2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
