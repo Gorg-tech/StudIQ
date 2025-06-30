@@ -127,6 +127,15 @@ body {
   background-color: rgba(255, 75, 40, 0.1);
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+.btn-primary:disabled {
+  background-color: #b0bec5;
+}
+
+
 /* Icon Button */
 .btn-icon {
   background: none;

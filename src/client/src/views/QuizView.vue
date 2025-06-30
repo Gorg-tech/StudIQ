@@ -18,9 +18,24 @@
       <div class="quiz-content">
         <div class="question-block">
           <h3>{{ currentQuestion.question }}</h3>
-          <div v-for="(answer, index) in currentQuestion.answers" :key="index" class="answer-row">
+          <div
+            v-for="(answer, index) in currentQuestion.answers"
+            :key="index"
+            class="answer-row"
+            :class="{
+              selected: answered && selectedAnswer === answer,
+              correct: answered && answer === currentQuestion.correctAnswer,
+              incorrect: answered && selectedAnswer === answer && answer !== currentQuestion.correctAnswer
+            }"
+          >
             <label>
-              <input type="radio" :value="answer" v-model="selectedAnswer" name="answer">
+              <input
+                type="radio"
+                :value="answer"
+                v-model="selectedAnswer"
+                name="answer"
+                :disabled="answered"
+              >
               {{ answer }}
             </label>
           </div>
@@ -196,41 +211,6 @@ export default {
   margin-top: 18px;
 }
 
-.btn {
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  font-size: 1rem;
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:disabled {
-  background-color: #b0bec5;
-  cursor: not-allowed;
-}
-
-.btn-primary:hover:enabled {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
-}
-
-.btn-secondary {
-  background-color: #f0f0f0;
-  color: var(--color-text);
-}
-
-.btn-secondary:hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
-}
-
 .result-message {
   margin-top: 18px;
   font-size: 1.1rem;
@@ -244,5 +224,15 @@ export default {
 .user-answer.incorrect {
   color: #f44336;
   font-weight: 600;
+}
+
+.answer-row.selected {
+  background: #ffe0b2;
+}
+.answer-row.correct {
+  background: #c8e6c9;
+}
+.answer-row.incorrect {
+  background: #ffcdd2;
 }
 </style>
