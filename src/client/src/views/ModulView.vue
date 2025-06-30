@@ -1,14 +1,17 @@
+```vue name=ModuleOverview.vue
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import IconLink from '@/components/icons/IconLink.vue'
+import IconPlus from '@/components/icons/IconPlus.vue'
+
 
 const router = useRouter()
 
 // Beispiel-Daten für das Modul und Lernsets
-const moduleName = ref('Diskrete Mathematik')
+const moduleName = ref('TestModul')
 const moduleDescription = ref('Dieses Modul behandelt grundlegende Themen der diskreten Mathematik wie Mengen, Relationen, Graphen, Kombinatorik und mehr.')
-const moduleLink = ref('https://beispiel-universitaet.de/module/diskrete-mathematik')
+const moduleLink = ref('https://www.htw-dresden.de/')
 
 const lernsets = ref([
   { id: 1, title: 'Definitionen', quizCount: 5 },
@@ -17,9 +20,39 @@ const lernsets = ref([
   { id: 4, title: 'Graphentheorie', quizCount: 2 },
 ])
 
+const showNewLernsetModal = ref(false)
+const showConfirmModal = ref(false)
+const newLernsetTitle = ref('')
+const pendingLernsetTitle = ref('')
+
 const goToLernset = (lernsetId) => {
-  // Du kannst auch lernsetId im Pfad übergeben, z.B. `/lernset-view/${lernsetId}`
   router.push('/lernset/')
+}
+
+const handleOpenNewLernsetModal = () => {
+  newLernsetTitle.value = ''
+  showNewLernsetModal.value = true
+}
+
+const handleCloseNewLernsetModal = () => {
+  showNewLernsetModal.value = false
+  newLernsetTitle.value = ''
+}
+
+const handleShowConfirmModal = () => {
+  pendingLernsetTitle.value = newLernsetTitle.value
+  showNewLernsetModal.value = false
+  showConfirmModal.value = true
+}
+
+const handleCloseConfirmModal = () => {
+  showConfirmModal.value = false
+  pendingLernsetTitle.value = ''
+}
+
+const createLernset = (titel) => {
+  // Hier muss der API-Call erfolgen
+  id = 1111;
 }
 </script>
 
@@ -46,7 +79,12 @@ const goToLernset = (lernsetId) => {
 
     <main>
       <section class="lernsets-section card">
-        <h2 class="lernsets-title">Lernsets</h2>
+        <div class="lernsets-title-row">
+          <h2 class="lernsets-title">Lernsets</h2>
+          <button class="plus-btn" @click="handleOpenNewLernsetModal" aria-label="Neues Lernset erstellen">
+            <IconPlus />
+          </button>
+        </div>
         <div class="lernsets-list">
           <div
             v-for="set in lernsets"
@@ -63,6 +101,34 @@ const goToLernset = (lernsetId) => {
         </div>
       </section>
     </main>
+
+    <!-- Modal: Neues Lernset erstellen -->
+    <div v-if="showNewLernsetModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Neues Lernset erstellen</h3>
+        <input
+          v-model="newLernsetTitle"
+          class="lernset-input"
+          placeholder="Lernset-Name"
+          @keyup.enter="newLernsetTitle.trim() ? handleShowConfirmModal() : null"
+        />
+        <div class="modal-actions">
+          <button class="modal-btn" @click="handleShowConfirmModal" :disabled="!newLernsetTitle.trim()">Erstellen</button>
+          <button class="modal-btn cancel" @click="handleCloseNewLernsetModal">Abbruch</button>
+        </div>
+      </div>
+    </div>
+    <!-- Modal: Bestätigung -->
+    <div v-if="showConfirmModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Lernset wirklich erstellen?</h3>
+        <p>Möchtest du das Lernset <b>{{ pendingLernsetTitle }}</b> wirklich erstellen?</p>
+        <div class="modal-actions">
+          <button class="modal-btn" @click="createLernset(pendingLernsetTitle)">Ja, erstellen</button>
+          <button class="modal-btn cancel" @click="handleCloseConfirmModal">Abbruch</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -134,11 +200,38 @@ const goToLernset = (lernsetId) => {
   padding: 22px 20px;
 }
 
+.lernsets-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
 .lernsets-title {
   font-size: 1.13rem;
   font-weight: 600;
   color: var(--color-accent, #1976d2);
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.plus-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--color-primary, #1976d2);
+  display: flex;
+  align-items: center;
+  transition: color 0.18s;
+}
+.plus-btn:hover,
+.plus-btn:focus {
+  color: #1565c0;
+}
+.plus-btn svg {
+  width: 2rem;
+  height: 2rem;
 }
 
 .lernsets-list {
@@ -175,4 +268,64 @@ const goToLernset = (lernsetId) => {
   color: #555;
   font-weight: 400;
 }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background: rgba(36, 44, 53, 0.23);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 24px 20px 24px;
+  min-width: 300px;
+  box-shadow: 0 4px 30px 0 rgba(25, 118, 210, 0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+}
+.lernset-input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.2px solid #e3f2fd;
+  font-size: 1.06rem;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border 0.15s;
+}
+.lernset-input:focus {
+  border: 1.5px solid #1976d2;
+}
+.modal-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+.modal-btn {
+  padding: 7px 18px;
+  border-radius: 6px;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1.01rem;
+  cursor: pointer;
+  transition: background 0.17s;
+}
+.modal-btn:disabled {
+  background: #b0c4d8;
+  cursor: not-allowed;
+}
+.modal-btn.cancel {
+  background: #e0e0e0;
+  color: #555;
+}
 </style>
+```
