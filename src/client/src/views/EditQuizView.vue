@@ -223,7 +223,7 @@ const cancelDelete = () => {
 <template>
   <div class="edit-quiz-view">
     <header class="edit-header">
-      <h1>Quiz bearbeiten</h1>
+      <h1>Quiz erstellen</h1>
     </header>
     <main class="edit-main">
       <section class="quiz-title-section card">
