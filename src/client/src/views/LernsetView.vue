@@ -54,7 +54,7 @@ const goToQuizOverview = (quizId) => {
 }
 
 const goToEditQuiz = () => {
-  router.push('/edit-quiz/0')
+  router.push('/edit-quiz/')
 }
 
 // Hilfsfunktion für Sterne

@@ -37,6 +37,7 @@ class Lernset(models.Model):
 
 class QuestionType(models.TextChoices):
     MULTIPLE_CHOICE = 'MULTIPLE_CHOICE', 'Multiple Choice'
+    SINGLE_CHOICE = 'SINGLE_CHOICE', 'Single Choice'
     ZUORDNUNG = 'ZUORDNUNG', 'Zuordnung'
 
 class Quiz(models.Model):

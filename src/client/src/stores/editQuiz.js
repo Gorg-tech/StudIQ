@@ -43,3 +43,12 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
     setQuiz, resetQuiz, updateQuestion, addQuestion, removeQuestion, getQuestion
   }
 })
+
+export const QUESTION_TYPES = [
+  { api: 'SINGLE_CHOICE', label: 'Single Choice' },
+  { api: 'MULTIPLE_CHOICE', label: 'Multiple Choice' }
+]
+
+export function getLabelFromApi(apiValue) {
+  return QUESTION_TYPES.find(q => q.api === apiValue)?.label || apiValue
+}

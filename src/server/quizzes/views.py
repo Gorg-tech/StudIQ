@@ -36,23 +36,11 @@ class QuizViewSet(viewsets.ModelViewSet):
     serializer_class = QuizSerializer
     permission_classes = [IsAuthenticated]
 
-    # For debugging purposes:
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     if not serializer.is_valid():
-    #         print("DEBUG SERIALIZER ERRORS:", serializer.errors)
-    #         return Response(serializer.errors, status=400)
-    #     return super().create(request, *args, **kwargs)
-
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated]
-
-    def create(self, request, *args, **kwargs):
-        print("DEBUG POST DATA:", request.data)  # Logge die empfangenen Daten
-        return super().create(request, *args, **kwargs)
 
 
 class LernsetViewSet(viewsets.ModelViewSet):

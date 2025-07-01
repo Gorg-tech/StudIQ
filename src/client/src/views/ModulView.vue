@@ -1,7 +1,8 @@
 ```vue name=ModuleOverview.vue
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { createLernset, getLernsets, getLernsetQuizzes } from '@/services/lernsets'
 import IconLink from '@/components/icons/IconLink.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 
@@ -13,17 +14,14 @@ const moduleName = ref('TestModul')
 const moduleDescription = ref('Dieses Modul behandelt grundlegende Themen der diskreten Mathematik wie Mengen, Relationen, Graphen, Kombinatorik und mehr.')
 const moduleLink = ref('https://www.htw-dresden.de/')
 
-const lernsets = ref([
-  { id: 1, title: 'Definitionen', quizCount: 5 },
-  { id: 2, title: 'Beweisaufgaben', quizCount: 3 },
-  { id: 3, title: 'Kombinatorik', quizCount: 4 },
-  { id: 4, title: 'Graphentheorie', quizCount: 2 },
-])
+const lernsets = ref([])
 
 const showNewLernsetModal = ref(false)
 const showConfirmModal = ref(false)
 const newLernsetTitle = ref('')
+const newLernsetDescription = ref('')
 const pendingLernsetTitle = ref('')
+const pendingLernsetDescription = ref('')
 
 const goToLernset = (lernsetId) => {
   router.push('/lernset/')
@@ -31,16 +29,19 @@ const goToLernset = (lernsetId) => {
 
 const handleOpenNewLernsetModal = () => {
   newLernsetTitle.value = ''
+  newLernsetDescription.value = ''
   showNewLernsetModal.value = true
 }
 
 const handleCloseNewLernsetModal = () => {
   showNewLernsetModal.value = false
   newLernsetTitle.value = ''
+  newLernsetDescription.value = ''
 }
 
 const handleShowConfirmModal = () => {
   pendingLernsetTitle.value = newLernsetTitle.value
+  pendingLernsetDescription.value = newLernsetDescription.value
   showNewLernsetModal.value = false
   showConfirmModal.value = true
 }
@@ -48,12 +49,65 @@ const handleShowConfirmModal = () => {
 const handleCloseConfirmModal = () => {
   showConfirmModal.value = false
   pendingLernsetTitle.value = ''
+  pendingLernsetDescription.value = ''
 }
 
-const createLernset = (titel) => {
-  // Hier muss der API-Call erfolgen
-  id = 1111;
+const handleCreateLernset = (title, description) => {
+  // API-Call
+  // id, title, description, created_at, created_by, modul
+  const newSet = {
+    title: title,
+    description: description,
+    created_at: new Date().toISOString(),
+    created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
+    modul: 'I128' // Per Default Modul I128
+  }
+
+  const newLernset = createLernset(newSet)
+  newLernset
+    .then(response => {
+      // console.log('Lernset erstellt:', response)
+      lernsets.value.push({
+        id: response.id,
+        title: response.title,
+        quizCount: 0
+      })
+      handleCloseConfirmModal()
+    })
+    .catch(error => {
+      console.error('Fehler beim Erstellen des Lernsets:', error)
+    })
+
 }
+
+onMounted(() => {
+  // Lernsets aus der Datenbank laden
+  getLernsets()
+    .then(data => {
+      for(const set of data) {
+        getLernsetQuizzes(set.id)
+          .then(quizzes => {
+            lernsets.value.push({
+              id: set.id,
+              title: set.title,
+              quizCount: quizzes.length
+            })
+          })
+          .catch(error => {
+            console.warn(`Fehler beim Laden der Quizzes für Lernset ${set.id}:`, error)
+            lernsets.value.push({
+              id: set.id,
+              title: set.title,
+              quizCount: 0 // Fallback auf 0, wenn keine Quizzes geladen werden können
+            })
+          })
+      }
+    })
+    .catch(error => {
+      console.error('Fehler beim Laden der Lernsets:', error)
+    })
+})
+
 </script>
 
 <template>
@@ -112,6 +166,12 @@ const createLernset = (titel) => {
           placeholder="Lernset-Name"
           @keyup.enter="newLernsetTitle.trim() ? handleShowConfirmModal() : null"
         />
+        <textarea
+          v-model="newLernsetDescription"
+          class="lernset-input"
+          placeholder="Lernset-Beschreibung (optional)"
+          rows="3"
+        ></textarea>
         <div class="modal-actions">
           <button class="modal-btn" @click="handleShowConfirmModal" :disabled="!newLernsetTitle.trim()">Erstellen</button>
           <button class="modal-btn cancel" @click="handleCloseNewLernsetModal">Abbruch</button>
@@ -124,7 +184,7 @@ const createLernset = (titel) => {
         <h3>Lernset wirklich erstellen?</h3>
         <p>Möchtest du das Lernset <b>{{ pendingLernsetTitle }}</b> wirklich erstellen?</p>
         <div class="modal-actions">
-          <button class="modal-btn" @click="createLernset(pendingLernsetTitle)">Ja, erstellen</button>
+          <button class="modal-btn" @click="handleCreateLernset(pendingLernsetTitle, pendingLernsetDescription)">Ja, erstellen</button>
           <button class="modal-btn cancel" @click="handleCloseConfirmModal">Abbruch</button>
         </div>
       </div>

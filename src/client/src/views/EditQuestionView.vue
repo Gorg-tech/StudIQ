@@ -114,11 +114,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { onMounted } from 'vue'
-import { useQuizEditStore } from '@/stores/editQuiz'
-import { getQuestionAnswer, getQuestionAnswers } from '@/services/quizzes'
+import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
+import { getAnswer, getAnswers } from '@/services/questions'
 import IconPen from '@/components/icons/IconPen.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 import IconSave from '@/components/icons/IconSave.vue'
@@ -133,11 +132,14 @@ const questionId = Number(route.params.questionId)
 const question = ref(null)
 
 const questionText = ref('')
-const questionTypes = ['Single Choice', 'Multiple Choice']
-const selectedType = ref('Single Choice')
+const questionTypes = QUESTION_TYPES.map(q => q.label)
+const selectedType = ref(QUESTION_TYPES[0].label)
 const showTypeDropdown = ref(false)
-
 const options = ref([])
+
+const selectedTypeApi = computed(() =>
+  QUESTION_TYPES.find(q => q.label === selectedType.value)?.api || QUESTION_TYPES[0].api
+)
 
 onMounted(async () => {
 
@@ -150,23 +152,24 @@ onMounted(async () => {
   }
 
   questionText.value = question.value.text || ''
-  selectedType.value = question.value.type || 'Single Choice'
+  selectedType.value = getLabelFromApi(question.value.type) || QUESTION_TYPES[0].label
 
   if(question.value._status === 'unchanged') {
-    // Wenn die Frage noch nicht geändert wurde, aus der Datenbank laden
-    const loadedAnswers = await getQuestionAnswers(questionId)
+    // Wenn die Frage noch nicht geändert wurde, Antworten aus der Datenbank laden
+    const loadedAnswers = await getAnswers(questionId)
     if (!loadedAnswers) {
       console.error('Frage konnte nicht geladen werden:', questionId)
       router.push('/edit-quiz')
       return
     }
-    // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getQuestionAnswer correct Variable laden und in options speichern
+    // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getAnswer correct Variable laden und in options speichern
     for (const answer of loadedAnswers) {
-      const answerDetails = await getQuestionAnswer(questionId, answer.id)
+      const answerDetails = await getAnswer(questionId, answer.id)
       options.value.push({
         id: answer.id,
         text: answer.text,
-        correct: answerDetails.correct
+        correct: answerDetails.correct,
+        _status: 'unchanged' 
       })
     }
     
@@ -174,7 +177,8 @@ onMounted(async () => {
     options.value = question.value.options.map(opt => ({
       id: opt.id,
       text: opt.text,
-      correct: opt.correct
+      correct: opt.correct,
+      _status: opt._status
     }))
   }
 })
@@ -189,6 +193,7 @@ function addOption() {
     id: Date.now(),
     text: 'Neue Antwort',
     correct: false,
+    _status: 'new'
   })
 }
 
@@ -216,7 +221,11 @@ function applyEdit() {
     editPopup.value.idx !== null &&
     editPopup.value.text.trim() !== ''
   ) {
-    options.value[editPopup.value.idx].text = editPopup.value.text.trim()
+    const opt = options.value[editPopup.value.idx]
+    if (opt.text !== editPopup.value.text.trim() && opt._status !== 'new') {
+      opt._status = 'edited'
+    }
+    opt.text = editPopup.value.text.trim()
   }
   closeEditPopup()
 }
@@ -239,7 +248,12 @@ function closeDeletePopup() {
 }
 function confirmDelete() {
   if (deletePopup.value.idx !== null) {
-    options.value.splice(deletePopup.value.idx, 1)
+    const opt = options.value[deletePopup.value.idx]
+    if (opt._status === 'new') {
+      options.value.splice(deletePopup.value.idx, 1)
+    } else {
+      opt._status = 'deleted'
+    }
   }
   closeDeletePopup()
 }
@@ -272,7 +286,7 @@ function cancelEdit() {
 async function saveQuestion() {
   quizEdit.updateQuestion(question.value.id, {
     text: questionText.value,
-    type: selectedType.value,
+    type: selectedTypeApi.value,
     options: options.value.map(opt => ({ ...opt })),
     _status: question.value._status === 'new' ? 'new' : 'edited'
   })
@@ -280,7 +294,7 @@ async function saveQuestion() {
 }
 
 function toggleCorrect(idx) {
-  if (selectedType.value === 'Single Choice') {
+  if (selectedTypeApi.value === 'SINGLE_CHOICE') {
     options.value.forEach((opt, i) => (opt.correct = i === idx))
   } else {
     options.value[idx].correct = !options.value[idx].correct
