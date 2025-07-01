@@ -50,6 +50,7 @@
 
     <!-- Loading state -->
     <div v-if="loading" class="loading-container">
+      <span class="spinner"></span>
       Quizze werden geladen...
     </div>
 
@@ -66,11 +67,15 @@
           v-for="item in filteredResults"
           :key="item.id"
           class="quiz-item"
+          :class="`type-${item.type.toLowerCase()}`"
           @click="navigateToItem(item)"
           style="cursor: pointer;"
         >
           <div class="quiz-header">
-            <h3>{{ item.title }}</h3>
+            <h3>
+              <!-- Emojis entfernt -->
+              {{ item.title }}
+            </h3>
             <span class="quiz-type">{{ item.type }}</span>
           </div>
           
@@ -80,8 +85,10 @@
           <div v-else-if="item.type === 'Modul'" class="quiz-stats">
             Semester: {{ item.semester }} – Credits: {{ item.credits }}
           </div>
-          <div v-else-if="item.type === 'Studiengang'" class="quiz-stats">
-            {{ item.created_at ? new Date(item.created_at).toLocaleDateString() : '' }}
+          
+          <!-- Im Template, z.B. unter dem Titel -->
+          <div v-if="item.type === 'Quiz' && item.lernset_title" class="quiz-lernset">
+            Lernset: {{ item.lernset_title }}
           </div>
           
           <p v-if="item.description" class="quiz-description">
@@ -190,17 +197,16 @@ const filteredResults = computed(() => {
 // Navigation function for quiz items
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ name: 'quiz-overview', params: { quizId: item.id } });
+    router.push({ name: 'quiz', params: { quizId: item.id } });
   } else if (item.type === 'Lernset') {
-    router.push({ name: 'lernset-overview', params: { lernsetId: item.id } });
+    router.push({ path: '/lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
-    router.push({ name: 'modul-overview', params: { modulId: item.modulId } });
+    router.push({ path: '/modul', params: { modulId: item.modulId } });
   } else if (item.type === 'Studiengang') {
     router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } });
   }
 }
 
-// Add this section to make initial request when component mounts
 onMounted(() => {
   fetchFilteredQuizzes();
 });
@@ -252,8 +258,10 @@ onMounted(() => {
 
 .quiz-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  row-gap: 6px;
+
 }
 
 .quiz-item {
@@ -272,11 +280,31 @@ onMounted(() => {
 }
 
 .quiz-type {
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.type-quiz .quiz-type {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border-color: #90caf9;
+}
+.type-lernset .quiz-type {
+  background-color: #f3e5f5;
+  color: #6a1b9a;
+  border-color: #ce93d8;
+}
+.type-modul .quiz-type {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border-color: #a5d6a7;
+}
+.type-studiengang .quiz-type {
+  background-color: #fff3e0;
+  color: #e65100;
+  border-color: #ffb74d;
 }
 
 .quiz-stats {
@@ -294,5 +322,38 @@ onMounted(() => {
   text-align: center;
   color: var(--color-muted);
   margin: 20px 0;
+}
+
+.spinner {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--color-primary);
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .quiz-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .quiz-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quiz-lernset {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 6px;
 }
 </style>

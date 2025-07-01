@@ -1,6 +1,6 @@
 // Meta
-:project-name: HTW-Prüfungsvorbereiter (2.A)
-:project-system-name: StudIQ
+:project-name: StudIQ
+:project-system-name: HTW-Prüfungsvorbereiter (2.A)
 // Settings:
 :toc:
 :toc-title: Inhaltsverzeichnis

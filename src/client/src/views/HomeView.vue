@@ -166,7 +166,7 @@ const suggestedQuizzes = ref([
         <h3>Vorgeschlagene Quizze</h3>
         <div class="quiz-suggestions-row">
           <div
-            v-for="(quiz, index) in suggestedQuizzes":key="index" class="quiz-suggestion-item"@click="router.push('/quiz-overview')">
+            v-for="(quiz, index) in suggestedQuizzes":key="index" class="quiz-suggestion-item"@click="router.push('/quiz')">
             <div class="quiz-suggestion-icon" :style="{ backgroundColor: quiz.iconColor + '1A' }">
               <!-- Different icon based on quiz type -->
               <IconTimer v-if="quiz.iconType === 'timer'" :color="quiz.iconColor" />
