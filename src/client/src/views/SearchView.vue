@@ -197,7 +197,7 @@ const filteredResults = computed(() => {
 // Navigation function for quiz items
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ path: 'quiz-overview', params: { quizId: item.id } });
+    router.push({ name: 'quiz-overview', params: { quizId: item.id } });
   } else if (item.type === 'Lernset') {
     router.push({ path: '/lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
