@@ -78,25 +78,25 @@
             </h3>
             <span class="quiz-type">{{ item.type }}</span>
           </div>
-          
+
           <div v-if="item.type === 'Quiz'" class="quiz-stats">
             {{ item.questions?.length || 0 }} Fragen – {{ item.avg_time_spent || 0 }} Min
           </div>
           <div v-else-if="item.type === 'Modul'" class="quiz-stats">
             Semester: {{ item.semester }} – Credits: {{ item.credits }}
           </div>
-          
+
           <!-- Im Template, z.B. unter dem Titel -->
           <div v-if="item.type === 'Quiz' && item.lernset_title" class="quiz-lernset">
             Lernset: {{ item.lernset_title }}
           </div>
-          
+
           <p v-if="item.description" class="quiz-description">
             {{ item.description }}
           </p>
         </div>
       </div>
-      
+
       <!-- No results message -->
       <p v-else class="no-results">Keine passenden Einträge gefunden.</p>
     </template>
@@ -130,9 +130,9 @@ async function fetchFilteredQuizzes() {
   error.value = null;
   try {
     const filter = filterMap[activeFilter.value.toLowerCase()];
-    
+
     results.value = await getSearch({
-      searchQuery: searchQuery.value, 
+      searchQuery: searchQuery.value,
       filter
     });
   } catch (err) {
@@ -146,7 +146,7 @@ async function fetchFilteredQuizzes() {
 // Return all filtered results based on the active filter type
 const filteredResults = computed(() => {
   const filter = activeFilter.value.toLowerCase();
-  
+
   if (filter === 'alle') {
     // Flatten all result types into a single array
     const allResults = [
@@ -155,23 +155,23 @@ const filteredResults = computed(() => {
       ...(results.value.modules || []).map(item => ({ ...item, type: 'Modul', title: item.name, description: item.description })),
       ...(results.value.studiengaenge || []).map(item => ({ ...item, type: 'Studiengang', title: item.name })),
     ];
-    
-    return allResults.filter(item => 
+
+    return allResults.filter(item =>
       item.title?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   }
-  
+
   // Otherwise, return just the requested type
   const filterKey = filterMap[filter];
   if (!filterKey || !results.value[filterKey]) {
     return [];
   }
-  
+
   // Map fields to a consistent format
   if (filterKey === 'studiengaenge') {
-    return results.value[filterKey].map(item => ({ 
-      ...item, 
+    return results.value[filterKey].map(item => ({
+      ...item,
       type: 'Studiengang',
       title: item.name
     }));
@@ -197,7 +197,7 @@ const filteredResults = computed(() => {
 // Navigation function for quiz items
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ name: 'quiz', params: { quizId: item.id } });
+    router.push({ path: '/quiz', params: { quizId: item.id } });
   } else if (item.type === 'Lernset') {
     router.push({ path: '/lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
