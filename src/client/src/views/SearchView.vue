@@ -195,15 +195,16 @@ const filteredResults = computed(() => {
 });
 
 // Navigation function for quiz items
+// Api implementation with name instead of path
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ name: 'quiz-overview', params: { quizId: item.id } });
+    router.push({ name: 'quiz-overview', params: { quizId: item.id } }); //Quiz-Overview w api ID
   } else if (item.type === 'Lernset') {
-    router.push({ path: '/lernset', params: { lernsetId: item.id } });
+    router.push({ path: '/lernset', params: { lernsetId: item.id } }); // Lernset-Overview hardcoded
   } else if (item.type === 'Modul') {
-    router.push({ path: '/modul', params: { modulId: item.modulId } });
+    router.push({ path: '/modul', params: { modulId: item.modulId } }); // Modul-Overview hardcoded
   } else if (item.type === 'Studiengang') {
-    router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } });
+    router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } }); //TODO
   }
 }
 
