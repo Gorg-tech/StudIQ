@@ -48,6 +48,10 @@ class LernsetViewSet(viewsets.ModelViewSet):
     serializer_class = LernsetSerializer
     permission_classes = [IsAuthenticated]
 
+    def perform_create(self, serializer):
+      # Automatically set the created_by to the current user
+      serializer.save(created_by=self.request.user)
+
 
 class QuizProgressViewSet(viewsets.ModelViewSet):
     serializer_class = QuizProgressSerializer
