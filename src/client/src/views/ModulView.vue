@@ -59,7 +59,7 @@ const handleCreateLernset = (title, description) => {
     title: title,
     description: description,
     created_at: new Date().toISOString(),
-    created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
+    //created_by: '521edc25-b9b1-406x6-9b36-561dbee9c6c1', // Per Default Eric
     modul: 'I128' // Per Default Modul I128
   }
 

@@ -90,7 +90,7 @@ const saveQuiz = async () => {
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
       created_at: new Date().toISOString(),
-      created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
+     // created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
@@ -106,12 +106,12 @@ const saveQuiz = async () => {
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
       created_at: new Date().toISOString(),
-      created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
+     // created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
       is_public: true, // Standardmäßig öffnetlich
-      lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
+    //  lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
       questions: []
     })
   }
