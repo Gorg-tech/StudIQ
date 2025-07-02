@@ -31,7 +31,7 @@ class LernsetSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Lernset
-        fields = ['id', 'title', 'description', 'created_at', 'created_by', 'modul', 'quizzes']
+        fields = ['id', 'title', 'description', 'created_at', 'modul', 'quizzes']
 
 class QuizProgressSerializer(serializers.ModelSerializer):
     class Meta:
