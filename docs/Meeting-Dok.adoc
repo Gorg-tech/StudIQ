@@ -180,6 +180,51 @@ Erstes Quellcode-Basisprojekt angeguckt und Ordnung versucht nachzuvolziehen
 
 Diskussion über Wireframes durch "Quiz Bearbeiten/Erstellen" - Template
 
+=== 3. Meeting 25.06.
+
+Stakeholder waren da und begeistert vom Fortschritt
+
+=== 4. Meeting 02.07.
+Retrospektive zum Abschluss: 
+(Um erneute Probleme bei Start des neuen Semesters vorzubeugen)
+
+  - Hindernisse: 
+    * Eric hat Plan von allem, der Rest muss sich in entsprechende Themen erst einarbeiten
+      -> Eric wird befördert zu "Meister des Backends"
+    * Verbindung zwischen Frontend und Backend nicht ganz klar
+      -> Bessere Dokumentation von entwickeltem Quellcode
+      -> mehr Kommunikation zwischen Entwicklern bei Unklarheiten
+
+    * Ungenaue Aufgabenzuteilung für Implementierung in Github
+
+  - Positives
+    * Eric findet viele Probleme "easy" zu lösen
+    * Präsentation gemeistert
+    * viel in 2 Wochen geschafft
+      -> Viele Views sehr anschaulich erstellt( nur noch Statistiken fehlen )
+      -> Login
+      -> Lernset erstellen ( UserID muss noch gesoftcoded werden (aktuell fester Name))
+      -> Quiz erstellen ( Antwortmöglichkeiten für Fragen werden noch nicht in Datenbank gespeichert; Lernset wird noch nicht mitgegeben)
+
+
+Was zuerst nächstes Semester gemacht werden muss:
+ - Server sendet Auth-Token immer mit, mit dem gearbeitet werden muss
+ - evtl. Lernset mit UserID fertig machen
+ - Quiz erstellen fertig machen, mit erstellendem UID
+
+Für Abgabe ferig machen:
+ - project_plan.adoc
+
+Requirements:
+  - Vision.adoc
+  - Glossary.adoc
+  - ux-Concept.adoc
+
+Architecture
+ - architecture_notebook
+ - test_cases.adoc
+
+
 
 
 

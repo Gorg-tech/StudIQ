@@ -35,10 +35,11 @@ Aufgaben sind in Github festgehalten. Dort sollte jeder wöchentlich nachgucken,
 
 === Definition of Ready
 // Listen Sie hier die Kriterien auf, die ein Product Backlog Item (z.B. User Story) erfüllen muss, damit es bei der Sprint-Planung berücksichtigt werden kann
+Geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
 
 === Definition of Done
 
-Geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
+
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
 
 == Deployment

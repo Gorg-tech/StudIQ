@@ -16,6 +16,6 @@ Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komp
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs
 Verwendung von Vue für Frontend, Django für BackEnd
 
-Client-Server-Schnnittstelle: REST-API über FastAPI
+Client-Server-Schnnittstelle: REST-API über Django-Rest-Framework
 
 == Datenmodell
