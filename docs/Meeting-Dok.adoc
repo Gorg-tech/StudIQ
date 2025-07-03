@@ -208,19 +208,24 @@ Retrospektive zum Abschluss:
 
 
 Was zuerst nächstes Semester gemacht werden muss:
- - Server sendet Auth-Token immer mit, mit dem gearbeitet werden muss
- - evtl. Lernset mit UserID fertig machen
- - Quiz erstellen fertig machen, mit erstellendem UID
+ - created_by im Server setzen bei Lernset/Quiz erstellung & im Client aus dem request body entfernen
+ - Quiz erstellen fertig machen & LernsetID übergeben
+ - Quiz funktional machen und Statistiken in der DB aktuallisieren
+ - ProfilView erstellen (History, Statistiken, ...)
+ - Quiz Voting (API & UI)
 
 Für Abgabe ferig machen:
+
  - project_plan.adoc
 
 Requirements:
+
   - Vision.adoc
   - Glossary.adoc
   - ux-Concept.adoc
 
 Architecture
+
  - architecture_notebook
  - test_cases.adoc
 
