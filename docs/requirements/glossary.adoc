@@ -38,7 +38,14 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Abkürzung | Bedeutung | Erläuterung
 //| UP | Unified Process | Vorgehensmodell für die Softwareentwicklung
-| xx | xx | xx
+| UI | User Interface | Benutzeroberfläche zur Interaktion mit dem System
+| UX | User Experience | Nutzererlebnis bei der Verwendung der Plattform
+| DB | Datenbank | Zentrale Speicherung von Lernsets, Nutzerdaten, etc.
+| API | Application Programming Interface | Programmierschnittstelle zwischen Frontend und Backend
+| PDF | Portable Document Format | Format zum Exportieren von Quizzes oder Lernfortschritt
+| XLSX | Excel Spreadsheet Format | Format zum Exportieren von Ergebnissen oder Nutzerdaten
+| JWT | JSON Web Token | Token zur Authentifizierung von Nutzern
+| FAQ | Frequently Asked Questions | Hilfebereich mit häufigen Fragen
 |===
 
 == Verzeichnis der Datenstrukturen
@@ -52,11 +59,36 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
 | Login
 
-| xx
-| xx
-| xx
-| xx
-| xx
+| Quiz
+| Sammlung von Fragen mit Bewertung, Thema, Autor und Sichtbarkeit
+| JSON-Objekt
+| Titel nicht leer; Fragenanzahl ≥ 1
+| Test, Abfrage
+
+| Lernset
+| Struktur aus Karteikarten zu einem Thema
+| JSON-Array
+| Muss mindestens eine Karte enthalten
+| Kartenstapel
+
+| Benutzerprofil
+| Daten zu einem registrierten Nutzer (Name, Email, Rolle)
+| JSON-Objekt
+| Eindeutige E-Mail mit „@“ und „.“, Rolle ∈ {user, admin}
+| Account
+
+| Fortschritt
+| Statistikdaten eines Nutzers pro Lernset
+| JSON
+| Muss Benutzer-ID und Lernset-ID enthalten
+| Progress
+
+| Bewertung
+| Zahlenwert und optionaler Kommentar zu einem Quiz
+| Zahl + Text
+| Score ∈ [1–5]
+| Rating
+
 |===
 
 == Domänenmodell
