@@ -44,7 +44,6 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | API | Application Programming Interface | Programmierschnittstelle zwischen Frontend und Backend
 | PDF | Portable Document Format | Format zum Exportieren von Quizzes oder Lernfortschritt
 | XLSX | Excel Spreadsheet Format | Format zum Exportieren von Ergebnissen oder Nutzerdaten
-| JWT | JSON Web Token | Token zur Authentifizierung von Nutzern
 | FAQ | Frequently Asked Questions | Hilfebereich mit häufigen Fragen
 |===
 
