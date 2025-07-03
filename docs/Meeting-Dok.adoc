@@ -211,7 +211,7 @@ Was zuerst nächstes Semester gemacht werden muss:
 
  - created_by im Server setzen bei Lernset/Quiz erstellung & im Client aus dem request body entfernen
  - Quiz erstellen fertig machen & LernsetID übergeben
- - Quiz funktional machen und Statistiken in der DB aktuallisieren
+ - Quiz funktional machen und Statistiken in der DB aktualisieren
  - ProfilView erstellen (History, Statistiken, ...)
  - Quiz Voting (API & UI)
 
