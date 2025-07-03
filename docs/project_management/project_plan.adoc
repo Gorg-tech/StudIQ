@@ -6,7 +6,7 @@ include::../_includes/default-attributes.inc.adoc[]
 
 
 == Einführung
-//Kurze Beschreibung und Überblick zum Dokument.
+Beschreibt die Arbeitsweise des Projektteams und die Hinderniss dieser Arbeitsweise, evaluiert durch die Retrospektive
 
 
 == Projektorganisation
@@ -27,37 +27,57 @@ Falls Raum nicht verfügar, dann spontane Entsheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 
-*Backup: jedem issue wird ein zusätzlicher assigne zugeteilt*
+*Backup: jedem issue wird, wenn nötig, ein zusätzlicher assigne zugeteilt*
 
 Aufgaben sind in Github festgehalten. Dort sollte jeder wöchentlich nachgucken, was er zu tun hat, dies tun und sich so auf das Meeting vorbereiten.
+
+Zum Meeting werden die gemachten Aufgaben vorgestellt und besprochen und, falls sie fertig erledigt sind, neue zugeteilt. Dies erfolgt in Abstimmung mit den Teammitgliedern.
+
+Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
 
 
 === Definition of Ready
 // Listen Sie hier die Kriterien auf, die ein Product Backlog Item (z.B. User Story) erfüllen muss, damit es bei der Sprint-Planung berücksichtigt werden kann
-Geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
+Für Erfüllung geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
 
 === Definition of Done
 
-
+Coding-Task:Code wurde im Teammeting grob vorgestellt und als ok abgesegnet.
+-> Kann auf GitHub als Done markiert werden
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
 
 == Deployment
+Eigenen Branch erstellen und darauf arbeiten. Falls die Aufgabe unabhängig von den Aufgaben anderer Teammitglieder ist, soll der Branch kurz vor Meetingbeginn mit dem Main-Branch gemergt werden. Sonst bereits eher bis zu einem abgesprochenen Termin.
 //Outline the strategy for deploying the software (and its updates) into the production environment.
 
 
 == Erkenntnisse (Lessons learned)
-=== 1. Iteration:
-Raum S128 manchmal belegt, dann etwas nervend spontan einen neuen Raum zu finden und diesen zu kommunizieren.
+=== 1. Iteration
+Raum S128 manchmal belegt, dann etwas nervend spontan einen neuen Raum zu finden und diesen zu kommunizieren. +
 -> Nutzung der Bib-Räume, sind vorher buchbar und meist frei
 
 === 2. Iteration 
-Die Nutzung des Bib-Raums für das Meeting könnte gegen Prüfungsphase schwieriger werden.
+* Die Nutzung des Bib-Raums für das Meeting könnte gegen Prüfungsphase schwieriger werden.
 -> Dann wieder spontane Raumfestlegung durch Georg wie am Anfang
 
-Zuschaltung eines Teammitglieds online ist möglich und gut machbar, treff in Präsenz ist trotzdem noch die angenehmste Variante.
+* Zuschaltung eines Teammitglieds online ist möglich und gut machbar, treff in Präsenz ist trotzdem noch die angenehmste Variante.
 
-Bei Sprint Review sind Stakeholder sehr kritikfreudig. So hilfreich der Input auch ist, ging die Kritik jedoch oft sehr ins Detail, wo es noch nicht sinnvoll darüber nachzudenken.
+* Bei Sprint Review sind Stakeholder sehr kritikfreudig. So hilfreich der Input auch ist, ging die Kritik jedoch oft sehr ins Detail, wo es noch nicht sinnvoll darüber nachzudenken. +
 -> Stakeholder etwas bremsen, klar sagen, wo Feedback gebraucht wird
 
+=== 3. Iteration
+
 // Führen Sie hier die wesentlichen Erkenntnisse auf, die Sie in den Retrospektiven gewonnen haben. Legen Sie besonderen Fokus auf die Maßnahmen, die Sie getroffen haben um Verbesserungen in den verschiedenen Aspekten des Projekts zu erzielen, z.B. dem Entwicklungsprozess, der technischen und organisatorischen Umgebung oder der Zusammenarbeit im Team.
+* Eric hat Plan von allem, der Rest muss sich in entsprechende Themen erst einarbeiten +
+    -> Eric wird befördert zu "Meister des Backends"
+* Verbindung zwischen Frontend und Backend nicht ganz klar +
+    -> Bessere Dokumentation von entwickeltem Quellcode +
+    -> mehr Kommunikation zwischen Entwicklern bei Unklarheiten
+
+* Ungenaue Aufgabenzuteilung für Implementierung in Github +
+    -> Genauer, klar definiert Aufgabe Beschreiben
+
+* Durch Gespräch mit anderer Gruppe: Idee für bessere Iterations-Einteilung +
+    -> Alle 2 Wochen: Aufgabenverteilung, evtl Sprint Review mit Stakeholdern +
+    -> Jede sontige Woche: normales Meeting zum Absprechen und Kommunikation des BEarbeitungsfortschritts
