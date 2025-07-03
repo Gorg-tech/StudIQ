@@ -42,8 +42,8 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | UX | User Experience | Nutzererlebnis bei der Verwendung der Plattform
 | DB | Datenbank | Zentrale Speicherung von Lernsets, Nutzerdaten, etc.
 | API | Application Programming Interface | Programmierschnittstelle zwischen Frontend und Backend
-| PDF | Portable Document Format | Format zum Exportieren von Quizzes oder Lernfortschritt
-| XLSX | Excel Spreadsheet Format | Format zum Exportieren von Ergebnissen oder Nutzerdaten
+//| PDF | Portable Document Format | Format zum Exportieren von Quizzes oder Lernfortschritt
+//| XLSX | Excel Spreadsheet Format | Format zum Exportieren von Ergebnissen oder Nutzerdaten
 | FAQ | Frequently Asked Questions | Hilfebereich mit häufigen Fragen
 |===
 
