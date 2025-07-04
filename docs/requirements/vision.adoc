@@ -1,7 +1,7 @@
 = Vision: {project-name}
-Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
-{localdatetime}
+
 include::../_includes/default-attributes.inc.adoc[]
+include::../_includes/members.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
 
 
@@ -12,7 +12,7 @@ Der Zweck dieses Dokuments ist es, die wesentlichen Bedarfe und Funktionalitäte
 Der Zweck dieses Dokuments ist es, die wesentlichen Anforderungen an das System aus Sicht und mit den Begriffen der künftigen Anwender zu beschreiben.
 
 === Gültigkeitsbereich (Scope)
-Dieses Visions-Dokument bezieht sich auf das System {project-system-name}, das von <Team> entwickelt wird. Das System wird es Studenten der HTW-Dresden erlauben, eine kompetitive und gamifizierte Lernapp zu nutzen, um damit die Prüfungsvorbereitung zu erleichtern.
+Dieses Visions-Dokument bezieht sich auf das System {project-system-name}, das vom Team entwickelt wird. Das System wird es Studenten der HTW-Dresden erlauben, eine kompetitive und gamifizierte Lernapp zu nutzen, um damit die Prüfungsvorbereitung zu erleichtern.
 
 === Definitionen, Akronyme und Abkürzungen
 //Verweis passend zum Belegabgabe-Template se1_belegabgabe_t00.adoc
@@ -20,7 +20,7 @@ Siehe <<#glossary, Glossar>>.
 //Siehe <<./glossary.adoc#glossary, Glossar>>.
 
 === Referenzen
-(hier externe Verweise zu anderen Dokumenten, Quellen, Standards etc. einfügen, sofern notwendig)
+Modul Software Engeneering 1, Fakultät Informatik, Hochschule für Technik und Wirtschaft Dresden, 2025
 
 
 == Positionierung
@@ -42,7 +42,7 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 | die | in die HTW-Systeme implementiert, intuitiv, gut strukturiert, individualisierbar und smart ist.
 | anders als | Anki oder das Lernen vom Blatt
 | kann unser Produkt |  kompakt, nahbar und sicher beim Lernen für HTW-Prüfungen unterstützen.
-| Gesetzgeber | Staat, der Einhaltung der Gesetze überprüft | will keine Verletzung von Urheberrechten, Datenschutzrechten
+
 |===
 
 
@@ -98,25 +98,28 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 [%header, cols="4,1,4,1"]
 |===
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
-| Minimalismus | xx | Templates, Algorithmik zur Fragenbestimmung | xx
-| Individualisierbarkeit | xx | Bewertungssystem, Erstellung eigener Fragen | xx
-| Datenschutz | xx | Client-Server Modell mit Datenbank | xx
-| Kompetitivität | xx | Leaderboard | xx
+| Minimalismus | hoch | Templates, Algorithmik zur Fragenbestimmung | 1.0
+| Individualisierbarkeit | mittel | Bewertungssystem, Erstellung eigener Fragen | 1.1
+| Datenschutz | hoch | Client-Server Modell mit Datenbank | 1.0
+| Gameifizierung | mittel | Leaderboard | 1.1
 |===
 
 
 === Zusätzliche Produktanforderungen
 //Zutreffendes angeben, nicht zutreffendes streichen oder auskommentieren
-Hinweise:
 
-. Führen Sie die wesentlichen anzuwendenden Standards, Hardware oder andere Plattformanforderungen, Leistungsanforderungen und Umgebungsanforderungen auf
-. Definieren Sie grob die Qualitätsanforderungen für Leistung, Robustheit, Ausfalltoleranz, Benutzbarkeit und ähnliche Merkmale, die Qualitätsanforderungen an das geplante Produkt beschreiben.
-. Notieren Sie alle Entwurfseinschränkungen, externe Einschränkungen, Annahmen oder andere Abhängigkeiten, die wenn Sie geändert werden, das Visions-Dokument beeinflussen. Ein Beispiel wäre die Annahme, dass ein bestimmtes Betriebssystem für die vom System erforderliche Hardware verfügbar ist. Ist das Betriebssystem nicht verfügbar, muss das Visions-Dokument angepasst werden.
-. Definieren Sie alle Dokumentationsanforderugen, inkl. Benutzerhandbücher, Onlinehilfe, Installations-, Kennzeichnungs- und Auslieferungsanforderungen.
-. Definieren Sie die Priorität für diese zusätzlichen Produktanforderungen. Ergänzen Sie, falls sinnvoll, Angaben zu Stabilität, Nutzen, Aufwand und Risiko für diese Anforderungen.
 
 [%header, cols="4,1,1"]
 |===
 | Anforderung | Priorität | Geplantes Release
-| xx | xx | xx
+| Unterstützung aktueller Browser | hoch | 1.0
+
+| Responsive Design für mobile Endgeräte | mittel | 1.1
+| Antwortzeit im UI < 1 Sekunde | hoch | 1.0
+| Backend läuft auf Server mit Python und Django | hoch | 1.0
+| Speicherung personenbezogener Daten gemäß DSGVO | hoch | 1.1
+| Passwortsicherheit (Hashing, keine Klartext-Speicherung) | hoch | 1.0
+| Benutzerhandbuch und Online-Hilfe | niedrig | 1.2
+| Abhängigkiet von HTW-Systemen (z.B. Modulux) | mittel | 1.1
 |===
+

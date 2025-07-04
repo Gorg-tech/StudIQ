@@ -1,9 +1,11 @@
-= UX-Konzept: {project-name}
-Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
-{localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
+:project-system-name: {project-name}
+:doctype: book
+
+= UX-Konzept: {project-name}
 // Platzhalter für weitere Dokumenten-Attribute
 
+include::../_includes/members.adoc[]
 
 == Einführung
 In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-name} beschrieben. Dies können sein:
@@ -89,15 +91,32 @@ a| image::./images/persona-prof-klaus.png[Prof. Klaus Persona]
 //Hier sind einige Anregungen:
 
 //Zutreffendes angeben, nicht zutreffendes streichen oder auskommentieren
-. Anzahl der Personen, die an der Erfüllung der Aufgabe beteiligt sind. Ändert sich das?
-. Wie lange dauert die Bearbeitung der Aufgabe? Wie viel Zeit wird für jeden Arbeitsschritt benötigt? Ändert sich das?
-. Gibt es besondere Umgebungsbedingungen, z.B. mobil, offline, Außeneinsatz, Touchbedienung, Nutzung durch seh- oder hörbeeinträchtigte Personen?
-. Welche Systemplattformen werden heute eingesetzt? Welche sind es ggf. zukünftig?
-. Welche anderen Anwendungen sind im Einsatz? Muss ihre Anwendung mit diesen integriert werden?
+. Die Zielgruppe sind hauptsächlich Studierende der HTW Dresden, die sich auf Prüfungen vorbereiten möchten.
+. Die Anwendung wird auf mobilen Endgeräten (Smartphones, Tablets) und Desktop-Computern genutzt.
+. Das System wird in der Regeln von einer Person allein verwendet.
+. Für die Nutzung der Anwendung ist eine funktionierende Internetverbindung erforderlich.
 
-Hier können zudem bei Bedarf Teile des Unternehmensmodells (Prozesse, Organigramme, IT-Landschaft, ...) eingefügt werden, um die beteiligten Aufgaben und Rollen zu skizzieren.
+
+
 
 == Wireframes und Wireflow
 // Fügen Sie Wireframes als Bilder oder als Link (z.B. zu einem Miroboard) ein
 // Beziehen Sie ihre Wireframes auf konkrete User Stories oder Epics.
-image::./images/Wireframes.png[Wireframes der 3 Hauptseiten]
+
+Die Wireframes wurden in Miro erstellt.
+
+
+
+image::./images/Main-wireframes.png[Wireframes der 3 Hauptseiten] 
+
+User Story Startseite: Als Studentin möchte ich meine Lernstatistiken einsehen, um meinen Fortschritt zu verfolgen und motiviert zu bleiben. 
+
+User Story Suche : Als Student möchte ich einfachen und schnellen Zugriff auf Lernmaterial haben, um jederzeit lernen zu können.
+
+User Story Profil: Als Nutzer hätte ich gerne einen Nutzernamen, um auf der Plattform erkennbar zu sein
+
+image::./images/kategories-wireframes.png[Wireframes von Modul-Lernset-Quiz]
+
+User Story Modul und Lernset: Als Studentin möchte ich modul- und themenspezifische Fragen sehen, um gezielt für meine bevorstehenden Prüfungen lernen zu können
+
+User Story Quiz: Als lernender Student möchte ich zu einem bestimmten Thema abgefragt werden.

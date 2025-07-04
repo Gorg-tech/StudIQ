@@ -1,7 +1,12 @@
-= Glossar: {project-name}
-Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
-{localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
+:project-system-name: {project-name}
+
+= Glossar: {project-name}
+
+include::../_includes/members.adoc[]
+{localdatetime}
+
+
 // Platzhalter für weitere Dokumenten-Attribute
 
 
