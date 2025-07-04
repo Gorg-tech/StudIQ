@@ -97,7 +97,6 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Muss Benutzer-ID und Lernset-ID enthalten
 | Progress
 
-
 |===
 
 == Domänenmodell

@@ -36,7 +36,7 @@ a| * möchte Fakten einfach lernen
 * möchte sich auf Prüfungen vorbereiten, trotz geringer Konzentrationsfähigkeit
 * möchte ihren Lernfortschritt sehen
 * möchte ihr Studium bestehen bzw. gute Noten schreiben
-a| image::./images/persona-lena.png[Lena Persona]
+a| image::persona-lena.png[Lena Persona]
 | Jana 
 a| * Endbenutzer
 * 21 Jahre alt
@@ -53,7 +53,7 @@ a| * möchte Fragen- und Antwortkataloge erstellen
 * will Feedback geben und ihre Meinung äußern
 * möchte Lernprozesse mitgestalten
 * wünscht sich Transparenz und Fairness im Bewertungssystem
-a| image::./images/persona-jana.png[Jana Persona]
+a| image::persona-jana.png[Jana Persona]
 | Justus
 a| * Endbenutzer
 * 21 Jahre alt
@@ -66,7 +66,7 @@ a|
 a| * will Prüfungen mit möglichst wenig Zeitaufwand bestehen
 * möchte sich mit anderen vergleichen und besser sein als andere
 * möchte Quizze mit anderen teilen
-a| image::./images/persona-justus.png[Justus Persona]
+a| image::persona-justus.png[Justus Persona]
 | Prof. Klaus Berger
 a| * Endbenutzer
 * 62 Jahre alt
@@ -81,7 +81,7 @@ a| * sucht eine Plattform, auf der er Fragen einpflegen und freigeben kann
 * will Studierende aktivieren, aber scheut komplizierte Systeme
 * möchte eine gute Reputation als Dozent
 * legt Wert auf Qualität und Nachvollziehbarkeit der Lehrinhalte
-a| image::./images/persona-prof-klaus.png[Prof. Klaus Persona]
+a| image::persona-prof-klaus.png[Prof. Klaus Persona]
 |===
 
 == Nutzungskontext
