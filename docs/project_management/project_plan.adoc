@@ -23,7 +23,7 @@ Beschreibt die Arbeitsweise des Projektteams und die Hinderniss dieser Arbeitswe
 == Praktiken und Bewertung
 .Meeting-Termin:
 *jeden Mittwoch 13:45 in der Bib*
-Falls Raum nicht verfügar, dann spontane Entsheidung von Georg
+Falls Raum nicht verfügar, dann spontane Entscheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 

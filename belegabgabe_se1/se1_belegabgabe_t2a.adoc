@@ -51,7 +51,7 @@ include::../docs/_includes/members.adoc[]
 :imagesdir: {docs-project-management}/images
 
 // Projektplan
-include::{docs-project-management}/project_plan.adoc[lines=1..1;4..-1,leveloffset=+1]
+include::{docs-project-management}/project_plan.adoc[lines=1..1;4..-1,leveloffset=+2]
 <<<
 
 
@@ -64,14 +64,14 @@ include::{docs-project-management}/project_plan.adoc[lines=1..1;4..-1,leveloffse
 :imagesdir: {docs-requirements}/images
 
 // Produktvision
-include::{docs-requirements}/vision.adoc[lines=1..1;4..-1,leveloffset=+1]
+include::{docs-requirements}/vision.adoc[lines=1..1;4..-1,leveloffset=+2]
 <<<
 // Glossar und Domänenmodell
 [#glossary]
-include::{docs-requirements}/glossary.adoc[lines=1..1;4..-1,leveloffset=+1]
+include::{docs-requirements}/glossary.adoc[lines=1..1;4..-1,leveloffset=+2]
 <<<
 // UX-Konzept
-include::{docs-requirements}/ux-concept.adoc[lines=1..1;4..-1,leveloffset=+1]
+include::{docs-requirements}/ux-concept.adoc[lines=1..1;4..-1,leveloffset=+2]
 <<<
 
 // --- Entwurfsdokumentation ---
@@ -81,11 +81,11 @@ include::{docs-requirements}/ux-concept.adoc[lines=1..1;4..-1,leveloffset=+1]
 
 // Architektur-Notizbuch
 :imagesdir: {docs-architecture}/images
-include::{docs-architecture}/architecture_notebook.adoc[lines=1..1;4..-1,leveloffset=+1]
+include::{docs-architecture}/architecture_notebook.adoc[lines=1..1;4..-1,leveloffset=+2]
 <<<
 // Test Cases
 :imagesdir: {docs-test}/images
-include::{docs-test}/test_cases.adoc[lines=1..1;4..-1,leveloffset=+1]
+include::{docs-test}/test_cases.adoc[lines=1..1;4..-1,leveloffset=+2]
 <<<
 
 // ---------------------------------------------
