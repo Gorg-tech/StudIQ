@@ -1,60 +1,75 @@
-= Architecture Notebook: {project-name}
+= Architecture Notebook: StudIQ
 Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
-// Platzhalter für weitere Dokumenten-Attribute
-
 
 == Zweck
 Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Begründungen, wesentliche Elemente und andere übergreifende Aspekte des Systems, die Einfluss auf Entwurf und Implementierung haben.
 
-//Hinweise: Bearbeiten Sie immer die Abschnitte 2-6 dieser Vorlage. Nachfolgende Abschnitte sind empfohlen, aber optional und sollten je nach Umfang der künftigen Wartungsarbeiten, Fähigkeiten des Entwicklungsteams und Bedeutung anderer architektureller Belange.
-
-- Front-End-Framework: **vue.js**
-- Back-End-Framework: **Django & Django Rest-Framework**
-
-//Anmerkung: Die Architektur legt wesentliche EINSCHRÄNKUNGEN für den Systementwurf fest und ist ein Schlüssel für die Erfüllung nicht-funktionaler Eigenschaften!
-
-
-== Architekturziele 
-//Hinweise: Beschreiben Sie den zentralen Ansatz für ihre Architektur. Identifizieren Sie alle Aspekte, die die Philosophie beeinflussen, z.B. komplexe Auslieferung Aspekte, Anpassung von Altsystemen oder besondere Geschwindigkeitsanforderungen. Muss es besonders robust sein, um eine langfristige Wartung und Pflege zu ermöglichen?
-
-//Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
-
+== Architekturziele
+* **Modularität:** Klare Trennung zwischen Frontend (Vue.js) und Backend (Django REST Framework) für bessere Wartbarkeit und Erweiterbarkeit.
+* **Benutzerfreundlichkeit:** Intuitive, responsive UI für Studierende und Lehrende.
+* **Sicherheit:** Authentifizierung, Rechteverwaltung und Datenschutz (DSGVO).
+* **Skalierbarkeit:** Die Architektur erlaubt zukünftige Erweiterungen (z.B. Gamification, neue Fragetypen).
+* **Wiederverwendbarkeit:** Komponenten und APIs sind so gestaltet, dass sie mehrfach genutzt werden können.
+* **Transparenz:** Nachvollziehbare Datenflüsse und klare Schnittstellen.
 
 == Annahmen und Abhängigkeiten
-//[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
-
+* Das System wird als Web-App genutzt, primär von Studierenden und Lehrenden der HTW Dresden.
+* Die Daten zu Modulen und Studiengängen werden regelmäßig aus Modulux/Scraper aktualisiert.
+* Die Nutzer besitzen aktuelle Browser und Internetzugang.
+* Die Backend-Infrastruktur basiert auf Python/Django und verwendet SQLite (Entwicklung) bzw. eine relationale DB (Produktion).
+* Die Authentifizierung erfolgt über Django-Mechanismen (Session, ggf. Token).
+* Das Team hat Erfahrung mit Vue.js und Django.
+* Externe Schnittstellen (z.B. Modulux) können sich ändern und müssen ggf. angepasst werden.
 
 == Architektur-relevante Anforderungen
-//Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
-
+* Siehe <<../requirements/vision.adoc#, Produktvision>> und <<../requirements/ux-concept.adoc#, UX-Konzept>>.
+* REST-API für alle Kernfunktionen (Quiz, Lernset, Modul, User, Fortschritt, Feedback).
+* Unterstützung für verschiedene Fragetypen (Multiple Choice, Freitext, Zuordnung).
+* Rollenmodell: Student, Admin, Dozent.
+* Datenschutz: Speicherung und Übertragung personenbezogener Daten gemäß DSGVO.
+* Simples Design für Desktop und Mobile Endgeräte.
+* Integration von Gamification-Elementen (Streaks, Achievements, Leaderboard).
+* Individualisierte Lernerfahrung basierend auf Nutzerfortschritt und -feedback.
 
 == Entscheidungen, Nebenbedingungen und Begründungen
-//[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
-
-. Entscheidung oder Einschränkung oder Begründung 1
-. Wir sorgen nicht dafür, dass nur aktive Studenten der HTW die App nutzen dürfen. Dies ist mehr Aufwand in der Implementierung, außerdem sind die Daten nicht so privat, dass sie nur HTW-intern zu sehen sein dürfen.
+. **Frontend/Backend-Trennung:** Vue.js als SPA für das Frontend, Django REST Framework für das Backend. Erlaubt unabhängige Entwicklung und bessere Skalierbarkeit.
+. **REST-API:** Einheitliche Schnittstelle für alle Datenzugriffe, erleichtert Integration und Testbarkeit.
+. **Authentifizierung:** Session-basierte Authentifizierung für einfache Integration mit Django Admin und bestehender Infrastruktur.
+. **Datenmodell:** Angelehnt an das Domänenmodell (siehe Glossar), um die Anforderungen der Stakeholder direkt abzubilden.
+. **Keine HTW-only-Restriktion:** Die App ist offen für alle, da die Daten keine hochsensiblen Inhalte enthalten und der Aufwand für eine exklusive HTW-Authentifizierung zu hoch wäre.
+. **Automatisierte Tests:** Unit- und Integrationstests für Backend und Frontend, um Wartbarkeit und Zuverlässigkeit zu gewährleisten.
+. **Deployment:** Entwicklung auf SQLite, Produktion auf PostgreSQL/MySQL möglich. Nutzung von CI/CD für automatisierte Deployments.
 
 == Schichten oder Architektur-Framework
-//[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
-
-- Front-End-Framework: **vue.js**
-- Back-End-Framework: **Django & Django Rest-Framework**
+* **Client:** Vue.js SPA, Kommunikation ausschließlich über REST-API.
+* **Backend:** Django REST Framework, Schichten: ViewSets/Serializers → Business Logic → Models → Datenbank.
+* **Datenbank:** Relational (SQLite für Entwicklung, PostgreSQL/MySQL für Produktion).
+* **Schnittstellen:** REST-API, OpenAPI/Swagger-Dokumentation.
+* **Authentifizierung:** Django Sessions, ggf. Token für API-Zugriffe.
 
 == Architektursichten (Views)
-//[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 
-=== Kontextabgrenzung
-//Level 1 im C4-Modell
+=== Kontextabgrenzung (C4 Level 1)
+StudIQ ist eine Web-App für Studierende und Lehrende der HTW Dresden. Sie interagieren über Browser mit dem Frontend. Das Backend kommuniziert mit einer relationalen Datenbank und bezieht Modul-/Studiengangsdaten über einen Scraper aus Modulux.
 
-=== Container
-//Level 2 im C4-Modell
+=== Container (C4 Level 2)
+* **Web-Frontend:** Vue.js SPA, läuft im Browser.
+* **Backend:** Django REST Framework, läuft auf Webserver.
+* **Datenbank:** SQLite/PostgreSQL/MySQL.
+* **Scraper:** Python-Skript, das regelmäßig Modulux-Daten abruft und als JSON bereitstellt.
 
-=== Components
-//Level 3 im C4-Modell
-
+=== Components (C4 Level 3)
+* **Frontend-Komponenten:** QuizView, ModulView, LernsetView, SearchView, ProfileView, Leaderboard, etc.
+* **Backend-Komponenten:** User-Management, Quiz-API, Lernset-API, Modul-API, Fortschritt-API, Feedback-API, Authentifizierung, Admin-Panel.
+* **Scraper-Komponenten:** ModuluxScraper, JSON-Export.
 
 === Verteilungsdiagramm (Deployment Diagramm)
-//Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
+* **Client:** Browser auf beliebigen Endgeräten.
+* **Server:** Webserver (z.B. Gunicorn, uWSGI) mit Django-App.
+* **Datenbank:** Separater Datenbankserver oder lokal beim Backend.
+* **Scraper:** Läuft periodisch auf dem Server oder als CI-Job.
+
+
 
