@@ -105,9 +105,7 @@ a| image::./images/persona-prof-klaus.png[Prof. Klaus Persona]
 
 Die Wireframes wurden in Miro erstellt.
 
-
-
-image::./images/Main-wireframes.png[Wireframes der 3 Hauptseiten] 
+image::Main-wireframes.png[Wireframes der 3 Hauptseiten] 
 
 User Story Startseite: Als Studentin möchte ich meine Lernstatistiken einsehen, um meinen Fortschritt zu verfolgen und motiviert zu bleiben. 
 
@@ -115,7 +113,7 @@ User Story Suche : Als Student möchte ich einfachen und schnellen Zugriff auf L
 
 User Story Profil: Als Nutzer hätte ich gerne einen Nutzernamen, um auf der Plattform erkennbar zu sein
 
-image::./images/kategories-wireframes.png[Wireframes von Modul-Lernset-Quiz]
+image::kategorie-wireframes.png[Wireframes von Modul-Lernset-Quiz]
 
 User Story Modul und Lernset: Als Studentin möchte ich modul- und themenspezifische Fragen sehen, um gezielt für meine bevorstehenden Prüfungen lernen zu können
 

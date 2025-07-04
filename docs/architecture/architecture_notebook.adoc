@@ -56,7 +56,7 @@ StudIQ ist eine Web-App für Studierende und Lehrende der HTW Dresden. Sie inter
 
 === Container (C4 Level 2)
 
-image::images/StudIQ-c4Modell.png[]
+image::StudIQ-c4Modell.png[C4 Modell Level 2]
 
 * **Web-Frontend:** Vue.js SPA, läuft im Browser.
 * **Backend:** Django REST Framework, läuft auf Webserver.

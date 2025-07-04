@@ -63,11 +63,15 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
 | Login
 
-| Quiz
-| Sammlung von Fragen mit Bewertung, Thema, Autor und Sichtbarkeit
-| JSON-Objekt
-| Titel nicht leer; Fragenanzahl ≥ 1
-| Test, Abfrage
+| Studiengang
+| Informationen zu einem Studiengang der HTW RDesden
+|
+|
+
+| Modul
+| Information zu einem Modul der HTW aus Modulux
+|
+|
 
 | Lernset
 | Struktur aus Karteikarten zu einem Thema
@@ -75,31 +79,28 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Muss mindestens eine Karte enthalten
 | Kartenstapel
 
-| Benutzerprofil
+| Quiz
+| Sammlung von Fragen mit Bewertung, Thema, Autor und Sichtbarkeit
+| JSON-Objekt
+| Titel nicht leer; Fragenanzahl ≥ 1
+| Test, Abfrage
+
+| User
 | Daten zu einem registrierten Nutzer (Name, Email, Rolle)
 | JSON-Objekt
 | Eindeutige E-Mail mit „@“ und „.“, Rolle ∈ {user, admin}
 | Account
 
-| Fortschritt
-| Statistikdaten eines Nutzers pro Lernset
+| QuizProgress
+| Statistikdaten eines Quizzes pro Nutzer
 | JSON
 | Muss Benutzer-ID und Lernset-ID enthalten
 | Progress
 
-| Bewertung
-| Zahlenwert und optionaler Kommentar zu einem Quiz
-| Zahl + Text
-| Score ∈ [1–5]
-| Rating
 
 |===
 
 == Domänenmodell
 // Fügen Sie hier eine Abbildung mit ihrem Domänenmodell ein
-Domänenmodell:
 
-[plantuml, Domänenmodell, png]
-----
-include::images/dommodell.puml[]
-----
+image::dommodell.png[Domänenmodell StudIQ]
