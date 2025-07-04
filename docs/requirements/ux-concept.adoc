@@ -5,8 +5,6 @@ include::../_includes/default-attributes.inc.adoc[]
 = UX-Konzept: {project-name}
 // Platzhalter für weitere Dokumenten-Attribute
 
-include::../_includes/members.adoc[]
-
 == Einführung
 In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-name} beschrieben. Dies können sein:
 

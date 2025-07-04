@@ -1,7 +1,6 @@
 = Vision: {project-name}
 
 include::../_includes/default-attributes.inc.adoc[]
-include::../_includes/members.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
 
 

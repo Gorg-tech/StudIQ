@@ -3,7 +3,6 @@ include::../_includes/default-attributes.inc.adoc[]
 
 = Glossar: {project-name}
 
-include::../_includes/members.adoc[]
 {localdatetime}
 
 
