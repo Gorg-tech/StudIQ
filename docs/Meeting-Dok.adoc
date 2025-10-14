@@ -231,6 +231,34 @@ Architecture
  - test_cases.adoc
 
 
+== 4. Iteration (Start SE2)
+
+=== 1. Meeting 14.10.
+
+Kennenlernen von neuem Mitglied
+
+Absprache über Kritik an Produkt von SE1
+
+Einfindung in alten Code
+
+Aufgabenverteilung 
+Absprache mit Marlene; In Deployment muss, in welchem Zustand das Produkt dem Kunden übergeben wird(zB USB-Stick)
+
+Ziel des Semesters: Produkt ist fertig, möglichst alle Funktionalitäten fertig.
+Zwischenprodukte müssen getestet werden, mit dokumentierten Test-Cases(Unit-Tests).
+Für Testdokumentation wichtig.
+Mit Entwicklerdokumentation schon früher beginnen.
+
+Reden über Branches:
+Namenkonvention: 
+bei BUgfixes: Bugfix_waspassiert
+Feature/...
+Update/...
+-> Methode/wasgemacht
+-> Issue/nr
+Nach Fertigstellung (direkt) hochladen, jemandem Pull-Request geben
+
+
 
 
 
