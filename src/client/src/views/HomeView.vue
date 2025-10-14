@@ -23,7 +23,7 @@ const openSettings = () => {
 }
 
 // Calculate days until exam period
-const examPeriodStart = new Date('2025-07-07');
+const examPeriodStart = new Date('2026-01-02');
 const daysUntilExams = computed(() => {
   const today = new Date();
   const diffTime = examPeriodStart - today;
