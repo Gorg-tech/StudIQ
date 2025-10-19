@@ -25,6 +25,7 @@ from .serializers import (
     FeedbackSerializer,
     StudiengangSerializer,
     ModulSerializer,
+    ModulDetailSerializer, 
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -36,6 +37,8 @@ class QuizViewSet(viewsets.ModelViewSet):
     serializer_class = QuizSerializer
     permission_classes = [IsAuthenticated]
 
+    def list(self, request, *args, **kwargs):
+        return Response({"detail": "Not found."}, status=404)
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
@@ -52,6 +55,8 @@ class LernsetViewSet(viewsets.ModelViewSet):
       # Automatically set the created_by to the current user
       serializer.save(created_by=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        return Response({"detail": "Not found."}, status=404)
 
 class QuizProgressViewSet(viewsets.ModelViewSet):
     serializer_class = QuizProgressSerializer
@@ -102,6 +107,14 @@ class ModulViewSet(viewsets.ModelViewSet):
     queryset = Modul.objects.all()
     serializer_class = ModulSerializer
     permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        return Response({"detail": "Not found."}, status=404)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = ModulDetailSerializer(instance)  # Use ModulDetailSerializer here instead of ModulSerializer
+        return Response(serializer.data)
 
 
 class QuizzesByLernsetView(ListAPIView):

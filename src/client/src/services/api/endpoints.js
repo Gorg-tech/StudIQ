@@ -27,7 +27,6 @@ export const API_ENDPOINTS = {
   MODULES: {
     BASE: 'api/modules/',
     DETAIL: (moduleId) => `api/modules/${moduleId}/`,
-    LERNSETS: (moduleId) => `api/modules/${moduleId}/lernsets/`,
   },
 
   LERNSETS: {

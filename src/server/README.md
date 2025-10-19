@@ -45,7 +45,7 @@ cd src/server
 python manage.py runserver
 ```
 
-## Version Control
+## Version **Control**
 **Kleiner Hinweis:** Während der Entwicklung checken wir die `db.sqlite3` Datei mit ins GitHub-Repo ein – macht den Einstieg einfacher für alle.
 
 **Ist eigentlich nicht so der Bringer und auch nicht ganz ungefährlich!** In der Datenbank stecken sensible Infos wie Passwort-Hashes und persönliche Daten.
@@ -63,6 +63,14 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `GET /api/users/me/` – Eigene Benutzerdaten abrufen
 - `PUT /api/users/me/` – Eigene Benutzerdaten aktualisieren
 
+### Suche
+ - `GET /api/search/?q={query}&filter={type}` – Suche über alle Inhalte
+   - **Parameter:**
+     -   `q` (optional): Suchbegriff
+     -   `filter` (optional): lernsets, quizzes, modules, studiengaenge
+     -   Ohne Parameter werden die ersten Einträge zurückgegeben
+     -   Mit Filter werden nur Ergebnisse des angegebenen Typs zurückgegeben
+
 ### Studiengänge
 - `GET /api/studiengaenge/` – Alle Studiengänge abrufen
 - `GET /api/studiengaenge/{id}/` – Einzelnen Studiengang abrufen
@@ -71,7 +79,6 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `DELETE /api/studiengaenge/{id}/` – Studiengang löschen (nur Moderator/Lecturer)
 
 ### Module
-- `GET /api/modules/` – Alle Module abrufen
 - `GET /api/modules/{id}/` – Einzelnes Modul abrufen
 - `POST /api/modules/` – Neues Modul anlegen (nur Moderator/Lecturer)
 - `PUT /api/modules/{id}/` – Modul aktualisieren (nur Moderator/Lecturer)
@@ -79,14 +86,12 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `GET /api/modules/{moduleId}/lernsets/` – Alle Lernsets eines Moduls abrufen
 
 ### Lernsets
-- `GET /api/lernsets/` – Alle Lernsets abrufen
 - `GET /api/lernsets/{id}/` – Einzelnes Lernset abrufen
 - `POST /api/lernsets/` – Neues Lernset anlegen
 - `PUT /api/lernsets/{id}/` – Lernset aktualisieren (nur Ersteller oder Moderator)
 - `DELETE /api/lernsets/{id}/` – Lernset löschen (nur Ersteller oder Moderator)
 
 ### Quizze
-- `GET /api/quizzes/` – Alle Quizze abrufen
 - `GET /api/quizzes/{id}/` – Einzelnes Quiz abrufen
 - `POST /api/quizzes/` – Neues Quiz anlegen
 - `PUT /api/quizzes/{id}/` – Quiz aktualisieren (nur Ersteller oder Moderator)
@@ -94,15 +99,10 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `GET /api/quizzes/{quizId}/questions/` – Alle Fragen eines Quiz abrufen
 
 ### Fragen
-- `GET /api/questions/` – Alle Fragen abrufen
-- `GET /api/questions/{id}/` – Einzelne Frage abrufen
-- `POST /api/questions/` – Neue Frage anlegen
-- `PUT /api/questions/{id}/` – Frage aktualisieren (nur Ersteller oder Moderator)
-- `DELETE /api/questions/{id}/` – Frage löschen (nur Ersteller oder Moderator)
-- `GET /api/questions/{questionId}/answers/` – Antwortoptionen zu einer Frage abrufen
-- `POST /api/questions/{questionId}/answers/` – Neue Antwortoption anlegen
-- `PUT /api/questions/{questionId}/answers/{answerId}/` – Antwortoption aktualisieren
-- `DELETE /api/questions/{questionId}/answers/{answerId}/` – Antwortoption löschen
+  Fragen und Antworten werden beim Abrufen eines Quiz über den Endpunkt  
+  `GET /api/quizzes/{id}/` direkt mitgeliefert.  
+  Es ist kein separater API-Call für die Fragen eines Quiz notwendig.
+  (noch nicht implementiert)
 
 ### Quiz-Fortschritt
 - `GET /api/progress/` – Eigenen Quiz-Fortschritt für alle Quizze abrufen

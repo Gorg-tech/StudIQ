@@ -1,60 +1,91 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import IconPlus from '@/components/icons/IconPlus.vue' // Passe ggf. den Pfad an
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import IconPlus from '@/components/icons/IconPlus.vue'
+import { getLernset, getLernsetQuizzes } from '@/services/lernsets'
+import apiClient from '@/services/api/client'
+import { API_ENDPOINTS } from '@/services/api/endpoints'
 
-// Beispiel-Daten
-const lernsetName = ref('Graphentheorie Grundlagen')
-const modulName = ref('Diskrete Mathematik')
-const lernsetBeschreibung = ref('Dieses Lernset behandelt die wichtigsten Begriffe und Konzepte der Graphentheorie, wie Knoten, Kanten, Bäume und mehr.')
+// Real data placeholders
+const lernsetName = ref('')
+const modul = ref({})
+const lernsetBeschreibung = ref('')
 
-// Beispiel-Daten für Quick-Quiz
-const quickQuizzes = ref([
-  {
-    id: 1,
-    title: 'Knoten & Kanten Quiz',
-    description: 'Teste schnell dein Wissen zu den Grundbegriffen der Graphentheorie!',
-  },
-  {
-    id: 2,
-    title: 'Baum-Erkennung',
-    description: 'Erkenne und klassifiziere Bäume in Graphen.',
-  }
-])
+// Quick quizzes (shorter quizzes)
+const quickQuizzes = ref([])
 
-// Beispiel-Daten für normale Quizze
-const quizzes = ref([
-  {
-    id: 101,
-    title: 'Einsteiger Quiz: Graphen',
-    questionCount: 12,
-    rating: 4.5,
-    creator: 'MaxMustermann',
-  },
-  {
-    id: 102,
-    title: 'Spezial: Planare Graphen',
-    questionCount: 8,
-    rating: 3,
-    creator: 'Alice123',
-  },
-  {
-    id: 103,
-    title: 'Fortgeschrittene Pfade',
-    questionCount: 15,
-    rating: 5,
-    creator: 'GraphenProfi',
-  }
-])
+// Regular quizzes
+const quizzes = ref([])
+
+// Loading and error states
+const loading = ref(true)
+const error = ref(null)
 
 const router = useRouter()
+const route = useRoute()
+
+// Fetch lernset data from API
+const fetchLernsetData = async () => {
+  const lernsetId = route.params.lernsetId
+  if (!lernsetId) {
+    error.value = 'Keine Lernset-ID gefunden'
+    loading.value = false
+    return
+  }
+  
+  try {
+    loading.value = true
+    
+    // Get lernset details
+    const lernsetData = await getLernset(lernsetId)
+    
+    console.log('Lernset data received:', lernsetData)
+    
+    // Modified check to properly handle the data structure
+    if (!lernsetData || typeof lernsetData !== 'object') {
+      throw new Error('Lernset-Daten nicht gefunden')
+    }
+    
+    lernsetName.value = lernsetData.title || 'Unbenanntes Lernset'
+    lernsetBeschreibung.value = lernsetData.description || ''
+    modul.value = lernsetData.modul || {}
+    
+    // Get quizzes for this lernset
+    const quizzesData = lernsetData.quizzes || []
+
+    /*
+        An dieser Stelle könnten wir später auch nach dem Quiz-Modus filtern,
+        z.B. um nur den "Quick Quiz"-Modus anzuzeigen.
+    */
+
+    quizzes.value = quizzesData
+      .map(quiz => ({
+        id: quiz.id,
+        title: quiz.title || 'Unbenanntes Quiz',
+        questionCount: quiz.question_count || 0,
+        rating: calculateRating(quiz.rating_score, quiz.rating_count),
+        creator: quiz.creator_username || 'Unbekannt'
+      }))
+      
+  } catch (err) {
+    console.error('Error fetching lernset data:', err)
+    error.value = 'Fehler beim Laden des Lernsets'
+  } finally {
+    loading.value = false
+  }
+}
+
+// Calculate rating from score and count
+const calculateRating = (score, count) => {
+  return count > 0 ? score / count : 0
+}
 
 const goToQuizOverview = (quizId) => {
-  router.push('/quiz-overview/')
+  router.push({ name: 'quiz-overview', params: { quizId } })
 }
 
 const goToEditQuiz = () => {
-  router.push('/edit-quiz/')
+  router.push({ name: 'edit-quiz' })
 }
 
 // Hilfsfunktion für Sterne
@@ -68,91 +99,96 @@ const getStars = (rating) => {
     empty: emptyStars
   }
 }
+
+// Fetch data when component is mounted
+onMounted(fetchLernsetData)
 </script>
 
 <template>
   <div class="lernset-view">
-    <!-- Titelzeile -->
-    <div class="header-row">
-      <h1 class="lernset-title">{{ lernsetName }}</h1>
-      <span class="modul-label">{{ modulName }}</span>
+    <!-- Loading state -->
+    <div v-if="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Lernset wird geladen...</p>
     </div>
 
-    <!-- Beschreibung -->
-    <div class="lernset-description">
-      {{ lernsetBeschreibung }}
+    <!-- Error state -->
+    <div v-else-if="error" class="error-message">
+      {{ error }}
+      <button @click="fetchLernsetData" class="retry-btn">Erneut versuchen</button>
     </div>
 
-    <!-- Quick-Quiz -->
-    <section class="quick-quiz-section">
-      <h2 class="section-title">Quick-Quiz</h2>
-      <div class="quick-quiz-list">
-        <button
-          v-for="quiz in quickQuizzes"
-          :key="quiz.id"
-          class="quick-quiz-btn"
-          @click="goToQuizOverview(quiz.id)"
-        >
-          <span class="quick-quiz-title">{{ quiz.title }}</span>
-          <span class="quick-quiz-desc">{{ quiz.description }}</span>
-        </button>
+    <!-- Content when loaded -->
+    <template v-else>
+      <!-- Titelzeile -->
+      <div class="header-row">
+        <h1 class="lernset-title">{{ lernsetName }}</h1>
+        <span v-if="modul.name" class="modul-label">
+          <router-link :to="{ name: 'modul', params: { modulId: modul.modulId } }">
+            {{ modul.name }} ({{ modul.modulId }})
+          </router-link>
+        </span>
       </div>
-    </section>
 
-    <!-- Normale Quizze -->
-    <section class="quizzes-section">
-      <div class="quizze-title-row">
-        <h2 class="section-title">Quizze</h2>
-        <button
-          class="plus-btn"
-          @click="goToEditQuiz"
-          aria-label="Quiz hinzufügen"
-        >
-          <IconPlus />
-        </button>
+      <!-- Beschreibung -->
+      <div class="lernset-description">
+        {{ lernsetBeschreibung }}
       </div>
-      <div class="quizzes-list">
-        <button
-          v-for="quiz in quizzes"
-          :key="quiz.id"
-          class="quiz-btn"
-          @click="goToQuizOverview(quiz.id)"
-        >
-          <div class="quiz-btn-header">
-            <span class="quiz-title">{{ quiz.title }}</span>
-            <span class="quiz-question-count">{{ quiz.questionCount }} Fragen</span>
-          </div>
-          <div class="quiz-rating-row">
-            <span class="quiz-stars">
-              <template v-for="n in getStars(quiz.rating).full" :key="'full' +quiz.id+'-'+n">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="#FFC107" style="vertical-align:middle">
-                  <polygon points="10,1.5 12.7,7.6 19.2,8.1 14,12.7 15.6,19.1 10,15.7 4.4,19.1 6,12.7 0.8,8.1 7.3,7.6"/>
-                </svg>
-              </template>
-              <template v-if="getStars(quiz.rating).half">
-                <svg width="20" height="20" viewBox="0 0 20 20" style="vertical-align:middle" key="half">
-                  <defs>
-                    <linearGradient id="halfstar" x1="0" y1="0" x2="100%" y2="0">
-                      <stop offset="50%" stop-color="#FFC107"/>
-                      <stop offset="50%" stop-color="#E0E0E0"/>
-                    </linearGradient>
-                  </defs>
-                  <polygon points="10,1.5 12.7,7.6 19.2,8.1 14,12.7 15.6,19.1 10,15.7 4.4,19.1 6,12.7 0.8,8.1 7.3,7.6" fill="url(#halfstar)" />
-                </svg>
-              </template>
-              <template v-for="n in getStars(quiz.rating).empty" :key="'empty' +quiz.id+'-'+n">
-                <svg 
-                    width="20" height="20" viewBox="0 0 20 20" fill="#E0E0E0" style="vertical-align:middle" 
-                    >
-                  <polygon points="10,1.5 12.7,7.6 19.2,8.1 14,12.7 15.6,19.1 10,15.7 4.4,19.1 6,12.7 0.8,8.1 7.3,7.6"/>
-                </svg>
-              </template>
-            </span>
-            <span class="quiz-creator">Erstellt von: <b>{{ quiz.creator }}</b></span>
-          </div>
-        </button>
-      </div>
-    </section>
+
+      <!-- Quick-Quiz -->
+      <section class="quick-quiz-section" v-if="quickQuizzes.length > 0">
+        <h2 class="section-title">Quick-Quiz</h2>
+        <div class="quick-quiz-list">
+          <button 
+            v-for="quiz in quickQuizzes" 
+            :key="quiz.id"
+            class="quick-quiz-btn"
+            @click="goToQuizOverview(quiz.id)"
+          >
+            <div class="quick-quiz-title">{{ quiz.title }}</div>
+            <div class="quick-quiz-desc">{{ quiz.description }}</div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Normale Quizze -->
+      <section class="quizzes-section">
+        <div class="quizze-title-row">
+          <h2 class="section-title">Quizze</h2>
+          <button class="plus-btn" @click="goToEditQuiz">
+            <IconPlus />
+          </button>
+        </div>
+
+        <div class="quizzes-list" v-if="quizzes.length > 0">
+          <button 
+            v-for="quiz in quizzes" 
+            :key="quiz.id"
+            class="quiz-btn"
+            @click="goToQuizOverview(quiz.id)"
+          >
+            <div class="quiz-btn-header">
+              <div class="quiz-title">{{ quiz.title }}</div>
+              <div class="quiz-question-count">{{ quiz.questionCount }} Fragen</div>
+            </div>
+            
+            <div class="quiz-rating-row">
+              <div class="quiz-stars">
+                <div v-for="n in getStars(quiz.rating).full" :key="'full-' + quiz.id + '-' + n">★</div>
+                <div v-if="getStars(quiz.rating).half">★</div>
+                <div v-for="n in getStars(quiz.rating).empty" :key="'empty-' + quiz.id + '-' + n">☆</div>
+              </div>
+              <div class="quiz-creator">von {{ quiz.creator }}</div>
+            </div>
+          </button>
+        </div>
+        
+        <div v-else class="no-quizzes">
+          <p>Keine Quizze für dieses Lernset gefunden.</p>
+          <p>Erstelle das erste Quiz mit dem Plus-Button.</p>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
@@ -164,6 +200,58 @@ const getStars = (rating) => {
   display: flex;
   flex-direction: column;
   gap: 32px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  color: var(--color-primary, #1976d2);
+}
+
+.error-message {
+  background-color: #fee;
+  border: 1px solid #fcc;
+  color: #d32f2f;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+  text-align: center;
+}
+
+.retry-btn {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.no-quizzes {
+  background-color: #f5f5f5;
+  padding: 24px;
+  text-align: center;
+  border-radius: 8px;
+  color: #666;
+}
+
+.spinner {
+  border: 4px solid rgba(25, 118, 210, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid var(--color-primary, #1976d2);
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .header-row {

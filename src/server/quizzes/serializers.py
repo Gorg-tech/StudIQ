@@ -26,12 +26,37 @@ class QuizSerializer(serializers.ModelSerializer):
             'is_public', 'lernset', 'lernset_title', 'questions'
         ]
 
+class QuizForLernsetSerializer(serializers.ModelSerializer):
+    question_count = serializers.SerializerMethodField()
+    creator_username = serializers.CharField(source='created_by.username', read_only=True)
+
+    class Meta:
+        model = Quiz
+        fields = [
+            'id', 'title', 'description', 'created_at', 'created_by', 'creator_username',
+            'rating_score', 'rating_count', 'avg_time_spent', 
+            'is_public', 'lernset', 'question_count'
+        ]
+
+    def get_question_count(self, obj):
+        return obj.questions.count()
+
+class ModulShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Modul
+        fields = ['modulId', 'name']
+
 class LernsetSerializer(serializers.ModelSerializer):
-    quizzes = QuizSerializer(many=True, read_only=True)
+    quizzes = QuizForLernsetSerializer(many=True, read_only=True)
+    modul = ModulShortSerializer(read_only=True)
+    quiz_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Lernset
-        fields = ['id', 'title', 'description', 'created_at', 'modul', 'quizzes']
+        fields = ['id', 'title', 'description', 'created_at', 'modul', 'quizzes', 'quiz_count']
+        
+    def get_quiz_count(self, obj):
+        return obj.quizzes.count()
 
 class QuizProgressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,6 +85,23 @@ class StudiengangSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ModulSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Modul
+        fields = '__all__'
+
+class LernsetForModulSerializer(serializers.ModelSerializer):
+    quiz_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Lernset
+        fields = ['id', 'title', 'description', 'created_at', 'quiz_count']
+        
+    def get_quiz_count(self, obj):
+        return obj.quizzes.count()
+
+class ModulDetailSerializer(serializers.ModelSerializer):
+    lernsets = LernsetForModulSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Modul
         fields = '__all__'
