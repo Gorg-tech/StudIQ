@@ -67,12 +67,12 @@ const router = createRouter({
       component: QuizView,
     },
     { 
-      path: '/modul',
+      path: '/modul/:modulId',
       name: 'modul',
       component: ModulView,
     },
     { 
-      path: '/lernset',
+      path: '/lernset/:lernsetId',
       name: 'lernset',
       component: LernsetView,
     },

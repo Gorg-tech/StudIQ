@@ -200,9 +200,9 @@ function navigateToItem(item) {
   if (item.type === 'Quiz') {
     router.push({ name: 'quiz-overview', params: { quizId: item.id } }); //Quiz-Overview w api ID
   } else if (item.type === 'Lernset') {
-    router.push({ path: '/lernset', params: { lernsetId: item.id } }); // Lernset-Overview hardcoded
+    router.push({ name: 'lernset', params: { lernsetId: item.id } }); // Using named route with params
   } else if (item.type === 'Modul') {
-    router.push({ path: '/modul', params: { modulId: item.modulId } }); // Modul-Overview hardcoded
+    router.push({ path: `/modul/${item.modulId}` }); // Use path with parameter
   } else if (item.type === 'Studiengang') {
     router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } }); //TODO
   }

@@ -1,18 +1,19 @@
 ```vue name=ModuleOverview.vue
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { createLernset, getLernsets, getLernsetQuizzes } from '@/services/lernsets'
+import { useRouter, useRoute } from 'vue-router'
+import { createLernset } from '@/services/lernsets'
+import { getModul } from '@/services/modules' 
 import IconLink from '@/components/icons/IconLink.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 
 
 const router = useRouter()
+const route = useRoute()
 
-// Beispiel-Daten für das Modul und Lernsets
-const moduleName = ref('TestModul')
-const moduleDescription = ref('Dieses Modul behandelt grundlegende Themen der diskreten Mathematik wie Mengen, Relationen, Graphen, Kombinatorik und mehr.')
-const moduleLink = ref('https://www.htw-dresden.de/')
+const moduleName = ref('')
+const moduleDescription = ref('')
+const moduleLink = ref('')
 
 const lernsets = ref([])
 
@@ -24,7 +25,7 @@ const pendingLernsetTitle = ref('')
 const pendingLernsetDescription = ref('')
 
 const goToLernset = (lernsetId) => {
-  router.push('/lernset/')
+  router.push({ name: 'lernset', params: { lernsetId } })
 }
 
 const handleOpenNewLernsetModal = () => {
@@ -60,7 +61,7 @@ const handleCreateLernset = (title, description) => {
     description: description,
     created_at: new Date().toISOString(),
     //created_by: '521edc25-b9b1-406x6-9b36-561dbee9c6c1', // Per Default Eric
-    modul: 'I128' // Per Default Modul I128
+    modul: route.params.modulId // Use dynamic modulId
   }
 
   const newLernset = createLernset(newSet)
@@ -81,30 +82,33 @@ const handleCreateLernset = (title, description) => {
 }
 
 onMounted(() => {
-  // Lernsets aus der Datenbank laden
-  getLernsets()
-    .then(data => {
-      for(const set of data) {
-        getLernsetQuizzes(set.id)
-          .then(quizzes => {
-            lernsets.value.push({
-              id: set.id,
-              title: set.title,
-              quizCount: quizzes.length
-            })
-          })
-          .catch(error => {
-            console.warn(`Fehler beim Laden der Quizzes für Lernset ${set.id}:`, error)
-            lernsets.value.push({
-              id: set.id,
-              title: set.title,
-              quizCount: 0 // Fallback auf 0, wenn keine Quizzes geladen werden können
-            })
-          })
+  const modulId = route.params.modulId
+  
+  getModul(modulId)
+    .then(modulData => {
+      moduleName.value = modulData.name || `Modul ${modulId}`
+      moduleDescription.value = modulData.description || `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
+      moduleLink.value = modulData.modulux_url || 'https://apps.htw-dresden.de/modulux/frontend/module/'
+      
+      // Check if lernsets data exists in the response
+      if (modulData.lernsets && Array.isArray(modulData.lernsets)) {
+        lernsets.value = modulData.lernsets.map(set => ({
+          id: set.id,
+          title: set.title,
+          quizCount: set.quiz_count || 0
+        }));
+      } else {
+        // If no lernsets in the response, initialize with an empty array
+        lernsets.value = [];
+        console.log('No lernsets data found in module response');
       }
     })
     .catch(error => {
-      console.error('Fehler beim Laden der Lernsets:', error)
+      console.error('Fehler beim Laden des Moduls:', error)
+      // Fall back to placeholder data if API call fails
+      moduleName.value = `Modul ${modulId}`
+      moduleDescription.value = `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
+      moduleLink.value = 'https://www.htw-dresden.de/'
     })
 })
 
