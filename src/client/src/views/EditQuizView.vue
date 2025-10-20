@@ -183,8 +183,8 @@ const saveQuiz = async () => {
 const addQuestion = async () => {
   quizEdit.addQuestion({
     id: Date.now(), // temporäre ID
-    text: '',
-    type: 'Multiple Choice',
+    text: 'Neue Frage',
+    type: QUESTION_TYPES[0].api, 
     options: [
             { id: Date.now() + 4, text: 'Antwort A', correct: true },
             { id: Date.now() + 5, text: 'Antwort B', correct: false },

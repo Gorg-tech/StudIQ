@@ -53,7 +53,7 @@ class ModulShortSerializer(serializers.ModelSerializer):
 
 class LernsetSerializer(serializers.ModelSerializer):
     quizzes = QuizForLernsetSerializer(many=True, read_only=True)
-    modul = ModulShortSerializer(read_only=True) 
+    modul = ModulShortSerializer(read_only=True)
     quiz_count = serializers.SerializerMethodField()
     
     class Meta:
