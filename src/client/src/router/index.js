@@ -67,12 +67,13 @@ const router = createRouter({
       component: QuizView,
     },
     { 
-      path: '/modul',
+      path: '/modul/:moduleId?',
       name: 'modul',
       component: ModulView,
+      props: true,  //nicht notwendig, ermöglicht Weitergabe von Parameter automatisch an neue Komonente(statt useRoute())
     },
     { 
-      path: '/lernset',
+      path: '/lernset/:lernsetId?',
       name: 'lernset',
       component: LernsetView,
     },

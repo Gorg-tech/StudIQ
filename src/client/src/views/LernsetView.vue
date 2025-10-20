@@ -1,60 +1,98 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import IconPlus from '@/components/icons/IconPlus.vue' // Passe ggf. den Pfad an
-
-// Beispiel-Daten
-const lernsetName = ref('Graphentheorie Grundlagen')
-const modulName = ref('Diskrete Mathematik')
-const lernsetBeschreibung = ref('Dieses Lernset behandelt die wichtigsten Begriffe und Konzepte der Graphentheorie, wie Knoten, Kanten, Bäume und mehr.')
-
-// Beispiel-Daten für Quick-Quiz
-const quickQuizzes = ref([
-  {
-    id: 1,
-    title: 'Knoten & Kanten Quiz',
-    description: 'Teste schnell dein Wissen zu den Grundbegriffen der Graphentheorie!',
-  },
-  {
-    id: 2,
-    title: 'Baum-Erkennung',
-    description: 'Erkenne und klassifiziere Bäume in Graphen.',
-  }
-])
-
-// Beispiel-Daten für normale Quizze
-const quizzes = ref([
-  {
-    id: 101,
-    title: 'Einsteiger Quiz: Graphen',
-    questionCount: 12,
-    rating: 4.5,
-    creator: 'MaxMustermann',
-  },
-  {
-    id: 102,
-    title: 'Spezial: Planare Graphen',
-    questionCount: 8,
-    rating: 3,
-    creator: 'Alice123',
-  },
-  {
-    id: 103,
-    title: 'Fortgeschrittene Pfade',
-    questionCount: 15,
-    rating: 5,
-    creator: 'GraphenProfi',
-  }
-])
+import { getLernset, getLernsetQuizzes } from '@/services/lernsets'
 
 const router = useRouter()
+const route = useRoute()
+
+// Reactive state
+const lernsetName = ref('Lernset')
+const modulName = ref('')
+const lernsetBeschreibung = ref('')
+const lernset = ref(null) // whole lernset object if needed
+
+// Read lernsetId from route params (optional)
+const lernsetId = route.params.lernsetId || null
+
+// Always-shown hardcoded quizzes (IDs use 'local-' prefix to avoid collisions)
+const defaultQuickQuiz = {
+  id: 'local-quick-1',
+  title: 'Schnelltest: Schlüsselbegriffe',
+  description: 'Kurzes Schnellquiz zu den wichtigsten Begriffen (immer sichtbar)'
+}
+
+const defaultQuiz = {
+  id: 'local-quiz-1',
+  title: 'Übersichts-Quiz (immer)',
+  questionCount: 5,
+  rating: 4,
+  creator: 'StudIQ'
+}
+
+const quickQuizzes = ref([defaultQuickQuiz])
+const quizzes = ref([defaultQuiz])
+
+const loading = ref(false)
+const error = ref(null)
+
+async function fetchLernsetDetails(id) {
+  if (!id) return
+  try {
+    const data = await getLernset(id) //LernsetService-Abfrage
+    lernset.value = data
+    lernsetName.value = data.title || data.name || lernsetName.value
+    lernsetBeschreibung.value = data.description || lernsetBeschreibung.value
+    // try to set modul name if API provides nested modul
+    modulName.value = data.modul?.name || data.modul_name || modulName.value
+  } catch (err) {
+    console.warn('fetchLernsetDetails:', err)
+    error.value = 'Fehler beim Laden des Lernset-Details.'
+  }
+}
+
+async function fetchQuizzesForLernset(id) {
+  if (!id) return
+  loading.value = true
+  error.value = null
+  try {
+    const data = await getLernsetQuizzes(id) // expect array
+    const all = Array.isArray(data) ? data : []
+
+    // API-Antwort auf die richtigen Attribute mappen
+    const mapped = all.map(q => ({
+      id: q.id,
+      title: q.title || q.name || q.heading || 'Untitled',
+      description: q.description || q.summary || '',
+      questionCount: q.question_count ?? (q.questions ? q.questions.length : 0) ?? 0,
+      rating: Number(q.rating ?? 0),
+      creator: q.created_by_username || q.creator || q.creator_name || q.owner || '' ,
+      isQuick: Boolean(q.is_quick || q.quick || q.type === 'quick')
+    }))
+
+  //Quick- von normalen Quizzes trennen
+  const serverQuick = mapped.filter(m => m.isQuick)
+  const serverNormal = mapped.filter(m => !m.isQuick)
+
+  //gehardcodetes Quiz immer oben angezeigt, danach Quizzes vom Server
+  //Filter sorgt dafür, dass ID vom gehardcodeten Quiz nicht einer ID vom Serverquiz in die Quere kommt
+  quickQuizzes.value = [defaultQuickQuiz, ...serverQuick.filter(s => String(s.id) !== String(defaultQuickQuiz.id))]
+  quizzes.value = [defaultQuiz, ...serverNormal.filter(s => String(s.id) !== String(defaultQuiz.id))]
+  } catch (err) {
+    console.error('Fehler beim Laden der Quizzes:', err)
+    error.value = 'Fehler beim Laden der Quizze.'
+  } finally {
+    loading.value = false
+  }
+}
 
 const goToQuizOverview = (quizId) => {
-  router.push('/quiz-overview/')
+  router.push({ name: 'quiz-overview', params: { quizId } })
 }
 
 const goToEditQuiz = () => {
-  router.push('/edit-quiz/')
+  router.push({ name: 'edit-quiz', params: { quizId } })
 }
 
 // Hilfsfunktion für Sterne
@@ -68,6 +106,13 @@ const getStars = (rating) => {
     empty: emptyStars
   }
 }
+
+onMounted(() => {
+  if (lernsetId) {
+    fetchLernsetDetails(lernsetId)
+    fetchQuizzesForLernset(lernsetId)
+  }
+})
 </script>
 
 <template>

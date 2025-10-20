@@ -1,18 +1,40 @@
 ```vue name=ModuleOverview.vue
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import API_ENDPOINTS from '@/services/api/endpoints'
 import { createLernset, getLernsets, getLernsetQuizzes } from '@/services/lernsets'
 import IconLink from '@/components/icons/IconLink.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 
 
 const router = useRouter()
+const route = useRoute()
+
+// Read moduleId from route params (optional)
+const moduleId = route.params.moduleId || null
 
 // Beispiel-Daten für das Modul und Lernsets
 const moduleName = ref('TestModul')
 const moduleDescription = ref('Dieses Modul behandelt grundlegende Themen der diskreten Mathematik wie Mengen, Relationen, Graphen, Kombinatorik und mehr.')
 const moduleLink = ref('https://www.htw-dresden.de/')
+
+// Fetch module details from API when moduleId is provided
+async function fetchModuleDetails(id) {
+  if (!id) return
+  try {
+    const res = await fetch(API_ENDPOINTS.MODULES.DETAIL(id), { credentials: 'same-origin' })
+    if (!res.ok) throw new Error(`Fehler beim Laden des Moduls: ${res.status}`)
+    const data = await res.json()
+    // Map fields coming from the API to the view
+    moduleName.value = data.name || data.title || moduleName.value
+    moduleDescription.value = data.description || moduleDescription.value
+    // If the API provides a link/url field, use it
+    moduleLink.value = data.link || data.url || moduleLink.value
+  } catch (err) {
+    console.warn('fetchModuleDetails:', err)
+  }
+}
 
 const lernsets = ref([])
 
@@ -24,7 +46,7 @@ const pendingLernsetTitle = ref('')
 const pendingLernsetDescription = ref('')
 
 const goToLernset = (lernsetId) => {
-  router.push('/lernset/')
+  router.push({ name: 'lernset', params: { lernsetId: lernsetId } })
 }
 
 const handleOpenNewLernsetModal = () => {
@@ -82,6 +104,11 @@ const handleCreateLernset = (title, description) => {
 
 onMounted(() => {
   // Lernsets aus der Datenbank laden
+  // If we have a moduleId, try to fetch module details first
+  if (moduleId) {
+    fetchModuleDetails(moduleId)
+  }
+
   getLernsets()
     .then(data => {
       for(const set of data) {
