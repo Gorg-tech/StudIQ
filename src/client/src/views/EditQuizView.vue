@@ -174,7 +174,10 @@ const saveQuiz = async () => {
   }
 
   quizEdit.resetQuiz()
-  router.push('/')
+  router.push({ 
+    name: 'lernset', 
+    params: { lernsetId: quizEdit.lernsetId } 
+  })
 }
 
 const addQuestion = async () => {
