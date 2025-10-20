@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { getQuiz, getQuizQuestions, createQuiz, updateQuiz } from '@/services/quizzes'
-import { createQuestion, updateQuestion, deleteQuestion,
-  createAnswer, updateAnswer, deleteAnswer } from '@/services/questions'
+import { createQuestion, updateQuestion, deleteQuestion} from '@/services/questions'
+import { createAnswer, updateAnswer, deleteAnswer } from '@/services/answer_options'
 import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
@@ -138,7 +138,6 @@ const saveQuiz = async () => {
       })
       realQuestionId = newQuestion.id
       q.id = realQuestionId
-      q._status = 'unchanged'
     } else if (q._status === 'edited') {
       await updateQuestion(realQuizId, realQuestionId, { 
         text: q.text, 
@@ -155,25 +154,25 @@ const saveQuiz = async () => {
     if (q.options && (q._status === 'new' || q._status === 'edited')) {
       for (const opt of q.options) {
         // Wenn Option keine ID hat, ist sie neu
-        if (!opt._status === 'new') {
-          const newAnswer = await createAnswer(realQuestionId, {
+        if (opt._status === 'new') {
+          const newAnswer = await createAnswer({
             text: opt.text,
             is_correct: opt.correct,
             question: realQuestionId
           })
           opt.id = newAnswer.id
-          opt._status = 'unchanged'
         } else if (opt._status === 'edited') {
-          await updateAnswer(realQuestionId, opt.id, {
+          await updateAnswer(opt.id, {
             text: opt.text,
             is_correct: opt.correct,
             question: realQuestionId
           })
         } else if (opt._status === 'deleted') {
-          await deleteAnswer(realQuestionId, opt.id)
+          await deleteAnswer(opt.id)
         }
       }
     }
+
   }
 
   quizEdit.resetQuiz()

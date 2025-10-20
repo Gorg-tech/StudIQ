@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet, SearchView
+from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet, SearchView, AnswerOptionViewSet
 
 router = DefaultRouter()
 router.register(r'modules', ModulViewSet, basename='modules')
@@ -13,6 +13,7 @@ router.register(r'sessions', QuizSessionViewSet, basename='sessions')
 router.register(r'feedback', FeedbackViewSet, basename='feedback')
 router.register(r'studiengaenge', StudiengangViewSet)
 router.register(r'module', ModulViewSet)
+router.register(r'answer-options', AnswerOptionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

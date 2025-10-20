@@ -2,9 +2,11 @@ from rest_framework import serializers
 from .models import Quiz, Question, AnswerOption, Lernset, QuizProgress, Achievement, QuizSession, Feedback, Studiengang, Modul
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
+    question = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), required=True)
+
     class Meta:
         model = AnswerOption
-        fields = ['id', 'text', 'is_correct']
+        fields = ['id', 'text', 'is_correct', 'question']
 
 class QuestionSerializer(serializers.ModelSerializer):
     answer_options = AnswerOptionSerializer(many=True, read_only=True)
