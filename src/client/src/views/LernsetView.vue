@@ -85,7 +85,8 @@ const goToQuizOverview = (quizId) => {
 }
 
 const goToEditQuiz = () => {
-  router.push({ name: 'edit-quiz' })
+  const lernsetId = route.params.lernsetId
+  router.push({ name: 'edit-quiz', params: { lernsetId } } )
 }
 
 // Hilfsfunktion für Sterne

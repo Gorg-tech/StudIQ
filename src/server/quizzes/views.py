@@ -39,6 +39,10 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Not found."}, status=404)
+    
+    def perform_create(self, serializer):
+        # Automatically set the created_by to the current user
+        serializer.save(created_by=self.request.user)
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()

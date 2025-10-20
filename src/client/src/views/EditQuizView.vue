@@ -5,7 +5,7 @@ import { onMounted } from 'vue'
 import { getQuiz, getQuizQuestions, createQuiz, updateQuiz } from '@/services/quizzes'
 import { createQuestion, updateQuestion, deleteQuestion,
   createAnswer, updateAnswer, deleteAnswer } from '@/services/questions'
-import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi} from '@/stores/editQuiz'
+import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 
@@ -24,7 +24,16 @@ const showBackModal = ref(false)
 const isNewQuiz = ref(!route.params.quizId)
 
 onMounted(async () => {
+
   if (isNewQuiz.value) {
+    const lernset = route.params.lernsetId || quizEdit.lernsetId || null
+    if (lernset)
+      quizEdit.setLernset(lernset)
+    else {
+      alert('Kein Lernset ausgewählt. Bitte erstelle ein Quiz über die Lernset-Seite.')
+      router.push('/')
+      return
+    }
     // Nur lokal initialisieren - Speicherung erst bei Click auf den Button "Speichern"
     if(!quizEdit.quizLoaded) {
       quizEdit.quizLoaded = true
@@ -35,9 +44,9 @@ onMounted(async () => {
           text: 'Frage 1',
           type: QUESTION_TYPES[0].api,
           options: [
-            { id: Date.now() + 1, text: 'Antwort 1', correct: false, _status: 'new' },
-            { id: Date.now() + 2, text: 'Antwort 2', correct: true, _status: 'new' },
-            { id: Date.now() + 3, text: 'Antwort 3', correct: false, _status: 'new' }
+            { id: Date.now() + 1, text: 'Antwort A', correct: false, _status: 'new' },
+            { id: Date.now() + 2, text: 'Antwort B', correct: true, _status: 'new' },
+            { id: Date.now() + 3, text: 'Antwort C', correct: false, _status: 'new' }
           ],
           _status: 'new'
         },
@@ -55,16 +64,18 @@ onMounted(async () => {
       ]
     }
     return
+  } else {
+    const quiz = await getQuiz(quizId.value)
+    quizEdit.quizTitle = quiz.title
+    quizEdit.setLernset(quiz.lernset)
+    const serverQuestions = await getQuizQuestions(quizId.value)
+    quizEdit.questions.value = serverQuestions.map(q => ({
+      id: q.id,
+      text: q.text,
+      type: q.type,
+      _status: 'unchanged'
+    }))
   }
-  const quiz = await getQuiz(quizId.value)
-  quizEdit.quizTitle = quiz.title
-  const serverQuestions = await getQuizQuestions(quizId.value)
-  quizEdit.questions.value = serverQuestions.map(q => ({
-    id: q.id,
-    text: q.text,
-    type: q.type,
-    _status: 'unchanged'
-  }))
 })
 
 const goBack = () => {
@@ -90,12 +101,11 @@ const saveQuiz = async () => {
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
       created_at: new Date().toISOString(),
-     // created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
-      is_public: true, // Standardmäßig öffnetlich
-      lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
+      is_public: true, // Standardmäßig öffentlich (nicht in UI implementiert)
+      lernset: quizEdit.lernsetId, // Per Default dieses Lernset
       questions: []
     })
     realQuizId = newQuiz.id
@@ -106,11 +116,10 @@ const saveQuiz = async () => {
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
       created_at: new Date().toISOString(),
-     // created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
-      is_public: true, // Standardmäßig öffnetlich
+      is_public: true, // Standardmäßig öffentlich (nicht in UI implementiert)
     //  lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
       questions: []
     })

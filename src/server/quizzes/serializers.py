@@ -15,8 +15,8 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(serializers.ModelSerializer):
     lernset_title = serializers.CharField(source='lernset.title', read_only=True)
-
     questions = QuestionSerializer(many=True, read_only=True)
+    created_by = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = Quiz
@@ -29,6 +29,7 @@ class QuizSerializer(serializers.ModelSerializer):
 class QuizForLernsetSerializer(serializers.ModelSerializer):
     question_count = serializers.SerializerMethodField()
     creator_username = serializers.CharField(source='created_by.username', read_only=True)
+    created_by = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Quiz
@@ -48,12 +49,13 @@ class ModulShortSerializer(serializers.ModelSerializer):
 
 class LernsetSerializer(serializers.ModelSerializer):
     quizzes = QuizForLernsetSerializer(many=True, read_only=True)
-    modul = ModulShortSerializer(read_only=True)
+    modul = serializers.PrimaryKeyRelatedField(queryset=Modul.objects.all())  # so that modul can be set; before it was read_only and this resulted in error 500 and a server crash because modul was NULL which is not allowed
+    modul_detail = ModulShortSerializer(source='modul', read_only=True) # for the detailed view
     quiz_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Lernset
-        fields = ['id', 'title', 'description', 'created_at', 'modul', 'quizzes', 'quiz_count']
+        fields = ['id', 'title', 'description', 'created_at', 'modul', 'modul_detail', 'quizzes', 'quiz_count']
         
     def get_quiz_count(self, obj):
         return obj.quizzes.count()
