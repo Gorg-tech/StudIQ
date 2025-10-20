@@ -151,7 +151,12 @@ const filteredResults = computed(() => {
     // Flatten all result types into a single array
     const allResults = [
       ...(results.value.quizzes || []).map(item => ({ ...item, type: 'Quiz' })),
-      ...(results.value.lernsets || []).map(item => ({ ...item, type: 'Lernset' })),
+      ...(results.value.lernsets || []).map(item => ({
+        ...item,
+        type: 'Lernset',
+        title: item.title || item.name,
+        description: item.description || item.summary || ''
+      })),
       ...(results.value.modules || []).map(item => ({ ...item, type: 'Modul', title: item.name, description: item.description })),
       ...(results.value.studiengaenge || []).map(item => ({ ...item, type: 'Studiengang', title: item.name })),
     ];
@@ -184,7 +189,9 @@ const filteredResults = computed(() => {
   } else if (filterKey === 'lernsets') {
     return results.value[filterKey].map(item => ({
       ...item,
-      type: 'Lernset'
+      type: 'Lernset',
+      title: item.title || item.name,
+      description: item.description || item.summary || ''
     }));
   } else {
     return results.value[filterKey].map(item => ({
@@ -200,9 +207,10 @@ function navigateToItem(item) {
   if (item.type === 'Quiz') {
     router.push({ name: 'quiz-overview', params: { quizId: item.id } }); //Quiz-Overview w api ID
   } else if (item.type === 'Lernset') {
-    router.push({ path: '/lernset', params: { lernsetId: item.id } }); // Lernset-Overview hardcoded
+    router.push({ name: 'lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
-    router.push({ path: '/modul', params: { modulId: item.modulId } }); // Modul-Overview hardcoded
+    // Navigate to modul route and pass moduleId as route param (use named route)
+    router.push({ name: 'modul', params: { moduleId: item.id || item.modulId } });
   } else if (item.type === 'Studiengang') {
     router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } }); //TODO
   }
