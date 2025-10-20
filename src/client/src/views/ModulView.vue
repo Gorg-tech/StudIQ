@@ -65,7 +65,6 @@ const handleCreateLernset = (title, description) => {
   const newLernset = createLernset(newSet)
   newLernset
     .then(response => {
-      // console.log('Lernset erstellt:', response)
       lernsets.value.push({
         id: response.id,
         title: response.title,

@@ -2,9 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import IconPlus from '@/components/icons/IconPlus.vue'
-import { getLernset, getLernsetQuizzes } from '@/services/lernsets'
-import apiClient from '@/services/api/client'
-import { API_ENDPOINTS } from '@/services/api/endpoints'
+import { getLernset } from '@/services/lernsets'
 
 // Real data placeholders
 const lernsetName = ref('')
