@@ -53,8 +53,8 @@ class ModulShortSerializer(serializers.ModelSerializer):
 
 class LernsetSerializer(serializers.ModelSerializer):
     quizzes = QuizForLernsetSerializer(many=True, read_only=True)
-    modul = serializers.PrimaryKeyRelatedField(queryset=Modul.objects.all())  # so that modul can be set; before it was read_only and this resulted in error 500 and a server crash because modul was NULL which is not allowed
-    modul_detail = ModulShortSerializer(source='modul', read_only=True) # for the detailed view
+    modul = serializers.PrimaryKeyRelatedField(queryset=Modul.objects.all()) 
+    modul_detail = ModulShortSerializer(source='modul', read_only=True)
     quiz_count = serializers.SerializerMethodField()
     
     class Meta:
@@ -63,6 +63,13 @@ class LernsetSerializer(serializers.ModelSerializer):
         
     def get_quiz_count(self, obj):
         return obj.quizzes.count()
+    
+    def create(self, validated_data):
+        # Need this for POST requests since we changed modul to read_only
+        modul_id = self.initial_data.get('modul')
+        modul = Modul.objects.get(modulId=modul_id)
+        validated_data['modul'] = modul
+         return super().create(validated_data)
 
 class QuizProgressSerializer(serializers.ModelSerializer):
     class Meta:
