@@ -19,6 +19,7 @@ class QuizSerializer(serializers.ModelSerializer):
     lernset_title = serializers.CharField(source='lernset.title', read_only=True)
     questions = QuestionSerializer(many=True, read_only=True)
     created_by = serializers.PrimaryKeyRelatedField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
     
     class Meta:
         model = Quiz
@@ -32,6 +33,7 @@ class QuizForLernsetSerializer(serializers.ModelSerializer):
     question_count = serializers.SerializerMethodField()
     creator_username = serializers.CharField(source='created_by.username', read_only=True)
     created_by = serializers.PrimaryKeyRelatedField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Quiz
