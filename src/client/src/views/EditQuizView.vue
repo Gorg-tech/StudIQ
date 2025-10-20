@@ -96,11 +96,10 @@ const saveQuiz = async () => {
 
   if (isNewQuiz.value) {
     // Neues Quiz auf Server anlegen
-    // ['id', 'title', 'description', 'created_at', 'created_by', 'rating_score', 'rating_count', 'avg_time_spent', 'is_public', 'lernset', 'questions']
+    // ['id', 'title', 'description', 'rating_score', 'rating_count', 'avg_time_spent', 'is_public', 'lernset', 'questions']
     const newQuiz = await createQuiz({
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
-      created_at: new Date().toISOString(),
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
@@ -115,7 +114,6 @@ const saveQuiz = async () => {
     await updateQuiz(realQuizId, {
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
-      created_at: new Date().toISOString(),
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
