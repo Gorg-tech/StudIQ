@@ -55,19 +55,16 @@ const handleCloseConfirmModal = () => {
 
 const handleCreateLernset = (title, description) => {
   // API-Call
-  // id, title, description, created_at, created_by, modul
+  // id, title, description, modul
   const newSet = {
     title: title,
     description: description,
-    created_at: new Date().toISOString(),
-    //created_by: '521edc25-b9b1-406x6-9b36-561dbee9c6c1', // Per Default Eric
     modul: route.params.modulId // Use dynamic modulId
   }
 
   const newLernset = createLernset(newSet)
   newLernset
     .then(response => {
-      // console.log('Lernset erstellt:', response)
       lernsets.value.push({
         id: response.id,
         title: response.title,
