@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
@@ -14,6 +14,7 @@ from .models import (
     Feedback,
     Studiengang,
     Modul,
+    AnswerOption
 )
 from .serializers import (
     QuizSerializer,
@@ -26,11 +27,32 @@ from .serializers import (
     StudiengangSerializer,
     ModulSerializer,
     ModulDetailSerializer, 
+    AnswerOptionSerializer
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
+class AnswerOptionViewSet(viewsets.ModelViewSet):
+    queryset = AnswerOption.objects.all()
+    serializer_class = AnswerOptionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        # schnelle Debug-Ausgaben (entfernen/ersetzen durch logger in Prod)
+        print("AnswerOption.create headers:", dict(request.headers))
+        print("AnswerOption.create content_type:", request.content_type)
+        print("AnswerOption.create body:", request.data)
+
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            # zeigen, welche Validierungsfehler vorliegen
+            print("AnswerOption.create validation errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
@@ -39,6 +61,10 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Not found."}, status=404)
+    
+    def perform_create(self, serializer):
+        # Automatically set the created_by to the current user
+        serializer.save(created_by=self.request.user)
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()

@@ -104,6 +104,12 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
   Es ist kein separater API-Call für die Fragen eines Quiz notwendig.
   (noch nicht implementiert)
 
+### Antworten
+- `GET /api/answer-options/{id}/` Einzelne Antwortoption abrufen
+- `POST /api/answer-options/` Neue Antwortoption erstellen (question im Body)
+- `PUT /api/answer-options/{id}` Antwortoption aktualisieren
+- `DELETE /api/answer-options/{id}` Antwortoption löschen
+
 ### Quiz-Fortschritt
 - `GET /api/progress/` – Eigenen Quiz-Fortschritt für alle Quizze abrufen
 - `GET /api/progress/{id}/` – Fortschritt für einen bestimmten Eintrag abrufen
