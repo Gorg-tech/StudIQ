@@ -11,6 +11,7 @@ import RegistrationView from '@/views/RegistrationView.vue'
 import QuizView from '@/views/QuizView.vue'
 import ModulView from '@/views/ModulView.vue'
 import LernsetView from '@/views/LernsetView.vue'
+import HomeViewSettings from '@/views/HomeViewSettings.vue'
 import { isAuthenticated } from '@/services/auth.js'
 
 const router = createRouter({
@@ -76,6 +77,11 @@ const router = createRouter({
       name: 'lernset',
       component: LernsetView,
     },
+   {
+      path: '/settings',
+     name: 'settings',
+      component: HomeViewSettings,
+    }
   ],
 })
 

@@ -74,7 +74,7 @@ const confirmBack = () => {
   quizEdit.resetQuiz()
   quizEdit.quizLoaded = false
   showBackModal.value = false
-  router.push('/')
+  router.back() //bisher unideal wenn man eine Frage editiert hat, wir dnoch behoben
 }
 const cancelBack = () => {
   showBackModal.value = false
