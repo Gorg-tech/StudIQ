@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Context.puml>
+!include <office/Users/mobile_user.puml>
+
+Person(user, "Studierender", "Nutzt die Anwendung zum Lernen")
+
+System(studiq, "StudIQ", "Web-Anwendung zur Prüfungsvorbereitung (Frontend + Backend)", $tags="WebApp")
+System_Ext(htw_auth, "HTW Modulux", "Externe Datenbank für Studiengänge und Module")
+
+title C4 System Context — StudIQ
+
+Rel(user, studiq, "Benutzt")
+Rel(studiq, htw_auth, "Fragt Studiengänge und Module ab")
+
+@enduml

@@ -27,13 +27,24 @@ Falls Raum nicht verfügar, dann spontane Entscheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
 
+Risiken werden festgehalten in einem Riskboard über Github: 
+https://github.com/users/Gorg-tech/projects/7/views/10[Riskboard]
+
+
 *Backup: jedem issue wird, wenn nötig, ein zusätzlicher assigne zugeteilt*
 
-Aufgaben sind in Github festgehalten. Dort sollte jeder wöchentlich nachgucken, was er zu tun hat, dies tun und sich so auf das Meeting vorbereiten.
+Aufgaben sind in Github festgehalten und ergeben sich aus dem Backlog : https://github.com/users/Gorg-tech/projects/7/views/1[Backlog] .Dort sollte jeder wöchentlich nachgucken, was er zu tun hat, dies tun und sich so auf das Meeting vorbereiten.
+
+Jedes Mitglied eröffnet eine Branch zum Bearbeiten der zugeteilten Aufgabe. Die Branches sind wie folgt zu benennen: 
+art/kurze-beschreibung-der-aufgabe
+Die Aufgabe kann die folgenden Arten haben: feature, bugfix, update
+Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem Mergen von einem anderen Teammitglied überprüft wird.
 
 Zum Meeting werden die gemachten Aufgaben vorgestellt und besprochen und, falls sie fertig erledigt sind, neue zugeteilt. Dies erfolgt in Abstimmung mit den Teammitgliedern.
 
-Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt
+Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt.
+
+
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
 
 

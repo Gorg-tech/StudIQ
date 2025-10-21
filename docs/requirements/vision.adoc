@@ -36,8 +36,8 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 |===
 | Für | Studenten der HTW Dresden
 |  die | eine effektive Prüfungsvorbereitung wollen
-| ist das  | [Produktname]
-| eine  | kompetitive und gamifizierte Lernapp
+| ist   | StudIQ
+| eine  | kompetitive und gamifizierte Lernwebsite
 | die | in die HTW-Systeme implementiert, intuitiv, gut strukturiert, individualisierbar und smart ist.
 | anders als | Anki oder das Lernen vom Blatt
 | kann unser Produkt |  kompakt, nahbar und sicher beim Lernen für HTW-Prüfungen unterstützen.
@@ -99,7 +99,6 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
 | Minimalismus | hoch | Templates, Algorithmik zur Fragenbestimmung | 1.0
 | Individualisierbarkeit | mittel | Bewertungssystem, Erstellung eigener Fragen | 1.1
-| Datenschutz | hoch | Client-Server Modell mit Datenbank | 1.0
 | Gameifizierung | mittel | Leaderboard | 1.1
 |===
 
