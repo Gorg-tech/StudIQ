@@ -258,7 +258,15 @@ Update/...
 -> Issue/nr
 Nach Fertigstellung (direkt) hochladen, jemandem Pull-Request geben
 
+=== 2. Meeting 21.10.g
 
+Aufgaben nächste Woche(Vorschlag):
+- 1 Issue schon erstellt (zu Quiziverview), evtl. 2 Leute und auch Quiz lösen implementieren
+  - Gibt es Anzeige für Multiple Choice-Fragen?
+- settings: Dark-Mode/ Konto löschen / Email/Passwort ändern
+- Bei Klick auf "alle" in SearchView wirklich alles anzeigen
+- Moduluxscraper aktivieren: Module von Modulux einfügen
+- Testdaten erzeugen: Lernset/Quiz
 
 
 
