@@ -13,6 +13,7 @@ import ModulView from '@/views/ModulView.vue'
 import LernsetView from '@/views/LernsetView.vue'
 import { isAuthenticated } from '@/services/auth.js'
 import { useQuizEditStore } from '@/stores/editQuiz'
+import StudiengangView from '@/views/StudiengangView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,6 +78,11 @@ const router = createRouter({
       name: 'lernset',
       component: LernsetView,
     },
+    {
+      path:'/studiengang/:studiengangId',
+      name:'studiengang-overview',
+      component: StudiengangView
+    }
   ],
 })
 
