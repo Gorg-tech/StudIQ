@@ -54,14 +54,16 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 === Kontextabgrenzung (C4 Level 1)
 StudIQ ist eine Web-App für Studierende und Lehrende der HTW Dresden. Sie interagieren über Browser mit dem Frontend. Das Backend kommuniziert mit einer relationalen Datenbank und bezieht Modul-/Studiengangsdaten über einen Scraper aus Modulux.
 
-=== Container (C4 Level 2)
+plantuml::images/c4-lvl1.puml[format="svg", alt="C4 Modell Level 1"]
 
-image::StudIQ-c4Modell.png[C4 Modell Level 2]
+=== Container (C4 Level 2)
 
 * **Web-Frontend:** Vue.js SPA, läuft im Browser.
 * **Backend:** Django REST Framework, läuft auf Webserver.
 * **Datenbank:** SQLite/PostgreSQL/MySQL.
 * **Scraper:** Python-Skript, das regelmäßig Modulux-Daten abruft und als JSON bereitstellt.
+
+plantuml::images/c4-lvl2.puml[format="svg", alt= "C4 Modell Level 2"]
 
 === Components (C4 Level 3)
 * **Frontend-Komponenten:** QuizView, ModulView, LernsetView, SearchView, ProfileView, Leaderboard, etc.

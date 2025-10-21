@@ -1,145 +1,95 @@
 @startuml
+' Layout / Stil
 skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 20
+skinparam ranksep 60
+left to right direction
 
-' ----------------------------
-'      Entitäten / Klassen
-' ----------------------------
+' Klassen (Deutsch)
+class Studiengang {
+  +id: String
 
-class User {
   +name: String
-  +email: String
-  +passwordHash: String
-  +role: UserRole
-  +registrationDate: Date
-  +iq_level: int
-  +correctAnswers: int
-  +wrongAnswers: int
-  +solvedQuizzes: int 
-  +lastLogin: Date
-  'zusätzliche Speicherung der solvedQuizzes, 
-  'da bei Referenz auf Quiz nach Löschen dieses Probleme entstehen
-  +streak: int
-}
-
-enum UserRole {
-  STUDENT
-  MODERATOR
-  LECTURER
 }
 
 class Modul {
   +modulId: String
   +name: String
-  +semester: int
-  +description: String
-  +credits: int
-  +moduluxURL: String
+  +studiengang: int
+
+  +moduluxUrl: String
 }
 
 class Lernset {
-  +title: String
-  +description: String
-  +createdAt: Date
-  +createdBy: User
+  +titel: Strin  +modulId: String
 }
 
 class Quiz {
-  +title: String
-  +description: String
-  +createdAt: Date
-  +createdBy: User
-  +ratingScore: int
-  +ratingCount: int
-  +isPublic: Boolean
-  +lastContentUpdate: Date 
-  +totalAttempts: int
-  +completionRate: float
-  +avgScore: float
-  +avgTimeSpent: int
-  +difficultyRating: float
-  +mostMissedQuestionId: UUID
-  +lastStatsUpdate: Date
+  +titel: String
+  +beschreibung: String
 }
 
-class Question {
+class Frage {
   +text: String
-  +type: QuestionType
+  +typ: Fragetyp
 }
 
-enum QuestionType {
+class AntwortOption {
+  +text: String
+  +istKorrekt: Boolean
+}
+
+class Benutzer {
+  +name: String
+  +email: String
+  +passwortHash: String
+  +rolle: Benutzerrolle
+  +iqLevel: int
+}
+
+enum Fragetyp {
   MULTIPLE_CHOICE
-  'FREITEXT
   ZUORDNUNG
 }
 
-class AnswerOption {
-  +text: String
-  +isCorrect: Boolean
-}
-
-class QuizProgress {
-  +correctAnswers: int
-  +wrongAnswers: int
-  +lastReviewed: Date
-  +strengthScore: float
-}
-
-class Achievement {
-  +name: String
-  +description: String
-  +unlockCriteria: String
-  +iconUrl: String
-  +unlockedAt: Date
-}
-
-class QuizSession {
-  +startTime: DateTime
-  +endTime: DateTime
-  +score: int
-  +mode: QuizMode
-}
-
-enum QuizMode {
-  PRACTICE
-  SIMULATION
-  FLASHCARDS
-}
-
-class Feedback {
-  +rating: int
-  +comment: String
-  +submittedAt: Date
-}
-
-class Studiengang {
-  +id: String
-  +name: String
-  +description: String
-  +createdAt: Date
-  +moduluxURL: String
+enum Benutzerrolle {
+  STUDENT
+  ADMIN
+  DOZENT
 }
 
 
-' ----------------------------
-'      Beziehungen
-' ----------------------------
-User "1" *-- "0..*" QuizProgress : erhält individualisierten\n Quizvorschlag durch
-'User "1" *-- "0..*" QuizSession
-'User "1" o-- "0..*" Feedback
-'User "1" o-- "0..*" Achievement : erhält
-User "1" o-- "0..*" Quiz : erstellt
-User "1" o-- "0..*" Lernset : erstellt
-Studiengang "1" o-- "0..*" User
+' Beziehungen / Multiplikationen (Empfohlen: Komposition dort, wo Besitz besteht)
+Studiengang "1" o-- "0..*" Modul
+Modul "1..*" o-- "1" Lernset
+Lernset "1" o-- "0..*" Quiz
 
-'User "1" -- "0..*" StudyGroup : istMitglied
-'StudyGroup "1" -- "0..*" QuizSession : gemeinsameQuizze
+' Quiz als Aggregat: starke Besitzbeziehung
+Quiz "1" *-- "1..*" Frage : besteht aus
+Frage "1" *-- "1..*" AntwortOption : hat
 
-Modul "1" o-- "1..*" Lernset
-Lernset "1" o-- "1..*" Quiz
-Quiz "1" o-- "1..*" Question : besteht aus
-Question "1" *-- "1..*" AnswerOption : hat
-'Quiz "1" *-- "0..*" Feedback
-Quiz "1" --o "0..*" QuizProgress : Abarbeitungsdaten gespeichert in
-'Quiz "0..*" -- "1" LearningHistory : Referenz auf 
-Studiengang "1..*" o-- "1..*" Modul 
+' Benutzer-Beziehungen
+Benutzer "*" -- "*" Modul : belegt    
+Benutzer "1" o-- "0..*" Quiz : erstellt
+Benutzer "1" o-- "0..*" Lernset : erstellt
+
+' Enums sichtbar machen
+Fragetyp ..> Frage : typ
+Benutzerrolle ..> Benutzer : rolle
+
+' ----- Layout-Hinweise: versteckte Kanten zum Erzwingen von Spalten -----
+' Ziel: linke Spalte (Studiengang/Modul/Lernset), Mitte (Quiz/Frage/Antwort), rechts (Benutzer/enums)
+Studiengang -[hidden]-> Modul
+Modul -[hidden]-> Lernset
+
+' Achsen zwischen Spalten: setze Quiz rechts von Lernset, Benutzer rechts von Quiz
+Lernset -[hidden]-> Quiz
+Quiz -[hidden]-> Frage
+Quiz -[hidden]-> Benutzer
+
+' Versteckte Kanten zwischen oberen und unteren Elemente stabilisieren
+Studiengang -[hidden]-> Quiz
+Frage -[hidden]-> Benutzer
+
 @enduml

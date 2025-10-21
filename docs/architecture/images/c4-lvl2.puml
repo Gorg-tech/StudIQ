@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Context.puml>
+!include <C4/C4_Container.puml>
+!include <office/Users/mobile_user.puml>
+
+Person(user, "Studierender", "Nutzt die Anwendung")
+
+System_Boundary(StudIQ, "StudIQ") {
+  Container(web, "Web-Frontend", "Vue.js", "Webanwendung für Lernende")
+  Container(api, "Backend (API)", "Django / Django REST Framework", "Geschäftslogik, Auth, REST-API")
+  Container(db, "Datenbank", "SQLite", "Persistiert Quiz-, Nutzer- und Statistikdaten")
+}
+
+System_Ext(htw_auth, "HTW Modulux")
+
+Rel(user, web, "Benutzt")
+Rel(web, api, "ruft API auf", "REST-API")
+Rel(api, db, "Liest/Schreibt Daten in", "SQL")
+Rel(api, htw_auth, "Download der Studiengänge und Module", "Python")
+
+@enduml
