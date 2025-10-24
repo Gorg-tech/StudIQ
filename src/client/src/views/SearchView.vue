@@ -198,11 +198,11 @@ const filteredResults = computed(() => {
 // Api implementation with name instead of path
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ name: 'quiz-overview', params: { quizId: item.id } }); //Quiz-Overview w api ID
+    router.push({ name: 'quiz-overview', params: { quizId: item.id } }); 
   } else if (item.type === 'Lernset') {
-    router.push({ name: 'lernset', params: { lernsetId: item.id } }); // Using named route with params
+    router.push({ name: 'lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
-    router.push({ path: `/modul/${item.modulId}` }); // Use path with parameter
+    router.push({ path: `/modul/${item.modulId}` }); 
   } else if (item.type === 'Studiengang') {
     router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } }); //TODO
   }
