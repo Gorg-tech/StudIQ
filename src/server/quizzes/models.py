@@ -73,7 +73,8 @@ class Question(models.Model):
         return self.text[:50]
 
 class AnswerOption(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # Führt zu Internal Server Error
+    # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     text = models.TextField()
     is_correct = models.BooleanField(default=False)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answer_options')
