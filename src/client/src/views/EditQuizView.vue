@@ -3,8 +3,6 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { getQuiz, getQuizQuestions, createQuiz, updateQuiz } from '@/services/quizzes'
-import { createQuestion, updateQuestion, deleteQuestion} from '@/services/questions'
-import { createAnswer, updateAnswer, deleteAnswer } from '@/services/answer_options'
 import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
@@ -69,7 +67,7 @@ onMounted(async () => {
     quizEdit.quizTitle = quiz.title
     quizEdit.setLernset(quiz.lernset)
     const serverQuestions = await getQuizQuestions(quizId.value)
-    quizEdit.questions.value = serverQuestions.map(q => ({
+    quizEdit.questions = serverQuestions.map(q => ({
       id: q.id,
       text: q.text,
       type: q.type,
@@ -84,93 +82,40 @@ const goBack = () => {
 const confirmBack = () => {
   quizEdit.resetQuiz()
   quizEdit.quizLoaded = false
-  showBackModal.value = false
-  router.push('/')
+  showBackModal.value = falsen
+  router.push({ 
+    name: 'lernset', 
+    params: { lernsetId: quizEdit.lernsetId } 
+  })
 }
 const cancelBack = () => {
   showBackModal.value = false
 }
 
 const saveQuiz = async () => {
-  let realQuizId = quizId.value
-
-  if (isNewQuiz.value) {
-    // Neues Quiz auf Server anlegen
-    // ['id', 'title', 'description', 'rating_score', 'rating_count', 'avg_time_spent', 'is_public', 'lernset', 'questions']
-    const newQuiz = await createQuiz({
-      title: quizEdit.quizTitle,
-      description: '', // Description nicht in UI implementiert
-      rating_score: 0,
-      rating_count: 0,
-      avg_time_spent: 0,
-      is_public: true, // Standardmäßig öffentlich (nicht in UI implementiert)
-      lernset: quizEdit.lernsetId, // Per Default dieses Lernset
-      questions: []
-    })
-    realQuizId = newQuiz.id
-    quizId.value = realQuizId
-    isNewQuiz.value = false
-  } else {
-    await updateQuiz(realQuizId, {
-      title: quizEdit.quizTitle,
-      description: '', // Description nicht in UI implementiert
-      rating_score: 0,
-      rating_count: 0,
-      avg_time_spent: 0,
-      is_public: true, // Standardmäßig öffentlich (nicht in UI implementiert)
-    //  lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
-      questions: []
-    })
+  // Bereite die Quiz-Daten vor
+  const quizData = {
+    title: quizEdit.quizTitle,
+    description: '',
+    is_public: true,
+    lernset: quizEdit.lernsetId,
+    questions: quizEdit.questions.map(q => ({
+      id: q.id,
+      text: q.text,
+      type: q.type,
+      _status: q._status,
+      answer_options: q.options.map(opt => ({
+        id: opt.id,
+        text: opt.text,
+        is_correct: opt.is_correct
+      }))
+    })).filter(q => q._status !== 'unchanged')
   }
 
-  for (const q of quizEdit.questions) {
-    // Alle Fragen auf Server speichern
-    // ['id', 'text', 'type', 'answer_options', 'quiz']
-    let realQuestionId = q.id
-    if (q._status === 'new') {
-      const newQuestion = await createQuestion({
-        text: q.text,
-        type: q.type,
-        answer_options: [],
-        quiz: realQuizId
-      })
-      realQuestionId = newQuestion.id
-      q.id = realQuestionId
-    } else if (q._status === 'edited') {
-      await updateQuestion(realQuizId, realQuestionId, { 
-        text: q.text, 
-        type: q.type,
-        answer_options: [], // Sollte eigentlich nicht überschrieben werden; TODO: wenn Server implementiert, answer_options leer lassen
-        quiz: realQuizId
-      })
-    } else if (q._status === 'deleted') {
-      await deleteQuestion(realQuizId, q.id)
-    }
-
-    // Antwortoptionen speichern (nur für neue/geänderte Fragen)
-    // ['id', 'text', 'is_correct']
-    if (q.options && (q._status === 'new' || q._status === 'edited')) {
-      for (const opt of q.options) {
-        // Wenn Option keine ID hat, ist sie neu
-        if (opt._status === 'new') {
-          const newAnswer = await createAnswer({
-            text: opt.text,
-            is_correct: opt.correct,
-            question: realQuestionId
-          })
-          opt.id = newAnswer.id
-        } else if (opt._status === 'edited') {
-          await updateAnswer(opt.id, {
-            text: opt.text,
-            is_correct: opt.correct,
-            question: realQuestionId
-          })
-        } else if (opt._status === 'deleted') {
-          await deleteAnswer(opt.id)
-        }
-      }
-    }
-
+  if (isNewQuiz.value) {
+    await createQuiz(quizData)
+  } else {
+    await updateQuiz(quizId.value, quizData)
   }
 
   quizEdit.resetQuiz()
@@ -217,7 +162,6 @@ const confirmDelete = (event, questionId) => {
 }
 const deleteQuestionDialog = async () => {
   deleteLocalQuestion(questionToDelete.value)
-  quizEdit.questions.value = quizEdit.getQuestion(questionToDelete.value)
   showDeleteModal.value = false
   questionToDelete.value = null
   questionToDeleteText.value = ''
