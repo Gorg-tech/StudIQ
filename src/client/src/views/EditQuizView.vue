@@ -82,7 +82,7 @@ const goBack = () => {
 const confirmBack = () => {
   quizEdit.resetQuiz()
   quizEdit.quizLoaded = false
-  showBackModal.value = falsen
+  showBackModal.value = false
   router.push({ 
     name: 'lernset', 
     params: { lernsetId: quizEdit.lernsetId } 
