@@ -6,13 +6,24 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { checkAuth } from './services/auth'
+import { useThemeStore } from '@/stores/theme'
 
-checkAuth().then(() => {
+async function bootstrap() {
+  await checkAuth() // Auth prüfen
+
   const app = createApp(App)
-  app.config.devtools = false; // Disable Vue DevTools
+  app.config.devtools = false // Vue DevTools deaktivieren
 
-  app.use(createPinia())
+  const pinia = createPinia()
+  app.use(pinia)
   app.use(router)
 
+  // Theme-Store laden **vor Mount**
+  const themeStore = useThemeStore(pinia)
+  themeStore.loadTheme()
+  console.log('Darkmode nach loadTheme:', themeStore.darkmode)
+
   app.mount('#app')
-})
+}
+
+bootstrap()
