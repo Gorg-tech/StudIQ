@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { getQuiz, getQuizQuestions, createQuiz, updateQuiz } from '@/services/quizzes'
-import { createQuestion, updateQuestion, deleteQuestion,
-  createAnswer, updateAnswer, deleteAnswer } from '@/services/questions'
-import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi} from '@/stores/editQuiz'
+import { createQuestion, updateQuestion, deleteQuestion} from '@/services/questions'
+import { createAnswer, updateAnswer, deleteAnswer } from '@/services/answer_options'
+import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 
@@ -24,7 +24,16 @@ const showBackModal = ref(false)
 const isNewQuiz = ref(!route.params.quizId)
 
 onMounted(async () => {
+
   if (isNewQuiz.value) {
+    const lernset = route.params.lernsetId || quizEdit.lernsetId || null
+    if (lernset)
+      quizEdit.setLernset(lernset)
+    else {
+      alert('Kein Lernset ausgewählt. Bitte erstelle ein Quiz über die Lernset-Seite.')
+      router.push('/')
+      return
+    }
     // Nur lokal initialisieren - Speicherung erst bei Click auf den Button "Speichern"
     if(!quizEdit.quizLoaded) {
       quizEdit.quizLoaded = true
@@ -35,9 +44,9 @@ onMounted(async () => {
           text: 'Frage 1',
           type: QUESTION_TYPES[0].api,
           options: [
-            { id: Date.now() + 1, text: 'Antwort 1', correct: false, _status: 'new' },
-            { id: Date.now() + 2, text: 'Antwort 2', correct: true, _status: 'new' },
-            { id: Date.now() + 3, text: 'Antwort 3', correct: false, _status: 'new' }
+            { id: Date.now() + 1, text: 'Antwort A', correct: false, _status: 'new' },
+            { id: Date.now() + 2, text: 'Antwort B', correct: true, _status: 'new' },
+            { id: Date.now() + 3, text: 'Antwort C', correct: false, _status: 'new' }
           ],
           _status: 'new'
         },
@@ -55,16 +64,18 @@ onMounted(async () => {
       ]
     }
     return
+  } else {
+    const quiz = await getQuiz(quizId.value)
+    quizEdit.quizTitle = quiz.title
+    quizEdit.setLernset(quiz.lernset)
+    const serverQuestions = await getQuizQuestions(quizId.value)
+    quizEdit.questions.value = serverQuestions.map(q => ({
+      id: q.id,
+      text: q.text,
+      type: q.type,
+      _status: 'unchanged'
+    }))
   }
-  const quiz = await getQuiz(quizId.value)
-  quizEdit.quizTitle = quiz.title
-  const serverQuestions = await getQuizQuestions(quizId.value)
-  quizEdit.questions.value = serverQuestions.map(q => ({
-    id: q.id,
-    text: q.text,
-    type: q.type,
-    _status: 'unchanged'
-  }))
 })
 
 const goBack = () => {
@@ -85,17 +96,15 @@ const saveQuiz = async () => {
 
   if (isNewQuiz.value) {
     // Neues Quiz auf Server anlegen
-    // ['id', 'title', 'description', 'created_at', 'created_by', 'rating_score', 'rating_count', 'avg_time_spent', 'is_public', 'lernset', 'questions']
+    // ['id', 'title', 'description', 'rating_score', 'rating_count', 'avg_time_spent', 'is_public', 'lernset', 'questions']
     const newQuiz = await createQuiz({
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
-      created_at: new Date().toISOString(),
-     // created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
-      is_public: true, // Standardmäßig öffnetlich
-      lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
+      is_public: true, // Standardmäßig öffentlich (nicht in UI implementiert)
+      lernset: quizEdit.lernsetId, // Per Default dieses Lernset
       questions: []
     })
     realQuizId = newQuiz.id
@@ -105,12 +114,10 @@ const saveQuiz = async () => {
     await updateQuiz(realQuizId, {
       title: quizEdit.quizTitle,
       description: '', // Description nicht in UI implementiert
-      created_at: new Date().toISOString(),
-     // created_by: '521edc25-b9b1-4066-9b36-561dbee9c6c1', // Per Default Eric
       rating_score: 0,
       rating_count: 0,
       avg_time_spent: 0,
-      is_public: true, // Standardmäßig öffnetlich
+      is_public: true, // Standardmäßig öffentlich (nicht in UI implementiert)
     //  lernset: 'e3b639d8-b316-4282-a149-4744407d2d90', // Per Default dieses Lernset
       questions: []
     })
@@ -129,7 +136,6 @@ const saveQuiz = async () => {
       })
       realQuestionId = newQuestion.id
       q.id = realQuestionId
-      q._status = 'unchanged'
     } else if (q._status === 'edited') {
       await updateQuestion(realQuizId, realQuestionId, { 
         text: q.text, 
@@ -146,36 +152,39 @@ const saveQuiz = async () => {
     if (q.options && (q._status === 'new' || q._status === 'edited')) {
       for (const opt of q.options) {
         // Wenn Option keine ID hat, ist sie neu
-        if (!opt._status === 'new') {
-          const newAnswer = await createAnswer(realQuestionId, {
+        if (opt._status === 'new') {
+          const newAnswer = await createAnswer({
             text: opt.text,
             is_correct: opt.correct,
             question: realQuestionId
           })
           opt.id = newAnswer.id
-          opt._status = 'unchanged'
         } else if (opt._status === 'edited') {
-          await updateAnswer(realQuestionId, opt.id, {
+          await updateAnswer(opt.id, {
             text: opt.text,
             is_correct: opt.correct,
             question: realQuestionId
           })
         } else if (opt._status === 'deleted') {
-          await deleteAnswer(realQuestionId, opt.id)
+          await deleteAnswer(opt.id)
         }
       }
     }
+
   }
 
   quizEdit.resetQuiz()
-  router.push('/')
+  router.push({ 
+    name: 'lernset', 
+    params: { lernsetId: quizEdit.lernsetId } 
+  })
 }
 
 const addQuestion = async () => {
   quizEdit.addQuestion({
     id: Date.now(), // temporäre ID
-    text: '',
-    type: 'Multiple Choice',
+    text: 'Neue Frage',
+    type: QUESTION_TYPES[0].api, 
     options: [
             { id: Date.now() + 4, text: 'Antwort A', correct: true },
             { id: Date.now() + 5, text: 'Antwort B', correct: false },

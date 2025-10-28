@@ -5,21 +5,30 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
   const quizLoaded = ref(false)
   const quizId = ref(null)
   const quizTitle = ref('Mein Quiz')
+  const lernsetId = ref(null)
   const questions = ref([])
 
-  function setQuiz({ id, title, questions: qs }) {
+  function setQuiz({ id, title, questions: qs, lernset }) {
     quizLoaded.value = true
     quizId.value = id || null
     quizTitle.value = title || 'Mein Quiz'
+    lernsetId.value = lernset || lernsetId.value || null
     questions.value = qs ? [...qs] : []
+  }
+
+  function setLernset(id) {
+    lernsetId.value = id
   }
 
   function resetQuiz() {
     quizLoaded.value = false
     quizId.value = null
     quizTitle.value = ''
+    lernsetId.value = null
     questions.value = []
   }
+
+  
 
   function updateQuestion(id, data) {
     const q = questions.value.find(q => q.id === id)
@@ -39,8 +48,8 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
   }
 
   return {
-    quizId, quizTitle, questions, quizLoaded,
-    setQuiz, resetQuiz, updateQuestion, addQuestion, removeQuestion, getQuestion
+    quizId, quizTitle, questions, quizLoaded, lernsetId,
+    setQuiz, resetQuiz, updateQuestion, addQuestion, setLernset, removeQuestion, getQuestion
   }
 })
 

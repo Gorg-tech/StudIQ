@@ -83,7 +83,10 @@
             {{ item.questions?.length || 0 }} Fragen – {{ item.avg_time_spent || 0 }} Min
           </div>
           <div v-else-if="item.type === 'Modul'" class="quiz-stats">
-            Semester: {{ item.semester }} – Credits: {{ item.credits }}
+            Semester: {{ item.semester }} – Credits: {{ item.credits }} – Modul-ID: {{ item.modulId }}
+          </div>
+          <div v-else-if="item.type === 'Studiengang'" class="quiz-stats">
+            ID: {{ item.id }}
           </div>
 
           <!-- Im Template, z.B. unter dem Titel -->
@@ -104,7 +107,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSearch } from '@/services/quizzes';
 
@@ -156,10 +159,7 @@ const filteredResults = computed(() => {
       ...(results.value.studiengaenge || []).map(item => ({ ...item, type: 'Studiengang', title: item.name })),
     ];
 
-    return allResults.filter(item =>
-      item.title?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
+    return allResults;
   }
 
   // Otherwise, return just the requested type
@@ -198,15 +198,20 @@ const filteredResults = computed(() => {
 // Api implementation with name instead of path
 function navigateToItem(item) {
   if (item.type === 'Quiz') {
-    router.push({ name: 'quiz-overview', params: { quizId: item.id } }); //Quiz-Overview w api ID
+    router.push({ name: 'quiz-overview', params: { quizId: item.id } }); 
   } else if (item.type === 'Lernset') {
-    router.push({ name: 'lernset', params: { lernsetId: item.id } }); // Using named route with params
+    router.push({ name: 'lernset', params: { lernsetId: item.id } });
   } else if (item.type === 'Modul') {
-    router.push({ path: `/modul/${item.modulId}` }); // Use path with parameter
+    router.push({ path: `/modul/${item.modulId}` }); 
   } else if (item.type === 'Studiengang') {
     router.push({ name: 'studiengang-overview', params: { studiengangId: item.id } }); //TODO
   }
 }
+
+// Watch for changes in searchQuery and fetch results for each typed letter
+watch(searchQuery, () => {
+  fetchFilteredQuizzes();
+});
 
 onMounted(() => {
   fetchFilteredQuizzes();

@@ -117,7 +117,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
-import { getAnswer, getAnswers } from '@/services/questions'
+import { getAnswers } from '@/services/questions'
+import { getAnswer } from '@/services/answer_options'
 import IconPen from '@/components/icons/IconPen.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 import IconSave from '@/components/icons/IconSave.vue'
@@ -164,7 +165,7 @@ onMounted(async () => {
     }
     // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getAnswer correct Variable laden und in options speichern
     for (const answer of loadedAnswers) {
-      const answerDetails = await getAnswer(questionId, answer.id)
+      const answerDetails = await getAnswer(answer.id)
       options.value.push({
         id: answer.id,
         text: answer.text,

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
@@ -14,6 +14,7 @@ from .models import (
     Feedback,
     Studiengang,
     Modul,
+    AnswerOption
 )
 from .serializers import (
     QuizSerializer,
@@ -26,11 +27,33 @@ from .serializers import (
     StudiengangSerializer,
     ModulSerializer,
     ModulDetailSerializer, 
+    AnswerOptionSerializer
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
+from itertools import chain
 
+class AnswerOptionViewSet(viewsets.ModelViewSet):
+    queryset = AnswerOption.objects.all()
+    serializer_class = AnswerOptionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        # schnelle Debug-Ausgaben (entfernen/ersetzen durch logger in Prod)
+        print("AnswerOption.create headers:", dict(request.headers))
+        print("AnswerOption.create content_type:", request.content_type)
+        print("AnswerOption.create body:", request.data)
+
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            # zeigen, welche Validierungsfehler vorliegen
+            print("AnswerOption.create validation errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
@@ -39,6 +62,10 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Not found."}, status=404)
+    
+    def perform_create(self, serializer):
+        # Automatically set the created_by to the current user
+        serializer.save(created_by=self.request.user)
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
@@ -130,7 +157,7 @@ class SearchView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        query = request.query_params.get("q", "")
+        query = request.query_params.get("q", "").strip()
         filter_type = request.query_params.get("filter", None)
 
         results = {
@@ -172,67 +199,47 @@ class SearchView(APIView):
             return Response(results)
 
         # Apply filter if specified
-        if filter_type:
-            if filter_type.lower() == "lernsets":
-                # Search only lernsets
-                lernsets = Lernset.objects.filter(
-                    Q(title__icontains=query) | Q(description__icontains=query)
-                )
-                results["lernsets"] = LernsetSerializer(lernsets, many=True).data
+        lernsets_qs = Lernset.objects.none()
+        quizzes_qs = Quiz.objects.none()
+        modules_qs = Modul.objects.none()
+        studiengaenge_qs = Studiengang.objects.none()
 
-            elif filter_type.lower() == "quizzes":
-                # Search only quizzes
-                quizzes = Quiz.objects.filter(
-                    Q(title__icontains=query) | Q(description__icontains=query)
-                )
-                results["quizzes"] = QuizSerializer(quizzes, many=True).data
-
-            elif filter_type.lower() == "modules":
-                # Search only modules
-                modules = Modul.objects.filter(
-                    Q(name__icontains=query)
-                    | Q(description__icontains=query)
-                    | Q(modulId__icontains=query)
-                )
-                results["modules"] = ModulSerializer(modules, many=True).data
-
-            elif filter_type.lower() == "studiengaenge":
-                # Search only study programs
-                studiengaenge = Studiengang.objects.filter(
-                    Q(name__icontains=query)
-                    | Q(description__icontains=query)
-                    | Q(id__icontains=query)
-                )
-                results["studiengaenge"] = StudiengangSerializer(
-                    studiengaenge, many=True
-                ).data
-        else:
-            # Search across all models
-            lernsets = Lernset.objects.filter(
+        if not filter_type or filter_type.lower() == "lernsets":
+            lernsets_qs = Lernset.objects.filter(
                 Q(title__icontains=query) | Q(description__icontains=query)
-            )
-            results["lernsets"] = LernsetSerializer(lernsets, many=True).data
+            )[:4]
 
-            quizzes = Quiz.objects.filter(
+        if not filter_type or filter_type.lower() == "quizzes":
+            quizzes_qs = Quiz.objects.filter(
                 Q(title__icontains=query) | Q(description__icontains=query)
-            )
-            results["quizzes"] = QuizSerializer(quizzes, many=True).data
+            )[:4]
 
-            modules = Modul.objects.filter(
+        if not filter_type or filter_type.lower() == "modules":
+            modules_qs = Modul.objects.filter(
                 Q(name__icontains=query)
                 | Q(description__icontains=query)
                 | Q(modulId__icontains=query)
-            )
-            results["modules"] = ModulSerializer(modules, many=True).data
+            )[:4]
 
-            # Added search for study programs
-            studiengaenge = Studiengang.objects.filter(
+        if not filter_type or filter_type.lower() == "studiengaenge":
+            studiengaenge_qs = Studiengang.objects.filter(
                 Q(name__icontains=query)
                 | Q(description__icontains=query)
                 | Q(id__icontains=query)
-            )
-            results["studiengaenge"] = StudiengangSerializer(
-                studiengaenge, many=True
-            ).data
+            )[:4]
+
+        # Combine all results and limit to top 15
+        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))[:15]
+
+        # Serialize and categorize
+        for item in all_items:
+            if isinstance(item, Lernset):
+                results["lernsets"].append(LernsetSerializer(item).data)
+            elif isinstance(item, Quiz):
+                results["quizzes"].append(QuizSerializer(item).data)
+            elif isinstance(item, Modul):
+                results["modules"].append(ModulSerializer(item).data)
+            elif isinstance(item, Studiengang):
+                results["studiengaenge"].append(StudiengangSerializer(item).data)
 
         return Response(results)

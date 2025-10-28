@@ -66,9 +66,12 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Informationen zu einem Studiengang der HTW RDesden
 |
 |
+|
+
 
 | Modul
 | Information zu einem Modul der HTW aus Modulux
+|
 |
 |
 
@@ -101,4 +104,4 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 == Domänenmodell
 // Fügen Sie hier eine Abbildung mit ihrem Domänenmodell ein
 
-image::dommodell.png[Domänenmodell StudIQ]
+plantuml::images/dommodell.puml[format="svg", alt="Domänenmodell StudIQ"]

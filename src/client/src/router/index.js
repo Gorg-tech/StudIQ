@@ -13,6 +13,8 @@ import ModulView from '@/views/ModulView.vue'
 import LernsetView from '@/views/LernsetView.vue'
 import HomeViewSettings from '@/views/HomeViewSettings.vue'
 import { isAuthenticated } from '@/services/auth.js'
+import { useQuizEditStore } from '@/stores/editQuiz'
+import StudiengangView from '@/views/StudiengangView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,7 +45,7 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/edit-quiz/:quizId?',
+      path: '/edit-quiz/:quizId?/:lernsetId?',
       name: 'edit-quiz',
       component: EditQuizView,
     },
@@ -81,6 +83,10 @@ const router = createRouter({
       path: '/settings',
      name: 'settings',
       component: HomeViewSettings,
+    {
+      path:'/studiengang/:studiengangId',
+      name:'studiengang-overview',
+      component: StudiengangView
     }
   ],
 })
@@ -97,6 +103,21 @@ router.beforeEach((to, from, next) => {
   if (!isAuthenticated.value) {
     next({ name: 'login' })
     return
+  }
+
+  // Prevent accessing edit-quiz without quizId OR lernsetId
+  if (to.name === 'edit-quiz') {
+    const store = useQuizEditStore()
+    const hasQuiz = to.params && !(to.params.quizId || to.params.quizId === '')
+    const hasLernset = to.params && !(to.params.lernsetId || to.params.lernsetId === '') || store.lernsetId
+    if (!hasQuiz && !hasLernset) {
+      if (from && from.name) {
+        next(false)
+      } else {
+        next({ name: 'home' })
+      }
+      return
+    }
   }
 
   next()

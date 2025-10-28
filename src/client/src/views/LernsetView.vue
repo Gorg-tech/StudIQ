@@ -2,9 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import IconPlus from '@/components/icons/IconPlus.vue'
-import { getLernset, getLernsetQuizzes } from '@/services/lernsets'
-import apiClient from '@/services/api/client'
-import { API_ENDPOINTS } from '@/services/api/endpoints'
+import { getLernset } from '@/services/lernsets'
 
 // Real data placeholders
 const lernsetName = ref('')
@@ -85,7 +83,8 @@ const goToQuizOverview = (quizId) => {
 }
 
 const goToEditQuiz = () => {
-  router.push({ name: 'edit-quiz' })
+  const lernsetId = route.params.lernsetId
+  router.push({ name: 'edit-quiz', params: { lernsetId } } )
 }
 
 // Hilfsfunktion für Sterne

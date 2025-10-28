@@ -2,9 +2,11 @@ from rest_framework import serializers
 from .models import Quiz, Question, AnswerOption, Lernset, QuizProgress, Achievement, QuizSession, Feedback, Studiengang, Modul
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
+    question = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), required=True)
+
     class Meta:
         model = AnswerOption
-        fields = ['id', 'text', 'is_correct']
+        fields = ['id', 'text', 'is_correct', 'question']
 
 class QuestionSerializer(serializers.ModelSerializer):
     answer_options = AnswerOptionSerializer(many=True, read_only=True)
@@ -15,8 +17,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(serializers.ModelSerializer):
     lernset_title = serializers.CharField(source='lernset.title', read_only=True)
-
     questions = QuestionSerializer(many=True, read_only=True)
+    created_by = serializers.PrimaryKeyRelatedField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
     
     class Meta:
         model = Quiz
@@ -29,6 +32,8 @@ class QuizSerializer(serializers.ModelSerializer):
 class QuizForLernsetSerializer(serializers.ModelSerializer):
     question_count = serializers.SerializerMethodField()
     creator_username = serializers.CharField(source='created_by.username', read_only=True)
+    created_by = serializers.PrimaryKeyRelatedField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Quiz
@@ -57,6 +62,13 @@ class LernsetSerializer(serializers.ModelSerializer):
         
     def get_quiz_count(self, obj):
         return obj.quizzes.count()
+    
+    def create(self, validated_data):
+        # Need this for POST requests since we changed modul to read_only
+        modul_id = self.initial_data.get('modul')
+        modul = Modul.objects.get(modulId=modul_id)
+        validated_data['modul'] = modul
+        return super().create(validated_data)
 
 class QuizProgressSerializer(serializers.ModelSerializer):
     class Meta:

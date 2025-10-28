@@ -49,6 +49,11 @@ export const API_ENDPOINTS = {
     ANSWER_DETAIL: (questionId, answerId) => `api/questions/${questionId}/answers/${answerId}/`,
   },
 
+  ANSWER_OPTIONS: {
+    BASE: 'api/answer-options/',
+    DETAIL: (optionId) => `api/answer-options/${optionId}/`
+  },
+
   PROGRESS: {
     BASE: 'api/progress/',
     DETAIL: (progressId) => `api/progress/${progressId}/`,
