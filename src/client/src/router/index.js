@@ -79,14 +79,15 @@ const router = createRouter({
       name: 'lernset',
       component: LernsetView,
     },
-   {
-      path: '/settings',
-     name: 'settings',
-      component: HomeViewSettings,
     {
-      path:'/studiengang/:studiengangId',
-      name:'studiengang-overview',
-      component: StudiengangView
+      path: '/settings',
+      name: 'settings',
+      component: HomeViewSettings,
+    },
+    {
+      path: '/studiengang/:studiengangId',
+      name: 'studiengang-overview',
+      component: StudiengangView,
     }
   ],
 })
