@@ -1,4 +1,26 @@
-@import './base.css';
+@import './base.css'; 
+
+/* === 🌙 Globale Farbvariablen === */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(34, 34, 34, 0.08);
+}
+
+.dark {
+  --bg-color: #1e1e1e;
+  --text-color: #f5f5f5;
+  --card-bg: #2a2a2a;
+  --card-shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* Übergang für sanftes Umschalten */
+html, body, #app {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 #app {
   max-width: 1280px;
@@ -7,6 +29,7 @@
   font-weight: normal;
 }
 
+/* === Links === */
 a,
 .green {
   text-decoration: none;
@@ -21,6 +44,7 @@ a,
   }
 }
 
+/* === Layout-Anpassung für größere Screens === */
 @media (min-width: 1024px) {
   body {
     display: flex;
@@ -32,4 +56,15 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+}
+
+/* === Optional: Karten und Buttons anpassen === */
+.card {
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 8px var(--card-shadow);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
