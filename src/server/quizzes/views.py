@@ -160,6 +160,13 @@ class SearchView(APIView):
         query = request.query_params.get("q", "").strip()
         filter_type = request.query_params.get("filter", None)
 
+        # allow client to request more results (default 15, max 100)
+        limit_param = request.query_params.get("limit")
+        try:
+            limit = max(1, min(int(limit_param), 100)) if limit_param is not None else 15
+        except (ValueError, TypeError):
+            limit = 15
+
         results = {
             "lernsets": [],
             "quizzes": [],
@@ -167,32 +174,33 @@ class SearchView(APIView):
             "studiengaenge": [],
         }
 
-        # If no query, just return first 10 of the filtered type (or all types if no filter)
+        # If no query, just return first N of the filtered type (or small sample of all types)
         if not query:
             if filter_type:
                 if filter_type.lower() == "lernsets":
-                    lernsets = Lernset.objects.all()[:10]
+                    lernsets = Lernset.objects.all()[:limit]
                     results["lernsets"] = LernsetSerializer(lernsets, many=True).data
                 elif filter_type.lower() == "quizzes":
-                    quizzes = Quiz.objects.all()[:10]
+                    quizzes = Quiz.objects.all()[:limit]
                     results["quizzes"] = QuizSerializer(quizzes, many=True).data
                 elif filter_type.lower() == "modules":
-                    modules = Modul.objects.all()[:10]
+                    modules = Modul.objects.all()[:limit]
                     results["modules"] = ModulSerializer(modules, many=True).data
                 elif filter_type.lower() == "studiengaenge":
-                    studiengaenge = Studiengang.objects.all()[:10]
+                    studiengaenge = Studiengang.objects.all()[:limit]
                     results["studiengaenge"] = StudiengangSerializer(
                         studiengaenge, many=True
                     ).data
             else:
-                # No filter, return first 2 of each type
-                lernsets = Lernset.objects.all()[:2]
+                # No filter, return a small sample of each type
+                sample = min(2, limit)
+                lernsets = Lernset.objects.all()[:sample]
                 results["lernsets"] = LernsetSerializer(lernsets, many=True).data
-                quizzes = Quiz.objects.all()[:2]
+                quizzes = Quiz.objects.all()[:sample]
                 results["quizzes"] = QuizSerializer(quizzes, many=True).data
-                modules = Modul.objects.all()[:2]
+                modules = Modul.objects.all()[:sample]
                 results["modules"] = ModulSerializer(modules, many=True).data
-                studiengaenge = Studiengang.objects.all()[:2]
+                studiengaenge = Studiengang.objects.all()[:sample]
                 results["studiengaenge"] = StudiengangSerializer(
                     studiengaenge, many=True
                 ).data
@@ -207,29 +215,29 @@ class SearchView(APIView):
         if not filter_type or filter_type.lower() == "lernsets":
             lernsets_qs = Lernset.objects.filter(
                 Q(title__icontains=query) | Q(description__icontains=query)
-            )[:4]
+            )[:limit]
 
         if not filter_type or filter_type.lower() == "quizzes":
             quizzes_qs = Quiz.objects.filter(
                 Q(title__icontains=query) | Q(description__icontains=query)
-            )[:4]
+            )[:limit]
 
         if not filter_type or filter_type.lower() == "modules":
             modules_qs = Modul.objects.filter(
                 Q(name__icontains=query)
                 | Q(description__icontains=query)
                 | Q(modulId__icontains=query)
-            )[:4]
+            )[:limit]
 
         if not filter_type or filter_type.lower() == "studiengaenge":
             studiengaenge_qs = Studiengang.objects.filter(
                 Q(name__icontains=query)
                 | Q(description__icontains=query)
                 | Q(id__icontains=query)
-            )[:4]
+            )[:limit]
 
-        # Combine all results and limit to top 15
-        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))[:15]
+        # Combine all results and limit to top 'limit' across types
+        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))[:limit]
 
         # Serialize and categorize
         for item in all_items:
