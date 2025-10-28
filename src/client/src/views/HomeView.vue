@@ -48,7 +48,7 @@ const suggestedQuizzes = ref([
         </h1>
         <p class="tagline">Dein Begleiter für die Prüfungsvorbereitung</p>
       </div>
-      <button class="settings-btn" @click="router.push('/edit-quiz/')" aria-label="Einstellungen">
+      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
         <IconSettings />
       </button>
     </header>

@@ -1,3 +1,4 @@
+
 <template>
   <div class="quiz-overview-container">
     <!-- Main Quiz Card -->
@@ -5,6 +6,9 @@
       <div class="quiz-header">
         <h2>{{ quiz.title }}</h2>
       </div>
+      <button class="settings-btn" @click="router.push('/edit-quiz/')" aria-label="Einstellungen">
+        <IconSettings />
+      </button>
       <div class="quiz-content">
         <div class="quiz-info">
           <p class="quiz-description">{{ quiz.description }}</p>
@@ -95,7 +99,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-
+import IconSettings from '@/components/icons/IconSettings.vue'
 const showStats = ref(false)
 
 // Dummy quiz data, replace with API call
@@ -187,6 +191,26 @@ function formatDate(ts) {
   padding: 24px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   width: 100%;
+}
+.settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  padding-top: 8px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  transition: color 0.2s;
+}
+.settings-btn:hover {
+  color: var(--color-accent);
+}
+
+.settings-btn svg {
+  width: 2.2rem;
+  height: 2.2rem;
 }
 
 .quiz-header {
