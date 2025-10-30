@@ -1,6 +1,6 @@
 ```vue name=ModuleOverview.vue
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { createLernset } from '@/services/lernsets'
 import { getModul } from '@/services/modules' 
@@ -14,6 +14,92 @@ const route = useRoute()
 const moduleName = ref('')
 const moduleDescription = ref('')
 const moduleLink = ref('')
+const moduleResponsible = ref('')
+const moduleExams = ref('')
+
+// convenience computed lists split by newlines or commas
+const moduleResponsibleList = computed(() => {
+  return (moduleResponsible.value || '')
+    .split(/\r?\n|,\s*/)
+    .map(s => s.trim())
+    .filter(Boolean)
+})
+
+const moduleExamsList = computed(() => {
+  const raw = (moduleExams.value || '').trim()
+  if (!raw) return []
+
+  // If the text contains explicit exam labels, split by these labels so
+  // we keep the full description after each label intact.
+  const labelRe = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)/i
+  if (labelRe.test(raw)) {
+    const reGlobal = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)[\s:\-]*/ig
+    const matches = [...raw.matchAll(reGlobal)]
+    if (matches.length) {
+      const parts = []
+      for (let i = 0; i < matches.length; i++) {
+        const start = matches[i].index
+        const end = (i + 1 < matches.length) ? matches[i + 1].index : raw.length
+        const slice = raw.slice(start, end).trim()
+        if (slice) parts.push(slice)
+      }
+      return parts
+    }
+  }
+
+  // Fallback: split on newlines or commas
+  return raw
+    .split(/\r?\n|,\s*/)
+    .map(s => s.trim())
+    .filter(Boolean)
+})
+
+// Detect presence of the three exact exam type phrases (case-insensitive)
+const hasSchriftliche = computed(() => {
+  return moduleExamsList.value.some(e => /schriftliche\s*prüfungsleistung/i.test(e))
+})
+
+const hasAlternative = computed(() => {
+  return moduleExamsList.value.some(e => /alternative\s*prüfungsleistung/i.test(e))
+})
+
+const hasMuendliche = computed(() => {
+  return moduleExamsList.value.some(e => /mü?ndliche\s*prüfungsleistung/i.test(e))
+})
+
+const otherExams = computed(() => {
+  const reS = /schriftliche\s*prüfungsleistung/i
+  const reA = /alternative\s*prüfungsleistung/i
+  const reM = /mü?ndliche\s*prüfungsleistung/i
+  return moduleExamsList.value.filter(e => !reS.test(e) && !reA.test(e) && !reM.test(e))
+})
+
+// Extract trailing descriptions after the labels, e.g. "Schriftliche Prüfungsleistung: Klausur"
+const schriftlicheDetails = computed(() => {
+  const re = /schriftliche\s*prüfungsleistung\s*[:\-]?\s*/i
+  return moduleExamsList.value
+    .filter(e => re.test(e))
+    .map(e => e.replace(re, '').trim())
+    .filter(Boolean)
+})
+
+const alternativeDetails = computed(() => {
+  const re = /alternative\s*prüfungsleistung\s*[:\-]?\s*/i
+  return moduleExamsList.value
+    .filter(e => re.test(e))
+    .map(e => e.replace(re, '').trim())
+    .filter(Boolean)
+})
+
+const muendlicheDetails = computed(() => {
+  const re = /mü?ndliche\s*prüfungsleistung\s*[:\-]?\s*/i
+  return moduleExamsList.value
+    .filter(e => re.test(e))
+    .map(e => e.replace(re, '').trim())
+    .filter(Boolean)
+})
+
+// We keep a single exams list (`moduleExamsList`) and render it as bullets in one box.
 
 const lernsets = ref([])
 
@@ -83,9 +169,11 @@ onMounted(() => {
   
   getModul(modulId)
     .then(modulData => {
-      moduleName.value = modulData.name || `Modul ${modulId}`
-      moduleDescription.value = modulData.description || `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
-      moduleLink.value = modulData.modulux_url || 'https://apps.htw-dresden.de/modulux/frontend/module/'
+  moduleName.value = modulData.name + ' (' + modulId + ')'
+  // parse description to separate Verantwortlich and Prüfungen if present
+  const rawDesc = modulData.description || `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
+  parseModuleDescription(rawDesc)
+  moduleLink.value = modulData.modulux_url || 'https://apps.htw-dresden.de/modulux/frontend/module/'
       
       // Check if lernsets data exists in the response
       if (modulData.lernsets && Array.isArray(modulData.lernsets)) {
@@ -105,9 +193,55 @@ onMounted(() => {
       // Fall back to placeholder data if API call fails
       moduleName.value = `Modul ${modulId}`
       moduleDescription.value = `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
+      moduleResponsible.value = ''
+      moduleExams.value = ''
       moduleLink.value = 'https://www.htw-dresden.de/'
     })
 })
+
+// Helper: try to extract sections 'Verantwortlich:' and 'Prüfungen:' from a free-text description
+// TODO: Backend sollte lieber Beschreibung in aufgeteilten Feldern schicken, dann ist es einfacher, evtl auch für zukünftige Filter
+function parseModuleDescription(text) {
+  const desc = text || ''
+  // Look for the labels (case-insensitive)
+  const idxResp = desc.search(/Verantwortlich:/i)
+  const idxPruef = desc.search(/Prüfungen:|Prüfung:/i)
+
+  if (idxResp === -1 && idxPruef === -1) {
+    // nothing to split
+    moduleDescription.value = desc
+    moduleResponsible.value = ''
+    moduleExams.value = ''
+    return
+  }
+
+  // Determine order and slice accordingly
+  let main = desc
+  let resp = ''
+  let pruef = ''
+
+  if (idxResp !== -1 && idxPruef !== -1) {
+    if (idxResp < idxPruef) {
+      main = desc.slice(0, idxResp).trim()
+      resp = desc.slice(idxResp + 'Verantwortlich:'.length, idxPruef).trim()
+      pruef = desc.slice(idxPruef + (desc.slice(idxPruef).toLowerCase().startsWith('prüfungen:') ? 'Prüfungen:'.length : 'Prüfung:'.length)).trim()
+    } else {
+      main = desc.slice(0, idxPruef).trim()
+      pruef = desc.slice(idxPruef + (desc.slice(idxPruef).toLowerCase().startsWith('prüfungen:') ? 'Prüfungen:'.length : 'Prüfung:'.length)).trim()
+      resp = desc.slice(idxResp + 'Verantwortlich:'.length).trim()
+    }
+  } else if (idxResp !== -1) {
+    main = desc.slice(0, idxResp).trim()
+    resp = desc.slice(idxResp + 'Verantwortlich:'.length).trim()
+  } else if (idxPruef !== -1) {
+    main = desc.slice(0, idxPruef).trim()
+    pruef = desc.slice(idxPruef + (desc.slice(idxPruef).toLowerCase().startsWith('prüfungen:') ? 'Prüfungen:'.length : 'Prüfung:'.length)).trim()
+  }
+
+  moduleDescription.value = main || ''
+  moduleResponsible.value = resp || ''
+  moduleExams.value = pruef || ''
+}
 
 </script>
 
@@ -129,6 +263,37 @@ onMounted(() => {
       <div class="module-desc-block">
         <h2 class="desc-title">Modulbeschreibung</h2>
         <p class="module-description">{{ moduleDescription }}</p>
+
+        <div v-if="moduleResponsibleList.length" class="module-subsection">
+          <h3 class="sub-title">Verantwortlich</h3>
+          <ul class="sub-list">
+            <li v-for="(person, idx) in moduleResponsibleList" :key="'resp-'+idx">{{ person }}</li>
+          </ul>
+        </div>
+
+        <div v-if="moduleExamsList.length" class="module-subsection">
+          <h3 class="sub-title">Prüfungen</h3>
+          <ul class="sub-list">
+            <li v-if="hasSchriftliche">
+              Schriftliche Prüfungsleistung
+              <span v-if="schriftlicheDetails.length">: {{ schriftlicheDetails.join(', ') }}</span>
+            </li>
+            <li v-if="hasAlternative">
+              Alternative Prüfungsleistung
+              <span v-if="alternativeDetails.length">: {{ alternativeDetails.join(', ') }}</span>
+            </li>
+            <li v-if="hasMuendliche">
+              Mündliche Prüfungsleistung
+              <span v-if="muendlicheDetails.length">: {{ muendlicheDetails.join(', ') }}</span>
+            </li>
+            <li v-if="otherExams.length">
+              Weitere Prüfungen
+              <ul>
+                <li v-for="(exam, idx) in otherExams" :key="'other-'+idx">{{ exam }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </header>
 
@@ -252,6 +417,28 @@ onMounted(() => {
   font-size: 1.05rem;
   color: #222;
   margin-top: 0;
+}
+
+.module-subsection {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fafcfe;
+  border: 1px solid #eaf4ff;
+  border-radius: 8px;
+}
+.sub-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--color-primary, #1976d2);
+  margin: 0 0 8px 0;
+}
+.sub-list {
+  margin: 0;
+  padding-left: 1.05rem;
+  color: #333;
+}
+.sub-list li {
+  margin: 4px 0;
 }
 
 .card {
