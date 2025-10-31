@@ -206,7 +206,7 @@ function formatDate(ts) {
   background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+  box-shadow: 0 2px 8px var(--card-shadow);
   width: 100%;
 }
 .settings-btn {

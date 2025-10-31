@@ -402,7 +402,7 @@ function truncate(text, maxLength) {
   gap: 12px;
 }
 .option-item {
-  background: #fff; 
+  background: var(--card-bg); 
   border-radius: 10px;
   padding: 12px;
   display: flex;
@@ -488,11 +488,11 @@ input[type="checkbox"] {
 }
 
 .popup-answer-text {
-  background: #e3f2fd;
+  background: var(--color-question-border);
   border-radius: 7px;
   padding: 8px 10px;
   margin: 20px 0 0 0;
-  color: #222;
+  color: var(--color-text);
   font-size: 1.04rem;
   word-break: break-word;
 }
@@ -508,7 +508,7 @@ input[type="checkbox"] {
 .cancel-btn {
   background: transparent;
   color: var(--color-secondary);
-  border: 1px solid #bcdffb;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 12px 24px;
   font-size: 1rem;
@@ -517,7 +517,7 @@ input[type="checkbox"] {
 }
 
 .cancel-btn:hover {
-  background-color: #e3f2fd;
+  background-color: var(--color-question-border);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

@@ -73,10 +73,10 @@ function goToOverview() {
 
 <style scoped>
 .result-card {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+  box-shadow: 0 2px 8px var(--card-shadow);
   margin: 0 auto;
   max-width: 600px;
   text-align: center;
@@ -113,7 +113,7 @@ function goToOverview() {
 }
 
 .result-item {
-  background: #f9f9f9;
+  background: var(--color-bg-light);
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 12px;
@@ -131,17 +131,17 @@ function goToOverview() {
 }
 
 .user-answer.correct {
-  color: #4caf50;
+  color: var(--color-green);
   font-weight: 600;
 }
 
 .user-answer.incorrect {
-  color: #f44336;
+  color: var(--color-red);
   font-weight: 600;
 }
 
 .correct-answer {
-  color: #2196f3;
+  color: var(--color-secondary);
   margin-left: 12px;
 }
 

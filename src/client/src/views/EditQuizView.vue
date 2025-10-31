@@ -293,7 +293,7 @@ const cancelDelete = () => {
 .card {
   background: var(--card-bg);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+  box-shadow: 0 2px 8px var(--card-shadow);
   padding: 20px;
 }
 .block-label {
@@ -308,9 +308,11 @@ const cancelDelete = () => {
   font-size: 1.1rem;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   margin-top: 8px;
   margin-bottom: 4px;
+  background: var(--card-bg);
+  color: var(--color-text);
 }
 
 .questions-header {
@@ -332,11 +334,11 @@ const cancelDelete = () => {
 
 .question-field {
   margin-bottom: 22px;
-  border: 1.5px solid #e3f2fd;
+  border: 1.5px solid var(--color-question-border);
   border-radius: 9px;
   padding: 14px 12px;
   transition: box-shadow 0.15s, border 0.15s;
-  background: #f9fbff;
+  background: var(--color-question-bg);
 }
 .question-field:last-child {
   margin-bottom: 0;
@@ -348,7 +350,7 @@ const cancelDelete = () => {
 .question-interactive:hover, .question-interactive:focus {
   border: 1.5px solid var(--color-secondary);
   box-shadow: 0 2px 10px 2px rgba(25, 118, 210, 0.08);
-  background: #f2f8fd;
+  background: var(--color-question-hover);
   outline: none;
 }
 .question-header {
@@ -364,14 +366,14 @@ const cancelDelete = () => {
 }
 .question-type {
   font-size: 0.97rem;
-  background: #e3f2fd;
+  background: var(--color-question-border);
   color: var(--color-secondary);
   border-radius: 6px;
   padding: 2px 10px;
 }
 .question-preview {
   font-size: 1.04rem;
-  color: #333;
+  color: var(--color-text);
   padding: 6px 0 0 0;
   display: flex;
   justify-content: space-between;
@@ -407,7 +409,7 @@ const cancelDelete = () => {
   position: fixed;
   z-index: 1000;
   left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
+  background: var(--color-modal-backdrop);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,10 +436,10 @@ const cancelDelete = () => {
 }
 .modal-question-text {
   margin: 20px 0 0 0;
-  color: #222;
+  color: var(--color-text);
   font-size: 1.04rem;
   word-break: break-word;
-  background: #e3f2fd;
+  background: var(--color-question-border);
   padding: 8px 10px;
   border-radius: 7px;
 }

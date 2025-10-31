@@ -23,6 +23,10 @@
   --color-selected: #ffe0b2;
   --color-correct: #c8e6c9;
   --color-incorrect: #ffcdd2;
+  --color-question-bg: #f9fbff;
+  --color-question-hover: #f2f8fd;
+  --color-question-border: #e3f2fd;
+  --color-modal-backdrop: rgba(0,0,0,0.18);
 }
 
 .dark {
@@ -47,6 +51,10 @@
   --color-selected: #4a4a4a;
   --color-correct: #2e4a2e;
   --color-incorrect: #4a2e2e;
+  --color-question-bg: #2a2a3a;
+  --color-question-hover: #333344;
+  --color-question-border: #444;
+  --color-modal-backdrop: rgba(0,0,0,0.4);
 }
 
 html, body, #app {
