@@ -79,6 +79,10 @@ const router = createRouter({
       name: 'lernset',
       component: LernsetView,
     },
+   {
+      path: '/settings',
+     name: 'settings',
+      component: HomeViewSettings,
     {
       path: '/settings',
       name: 'settings',

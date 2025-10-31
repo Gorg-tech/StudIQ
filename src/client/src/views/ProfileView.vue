@@ -1,9 +1,11 @@
+
+
 <template>
   <div class="profile">
     <h1>Hier kommt das Profil hin :P</h1>
     <div class="settings-container">
-      <button class="settings-btn" @click="showMenu = !showMenu">
-        Einstellungen ⚙️
+      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
+        <IconSettings />
       </button>
       <div v-if="showMenu" class="settings-popup">
         <button class="logout-btn" @click="handleLogout">Ausloggen</button>
@@ -16,6 +18,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { logout, isAuthenticated } from '@/services/auth'
+import IconSettings from '@/components/icons/IconSettings.vue'
 
 const showMenu = ref(false)
 const router = useRouter()
@@ -42,31 +45,23 @@ async function handleLogout() {
   right: 30px;
 }
 .settings-btn {
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-.settings-popup {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(34,34,34,0.08);
-  padding: 12px 18px;
-  z-index: 10;
-}
-.logout-btn {
-  background: #ffdddd;
+  background: none;
   border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  color: #c00;
   cursor: pointer;
-  font-weight: 500;
+  padding: 4px;
+  padding-top: 8px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  transition: color 0.2s;
+}
+.settings-btn:hover {
+  color: var(--color-accent);
+}
+
+.settings-btn svg {
+  width: 2.2rem;
+  height: 2.2rem;
 }
 </style>
