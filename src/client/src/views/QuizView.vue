@@ -158,10 +158,10 @@ function nextQuestion() {
 }
 
 .card {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+  box-shadow: 0 2px 8px var(--card-shadow);
   width: 100%;
 }
 
@@ -243,13 +243,13 @@ function nextQuestion() {
 }
 
 .answer-row.selected {
-  background: #ffe0b2;
+  background: var(--color-selected);
 }
 .answer-row.correct {
-  background: #c8e6c9;
+  background: var(--color-correct);
 }
 .answer-row.incorrect {
-  background: #ffcdd2;
+  background: var(--color-incorrect);
 }
 
 .loading-state {
