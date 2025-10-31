@@ -1,13 +1,10 @@
 @import './base.css'; 
 
-/* === 🌙 Globale Farbvariablen === */
 :root {
   --bg-color: #ffffff;
   --text-color: #111111;
   --card-bg: #ffffff;
   --card-shadow: rgba(34, 34, 34, 0.08);
-
-  /* Additional color variables from App.vue for consistency */
   --color-accent: #222;
   --color-bg: #f5f5f5;
   --color-bg-hover: #f5f5f5;
@@ -23,15 +20,16 @@
   --color-secondary: #2196f3;
   --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
   --color-text: #333;
+  --color-selected: #ffe0b2;
+  --color-correct: #c8e6c9;
+  --color-incorrect: #ffcdd2;
 }
 
 .dark {
-  --bg-color: #1e1e2e; /* Dark blue background */
-  --text-color: #e0e0e0; /* Light text */
-  --card-bg: #2a2a3a; /* Slightly lighter blue for cards */
+  --bg-color: #1e1e2e; 
+  --text-color: #e0e0e0; 
+  --card-bg: #2a2a3a; 
   --card-shadow: rgba(0, 0, 0, 0.5);
-
-  /* Dark mode overrides for additional variables */
   --color-accent: #e0e0e0;
   --color-bg: #1e1e2e;
   --color-bg-hover: #252535;
@@ -46,9 +44,11 @@
   --color-secondary: #64b5f6;
   --color-shadow: 0 2px 8px rgba(0,0,0,0.5);
   --color-text: #e0e0e0;
+  --color-selected: #4a4a4a;
+  --color-correct: #2e4a2e;
+  --color-incorrect: #4a2e2e;
 }
 
-/* Übergang für sanftes Umschalten */
 html, body, #app {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -62,7 +62,6 @@ html, body, #app {
   font-weight: normal;
 }
 
-/* === Links === */
 a,
 .green {
   text-decoration: none;
@@ -91,7 +90,6 @@ a,
   }
 }
 
-/* === Optional: Karten und Buttons anpassen === */
 .card {
   background-color: var(--card-bg);
   box-shadow: 0 2px 8px var(--card-shadow);
