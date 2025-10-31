@@ -2,14 +2,12 @@ from rest_framework import serializers
 from .models import Quiz, Question, AnswerOption, Lernset, QuizProgress, Achievement, QuizSession, Feedback, Studiengang, Modul
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
-    question = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), required=True)
-
     class Meta:
         model = AnswerOption
-        fields = ['id', 'text', 'is_correct', 'question']
+        fields = ['id', 'text', 'is_correct']
 
 class QuestionSerializer(serializers.ModelSerializer):
-    answer_options = AnswerOptionSerializer(many=True, read_only=True)
+    answer_options = AnswerOptionSerializer(many=True)
     quiz = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
@@ -33,14 +31,19 @@ class QuizSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # create Quiz with nested Questions and AnswerOptions
         questions_data = validated_data.pop('questions', [])
+        
         quiz = Quiz.objects.create(**validated_data)
         
         for question_data in questions_data:
+            status = question_data.pop('_status', None)  # Pop _status to avoid field error
+            question_id = question_data.pop('id', None)  # Pop id for new questions
             answer_options = question_data.pop('answer_options', [])
             question = Question.objects.create(quiz=quiz, **question_data)
             
             for answer_data in answer_options:
-                AnswerOption.objects.create(question=question, **answer_data)
+                answer_data_copy = answer_data.copy()
+                answer_data_copy.pop('id', None)  # Pop id since model has no id field
+                AnswerOption.objects.create(question=question, **answer_data_copy)
         
         return quiz
         
@@ -83,7 +86,9 @@ class QuizSerializer(serializers.ModelSerializer):
                             answer.save()
                             updated_answers.add(answer_id)
                         else:
-                            AnswerOption.objects.create(question=question, **answer_data)
+                            answer_data_copy = answer_data.copy()
+                            answer_data_copy.pop('id', None)
+                            AnswerOption.objects.create(question=question, **answer_data_copy)
                     
                     # Lösche nicht mehr vorhandene Antworten
                     to_delete = current_answers - updated_answers

@@ -179,7 +179,11 @@ function startQuiz() {
 }
 
 function goToLernset() {
-  router.push('/')
+  if (quiz.value?.lernset) {
+    router.push({ name: 'lernset', params: { lernsetId: quiz.value.lernset } })
+  } else {
+    router.push('/')
+  }
 }
 
 function showRun(idx) {
