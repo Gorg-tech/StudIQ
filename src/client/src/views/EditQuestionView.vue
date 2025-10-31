@@ -328,7 +328,7 @@ function truncate(text, maxLength) {
 }
 
 .edit-question-card {
-  background: #fff; 
+  background: var(--card-bg); 
   border-radius: 16px;
   box-shadow: var(--color-shadow);
   padding: 32px 16px;
@@ -352,7 +352,7 @@ function truncate(text, maxLength) {
   font-size: 1rem;
   margin-top: 8px;
   resize: vertical;
-  background: #fff; 
+  background: var(--card-bg); 
   color: var(--color-text);
 }
 
@@ -452,7 +452,7 @@ input[type="checkbox"] {
 }
 
 .edit-popup {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px; 
   box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14); 
   padding: 32px 28px 24px 28px;
@@ -477,7 +477,7 @@ input[type="checkbox"] {
   padding: 10px;
   font-size: 1rem;
   color: var(--color-text);
-  background: #fff; 
+  background: var(--card-bg); 
 }
 
 .edit-popup-actions {

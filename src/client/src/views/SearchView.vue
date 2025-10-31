@@ -76,7 +76,7 @@
               <!-- Emojis entfernt -->
               {{ item.title }}
             </h3>
-            <span class="quiz-type">{{ item.type }}</span>
+            <span class="item-type">{{ item.type }}</span>
           </div>
 
           <div v-if="item.type === 'Quiz'" class="quiz-stats">
@@ -235,7 +235,7 @@ onMounted(() => {
   border-radius: 6px;
   font-size: 1rem;
   margin-bottom: 16px;
-  background-color: white;
+  background-color: var(--card-bg);
   color: var(--color-text);
 }
 
@@ -272,10 +272,10 @@ onMounted(() => {
 
 .quiz-item {
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   margin-bottom: 12px;
-  background-color: white;
+  background-color: var(--card-bg);
 }
 
 .quiz-header {
@@ -285,32 +285,45 @@ onMounted(() => {
   margin-bottom: 8px;
 }
 
-.quiz-type {
+.item-type {
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
-.type-quiz .quiz-type {
-  background-color: #e3f2fd;
+.type-quiz .item-type {
+  background-color: rgba(33, 150, 243, 0.2);
   color: #1565c0;
-  border-color: #90caf9;
+  border: 1px solid rgba(33, 150, 243, 0.3);
 }
-.type-lernset .quiz-type {
-  background-color: #f3e5f5;
+.type-lernset .item-type {
+  background-color: rgba(156, 39, 176, 0.2);
   color: #6a1b9a;
-  border-color: #ce93d8;
+  border: 1px solid rgba(156, 39, 176, 0.3);
 }
-.type-modul .quiz-type {
-  background-color: #e8f5e9;
+.type-modul .item-type {
+  background-color: rgba(76, 175, 80, 0.2);
   color: #1b5e20;
-  border-color: #a5d6a7;
+  border: 1px solid rgba(76, 175, 80, 0.3);
 }
-.type-studiengang .quiz-type {
-  background-color: #fff3e0;
+.type-studiengang .item-type {
+  background-color: rgba(255, 152, 0, 0.2);
   color: #e65100;
-  border-color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.dark .type-quiz .item-type {
+  color: #64b5f6;
+}
+.dark .type-lernset .item-type {
+  color: #ba68c8;
+}
+.dark .type-modul .item-type {
+  color: #81c784;
+}
+.dark .type-studiengang .item-type {
+  color: #ffb74d;
 }
 
 .quiz-stats {

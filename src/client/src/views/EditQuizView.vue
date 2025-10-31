@@ -291,7 +291,7 @@ const cancelDelete = () => {
   gap: 24px;
 }
 .card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 20px;
@@ -413,7 +413,7 @@ const cancelDelete = () => {
   justify-content: center;
 }
 .modal {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 32px 28px 24px 28px;
   box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14);

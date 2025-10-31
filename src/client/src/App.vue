@@ -18,24 +18,6 @@ apiClient.ensureCsrf()
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 
-:root {
-  --color-accent: #222;
-  --color-bg: #f5f5f5;
-  --color-bg-hover: #f5f5f5;
-  --color-bg-light: #f9f9f9;
-  --color-blue: #2196f3;
-  --color-blue-dark: #1976d2;
-  --color-border: #eee;
-  --color-border-dark: #ddd;
-  --color-green: #4caf50;
-  --color-muted: #666;
-  --color-primary: #fc7960;
-  --color-red: #f44336;
-  --color-secondary: #2196f3;
-  --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
-  --color-text: #333;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -44,8 +26,7 @@ apiClient.ensureCsrf()
 
 body {
   font-family: 'Ubuntu', 'Roboto', 'Helvetica Neue', sans-serif;
-  color: #333;
-  background-color: #f5f5f5;
+  color: var(--color-text);
 }
 
 /* Override grid on #app */
@@ -79,11 +60,13 @@ body {
   gap: 8px;
   padding: 12px 24px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--color-border);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  background: var(--color-bg-light);
+  color: var(--color-text);
 }
 
 .btn-icon {
@@ -97,9 +80,9 @@ body {
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background-color: var(--color-bg-light);
   color: var(--color-secondary);
-  border: 1px solid #bcdffb;
+  border: 1px solid var(--color-border);
 }
 
 .btn-text {
@@ -120,7 +103,7 @@ body {
 }
 
 .btn-secondary:hover {
-  background-color: #e3f2fd;
+  background-color: var(--color-bg-hover);
 }
 
 .btn-text:hover {
