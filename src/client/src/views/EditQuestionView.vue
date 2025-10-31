@@ -37,27 +37,25 @@
       </div>
 
       <div class="options-list">
-        <div v-for="(option, idx) in options" :key="option.id" class="option-item" @click="toggleCorrect(idx)" :class="{ selected: option.correct }">
-          <div class="option-title">
-            <span v-if="option.correct" class="checkmark">✓</span>
-            <span 
-              class="option-text" 
-              contenteditable 
-              @click.stop
-              @input="option.text = $event.target.innerText" 
-              @blur="finishEdit(idx)"
-              :title="option.text"
-              :data-placeholder="option.text ? '' : 'Antwort eingeben...'"
-            >
-              {{ option.text }}
-            </span>
+        <template v-for="(option, idx) in options">
+          <div :key="option.id" v-if="option._status !== 'deleted'" class="option-item" @click="toggleCorrect(idx)" :class="{ selected: option.correct }">
+            <div class="option-title">
+              <span v-if="option.correct" class="checkmark">✓</span>
+              <input
+                class="option-text"
+                v-model="option.text"
+                @blur="finishEdit(idx)"
+                :placeholder="option.text ? '' : 'Antwort eingeben...'"
+                @click.stop
+              />
+            </div>
+            <div class="option-actions">
+              <button class="btn-icon delete-option" @click.stop="deleteOption(idx)" aria-label="Antwort löschen">
+                <IconTrash />
+              </button>
+            </div>
           </div>
-          <div class="option-actions">
-            <button class="btn-icon delete-option" @click.stop="deleteOption(idx)" aria-label="Antwort löschen">
-              <IconTrash />
-            </button>
-          </div>
-        </div>
+        </template>
       </div>
 
       <div class="footer-buttons">
@@ -284,6 +282,12 @@ async function saveQuestion() {
     }
   }
 
+  const texts = options.value.map(opt => opt.text.trim().toLowerCase())
+  if (new Set(texts).size !== texts.length) {
+    errorMessage.value = 'Alle Antwortoptionen müssen einen eindeutigen Text haben.'
+    return
+  }
+
   const hasCorrect = options.value.some(opt => opt.correct)
   if (!hasCorrect) {
     errorMessage.value = 'Mindestens eine Antwortoption muss als korrekt markiert sein.'
@@ -458,17 +462,13 @@ function toggleCorrect(idx) {
   transition: border-color 0.2s, background-color 0.2s;
   min-height: 1.2em;
   display: inline-block;
+  direction: ltr;
+  background: transparent;
 }
 
 .option-text:focus {
   border-color: var(--color-primary);
   background: var(--color-bg-light);
-}
-
-.option-text:empty:before {
-  content: attr(data-placeholder);
-  color: var(--color-muted);
-  pointer-events: none;
 }
 
 .checkmark {
