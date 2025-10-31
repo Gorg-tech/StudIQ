@@ -415,15 +415,15 @@ function parseModuleDescription(text) {
 }
 .module-description {
   font-size: 1.05rem;
-  color: #222;
+  color: var(--color-text);
   margin-top: 0;
 }
 
 .module-subsection {
   margin-top: 12px;
   padding: 12px;
-  background: #fafcfe;
-  border: 1px solid #eaf4ff;
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
 }
 .sub-title {
@@ -435,14 +435,14 @@ function parseModuleDescription(text) {
 .sub-list {
   margin: 0;
   padding-left: 1.05rem;
-  color: #333;
+  color: var(--color-text);
 }
 .sub-list li {
   margin: 4px 0;
 }
 
 .card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 22px 20px;
@@ -492,28 +492,28 @@ function parseModuleDescription(text) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f7fbff;
+  background: var(--color-bg-light);
   border-radius: 8px;
   padding: 13px 16px;
   font-size: 1.08rem;
   box-shadow: 0 1px 3px rgba(25,118,210,0.03);
-  border: 1px solid #e3f2fd;
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: border 0.15s, box-shadow 0.15s;
 }
 .lernset-item:hover, .lernset-item:focus {
-  border: 1.5px solid #1976d2;
+  border: 1.5px solid var(--color-secondary);
   box-shadow: 0 2px 10px 2px rgba(25, 118, 210, 0.08);
-  background: #f2f8fd;
+  background: var(--color-bg-hover);
 }
 
 .lernset-title {
   font-weight: 500;
-  color: #1976d2;
+  color: var(--color-secondary);
 }
 .lernset-quiz-count {
   font-size: 0.97rem;
-  color: #555;
+  color: var(--color-muted);
   font-weight: 400;
 }
 
@@ -528,7 +528,7 @@ function parseModuleDescription(text) {
   justify-content: center;
 }
 .modal-content {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 28px 24px 20px 24px;
   min-width: 300px;
@@ -541,15 +541,17 @@ function parseModuleDescription(text) {
 .lernset-input {
   padding: 8px 12px;
   border-radius: 6px;
-  border: 1.2px solid #e3f2fd;
+  border: 1.2px solid var(--color-border);
   font-size: 1.06rem;
   margin-top: 6px;
   margin-bottom: 8px;
   outline: none;
   transition: border 0.15s;
+  background: var(--card-bg);
+  color: var(--color-text);
 }
 .lernset-input:focus {
-  border: 1.5px solid #1976d2;
+  border: 1.5px solid var(--color-secondary);
 }
 .modal-actions {
   display: flex;

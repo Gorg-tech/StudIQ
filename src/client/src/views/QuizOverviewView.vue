@@ -1,4 +1,3 @@
-
 <template>
   <div class="quiz-overview-container">
     <!-- Loading State -->
@@ -204,7 +203,7 @@ function formatDate(ts) {
 }
 
 .card {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
@@ -253,7 +252,7 @@ function formatDate(ts) {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-light);
   border-radius: 12px;
   padding: 16px;
 }
@@ -276,7 +275,7 @@ function formatDate(ts) {
 }
 
 .stat-square {
-  background: #f9f9f9;
+  background: var(--color-bg-light);
   border-radius: 12px;
   padding: 16px;
   flex: 1;
@@ -288,15 +287,15 @@ function formatDate(ts) {
 }
 
 .error-rate {
-  background-color: #ffebee;
+  background-color: var(--color-bg-light);
 }
 
 .correct-rate {
-  background-color: #e8f5e9;
+  background-color: var(--color-bg-light);
 }
 
 .attempts {
-  background-color: #e3f2fd;
+  background-color: var(--color-bg-light);
 }
 
 .stat-label {
@@ -327,20 +326,20 @@ function formatDate(ts) {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-light);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .history-item:hover {
-  background-color: #f0f0f0;
+  background-color: var(--color-bg-hover);
   transform: translateY(-2px);
 }
 
 .history-item.active {
-  background-color: #e3f2fd;
-  border: 1px solid #bbdefb;
+  background-color: var(--color-bg-hover);
+  border: 1px solid var(--color-border);
 }
 
 .history-date {
@@ -362,7 +361,7 @@ function formatDate(ts) {
 .progress-bar {
   width: 100px;
   height: 8px;
-  background-color: #e0e0e0;
+  background-color: var(--color-border);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -383,7 +382,7 @@ function formatDate(ts) {
   text-align: center;
   padding: 24px;
   color: var(--color-muted);
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-light);
   border-radius: 12px;
 }
 
@@ -399,7 +398,7 @@ function formatDate(ts) {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
   padding: 32px 24px;
   min-width: 320px;

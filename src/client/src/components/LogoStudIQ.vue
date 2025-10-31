@@ -12,7 +12,7 @@
   letter-spacing: -0.05em;
 }
 .logo-stud {
-  color: #222;
+  color: var(--color-text);
   font-weight: 900;
 }
 .logo-iq {
