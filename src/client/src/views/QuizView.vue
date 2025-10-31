@@ -6,7 +6,7 @@
           <h2>
             {{ quiz.title }}
             <span class="quiz-progress">
-              (Frage {{ currentIndex + 1 }} von {{ questions.length }})
+              (Frage {{ currentIndex + 1 }} von {{ quiz.questions.length }})
             </span>
           </h2>
           <p class="quiz-description">{{ quiz.description }}</p>
@@ -16,7 +16,15 @@
         </div>
       </div>
       <div class="quiz-content">
-        <div class="question-block">
+        <div v-if="loading" class="loading-state">
+          Quiz wird geladen...
+        </div>
+        <div v-else-if="!currentQuestion">
+          <div class="error-message">
+            Keine Fragen im Quiz vorhanden.
+          </div>
+        </div>
+        <div v-else class="question-block">
           <h3>{{ currentQuestion.question }}</h3>
           <div
             v-for="(answer, index) in currentQuestion.answers"
@@ -59,74 +67,82 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { getQuiz } from '@/services/quizzes'
 import Penguin from '@/components/Penguin.vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
 
-export default {
-  components: { Penguin },
-  data() {
-    return {
-    quiz: {
-        title: "Demo-Quiz",
-        description: "Teste dein Wissen über Hauptstädte in Europa!"
-      },
-      questions: [
-        {
-          question: "Was ist die Hauptstadt von Deutschland?",
-          answers: ["Berlin", "München", "Hamburg", "Köln"],
-          correctAnswer: "Berlin"
-        },
-        {
-          question: "Was ist die Hauptstadt von Frankreich?",
-          answers: ["Paris", "Lyon", "Marseille", "Nizza"],
-          correctAnswer: "Paris"
-        },
-      ],
-      currentIndex: 0,
-      selectedAnswer: null,
-      result: null,
-      answered: false,
-      correctCount: 0,
-      totalCount: 0,
-      userAnswers: []
-    }
-  },
-  computed: {
-    currentQuestion() {
-      return this.questions[this.currentIndex];
-    }
-  },
-  methods: {
-    checkAnswer() {
-      this.totalCount++;
-      const isCorrect = this.selectedAnswer === this.currentQuestion.correctAnswer;
-      this.result = isCorrect;
-      if (isCorrect) this.correctCount++;
-      this.userAnswers[this.currentIndex] = {
-        question: this.currentQuestion.question,
-        selected: this.selectedAnswer,
-        correct: this.currentQuestion.correctAnswer,
-        isCorrect
-      };
-      this.answered = true;
-    },
-    nextQuestion() {
-      this.currentIndex++;
-      this.selectedAnswer = null;
-      this.answered = false;
-      if (this.currentIndex >= this.questions.length) {
-        localStorage.setItem('quizResults', JSON.stringify(this.userAnswers));
-        this.$router.push({
-          name: "quiz-result",
-          query: {
-            correct: this.correctCount,
-            total: this.totalCount,
-          }
-        });
+const router = useRouter()
+const route = useRoute()
+const quizId = ref(route.params.quizId)
+
+const quiz = ref({
+  title: '',
+  description: '',
+  questions: []
+})
+const loading = ref(true)
+const currentIndex = ref(0)
+const selectedAnswer = ref(null)
+const answered = ref(false)
+const result = ref(null)
+const correctCount = ref(0)
+const userAnswers = ref([])
+
+const currentQuestion = computed(() => {
+  if (!quiz.value.questions.length || currentIndex.value >= quiz.value.questions.length) return null
+  const question = quiz.value.questions[currentIndex.value]
+  return {
+    question: question.text,
+    answers: question.answer_options.map(opt => opt.text),
+    correctAnswer: question.answer_options.find(opt => opt.is_correct)?.text
+  }
+})
+
+onMounted(async () => {
+  try {
+    const data = await getQuiz(quizId.value)
+    quiz.value = data
+  } catch (err) {
+    console.error('Error loading quiz:', err)
+    router.push('/')
+  } finally {
+    loading.value = false
+  }
+})
+
+function checkAnswer() {
+  if (!currentQuestion.value) return
+  
+  const isCorrect = selectedAnswer.value === currentQuestion.value.correctAnswer
+  result.value = isCorrect
+  if (isCorrect) correctCount.value++
+
+  userAnswers.value[currentIndex.value] = {
+    question: currentQuestion.value.question,
+    selected: selectedAnswer.value,
+    correct: currentQuestion.value.correctAnswer,
+    isCorrect
+  }
+  answered.value = true
+}
+
+function nextQuestion() {
+  currentIndex.value++
+  selectedAnswer.value = null
+  answered.value = false
+  
+  if (currentIndex.value >= quiz.value.questions.length) { // Use quiz.value.questions here too
+    localStorage.setItem('quizResults', JSON.stringify(userAnswers.value))
+    router.push({
+      name: 'quiz-result',
+      query: {
+        quizId: quizId.value,
+        correct: correctCount.value,
+        total: quiz.value.questions.length
       }
-    }
+    })
   }
 }
 </script>
@@ -234,5 +250,19 @@ export default {
 }
 .answer-row.incorrect {
   background: #ffcdd2;
+}
+
+.loading-state {
+  font-size: 1.2rem;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 24px 0;
+}
+
+.error-message {
+  font-size: 1.2rem;
+  color: #f44336;
+  text-align: center;
+  padding: 24px 0;
 }
 </style>

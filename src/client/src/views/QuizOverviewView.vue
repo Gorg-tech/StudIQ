@@ -1,141 +1,154 @@
-
 <template>
   <div class="quiz-overview-container">
-    <!-- Main Quiz Card -->
-    <div class="card quiz-card">
-      <div class="quiz-header">
-        <h2>{{ quiz.title }}</h2>
-      </div>
-      <button class="settings-btn" @click="router.push('/edit-quiz/')" aria-label="Einstellungen">
-        <IconSettings />
-      </button>
-      <div class="quiz-content">
-        <div class="quiz-info">
-          <p class="quiz-description">{{ quiz.description }}</p>
-          <div class="quiz-meta-grid">
-            <div class="meta-item">
-              <span>Erstellt am: {{ formatDate(quiz.created_at) }}</span>
-            </div>
-            <div class="meta-item">
-              <span>von: {{ quiz.created_by }}</span>
-            </div>
-            <div class="meta-item">
-              <span>Fragen: {{ quiz.questions.length }}</span>
-            </div>
-            <div class="meta-item">
-              <span>Ø Zeit: {{ quiz.avg_time_spent || '-' }}s</span>
-            </div>
-            <div class="meta-item">
-              <span>Lernset: {{ quiz.lernset?.title || '-' }}</span>
-            </div>
-          </div>
-          <div class="button-row">
-            <button class="btn btn-primary" @click="startQuiz">
-              Quiz starten
-            </button>
-            <button class="btn" @click="goToLernset">
-              Zum Lernset
-            </button>
-            <button class="btn" @click="showStats = true">
-              Statistiken
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      Laden...
     </div>
 
-    <!-- Statistik-Popup -->
-    <div v-if="showStats" class="modal-overlay" @click.self="showStats = false">
-      <div class="modal-content">
-        <h3>Statistiken</h3>
-        <div class="stats-row">
-          <div class="stat-square error-rate">
-            <div class="stat-label">Fehlerquote</div>
-            <div class="stat-value">{{ errorRate }}%</div>
-          </div>
-          <div class="stat-square correct-rate">
-            <div class="stat-label">Korrekte Antworten</div>
-            <div class="stat-value">{{ 100 - errorRate }}%</div>
-          </div>
-        </div>
-        <div class="stats-row">
-          <div class="stat-square attempts">
-            <div class="stat-label">Versuche</div>
-            <div class="stat-value">{{ quizHistory.length }}</div>
-          </div>
-        </div>
-        <button class="btn btn-secondary" @click="showStats = false" style="margin-top: 24px;">Schließen</button>
-      </div>
+    <!-- Error State -->
+    <div v-else-if="error" class="error-state">
+      {{ error }}
     </div>
 
-    <!-- History Section -->
-    <div class="card history-section">
-      <h3>Verlauf deiner Durchgänge</h3>
-      <div class="history-list">
-        <div v-for="(entry, idx) in quizHistory" 
-             :key="entry.timestamp" 
-             class="history-item" 
-             @click="showRun(idx)"
-             :class="{ active: idx === currentRunIndex }">
-          <div class="history-date">
-            <span>{{ formatDate(entry.timestamp) }}</span>
-          </div>
-          <div class="history-result">
-            <span class="result-score">{{ entry.correctAnswers }} / {{ entry.totalQuestions }}</span>
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: entry.percentage + '%' }"></div>
-            </div>
-            <span class="percentage">{{ entry.percentage }}%</span>
-          </div>
+    <!-- Content when loaded -->
+    <template v-else-if="quiz">
+      <!-- Main Quiz Card -->
+      <div class="card quiz-card">
+        <div class="quiz-header">
+          <h2>{{ quiz.title }}</h2>
         </div>
-        <div class="no-history" v-if="quizHistory.length === 0">
-          <p>Du hast dieses Quiz noch nicht absolviert. Starte jetzt deinen ersten Durchgang!</p>
+        <button class="settings-btn" @click="router.push('/edit-quiz/')" aria-label="Einstellungen">
+          <IconSettings />
+        </button>
+        <div class="quiz-content">
+          <div class="quiz-info">
+            <p class="quiz-description">{{ quiz.description }}</p>
+            <div class="quiz-meta-grid">
+              <div class="meta-item">
+                <span>Erstellt am: {{ formatDate(quiz.created_at) }}</span>
+              </div>
+              <div class="meta-item">
+                <span>von: {{ quiz.created_by }}</span>
+              </div>
+              <div class="meta-item">
+                <span>Fragen: {{ quiz.questions.length }}</span>
+              </div>
+              <div class="meta-item">
+                <span>Ø Zeit: {{ quiz.avg_time_spent || '-' }}s</span>
+              </div>
+              <div class="meta-item">
+                <span>Lernset: {{ quiz.lernset?.title || '-' }}</span>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" @click="startQuiz">
+                Quiz starten
+              </button>
+              <button class="btn" @click="goToLernset">
+                Zum Lernset
+              </button>
+              <button class="btn" @click="showStats = true">
+                Statistiken
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- Statistik-Popup -->
+      <div v-if="showStats" class="modal-overlay" @click.self="showStats = false">
+        <div class="modal-content">
+          <h3>Statistiken</h3>
+          <div class="stats-row">
+            <div class="stat-square error-rate">
+              <div class="stat-label">Fehlerquote</div>
+              <div class="stat-value">{{ errorRate }}%</div>
+            </div>
+            <div class="stat-square correct-rate">
+              <div class="stat-label">Korrekte Antworten</div>
+              <div class="stat-value">{{ 100 - errorRate }}%</div>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-square attempts">
+              <div class="stat-label">Versuche</div>
+              <div class="stat-value">{{ quizHistory.length }}</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" @click="showStats = false" style="margin-top: 24px;">Schließen</button>
+        </div>
+      </div>
+
+      <!-- History Section -->
+      <div class="card history-section">
+        <h3>Verlauf deiner Durchgänge</h3>
+        <div class="history-list">
+          <div v-for="(entry, idx) in quizHistory" 
+               :key="entry.timestamp" 
+               class="history-item" 
+               @click="showRun(idx)"
+               :class="{ active: idx === currentRunIndex }">
+            <div class="history-date">
+              <span>{{ formatDate(entry.timestamp) }}</span>
+            </div>
+            <div class="history-result">
+              <span class="result-score">{{ entry.correctAnswers }} / {{ entry.totalQuestions }}</span>
+              <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: entry.percentage + '%' }"></div>
+              </div>
+              <span class="percentage">{{ entry.percentage }}%</span>
+            </div>
+          </div>
+          <div class="no-history" v-if="quizHistory.length === 0">
+            <p>Du hast dieses Quiz noch nicht absolviert. Starte jetzt deinen ersten Durchgang!</p>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { getQuiz } from '@/services/quizzes'
 import IconSettings from '@/components/icons/IconSettings.vue'
+
 const showStats = ref(false)
-
-// Dummy quiz data, replace with API call
-const quiz = ref({
-  title: 'Beispielquiz',
-  description: 'Dies ist ein Beispiel für ein Quiz.',
-  created_at: '2024-06-24T12:00:00Z',
-  created_by: 'Max Mustermann',
-  rating_score: 18,
-  rating_count: 5,
-  avg_time_spent: 42,
-  lernset: { title: 'Mathematik Grundlagen' },
-  questions: [
-    { id: 1, text: 'Was ist 2 + 2?' },
-    { id: 2, text: 'Hauptstadt von Frankreich?' }
-  ]
-})
-
 const router = useRouter()
+const route = useRoute()
 
-const quizHistory = ref([
-  {
-    timestamp: Date.now() - 86400000 * 2,
-    results: [
-      { question: 'Was ist 2 + 2?', userAnswer: '3', correctAnswer: '4', isCorrect: false },
-      { question: 'Hauptstadt von Frankreich?', userAnswer: 'Paris', correctAnswer: 'Paris', isCorrect: true }
-    ]
-  },
-  {
-    timestamp: Date.now() - 86400000,
-    results: [
-      { question: 'Was ist 2 + 2?', userAnswer: '4', correctAnswer: '4', isCorrect: true },
-      { question: 'Hauptstadt von Frankreich?', userAnswer: 'Berlin', correctAnswer: 'Paris', isCorrect: false }
-    ]
+// Replace local dummy quiz with API-driven state
+const quiz = ref(null)
+const loading = ref(true)
+const error = ref(null)
+
+// Keep existing quizHistory/dummy fallback if needed
+const quizHistory = ref([])
+
+// Fetch quiz from API on mount
+onMounted(async () => {
+  const quizId = route.params.quizId
+  if (!quizId) {
+    error.value = 'Keine Quiz-ID vorhanden'
+    loading.value = false
+    return
   }
-])
+
+  try {
+    loading.value = true
+    const data = await getQuiz(quizId)
+    // Expect service to return the quiz object directly (consistent with other services)
+    quiz.value = data
+  } catch (err) {
+    console.error('Error fetching quiz:', err)
+    error.value = 'Fehler beim Laden des Quiz'
+    // Optional: keep a minimal fallback (previous dummy) or leave null
+    quiz.value = null
+  } finally {
+    loading.value = false
+  }
+})
 
 const currentRunIndex = ref(quizHistory.value.length - 1)
 const current = computed(() => {
@@ -158,7 +171,11 @@ const errorRate = computed(() =>
 )
 
 function startQuiz() {
-  router.push('/quiz')
+  if (!quiz.value || !quiz.value.id) {
+    error.value = 'Quiz konnte nicht gestartet werden (ID fehlt)'
+    return
+  }
+  router.push({ name: 'quiz', params: { quizId: quiz.value.id } })
 }
 
 function goToLernset() {
