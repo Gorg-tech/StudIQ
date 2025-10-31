@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { onMounted } from 'vue'
-import { getQuiz, getQuizQuestions, createQuiz, updateQuiz } from '@/services/quizzes'
+import { getQuiz, createQuiz, updateQuiz } from '@/services/quizzes'
 import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 import IconSave from '@/components/icons/IconSave.vue'
@@ -21,6 +21,8 @@ const questionToDeleteText = ref('')
 const showBackModal = ref(false)
 const isNewQuiz = ref(!route.params.quizId)
 
+const errorMessage = ref('')
+
 onMounted(async () => {
 
   if (isNewQuiz.value) {
@@ -35,30 +37,7 @@ onMounted(async () => {
     // Nur lokal initialisieren - Speicherung erst bei Click auf den Button "Speichern"
     if(!quizEdit.quizLoaded) {
       quizEdit.quizLoaded = true
-      quizEdit.quizTitle = 'Mein Quiz'
       quizEdit.questions = [
-        {
-          id: Date.now(), // temporäre ID
-          text: 'Frage 1',
-          type: QUESTION_TYPES[0].api,
-          options: [
-            { id: Date.now() + 1, text: 'Antwort A', correct: false, _status: 'new' },
-            { id: Date.now() + 2, text: 'Antwort B', correct: true, _status: 'new' },
-            { id: Date.now() + 3, text: 'Antwort C', correct: false, _status: 'new' }
-          ],
-          _status: 'new'
-        },
-        {
-          id: Date.now() + 1, // temporäre ID
-          text: 'Frage 2',
-          type: QUESTION_TYPES[0].api,
-          options: [
-            { id: Date.now() + 4, text: 'Antwort A', correct: true, _status: 'new' },
-            { id: Date.now() + 5, text: 'Antwort B', correct: false, _status: 'new' },
-            { id: Date.now() + 6, text: 'Antwort C', correct: false, _status: 'new' }
-          ],
-          _status: 'new'
-        }
       ]
     }
     return
@@ -66,12 +45,17 @@ onMounted(async () => {
     const quiz = await getQuiz(quizId.value)
     quizEdit.quizTitle = quiz.title
     quizEdit.setLernset(quiz.lernset)
-    const serverQuestions = await getQuizQuestions(quizId.value)
-    quizEdit.questions = serverQuestions.map(q => ({
+    quizEdit.questions = quiz.questions.map(q => ({
       id: q.id,
       text: q.text,
       type: q.type,
-      _status: 'unchanged'
+      options: q.answer_options.map(opt => ({
+        id: opt.id,
+        text: opt.text,
+        correct: opt.is_correct,
+        _status: 'edited'
+      })),
+      _status: 'edited'
     }))
   }
 })
@@ -93,6 +77,32 @@ const cancelBack = () => {
 }
 
 const saveQuiz = async () => {
+  errorMessage.value = ''
+
+  if (!quizEdit.quizTitle.trim()) {
+    errorMessage.value = 'Quiz-Titel ist erforderlich.'
+    return
+  }
+
+  if (quizEdit.questions.length === 0) {
+    errorMessage.value = 'Mindestens eine Frage ist erforderlich.'
+    return
+  }
+
+  for (const q of quizEdit.questions) {
+    if (q._status === 'deleted') continue
+    if (!q.options || q.options.length < 2) {
+      errorMessage.value = 'Jede Frage muss mindestens zwei Antwortoptionen haben.'
+      return
+    }
+    for (const opt of q.options) {
+      if (!opt.text || opt.text.trim() === '') {
+        errorMessage.value = 'Alle Antwortoptionen müssen einen Text haben.'
+        return
+      }
+    }
+  }
+
   // Bereite die Quiz-Daten vor
   const quizData = {
     title: quizEdit.quizTitle,
@@ -104,11 +114,11 @@ const saveQuiz = async () => {
       text: q.text,
       type: q.type,
       _status: q._status,
-      answer_options: q.options.map(opt => ({
+      answer_options: q.options ? q.options.map(opt => ({
         id: opt.id,
         text: opt.text,
-        is_correct: opt.is_correct
-      }))
+        is_correct: opt.correct
+      })) : []
     })).filter(q => q._status !== 'unchanged')
   }
 
@@ -126,17 +136,18 @@ const saveQuiz = async () => {
 }
 
 const addQuestion = async () => {
-  quizEdit.addQuestion({
+  const newQuestion = {
     id: Date.now(), // temporäre ID
-    text: 'Neue Frage',
+    text: '',
     type: QUESTION_TYPES[0].api, 
     options: [
-            { id: Date.now() + 4, text: 'Antwort A', correct: true },
-            { id: Date.now() + 5, text: 'Antwort B', correct: false },
-            { id: Date.now() + 6, text: 'Antwort C', correct: false }
-          ],
+      { id: Date.now() + 1, text: '', correct: false, _status: 'new' },
+      { id: Date.now() + 2, text: '', correct: false, _status: 'new' }
+    ],
     _status: 'new'
-  })
+  }
+  quizEdit.addQuestion(newQuestion)
+  router.push({ name: 'edit-question', params: { questionId: newQuestion.id } })
 }
 
 const deleteLocalQuestion = (id) => {
@@ -234,6 +245,8 @@ const cancelDelete = () => {
           Speichern
         </button>
       </div>
+
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </main>
 
     <!-- Delete confirmation modal -->
@@ -313,6 +326,20 @@ const cancelDelete = () => {
   margin-bottom: 4px;
   background: var(--card-bg);
   color: var(--color-text);
+}
+
+.error-input {
+  border-color: var(--color-red) !important;
+}
+
+.error-message {
+  color: var(--color-red);
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid var(--color-red);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;
 }
 
 .questions-header {

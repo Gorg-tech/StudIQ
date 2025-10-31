@@ -20,7 +20,7 @@
     </ul>
     <div class="button-row">
       <button class="btn btn-primary" @click="restartQuiz">Quiz erneut starten</button>
-      <button class="btn btn-secondary" @click="goToOverview">Zur Quizübersicht</button>
+      <button class="btn btn-secondary" @click="goToOverview">Zur Quiz Übersicht</button>
     </div>
   </div>
 </template>
