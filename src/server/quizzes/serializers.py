@@ -10,6 +10,7 @@ class AnswerOptionSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     answer_options = AnswerOptionSerializer(many=True, read_only=True)
+    quiz = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = Question
@@ -17,7 +18,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(serializers.ModelSerializer):
     lernset_title = serializers.CharField(source='lernset.title', read_only=True)
-    questions = QuestionSerializer(many=True, read_only=True)
+    questions = QuestionSerializer(many=True)
     created_by = serializers.PrimaryKeyRelatedField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     
@@ -28,6 +29,71 @@ class QuizSerializer(serializers.ModelSerializer):
             'rating_score', 'rating_count', 'avg_time_spent', 
             'is_public', 'lernset', 'lernset_title', 'questions'
         ]
+        
+    def create(self, validated_data):
+        # create Quiz with nested Questions and AnswerOptions
+        questions_data = validated_data.pop('questions', [])
+        quiz = Quiz.objects.create(**validated_data)
+        
+        for question_data in questions_data:
+            answer_options = question_data.pop('answer_options', [])
+            question = Question.objects.create(quiz=quiz, **question_data)
+            
+            for answer_data in answer_options:
+                AnswerOption.objects.create(question=question, **answer_data)
+        
+        return quiz
+        
+    # untested
+    def update(self, instance, validated_data):
+        questions_data = validated_data.pop('questions', [])
+        # Update Quiz fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Verarbeite Questions basierend auf ihrem Status
+        for question_data in questions_data:
+            status = question_data.pop('_status', None)
+            question_id = question_data.pop('id', None)
+            answer_options = question_data.pop('answer_options', [])
+            
+            if status == 'new':
+                question = Question.objects.create(quiz=instance, **question_data)
+                for answer_data in answer_options:
+                    AnswerOption.objects.create(question=question, **answer_data)
+                    
+            elif status == 'edited':
+                if question_id:
+                    question = Question.objects.get(id=question_id)
+                    for attr, value in question_data.items():
+                        setattr(question, attr, value)
+                    question.save()
+                    
+                    # Aktualisiere oder erstelle AnswerOptions
+                    current_answers = set(question.answer_options.values_list('id', flat=True))
+                    updated_answers = set()
+                    
+                    for answer_data in answer_options:
+                        answer_id = answer_data.get('id')
+                        if answer_id:
+                            answer = AnswerOption.objects.get(id=answer_id)
+                            for attr, value in answer_data.items():
+                                setattr(answer, attr, value)
+                            answer.save()
+                            updated_answers.add(answer_id)
+                        else:
+                            AnswerOption.objects.create(question=question, **answer_data)
+                    
+                    # Lösche nicht mehr vorhandene Antworten
+                    to_delete = current_answers - updated_answers
+                    AnswerOption.objects.filter(id__in=to_delete).delete()
+                    
+            elif status == 'deleted':
+                if question_id:
+                    Question.objects.filter(id=question_id).delete()
+        
+        return instance
 
 class QuizForLernsetSerializer(serializers.ModelSerializer):
     question_count = serializers.SerializerMethodField()

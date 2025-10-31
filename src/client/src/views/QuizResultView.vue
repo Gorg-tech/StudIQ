@@ -31,8 +31,8 @@ import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
-
 const results = ref([])
+const quizId = ref(route.query.quizId)
 
 onMounted(() => {
   const stored = localStorage.getItem('quizResults')
@@ -51,11 +51,23 @@ const percentage = computed(() =>
 
 function restartQuiz() {
   localStorage.removeItem('quizResults')
-  router.push('/quiz')
+  router.push({ 
+    name: 'quiz',
+    params: { quizId: quizId.value }
+  })
 }
 
 function goToOverview() {
-  router.push({ name: 'quiz-overview', params: { quizId: 1 } }) // Hardcoded quizId
+  if (!quizId.value) {
+    console.error('No quiz ID available')
+    router.push('/') // Fallback to home
+    return
+  }
+  
+  router.push({ 
+    name: 'quiz-overview', 
+    params: { quizId: quizId.value }
+  })
 }
 </script>
 
