@@ -148,7 +148,7 @@ onMounted(async () => {
   question.value = quizEdit.getQuestion(questionId)
   if(!question.value) {
     console.error('Frage nicht gefunden:', questionId)
-    router.push('/edit-quiz')
+    router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
     return
   }
 
@@ -160,7 +160,7 @@ onMounted(async () => {
     const loadedAnswers = await getAnswers(questionId)
     if (!loadedAnswers) {
       console.error('Frage konnte nicht geladen werden:', questionId)
-      router.push('/edit-quiz')
+      router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
       return
     }
     // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getAnswer correct Variable laden und in options speichern
@@ -270,7 +270,7 @@ function closeCancelPopup() {
 }
 function confirmCancel() {
   cancelPopup.value.open = false
-  router.push('/edit-quiz')
+  router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
 }
 
 // Update delete button in option-actions:
@@ -291,7 +291,7 @@ async function saveQuestion() {
     options: options.value.map(opt => ({ ...opt })),
     _status: question.value._status === 'new' ? 'new' : 'edited'
   })
-  router.push(`/edit-quiz`)
+  router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
 }
 
 function toggleCorrect(idx) {
