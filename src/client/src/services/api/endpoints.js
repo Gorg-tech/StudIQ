@@ -75,7 +75,9 @@ export const API_ENDPOINTS = {
     USER: 'api/achievements/user/',
   },
   LEADERBOARD: {
-    BASE: (limit = 10) => `api/leaderboard/?limit=${limit}`
+    BASE: () => `api/leaderboard`,
+    LIMIT: (limit = 10) => `api/leaderboard?limit=${limit}`,
+    AROUND: (limit = 10, around = 1) => `api/leaderboard?limit=${limit}&around=${around}`,
   }
 };
 
