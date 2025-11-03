@@ -88,7 +88,7 @@ const suggestedQuizzes = ref([
           </div>
           
           <!-- Platz (Leaderboard) -->
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/leaderboard')">
             <span class="stat-icon leaderboard">
               <IconLeaderboard />
             </span>
