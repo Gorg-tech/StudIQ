@@ -49,3 +49,13 @@ class MeView(APIView):
 @ensure_csrf_cookie
 def csrf(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
+
+
+class UserStatsView(APIView):
+    """Return current user's stats (used by frontend at /api/users/me/stats/)."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        # You can trim fields on the frontend; return full serializer for now
+        return Response(serializer.data)
