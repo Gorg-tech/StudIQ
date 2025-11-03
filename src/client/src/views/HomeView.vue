@@ -13,6 +13,15 @@ import IconChart from '@/components/icons/IconChart.vue'
 import { fetchUserStats } from '@/services/leaderboard'
 
 
+const startQuiz = () => {
+  // TODO: Implement quiz start functionality
+  console.log('Starting quiz');
+}
+const openSettings = () => {
+  // TODO: Implement settings navigation
+  alert('Einstellungen öffnen');
+}
+
 const router = useRouter()
 const userStats = ref({
   current_streak: 0,
