@@ -24,9 +24,8 @@ const openSettings = () => {
 
 const router = useRouter()
 const userStats = ref({
-  current_streak: 0,
-  highest_streak: 0,
-  total_quizzes_completed: 0
+  streak: 0,
+  rank: null
 })
 
 onMounted(async () => {
@@ -85,7 +84,7 @@ const suggestedQuizzes = ref([
               <IconFlame />
             </span>
             <div class="stat-label-big">Streak</div>
-            <div class="stat-value-big">{{ userStats.current_streak }}</div>
+            <div class="stat-value-big">{{ userStats.streak }}</div>
           </div>
           
           <!-- Platz (Leaderboard) -->
@@ -95,7 +94,7 @@ const suggestedQuizzes = ref([
             </span>
             <div class="stat-label-big">Platz</div>
             <div class="stat-value-big leaderboard-rank">
-              <span class="rank-number">12</span>
+              <span class="rank-number">{{ userStats.rank || '-' }}</span>
             </div>
           </div>
           

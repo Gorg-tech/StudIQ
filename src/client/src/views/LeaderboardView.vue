@@ -3,16 +3,29 @@ import { ref, onMounted } from 'vue'
 import { fetchLeaderboard } from '@/services/leaderboard'
 import IconFlame from '@/components/icons/IconFlame.vue'
 
+// Configuration: how many top users to show, and how many around the current user
+const TOP_COUNT = 3
+const AROUND_COUNT = 1
+
 const leaderboard = ref([])
+const currentUserRank = ref(null)
 const isLoading = ref(true)
 const error = ref(null)
+const hasMoreAfter = ref(false)
 
 onMounted(async () => {
   try {
-    const data = await fetchLeaderboard(10) // Top 10 Users
-    leaderboard.value = data
+    const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT)
+    console.log('Leaderboard Data:', data)
+    if (!data) {
+      throw new Error('Keine Daten vom Server erhalten')
+    }
+    leaderboard.value = data.users || []
+    currentUserRank.value = data.current_user_rank
+    hasMoreAfter.value = data.has_more_after
   } catch (err) {
-    error.value = 'Fehler beim Laden des Leaderboards'
+    console.error('Leaderboard Error:', err)
+    error.value = `Fehler beim Laden des Leaderboards: ${err.message}`
   } finally {
     isLoading.value = false
   }
@@ -36,24 +49,53 @@ onMounted(async () => {
       </div>
       
       <div v-else class="leaderboard-list">
-        <div v-for="(user, index) in leaderboard" 
-             :key="user.username" 
-             class="leaderboard-item"
-             :class="{'top-three': index < 3}">
-          <div class="rank">{{ index + 1 }}</div>
+     <!-- Top N -->
+     <div v-for="(user, index) in leaderboard.slice(0, TOP_COUNT)"
+       :key="user.username + '-top-' + index"
+       class="leaderboard-item"
+       :class="{'top-three': index < TOP_COUNT, 'current-user': user.is_current_user}">
+          <div class="rank">#{{ user.rank }}</div>
           <div class="user-info">
             <div class="username">{{ user.username }}</div>
             <div class="stats">
               <span class="streak">
                 <IconFlame class="streak-icon" />
-                {{ user.current_streak }} Tage Streak
+                {{ user.streak }} Tage Streak
               </span>
               <span class="total-quizzes">
-                {{ user.total_quizzes_completed }} Quizze abgeschlossen
+                {{ user.solved_quizzes }} Quizze abgeschlossen
               </span>
             </div>
           </div>
         </div>
+
+        <!-- Ellipsis if there's a gap between top and around users -->
+        <div v-if="leaderboard.length > TOP_COUNT && leaderboard[TOP_COUNT] && leaderboard[TOP_COUNT].rank > (TOP_COUNT + 1)" class="rank-separator">
+          •••
+        </div>
+
+        <!-- Users around current user (appended after top) -->
+     <div v-for="(user, idx) in leaderboard.slice(TOP_COUNT)"
+       :key="user.username + '-around-' + idx"
+       class="leaderboard-item"
+       :class="{'current-user': user.is_current_user}">
+          <div class="rank">#{{ user.rank }}</div>
+          <div class="user-info">
+            <div class="username">{{ user.username }}</div>
+            <div class="stats">
+              <span class="streak">
+                <IconFlame class="streak-icon" />
+                {{ user.streak }} Tage Streak
+              </span>
+              <span class="total-quizzes">
+                {{ user.solved_quizzes }} Quizze abgeschlossen
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- trailing ellipsis (only if there are more users after the displayed ones) -->
+        <div v-if="hasMoreAfter" class="rank-separator">•••</div>
       </div>
     </main>
   </div>
@@ -147,6 +189,35 @@ onMounted(async () => {
 
 .error {
   color: var(--color-red);
+}
+
+.toggle-view {
+  margin-top: 16px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.toggle-view:hover {
+  background-color: var(--color-accent);
+}
+
+.rank-separator {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 8px 0;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
+.current-user {
+  border: 2px solid var(--color-accent);
+  background: var(--card-bg);
 }
 
 @media (max-width: 600px) {
