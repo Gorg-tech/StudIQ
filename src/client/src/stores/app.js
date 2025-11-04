@@ -1,4 +1,5 @@
 import { reactive } from 'vue'
+import { getSelfUser } from '@/services/user'
 
 export const store = reactive({
   user: null,
@@ -7,10 +8,13 @@ export const store = reactive({
     correctAnswers: 0,
     totalQuestions: 0
   },
-  
-  // Methods
-  setUser(userData) {
-    this.user = userData
+
+  async getUser() {
+    if (this.user) {
+      return this.user
+    } else {
+      return await getSelfUser()
+    }
   },
   
   updateStats(completed, correct, total) {
