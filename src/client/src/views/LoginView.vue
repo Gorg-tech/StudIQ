@@ -19,11 +19,7 @@ async function handleLogin() {
     const user = await login({ username: username.value, password: password.value })
     if (user) {
       await checkAuth()
-
       
-      localStorage.setItem('username', username.value)
-      localStorage.setItem('password', password.value)
-
       router.push('/')
     } else {
       error.value = 'Falscher Benutzername oder Passwort.'
