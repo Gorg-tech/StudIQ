@@ -16,17 +16,35 @@
       </div>
     </header>
 
-    <!-- Top Profile Section: Penguin + Leaderboard -->
-    <div class="profile-top">
-      <div class="profile-info">
-        <h2>{{ store.user.name }}</h2>
-        <p>Platz: {{ leaderboardPosition }}/{{ totalUsers }}</p>
-      </div>
-      <div class="penguin-bubble">
-        <div class="bubble">{{ penguinSpeech }}</div>
-        <Penguin class="penguin" :class="{ clap: streakCount > 3 }" />
+    <!-- Top Profile Section-->
+<div class="profile-top">
+  <!-- Left side: Name + Leaderboard + Level Bar -->
+  <div class="profile-left">
+    <div class="profile-info">
+      <h2>{{ store.user.name }}</h2>
+      <p>Platz: {{ leaderboardPosition }}/{{ totalUsers }}</p>
+    </div>
+
+    <!-- Level Circle + Bar -->
+    <div class="level-bar-container">
+      <div class="level-circle">{{ userLevel }}</div>
+      <div class="level-bar-wrapper">
+        <div class="level-bar">
+          <div class="level-fill" :style="{ width: levelProgress + '%' }"></div>
+        </div>
+        <div class="level-percentage">{{ levelProgress }}%</div>
       </div>
     </div>
+  </div>
+
+  <!-- Right side: Penguin aligned to top of name -->
+  <div class="profile-right">
+   <div class="penguin-bubble top-aligned">
+      <div class="bubble">{{ penguinSpeech }}</div>
+        <Penguin :clap="streakCount >= 3" />
+      </div>
+    </div>
+  </div>
 
     <!-- Streak Calendar Full Width -->
     <div class="streak-card full-width">
@@ -59,7 +77,8 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
+
 </template>
 
 <script setup>
@@ -83,14 +102,19 @@ const leaderboardPosition = ref(12)
 const totalUsers = ref(20)
 const penguinSpeech = ref("Super gemacht! Weiter so 🐧")
 
+// Level progress (hardcoded example)
+const userLevel = ref(3)
+const levelProgress = ref(60) // percentage filled of the current level
+
+
 const currentWeekStreak = ref([
   { label: "Mo", learned: true },
-  { label: "Di", learned: true },
-  { label: "Mi", learned: true },
+  { label: "Di", learned: false },
+  { label: "Mi", learned: false },
   { label: "Do", learned: false },
   { label: "Fr", learned: true },
   { label: "Sa", learned: true },
-  { label: "So", learned: false }
+  { label: "So", learned: true }
 ])
 
 const streakCount = computed(() => {
@@ -149,25 +173,91 @@ function handleLogout() {
 
 .profile-top {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* Left Side */
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* Right Side */
+.profile-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+/* Profile Info */
+.profile-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.profile-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Level Bar Container */
+.level-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  width: 200px;
+}
+
+/* Smaller Circle */
+.level-circle {
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Smaller Bar */
+.level-bar {
+  flex: 1;
+  height: 10px;
+  background-color: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width:100px;
+}
+
+.level-fill {
+  height: 100%;
+  width: 60%;
+  background-color: var(--color-accent);
+  border-radius: 8px 0 0 8px;
+  transition: width 0.5s ease;
+}
+
+.level-percentage {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  white-space: nowrap;
 }
 
 .penguin-bubble {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.penguin.clap {
-  animation: clap 0.6s infinite;
-}
-
-@keyframes clap {
-  0%,100% { transform: rotate(0deg) }
-  25% { transform: rotate(15deg) }
-  50% { transform: rotate(0deg) }
-  75% { transform: rotate(-15deg) }
 }
 
 .streak-card {
