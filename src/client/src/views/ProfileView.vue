@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="profile">
     <!-- Header -->
@@ -8,10 +6,10 @@
         <h1><LogoStudIQ /></h1>
         <p class="tagline">Dein Begleiter für die Prüfungsvorbereitung</p>
       </div>
+      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
         <IconSettings />
-     <div class="settings-container">
-      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen"></button>
-     </div>
+      </button>
+      
     </header>
 
     <!-- Top Profile Section-->
@@ -155,6 +153,9 @@ function handleLogout() {
 }
 
 .settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
   padding: 4px;
   padding-top: 8px;
   margin-left: auto;
