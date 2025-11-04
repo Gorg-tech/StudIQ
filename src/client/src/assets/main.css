@@ -1,21 +1,62 @@
 @import './base.css'; 
 
-/* === 🌙 Globale Farbvariablen === */
 :root {
   --bg-color: #ffffff;
   --text-color: #111111;
   --card-bg: #ffffff;
   --card-shadow: rgba(34, 34, 34, 0.08);
+  --color-accent: #222;
+  --color-bg: #f5f5f5;
+  --color-bg-hover: #f5f5f5;
+  --color-bg-light: #f9f9f9;
+  --color-blue: #2196f3;
+  --color-blue-dark: #1976d2;
+  --color-border: #eee;
+  --color-border-dark: #ddd;
+  --color-green: #4caf50;
+  --color-muted: #666;
+  --color-primary: #fc7960;
+  --color-red: #f44336;
+  --color-secondary: #2196f3;
+  --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
+  --color-text: #333;
+  --color-selected: #ffe0b2;
+  --color-correct: #c8e6c9;
+  --color-incorrect: #ffcdd2;
+  --color-question-bg: #f9fbff;
+  --color-question-hover: #f2f8fd;
+  --color-question-border: #e3f2fd;
+  --color-modal-backdrop: rgba(0,0,0,0.18);
 }
 
 .dark {
-  --bg-color: #1e1e1e;
-  --text-color: #f5f5f5;
-  --card-bg: #2a2a2a;
-  --card-shadow: rgba(0, 0, 0, 0.4);
+  --bg-color: #1e1e2e; 
+  --text-color: #e0e0e0; 
+  --card-bg: #2a2a3a; 
+  --card-shadow: rgba(0, 0, 0, 0.5);
+  --color-accent: #e0e0e0;
+  --color-bg: #1e1e2e;
+  --color-bg-hover: #252535;
+  --color-bg-light: #2a2a3a;
+  --color-blue: #64b5f6;
+  --color-blue-dark: #42a5f5;
+  --color-border: #444;
+  --color-border-dark: #555;
+  --color-green: #81c784;
+  --color-muted: #aaa;
+  --color-red: #ef5350;
+  --color-secondary: #64b5f6;
+  --color-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  --color-text: #e0e0e0;
+  --color-selected: #4a4a4a;
+  --color-correct: #2e4a2e;
+  --color-incorrect: #4a2e2e;
+  --color-question-bg: #2a2a3a;
+  --color-question-hover: #333344;
+  --color-question-border: #444;
+  --color-modal-backdrop: rgba(0,0,0,0.4);
 }
 
-/* Übergang für sanftes Umschalten */
 html, body, #app {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -29,7 +70,6 @@ html, body, #app {
   font-weight: normal;
 }
 
-/* === Links === */
 a,
 .green {
   text-decoration: none;
@@ -58,7 +98,6 @@ a,
   }
 }
 
-/* === Optional: Karten und Buttons anpassen === */
 .card {
   background-color: var(--card-bg);
   box-shadow: 0 2px 8px var(--card-shadow);

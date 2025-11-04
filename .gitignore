@@ -5,7 +5,7 @@
 *~
 .vscode
 
-# Bytecode-Dateien
-*.pyc
-*.pyo
-*.pyd
+# Python Bytecode-Dateien
+**/*.pyc
+**/*.pyo
+**/*.pyd

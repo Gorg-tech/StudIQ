@@ -105,7 +105,7 @@ const goToModul = (modulId) => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background: #fafafa;
+  background: var(--color-bg);
 }
 
 .logo {
@@ -115,9 +115,9 @@ const goToModul = (modulId) => {
 
 .studiengang-header {
   margin-bottom: 2rem;
-  border-bottom: 2px solid var(--color-primary, #1976d2);
+  border-bottom: 2px solid var(--color-primary);
   padding-bottom: 1rem;
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(25,118,210,0.1);
@@ -143,10 +143,10 @@ const goToModul = (modulId) => {
 }
 
 .info-item {
-  background: #f7fbff;
+  background: var(--color-bg-light);
   padding: 1.5rem;
   border-radius: 12px;
-  border: 1px solid #e3f2fd;
+  border: 1px solid var(--color-border);
   box-shadow: 0 1px 3px rgba(25,118,210,0.05);
 }
 
@@ -164,8 +164,8 @@ const goToModul = (modulId) => {
 }
 
 .module-card {
-  background: white;
-  border: 1px solid #e3f2fd;
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
   cursor: pointer;
@@ -184,10 +184,10 @@ const goToModul = (modulId) => {
 }
 
 .studiengang-number {
-  color: var(--color-muted, #666);
+  color: var(--color-muted);
   font-size: 1rem;
   padding: 0.4rem 0.8rem;
-  background: #e3f2fd;
+  background: var(--color-bg-light);
   border-radius: 8px;
   font-weight: 500;
 }
@@ -199,7 +199,7 @@ section h2 {
 }
 
 .studiengang-details, .module-list {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;

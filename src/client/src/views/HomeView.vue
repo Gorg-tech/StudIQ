@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import IconSettings from '@/components/icons/IconSettings.vue'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
@@ -10,9 +10,9 @@ import IconSearch from '@/components/icons/IconSearch.vue'
 import IconTimer from '@/components/icons/IconTimer.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 import IconChart from '@/components/icons/IconChart.vue'
+import { fetchUserStats } from '@/services/leaderboard'
 
 
-const router = useRouter()
 const startQuiz = () => {
   // TODO: Implement quiz start functionality
   console.log('Starting quiz');
@@ -21,6 +21,21 @@ const openSettings = () => {
   // TODO: Implement settings navigation
   alert('Einstellungen öffnen');
 }
+
+const router = useRouter()
+const userStats = ref({
+  streak: 0,
+  rank: null
+})
+
+onMounted(async () => {
+  try {
+    const stats = await fetchUserStats()
+    userStats.value = stats
+  } catch (error) {
+    console.error('Fehler beim Laden der User-Statistiken:', error)
+  }
+})
 
 // Calculate days until exam period
 const examPeriodStart = new Date('2026-02-01');
@@ -69,17 +84,17 @@ const suggestedQuizzes = ref([
               <IconFlame />
             </span>
             <div class="stat-label-big">Streak</div>
-            <div class="stat-value-big">5</div>
+            <div class="stat-value-big">{{ userStats.streak }}</div>
           </div>
           
           <!-- Platz (Leaderboard) -->
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/leaderboard')">
             <span class="stat-icon leaderboard">
               <IconLeaderboard />
             </span>
             <div class="stat-label-big">Platz</div>
             <div class="stat-value-big leaderboard-rank">
-              <span class="rank-number">12</span>
+              <span class="rank-number">{{ userStats.rank || '-' }}</span>
             </div>
           </div>
           
@@ -166,7 +181,11 @@ const suggestedQuizzes = ref([
         <h3>Vorgeschlagene Quizze</h3>
         <div class="quiz-suggestions-row">
           <div
-            v-for="(quiz, index) in suggestedQuizzes":key="index" class="quiz-suggestion-item"@click="router.push('/quiz')">
+            v-for="(quiz, index) in suggestedQuizzes"
+            :key="index"
+            class="quiz-suggestion-item"
+            @click="router.push('/quiz')"
+          >
             <div class="quiz-suggestion-icon" :style="{ backgroundColor: quiz.iconColor + '1A' }">
               <!-- Different icon based on quiz type -->
               <IconTimer v-if="quiz.iconType === 'timer'" :color="quiz.iconColor" />
@@ -189,6 +208,8 @@ const suggestedQuizzes = ref([
   display: flex;
   flex-direction: column;
   gap: 24px;
+  position: relative;
+  min-height: 100vh;
 }
 
 .app-header {
@@ -198,6 +219,7 @@ const suggestedQuizzes = ref([
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  z-index: 1;
 }
 
 .logo-container {
@@ -221,10 +243,12 @@ const suggestedQuizzes = ref([
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .card {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
@@ -333,7 +357,7 @@ const suggestedQuizzes = ref([
 }
 
 .stat-square {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   flex: 1 1 0;
@@ -372,7 +396,7 @@ const suggestedQuizzes = ref([
 }
 
 .leaderboard-rank {
-  color: #222;
+  color: var(--color-accent);
   font-size: 2rem;
   font-weight: 900;
   letter-spacing: 0.01em;
@@ -389,7 +413,7 @@ const suggestedQuizzes = ref([
 }
 
 .bubble {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 6px 14px;
@@ -397,7 +421,7 @@ const suggestedQuizzes = ref([
   color: var(--color-accent);
   margin-bottom: 4px;
   position: absolute;
-  top: -36px;
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -426,12 +450,11 @@ const suggestedQuizzes = ref([
   display: flex;
   flex-direction: row;
   gap: 16px;
-  overflow-x: auto;
   padding-bottom: 10px;
 }
 
 .quiz-suggestion-item {
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-light);
   border-radius: 10px;
   padding: 16px;
   min-width: 180px;
@@ -441,11 +464,11 @@ const suggestedQuizzes = ref([
   gap: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
 }
 
 .quiz-suggestion-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }

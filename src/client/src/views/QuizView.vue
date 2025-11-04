@@ -15,6 +15,9 @@
           <Penguin style="width: 80px; height: 80px;" />
         </div>
       </div>
+      <div class="progress-bar">
+        <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+      </div>
       <div class="quiz-content">
         <div v-if="loading" class="loading-state">
           Quiz wird geladen...
@@ -26,29 +29,29 @@
         </div>
         <div v-else class="question-block">
           <h3>{{ currentQuestion.question }}</h3>
+          <p class="question-type" v-if="currentQuestion.type === 'SINGLE_CHOICE'">Wähle eine Antwort aus.</p>
+          <p class="question-type" v-else>Wähle eine oder mehrere Antworten aus.</p>
           <div
             v-for="(answer, index) in currentQuestion.answers"
             :key="index"
             class="answer-row"
             :class="{
-              selected: answered && selectedAnswer === answer,
-              correct: answered && answer === currentQuestion.correctAnswer,
-              incorrect: answered && selectedAnswer === answer && answer !== currentQuestion.correctAnswer
+              selected: selectedAnswer.includes(answer),
+              correct: answered && currentQuestion.correctAnswers.includes(answer),
+              incorrect: answered && selectedAnswer.includes(answer) && !currentQuestion.correctAnswers.includes(answer),
+              hoverable: !answered && !selectedAnswer.includes(answer)
             }"
+            :role="currentQuestion.type === 'SINGLE_CHOICE' ? 'radio' : 'checkbox'"
+            :aria-checked="currentQuestion.type === 'SINGLE_CHOICE' ? (selectedSingle === answer).toString() : selectedAnswer.includes(answer).toString()"
+            tabindex="0"
+            @click="selectAnswer(answer)"
+            @keydown.enter="selectAnswer(answer)"
           >
-            <label>
-              <input
-                type="radio"
-                :value="answer"
-                v-model="selectedAnswer"
-                name="answer"
-                :disabled="answered"
-              >
-              {{ answer }}
-            </label>
+            <span class="answer-text">{{ answer }}</span>
+            <div class="checkmark" v-if="selectedAnswer.includes(answer)">✓</div>
           </div>
           <div class="button-row">
-            <button class="btn btn-primary" v-if="!answered" @click="checkAnswer" :disabled="selectedAnswer === null">
+            <button class="btn btn-primary" v-if="!answered" @click="checkAnswer" :disabled="selectedAnswer.length === 0">
               Antwort abgeben
             </button>
             <button class="btn btn-secondary" v-if="answered" @click="nextQuestion">
@@ -57,8 +60,11 @@
           </div>
           <div v-if="answered" class="result-message">
             <span v-if="result" class="user-answer correct">Richtig!</span>
+            <span v-else-if="selectedAnswer.some(ans => currentQuestion.correctAnswers.includes(ans))" class="user-answer partial">
+              Fast richtig! Die richtigen Antworten sind: {{ currentQuestion.correctAnswers.join(', ') }}
+            </span>
             <span v-else class="user-answer incorrect">
-              Leider falsch. Die richtige Antwort ist: {{ currentQuestion.correctAnswer }}
+              Leider falsch. Die richtigen Antworten sind: {{ currentQuestion.correctAnswers.join(', ') }}
             </span>
           </div>
         </div>
@@ -84,7 +90,8 @@ const quiz = ref({
 })
 const loading = ref(true)
 const currentIndex = ref(0)
-const selectedAnswer = ref(null)
+const selectedAnswer = ref([])
+const selectedSingle = ref(null)
 const answered = ref(false)
 const result = ref(null)
 const correctCount = ref(0)
@@ -95,9 +102,15 @@ const currentQuestion = computed(() => {
   const question = quiz.value.questions[currentIndex.value]
   return {
     question: question.text,
+    type: question.type,
     answers: question.answer_options.map(opt => opt.text),
-    correctAnswer: question.answer_options.find(opt => opt.is_correct)?.text
+    correctAnswers: question.answer_options.filter(opt => opt.is_correct).map(opt => opt.text)
   }
+})
+
+const progress = computed(() => {
+  if (!quiz.value.questions.length) return 0
+  return ((currentIndex.value + 1) / quiz.value.questions.length) * 100
 })
 
 onMounted(async () => {
@@ -115,14 +128,16 @@ onMounted(async () => {
 function checkAnswer() {
   if (!currentQuestion.value) return
   
-  const isCorrect = selectedAnswer.value === currentQuestion.value.correctAnswer
+  const selected = selectedAnswer.value
+  const correct = currentQuestion.value.correctAnswers
+  const isCorrect = selected.length === correct.length && selected.every(ans => correct.includes(ans))
   result.value = isCorrect
   if (isCorrect) correctCount.value++
 
   userAnswers.value[currentIndex.value] = {
     question: currentQuestion.value.question,
-    selected: selectedAnswer.value,
-    correct: currentQuestion.value.correctAnswer,
+    selected: [...selected],
+    correct: [...correct],
     isCorrect
   }
   answered.value = true
@@ -130,7 +145,8 @@ function checkAnswer() {
 
 function nextQuestion() {
   currentIndex.value++
-  selectedAnswer.value = null
+  selectedAnswer.value = []
+  selectedSingle.value = null
   answered.value = false
   
   if (currentIndex.value >= quiz.value.questions.length) { // Use quiz.value.questions here too
@@ -143,6 +159,22 @@ function nextQuestion() {
         total: quiz.value.questions.length
       }
     })
+  }
+}
+
+function selectAnswer(answer) {
+  if (!answered.value) {
+    if (currentQuestion.value.type === 'SINGLE_CHOICE') {
+      selectedSingle.value = answer
+      selectedAnswer.value = [answer]
+    } else {
+      const index = selectedAnswer.value.indexOf(answer)
+      if (index > -1) {
+        selectedAnswer.value.splice(index, 1)
+      } else {
+        selectedAnswer.value.push(answer)
+      }
+    }
   }
 }
 </script>
@@ -158,10 +190,10 @@ function nextQuestion() {
 }
 
 .card {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+  box-shadow: 0 2px 8px var(--card-shadow);
   width: 100%;
 }
 
@@ -201,6 +233,22 @@ function nextQuestion() {
   height: 100%;
 }
 
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-border);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
 .quiz-content {
   display: flex;
   flex-direction: column;
@@ -216,9 +264,36 @@ function nextQuestion() {
   align-items: center;
 }
 
+.question-type {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
 .answer-row {
   width: 100%;
   margin-bottom: 12px;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.answer-text {
+  flex: 1;
+  cursor: pointer;
+}
+
+.checkmark {
+  color: var(--color-primary);
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .button-row {
@@ -242,14 +317,28 @@ function nextQuestion() {
   font-weight: 600;
 }
 
+.user-answer.partial {
+  color: #ff9800;
+  font-weight: 600;
+}
+
 .answer-row.selected {
-  background: #ffe0b2;
+  background: var(--color-selected);
+  border-color: var(--color-primary);
 }
 .answer-row.correct {
-  background: #c8e6c9;
+  background: var(--color-correct);
+  border-color: #4caf50;
 }
 .answer-row.incorrect {
-  background: #ffcdd2;
+  background: var(--color-incorrect);
+  border-color: #f44336;
+}
+
+.answer-row.hoverable:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  cursor: pointer;
 }
 
 .loading-state {
@@ -264,5 +353,14 @@ function nextQuestion() {
   color: #f44336;
   text-align: center;
   padding: 24px 0;
+}
+
+.hoverable {
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.hoverable:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 </style>

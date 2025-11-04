@@ -211,9 +211,9 @@ onMounted(fetchLernsetData)
 }
 
 .error-message {
-  background-color: #fee;
-  border: 1px solid #fcc;
-  color: #d32f2f;
+  background-color: var(--color-red);
+  border: 1px solid var(--color-red);
+  color: var(--color-bg);
   padding: 16px;
   border-radius: 8px;
   margin: 16px 0;
@@ -221,8 +221,8 @@ onMounted(fetchLernsetData)
 }
 
 .retry-btn {
-  background-color: #d32f2f;
-  color: white;
+  background-color: var(--color-red);
+  color: var(--color-bg);
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -231,11 +231,11 @@ onMounted(fetchLernsetData)
 }
 
 .no-quizzes {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-light);
   padding: 24px;
   text-align: center;
   border-radius: 8px;
-  color: #666;
+  color: var(--color-muted);
 }
 
 .spinner {
@@ -271,8 +271,8 @@ onMounted(fetchLernsetData)
 
 .modul-label {
   font-size: 1.1rem;
-  color: #666;
-  background: #e3f2fd;
+  color: var(--color-muted);
+  background: var(--color-bg-light);
   border-radius: 8px;
   padding: 7px 17px;
   font-weight: 500;
@@ -281,7 +281,7 @@ onMounted(fetchLernsetData)
 
 .lernset-description {
   font-size: 1.08rem;
-  color: #222;
+  color: var(--color-text);
   margin-bottom: 16px;
 }
 
@@ -327,8 +327,8 @@ onMounted(fetchLernsetData)
 }
 
 .quick-quiz-btn {
-  background: #f2f8fd;
-  border: 1.5px solid #e3f2fd;
+  background: var(--color-bg-light);
+  border: 1.5px solid var(--color-border);
   border-radius: 10px;
   padding: 18px 16px;
   min-width: 190px;
@@ -342,17 +342,17 @@ onMounted(fetchLernsetData)
   font-size: 1rem;
 }
 .quick-quiz-btn:hover, .quick-quiz-btn:focus {
-  border: 1.5px solid #1976d2;
+  border: 1.5px solid var(--color-secondary);
   box-shadow: 0 2px 10px 2px rgba(25, 118, 210, 0.08);
-  background: #e3f2fd;
+  background: var(--color-bg-hover);
 }
 .quick-quiz-title {
   font-weight: 600;
-  color: #1976d2;
+  color: var(--color-secondary);
   font-size: 1.07rem;
 }
 .quick-quiz-desc {
-  color: #444;
+  color: var(--color-text);
   font-size: 0.97rem;
 }
 
@@ -363,8 +363,8 @@ onMounted(fetchLernsetData)
 }
 
 .quiz-btn {
-  background: #fff;
-  border: 1.5px solid #e3f2fd;
+  background: var(--card-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: 10px;
   padding: 18px 16px;
   text-align: left;
@@ -375,9 +375,9 @@ onMounted(fetchLernsetData)
   gap: 10px;
 }
 .quiz-btn:hover, .quiz-btn:focus {
-  border: 1.5px solid #1976d2;
+  border: 1.5px solid var(--color-secondary);
   box-shadow: 0 2px 10px 2px rgba(25, 118, 210, 0.08);
-  background: #f2f8fd;
+  background: var(--color-bg-hover);
 }
 
 .quiz-btn-header {
@@ -390,13 +390,13 @@ onMounted(fetchLernsetData)
 .quiz-title {
   font-weight: 600;
   font-size: 1.06rem;
-  color: #1976d2;
+  color: var(--color-secondary);
   word-break: break-word;
 }
 .quiz-question-count {
   font-size: 0.98rem;
-  color: #1976d2;
-  background: #e3f2fd;
+  color: var(--color-secondary);
+  background: var(--color-bg-light);
   border-radius: 8px;
   padding: 2px 13px;
   font-weight: 500;
@@ -416,7 +416,7 @@ onMounted(fetchLernsetData)
 }
 .quiz-creator {
   font-size: 0.94rem;
-  color: #888;
+  color: var(--color-muted);
   margin-left: 16px;
   white-space: nowrap;
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="edit-question">
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <h1 class="page-title">Frage Bearbeiten</h1>
     <div class="edit-question-card">
       <div class="section">
@@ -36,27 +37,25 @@
       </div>
 
       <div class="options-list">
-        <div v-for="(option, idx) in options" :key="option.id" class="option-item">
-          <div class="option-title">
-            <span class="option-text" :title="option.text">
-              {{ truncate(option.text, 30) }}
-            </span>
-            <button class="btn-icon" @click="openEditPopup(idx)" aria-label="Antwort bearbeiten">
-              <IconPen />
-            </button>
+        <template v-for="(option, idx) in options">
+          <div :key="option.id" v-if="option._status !== 'deleted'" class="option-item" @click="toggleCorrect(idx)" :class="{ selected: option.correct }">
+            <div class="option-title">
+              <span v-if="option.correct" class="checkmark">✓</span>
+              <input
+                class="option-text"
+                v-model="option.text"
+                @blur="finishEdit(idx)"
+                :placeholder="option.text ? '' : 'Antwort eingeben...'"
+                @click.stop
+              />
+            </div>
+            <div class="option-actions">
+              <button class="btn-icon delete-option" @click.stop="deleteOption(idx)" aria-label="Antwort löschen">
+                <IconTrash />
+              </button>
+            </div>
           </div>
-          <div class="option-actions">
-            <input
-              type="checkbox"
-              :checked="option.correct"
-              @change="toggleCorrect(idx)"
-              :aria-label="option.correct ? 'Richtige Antwort' : 'Falsche Antwort'"
-            />
-            <button class="btn-icon delete-option" @click="deleteOption(idx)" aria-label="Antwort löschen">
-              <IconTrash />
-            </button>
-          </div>
-        </div>
+        </template>
       </div>
 
       <div class="footer-buttons">
@@ -71,45 +70,32 @@
       </div>
     </div>
 
-    <!-- Edit Option Popup -->
-    <div v-if="editPopup.open" class="edit-popup-overlay">
-      <div class="edit-popup">
-        <h3>Antwort bearbeiten</h3>
-        <input
-          v-model="editPopup.text"
-          class="edit-popup-input"
-          type="text"
-          :maxlength="100"
-        />
-        <div class="edit-popup-actions">
-          <button class="cancel-btn" @click="closeEditPopup">Abbrechen</button>
-          <button class="save-btn" @click="applyEdit">Ändern</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Delete Confirmation Popup -->
-    <div v-if="deletePopup.open" class="edit-popup-overlay">
-      <div class="edit-popup">
-        <h3>Möchtest du wirklich folgende Antwortmöglichkeit löschen?</h3>
-        <p class="popup-answer-text">{{ deletePopup.text }}</p>
-        <div class="edit-popup-actions">
-          <button class="cancel-btn" @click="closeDeletePopup">Abbrechen</button>
-          <button class="delete-btn" @click="confirmDelete">Löschen</button>
+    <Teleport to="body">
+      <div v-if="deletePopup.open" class="edit-popup-overlay">
+        <div class="edit-popup">
+          <h3>Möchtest du wirklich folgende Antwortmöglichkeit löschen?</h3>
+          <p class="popup-answer-text">{{ deletePopup.text }}</p>
+          <div class="edit-popup-actions">
+            <button class="cancel-btn" @click="closeDeletePopup">Abbrechen</button>
+            <button class="delete-btn" @click="confirmDelete">Löschen</button>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
 
     <!-- Cancel Confirmation Popup -->
-    <div v-if="cancelPopup.open" class="edit-popup-overlay">
-      <div class="edit-popup">
-        <h3>Alle Änderungen werden gelöscht</h3>
-        <div class="edit-popup-actions">
-          <button class="cancel-btn" @click="closeCancelPopup">Abbrechen</button>
-          <button class="delete-btn" @click="confirmCancel">OK</button>
+    <Teleport to="body">
+      <div v-if="cancelPopup.open" class="edit-popup-overlay">
+        <div class="edit-popup">
+          <h3>Alle Änderungen werden gelöscht</h3>
+          <div class="edit-popup-actions">
+            <button class="cancel-btn" @click="closeCancelPopup">Abbrechen</button>
+            <button class="delete-btn" @click="confirmCancel">OK</button>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
@@ -119,7 +105,6 @@ import { useRouter, useRoute } from 'vue-router'
 import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import { getAnswers } from '@/services/questions'
 import { getAnswer } from '@/services/answer_options'
-import IconPen from '@/components/icons/IconPen.vue'
 import IconPlus from '@/components/icons/IconPlus.vue'
 import IconSave from '@/components/icons/IconSave.vue'
 import IconTrash from '@/components/icons/IconTrashcan.vue'
@@ -138,6 +123,8 @@ const selectedType = ref(QUESTION_TYPES[0].label)
 const showTypeDropdown = ref(false)
 const options = ref([])
 
+const errorMessage = ref('')
+
 const selectedTypeApi = computed(() =>
   QUESTION_TYPES.find(q => q.label === selectedType.value)?.api || QUESTION_TYPES[0].api
 )
@@ -148,7 +135,11 @@ onMounted(async () => {
   question.value = quizEdit.getQuestion(questionId)
   if(!question.value) {
     console.error('Frage nicht gefunden:', questionId)
-    router.push('/edit-quiz')
+    if (quizEdit.quizId) {
+      router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
+    } else {
+      router.push({ name: 'lernset', params: { lernsetId: quizEdit.lernsetId } })
+    }
     return
   }
 
@@ -160,7 +151,11 @@ onMounted(async () => {
     const loadedAnswers = await getAnswers(questionId)
     if (!loadedAnswers) {
       console.error('Frage konnte nicht geladen werden:', questionId)
-      router.push('/edit-quiz')
+      if (quizEdit.quizId) {
+        router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
+      } else {
+        router.push({ name: 'lernset', params: { lernsetId: quizEdit.lernsetId } })
+      }
       return
     }
     // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getAnswer correct Variable laden und in options speichern
@@ -192,43 +187,21 @@ function selectType(type) {
 function addOption() {
   options.value.push({
     id: Date.now(),
-    text: 'Neue Antwort',
+    text: '',
     correct: false,
     _status: 'new'
   })
 }
 
-// Edit popup state
-const editPopup = ref({
-  open: false,
-  idx: null,
-  text: '',
-})
-
-function openEditPopup(idx) {
-  editPopup.value.open = true
-  editPopup.value.idx = idx
-  editPopup.value.text = options.value[idx].text
-}
-
-function closeEditPopup() {
-  editPopup.value.open = false
-  editPopup.value.idx = null
-  editPopup.value.text = ''
-}
-
-function applyEdit() {
-  if (
-    editPopup.value.idx !== null &&
-    editPopup.value.text.trim() !== ''
-  ) {
-    const opt = options.value[editPopup.value.idx]
-    if (opt.text !== editPopup.value.text.trim() && opt._status !== 'new') {
-      opt._status = 'edited'
-    }
-    opt.text = editPopup.value.text.trim()
+function finishEdit(idx) {
+  const opt = options.value[idx]
+  opt.text = opt.text.trim()
+  if (opt.text === '') {
+    opt.text = ''
   }
-  closeEditPopup()
+  if (opt._status !== 'new') {
+    opt._status = 'edited'
+  }
 }
 
 const deletePopup = ref({
@@ -270,11 +243,16 @@ function closeCancelPopup() {
 }
 function confirmCancel() {
   cancelPopup.value.open = false
-  router.push('/edit-quiz')
+  if (quizEdit.quizId) {
+    router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
+  } else {
+    router.push({ name: 'lernset', params: { lernsetId: quizEdit.lernsetId } })
+  }
 }
 
 // Update delete button in option-actions:
-function deleteOption(idx) {
+function deleteOption(idx, event) {
+  event.stopPropagation()
   openDeletePopup(idx)
 }
 
@@ -285,13 +263,48 @@ function cancelEdit() {
 
 // Update saveQuestion to redirect:
 async function saveQuestion() {
+  errorMessage.value = ''
+
+  if (!questionText.value.trim()) {
+    errorMessage.value = 'Fragetext ist erforderlich.'
+    return
+  }
+
+  if (options.value.length < 2) {
+    errorMessage.value = 'Mindestens zwei Antwortoptionen sind erforderlich.'
+    return
+  }
+
+  for (const opt of options.value) {
+    if (!opt.text || opt.text.trim() === '') {
+      errorMessage.value = 'Alle Antwortoptionen müssen einen Text haben.'
+      return
+    }
+  }
+
+  const texts = options.value.map(opt => opt.text.trim().toLowerCase())
+  if (new Set(texts).size !== texts.length) {
+    errorMessage.value = 'Alle Antwortoptionen müssen einen eindeutigen Text haben.'
+    return
+  }
+
+  const hasCorrect = options.value.some(opt => opt.correct)
+  if (!hasCorrect) {
+    errorMessage.value = 'Mindestens eine Antwortoption muss als korrekt markiert sein.'
+    return
+  }
+
+  const correctCount = options.value.filter(opt => opt.correct).length
+  const autoType = correctCount === 1 ? 'SINGLE_CHOICE' : 'MULTIPLE_CHOICE'
+  selectedType.value = QUESTION_TYPES.find(q => q.api === autoType)?.label || selectedType.value
+
   quizEdit.updateQuestion(question.value.id, {
     text: questionText.value,
-    type: selectedTypeApi.value,
+    type: autoType,
     options: options.value.map(opt => ({ ...opt })),
     _status: question.value._status === 'new' ? 'new' : 'edited'
   })
-  router.push(`/edit-quiz`)
+  router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
 }
 
 function toggleCorrect(idx) {
@@ -300,11 +313,6 @@ function toggleCorrect(idx) {
   } else {
     options.value[idx].correct = !options.value[idx].correct
   }
-}
-
-function truncate(text, maxLength) {
-  if (text.length <= maxLength) return text
-  return text.slice(0, maxLength - 3) + '...'
 }
 </script>
 
@@ -327,8 +335,18 @@ function truncate(text, maxLength) {
   padding: 24px 0;
 }
 
+.error-message {
+  color: var(--color-red);
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid var(--color-red);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
 .edit-question-card {
-  background: #fff; 
+  background: var(--card-bg); 
   border-radius: 16px;
   box-shadow: var(--color-shadow);
   padding: 32px 16px;
@@ -352,7 +370,7 @@ function truncate(text, maxLength) {
   font-size: 1rem;
   margin-top: 8px;
   resize: vertical;
-  background: #fff; 
+  background: var(--card-bg); 
   color: var(--color-text);
 }
 
@@ -402,7 +420,7 @@ function truncate(text, maxLength) {
   gap: 12px;
 }
 .option-item {
-  background: #fff; 
+  background: var(--card-bg); 
   border-radius: 10px;
   padding: 12px;
   display: flex;
@@ -412,6 +430,15 @@ function truncate(text, maxLength) {
   min-height: 48px;
   border: 1px solid var(--color-border);
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08); 
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.option-item:hover {
+  background: var(--color-bg-hover);
+}
+.option-item.selected {
+  background: var(--color-selected);
+  border-color: var(--color-primary);
 }
 .option-title {
   display: flex;
@@ -427,6 +454,28 @@ function truncate(text, maxLength) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: text;
+  outline: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 6px;
+  transition: border-color 0.2s, background-color 0.2s;
+  min-height: 1.2em;
+  display: inline-block;
+  direction: ltr;
+  background: transparent;
+}
+
+.option-text:focus {
+  border-color: var(--color-primary);
+  background: var(--color-bg-light);
+}
+
+.checkmark {
+  color: var(--color-green);
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 8px;
 }
 
 .option-actions {
@@ -434,67 +483,6 @@ function truncate(text, maxLength) {
   align-items: center;
   gap: 10px;
   position: static;
-}
-input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--color-blue);
-}
-
-.edit-popup-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.edit-popup {
-  background: #fff;
-  border-radius: 12px; 
-  box-shadow: 0 4px 32px 4px rgba(25,118,210,0.14); 
-  padding: 32px 28px 24px 28px;
-  min-width: 320px;
-  max-width: 90vw;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  text-align: center; 
-}
-
-.edit-popup h3 {
-  margin-top: 0;
-  margin-bottom: 14px;
-  font-size: 1.15rem;
-}
-
-.edit-popup-input {
-  width: 100%;
-  border-radius: 8px;
-  border: 1px solid var(--color-border-dark);
-  padding: 10px;
-  font-size: 1rem;
-  color: var(--color-text);
-  background: #fff; 
-}
-
-.edit-popup-actions {
-  display: flex;
-  justify-content: space-between; 
-  gap: 18px; 
-  margin-top: 28px; 
-}
-
-.popup-answer-text {
-  background: #e3f2fd;
-  border-radius: 7px;
-  padding: 8px 10px;
-  margin: 20px 0 0 0;
-  color: #222;
-  font-size: 1.04rem;
-  word-break: break-word;
 }
 
 .footer-buttons {
@@ -508,7 +496,7 @@ input[type="checkbox"] {
 .cancel-btn {
   background: transparent;
   color: var(--color-secondary);
-  border: 1px solid #bcdffb;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 12px 24px;
   font-size: 1rem;
@@ -517,7 +505,7 @@ input[type="checkbox"] {
 }
 
 .cancel-btn:hover {
-  background-color: #e3f2fd;
+  background-color: var(--color-question-border);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -558,5 +546,50 @@ input[type="checkbox"] {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   filter: brightness(0.93);
+}
+
+/* Popup styles */
+.edit-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.edit-popup {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.edit-popup h3 {
+  margin: 0 0 16px 0;
+  color: var(--color-accent);
+}
+
+.popup-answer-text {
+  background: var(--color-bg-light);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 16px 0;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.edit-popup-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
 }
 </style>

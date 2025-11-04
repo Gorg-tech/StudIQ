@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -49,3 +49,25 @@ class MeView(APIView):
 @ensure_csrf_cookie
 def csrf(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
+
+
+class UserStatsView(APIView):
+    """Return current user's stats (used by frontend at /api/users/me/stats/)."""
+    permission_classes = [IsAuthenticated]
+
+    def get_user_rank(self, user_id):
+        """Berechnet die Position eines Users im Leaderboard."""
+        User = get_user_model()
+        try:
+            target = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return None
+        # Anzahl der Nutzer mit höherer streak + 1
+        higher = User.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
+        return higher + 1
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        data = serializer.data
+        data['rank'] = self.get_user_rank(request.user.id)
+        return Response(data)
