@@ -1,30 +1,34 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
-import { ref } from 'vue'
 
 const router = useRouter()
 const themeStore = useThemeStore()
 
-const goBack = () => {
-  router.push('/')
-}
-
-// Dummy-Daten
-const username = ref('DemoUser')
-const email = ref('demo@example.com')
+// Daten aus localStorage (Login)
+const username = ref('')
+const password = ref('')
+const email = ref('')
 const language = ref('Deutsch')
 
-// Darkmode umschalten
-const toggleDarkmode = () => {
-  themeStore.toggleTheme()
-}
+onMounted(() => {
+  username.value = localStorage.getItem('username') || 'Kein Benutzer'
+  password.value = localStorage.getItem('password') || '••••••••'
+})
 
-// Dummy-Funktionen für Buttons
-const changeUsername = () => alert('✏️ Benutzername ändern (noch Dummy)')
-const changeEmail = () => alert('✏️ E-Mail ändern (noch Dummy)')
-const changePassword = () => alert('✏️ Passwort ändern (noch Dummy)')
-const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
+// Aktionen
+const goBack = () => router.push('/')
+const toggleDarkmode = () => themeStore.toggleTheme()
+const changePassword = () => alert(' Passwort ändern (noch Dummy)')
+const changeLanguage = () => alert(' Sprache ändern (noch Dummy)')
+
+// Ausloggen: löscht Daten & leitet zum Login
+const handleLogout = () => {
+  localStorage.removeItem('username')
+  localStorage.removeItem('password')
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -34,60 +38,41 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
     </header>
 
     <main class="edit-main">
-      <!-- Allgemein -->
-      <section class="quiz-title-section card">
-        <label class="block-label">Allgemein</label>
-        <div class="setting-item">
-          <p>Benutzername: <b>{{ username }}</b></p>
-          <button class="edit-btn" @click="changeUsername">✏️</button>
-        </div>
-        <div class="setting-item">
-          <p>E-Mail: <b>{{ email }}</b></p>
-          <button class="edit-btn" @click="changeEmail">✏️</button>
-        </div>
-        <div class="setting-item">
-          <p>Passwort: <b>••••••••</b></p>
-          <button class="edit-btn" @click="changePassword">✏️</button>
-        </div>
-      </section>
-
       <!-- Darstellung -->
       <section class="quiz-questions-section card">
-        <h2 class="questions-section-title">Darstellung</h2>
-
+        <label class="block-label">Allgemein</label>
         <div class="setting-item">
-          <p>Dunkelmodus</p>
-            <label class="switch">
-              <input
-                 type="checkbox"
-                  :checked="themeStore.darkmode"
-                  @change="toggleDarkmode"
-                />
-              <span class="slider"></span>
-            </label>
+          <p>Darkmode</p>
+          <label class="switch">
+            <input type="checkbox" :checked="themeStore.darkmode" @change="toggleDarkmode" />
+            <span class="slider"></span>
+          </label>
         </div>
-
-
         <div class="setting-item">
           <p>Sprache: <b>{{ language }}</b></p>
           <button class="edit-btn" @click="changeLanguage">✏️</button>
         </div>
       </section>
 
-      <!-- Benachrichtigungen -->
-      <section class="quiz-questions-section card">
-        <h2 class="questions-section-title">Benachrichtigungen</h2>
-        <div style="margin-top: 10px;">
-          <p>• E-Mail-Benachrichtigungen: <b>Aktiviert</b></p>
-          <p>• Push-Benachrichtigungen: <b>Deaktiviert</b></p>
+      <!-- Allgemein -->
+      <section class="quiz-title-section card">
+        <label class="block-label">Allgemein</label>
+        <div class="setting-item">
+          <p>E-Mail: <b>{{ email }}</b></p>
+        </div>
+        <div class="setting-item">
+          <p>Benutzername: <b>{{ username }}</b></p> 
+        </div>
+        <div class="setting-item">
+          <p>Passwort: <b>{{ password }}</b></p>
+          <button class="edit-btn" @click="changePassword">✏️</button>
         </div>
       </section>
 
-      <!-- Zurück -->
+      <!-- Aktionen -->
       <div class="edit-actions">
-        <button class="btn btn-secondary" @click="goBack">
-          Zurück
-        </button>
+        <button class="btn btn-secondary" @click="goBack">Zurück</button>
+        <button class="btn btn-primary login-btn" @click="handleLogout">Ausloggen</button>
       </div>
     </main>
   </div>
@@ -101,26 +86,30 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
   display: flex;
   flex-direction: column;
 }
+
 .edit-header {
   margin-bottom: 20px;
   text-align: center;
 }
+
 .edit-header h1 {
   font-size: 2rem;
   font-weight: 700;
 }
+
 .edit-main {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
+
 .card {
   background: var(--bg-color, #fff);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 20px;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 .block-label {
   font-size: 1.1rem;
   font-weight: 500;
@@ -128,12 +117,14 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
   display: block;
   color: var(--color-muted, #888);
 }
+
 .questions-section-title {
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--color-accent);
   margin: 0;
 }
+
 .edit-actions {
   display: flex;
   justify-content: space-between;
@@ -141,7 +132,6 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
   margin-top: 10px;
 }
 
-/* Buttons */
 .edit-btn {
   background: transparent;
   border: none;
@@ -149,28 +139,31 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
   cursor: pointer;
   transition: transform 0.1s;
 }
+
 .edit-btn:hover {
   transform: scale(1.2);
 }
 
-/* Switch-Stil */
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 12px 0;
 }
+
 .switch {
   position: relative;
   display: inline-block;
   width: 50px;
   height: 24px;
 }
+
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -179,6 +172,7 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
   border-radius: 34px;
   transition: 0.4s;
 }
+
 .slider:before {
   position: absolute;
   content: "";
@@ -190,10 +184,47 @@ const changeLanguage = () => alert('🌐 Sprache ändern (noch Dummy)')
   border-radius: 50%;
   transition: 0.4s;
 }
+
 input:checked + .slider {
   background-color: #2196f3;
 }
+
 input:checked + .slider:before {
   transform: translateX(26px);
+}
+
+
+.btn.btn-primary.login-btn {
+  margin-top: 10px;
+  width: 75%;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  background-color: var(--color-primary, #2196f3);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn.btn-primary.login-btn:hover {
+  background-color: #1976d2;
+}
+
+.btn.btn-secondary {
+   margin-top: 10px;
+  width: 25%;
+  background-color: #ccc;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn.btn-secondary:hover {
+  background-color: #bdbdbd;
 }
 </style>

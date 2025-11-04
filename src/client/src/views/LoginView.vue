@@ -1,26 +1,29 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
 import { login, checkAuth } from '@/services/auth'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 
 const username = ref('')
 const password = ref('')
-const router = useRouter()
 const error = ref('')
+const router = useRouter()
 
-  async function handleLogin() {
-    error.value = ''
-    if (username.value === '' || password.value === '') {
+async function handleLogin() {
+  error.value = ''
+  if (username.value === '' || password.value === '') {
     error.value = 'Bitte Benutzername und Passwort eingeben.'
     return
   }
   try {
-    const user = await login({ username: username.value, password: password.value });
-     if (user) {
-      // Auth-Status aktualisieren
+    const user = await login({ username: username.value, password: password.value })
+    if (user) {
       await checkAuth()
+
+      
+      localStorage.setItem('username', username.value)
+      localStorage.setItem('password', password.value)
+
       router.push('/')
     } else {
       error.value = 'Falscher Benutzername oder Passwort.'
@@ -37,7 +40,6 @@ const error = ref('')
     }
   }
 }
-
 </script>
 
 <template>
