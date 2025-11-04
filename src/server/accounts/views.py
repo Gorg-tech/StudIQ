@@ -63,7 +63,7 @@ class UserStatsView(APIView):
         except User.DoesNotExist:
             return None
         # Anzahl der Nutzer mit höherer streak + 1
-        higher = User.objects.filter(streak__gt=target.streak).count()
+        higher = User.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
         return higher + 1
 
     def get(self, request):
