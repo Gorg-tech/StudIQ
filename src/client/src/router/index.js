@@ -15,6 +15,7 @@ import HomeViewSettings from '@/views/HomeViewSettings.vue'
 import { isAuthenticated } from '@/services/auth.js'
 import { useQuizEditStore } from '@/stores/editQuiz'
 import StudiengangView from '@/views/StudiengangView.vue'
+import LeaderboardView from '@/views/LeaderboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +89,11 @@ const router = createRouter({
       path: '/studiengang/:studiengangId',
       name: 'studiengang-overview',
       component: StudiengangView,
+    },
+    {
+      path: '/leaderboard',
+      name: 'leaderboard',
+      component: LeaderboardView,
     }
   ],
 })

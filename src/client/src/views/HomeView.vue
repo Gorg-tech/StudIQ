@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import IconSettings from '@/components/icons/IconSettings.vue'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
@@ -10,9 +10,9 @@ import IconSearch from '@/components/icons/IconSearch.vue'
 import IconTimer from '@/components/icons/IconTimer.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 import IconChart from '@/components/icons/IconChart.vue'
+import { fetchUserStats } from '@/services/leaderboard'
 
 
-const router = useRouter()
 const startQuiz = () => {
   // TODO: Implement quiz start functionality
   console.log('Starting quiz');
@@ -21,6 +21,21 @@ const openSettings = () => {
   // TODO: Implement settings navigation
   alert('Einstellungen öffnen');
 }
+
+const router = useRouter()
+const userStats = ref({
+  streak: 0,
+  rank: null
+})
+
+onMounted(async () => {
+  try {
+    const stats = await fetchUserStats()
+    userStats.value = stats
+  } catch (error) {
+    console.error('Fehler beim Laden der User-Statistiken:', error)
+  }
+})
 
 // Calculate days until exam period
 const examPeriodStart = new Date('2026-02-01');
@@ -69,17 +84,17 @@ const suggestedQuizzes = ref([
               <IconFlame />
             </span>
             <div class="stat-label-big">Streak</div>
-            <div class="stat-value-big">5</div>
+            <div class="stat-value-big">{{ userStats.streak }}</div>
           </div>
           
           <!-- Platz (Leaderboard) -->
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/leaderboard')">
             <span class="stat-icon leaderboard">
               <IconLeaderboard />
             </span>
             <div class="stat-label-big">Platz</div>
             <div class="stat-value-big leaderboard-rank">
-              <span class="rank-number">12</span>
+              <span class="rank-number">{{ userStats.rank || '-' }}</span>
             </div>
           </div>
           

@@ -62,6 +62,7 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 ### User
 - `GET /api/users/me/` – Eigene Benutzerdaten abrufen
 - `PUT /api/users/me/` – Eigene Benutzerdaten aktualisieren
+- `GET /api/users/me/stats` – Der Rank und die Statistiken des self-users
 
 ### Suche
  - `GET /api/search/?q={query}&filter={type}` – Suche über alle Inhalte
@@ -131,3 +132,5 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `GET /api/achievements/` – Alle Errungenschaften abrufen
 - `GET /api/achievements/user/` – Eigene freigeschaltete Errungenschaften abrufen
 
+### Leaderboard
+- `GET /api/leaderboard?limit=N&around=M` – Die ersten N User des Leaderboards und M Users um den self-user herum (nach Streak)

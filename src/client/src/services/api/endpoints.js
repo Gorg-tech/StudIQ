@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
 
   USER: {
     ME: 'api/users/me/',
+    MY_STATS: 'api/users/me/stats/'
   },
 
   SEARCH: (searchQuery, filter) => {
@@ -72,6 +73,11 @@ export const API_ENDPOINTS = {
   ACHIEVEMENTS: {
     BASE: 'api/achievements/',
     USER: 'api/achievements/user/',
+  },
+  LEADERBOARD: {
+    BASE: () => `api/leaderboard`,
+    LIMIT: (limit = 3) => `api/leaderboard?limit=${limit}`,
+    AROUND: (limit = 3, around = 1) => `api/leaderboard?limit=${limit}&around=${around}`,
   }
 };
 
