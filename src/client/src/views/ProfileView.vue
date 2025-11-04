@@ -8,12 +8,10 @@
         <h1><LogoStudIQ /></h1>
         <p class="tagline">Dein Begleiter für die Prüfungsvorbereitung</p>
       </div>
-      <button class="settings-btn" @click="showMenu = !showMenu">
         <IconSettings />
       </button>
-      <div v-if="showMenu" class="settings-popup">
-        <button class="logout-btn" @click="handleLogout">Ausloggen</button>
-      </div>
+     <div class="settings-container">
+      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
     </header>
 
     <!-- Top Profile Section-->
@@ -84,6 +82,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { logout, isAuthenticated } from '@/services/auth'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'
@@ -156,9 +155,21 @@ function handleLogout() {
 }
 
 .settings-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
+  padding: 4px;
+  padding-top: 8px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  transition: color 0.2s;
+}
+.settings-btn:hover {
+  color: var(--color-accent);
+}
+
+.settings-btn svg {
+  width: 2.2rem;
+  height: 2.2rem;
 }
 
 .settings-popup {
