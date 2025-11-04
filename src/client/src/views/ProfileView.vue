@@ -9,9 +9,9 @@
         <p class="tagline">Dein Begleiter für die Prüfungsvorbereitung</p>
       </div>
         <IconSettings />
-      </button>
      <div class="settings-container">
-      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
+      <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen"></button>
+     </div>
     </header>
 
     <!-- Top Profile Section-->
