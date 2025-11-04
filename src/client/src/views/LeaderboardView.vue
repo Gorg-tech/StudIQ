@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { store } from '@/stores/app.js'
 import { fetchLeaderboard } from '@/services/leaderboard'
 import IconFlame from '@/components/icons/IconFlame.vue'
 
@@ -8,27 +9,30 @@ const TOP_COUNT = 3
 const AROUND_COUNT = 1
 
 const leaderboard = ref([])
-const currentUserRank = ref(null)
 const isLoading = ref(true)
 const error = ref(null)
 const hasMoreAfter = ref(false)
+const hasMoreBefore = ref(false)
+const selfUser = ref(null)
 
 onMounted(async () => {
-  try {
-    const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT)
-    console.log('Leaderboard Data:', data)
-    if (!data) {
-      throw new Error('Keine Daten vom Server erhalten')
+
+    try {
+        const user_data = await store.getUser()
+        selfUser.value = user_data
+        const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT)
+        if (!data) {
+        throw new Error('Keine Daten vom Server erhalten')
+        }
+        leaderboard.value = data.users || []
+        hasMoreAfter.value = data.has_more_after
+        hasMoreBefore.value = data.has_more_before
+    } catch (err) {
+        console.error('Leaderboard Error:', err)
+        error.value = `Fehler beim Laden des Leaderboards: ${err.message}`
+    } finally {
+        isLoading.value = false
     }
-    leaderboard.value = data.users || []
-    currentUserRank.value = data.current_user_rank
-    hasMoreAfter.value = data.has_more_after
-  } catch (err) {
-    console.error('Leaderboard Error:', err)
-    error.value = `Fehler beim Laden des Leaderboards: ${err.message}`
-  } finally {
-    isLoading.value = false
-  }
 })
 </script>
 
@@ -48,37 +52,40 @@ onMounted(async () => {
         {{ error }}
       </div>
       
-      <div v-else class="leaderboard-list">
+     <div v-else class="leaderboard-list">
      <!-- Top N -->
-     <div v-for="(user, index) in leaderboard.slice(0, TOP_COUNT)"
-       :key="user.username + '-top-' + index"
-       class="leaderboard-item"
-       :class="{'top-three': index < TOP_COUNT, 'current-user': user.is_current_user}">
-          <div class="rank">#{{ user.rank }}</div>
-          <div class="user-info">
-            <div class="username">{{ user.username }}</div>
-            <div class="stats">
-              <span class="streak">
-                <IconFlame class="streak-icon" />
-                {{ user.streak }} Tage Streak
-              </span>
-              <span class="total-quizzes">
-                {{ user.solved_quizzes }} Quizze abgeschlossen
-              </span>
+     <div v-if="selfUser && leaderboard.length > 0">
+        <div v-for="(user, index) in leaderboard.slice(0, TOP_COUNT)"
+        :key="user.username + '-top-' + index"
+        class="leaderboard-item"
+        :class="{'top-three': index < TOP_COUNT, 'current-user': selfUser.id == user.id}">
+            <div class="rank">#{{ user.rank }}</div>
+            <div class="user-info">
+                <div class="username">{{ user.username }}</div>
+                <div class="stats">
+                <span class="streak">
+                    <IconFlame class="streak-icon" />
+                    {{ user.streak }} Tage Streak
+                </span>
+                <span class="total-quizzes">
+                    {{ user.solved_quizzes }} Quizze abgeschlossen
+                </span>
+                </div>
             </div>
-          </div>
+            </div>
         </div>
 
         <!-- Ellipsis if there's a gap between top and around users -->
-        <div v-if="leaderboard.length > TOP_COUNT && leaderboard[TOP_COUNT] && leaderboard[TOP_COUNT].rank > (TOP_COUNT + 1)" class="rank-separator">
+        <div v-if="hasMoreBefore" class="rank-separator">
           •••
         </div>
 
         <!-- Users around current user (appended after top) -->
+    <div v-if="selfUser && leaderboard.length > 0">
      <div v-for="(user, idx) in leaderboard.slice(TOP_COUNT)"
        :key="user.username + '-around-' + idx"
        class="leaderboard-item"
-       :class="{'current-user': user.is_current_user}">
+       :class="{'current-user': selfUser.id == user.id}">
           <div class="rank">#{{ user.rank }}</div>
           <div class="user-info">
             <div class="username">{{ user.username }}</div>
@@ -92,6 +99,7 @@ onMounted(async () => {
               </span>
             </div>
           </div>
+        </div>
         </div>
 
         <!-- trailing ellipsis (only if there are more users after the displayed ones) -->
