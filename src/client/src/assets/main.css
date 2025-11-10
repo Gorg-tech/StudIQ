@@ -107,3 +107,8 @@ a,
 button {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
+/* Penguin glow in dark mode */
+.dark svg {
+  filter: drop-shadow(0 0 30px rgba(252, 121, 96, 0.45));
+}

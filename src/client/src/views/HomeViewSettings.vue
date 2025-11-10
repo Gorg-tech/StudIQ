@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
+import { logout } from '@/services/auth'
 
 const router = useRouter()
 const themeStore = useThemeStore()
@@ -24,10 +25,13 @@ const changePassword = () => alert(' Passwort ändern (noch Dummy)')
 const changeLanguage = () => alert(' Sprache ändern (noch Dummy)')
 
 // Ausloggen: löscht Daten & leitet zum Login
-const handleLogout = () => {
-  localStorage.removeItem('username')
-  localStorage.removeItem('password')
-  router.push('/login')
+const handleLogout = async () => {
+  try {
+    await logout()
+    router.push('/login')
+  } catch (error) {
+    console.error('Logout failed:', error)
+  }
 }
 </script>
 

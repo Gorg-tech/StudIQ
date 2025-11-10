@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
     DETAIL: (quizId) => `api/quizzes/${quizId}/`,
     QUESTIONS: (quizId) => `api/quizzes/${quizId}/questions/`,
     QUESTION_DETAIL: (quizId, questionId) => `api/quizzes/${quizId}/questions/${questionId}/`,
+    SUGGESTED_QUIZZES: 'api/suggested-quizzes/',
   },
 
   QUESTIONS: {
