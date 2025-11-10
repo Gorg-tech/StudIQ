@@ -101,7 +101,7 @@ async function handleLogin() {
 }
 
 .login-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 32px 24px 24px 24px;
@@ -139,16 +139,17 @@ async function handleLogin() {
   width: 100%;
   padding: 0.6rem 0.8rem;
   border-radius: 8px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   font-size: 1rem;
-  background: #f9f9f9;
+  background: var(--card-bg);
+  color: var(--color-text);
   transition: border 0.2s;
 }
 
 .form-group input:focus {
   border: 1.5px solid var(--color-primary);
   outline: none;
-  background: #fff;
+  background: var(--card-bg);
 }
 
 .login-btn {
@@ -171,9 +172,9 @@ async function handleLogin() {
 }
 
 .login-error {
-  color: #d32f2f;
-  background: #fff0f0;
-  border: 1px solid #f8bbbb;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: 6px;
   padding: 10px 14px;
   margin-bottom: 12px;
