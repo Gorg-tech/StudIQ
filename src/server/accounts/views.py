@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
+from .models import StudyDay
+from datetime import timedelta, date
 
 class RegisterView(APIView):
     permission_classes = []  # Allow unauthenticated access
@@ -70,4 +72,28 @@ class UserStatsView(APIView):
         serializer = UserSerializer(request.user)
         data = serializer.data
         data['rank'] = self.get_user_rank(request.user.id)
+        return Response(data)
+
+def calculate_streak(user):
+    days = StudyDay.objects.filter(user=user).values_list('date', flat=True).order_by('-date')
+    streak = 0
+    last_day = date.today()
+
+    for d in days:
+        if last_day - d in [timedelta(days=0), timedelta(days=1)]:
+            streak += 1
+            last_day = d
+        else:
+            break
+    return streak
+
+class StudyCalendarView(APIView):
+    # get all study days and streak for the current user
+    def get(self, request):
+        user = request.user
+        days = StudyDay.objects.filter(user=user)
+        data = {
+            "streak": calculate_streak(user),
+            "days": [d.date.isoformat() for d in days],
+        }
         return Response(data)
