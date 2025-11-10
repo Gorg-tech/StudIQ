@@ -31,6 +31,7 @@ class StudyDay(models.Model):
     
     class Meta:
         unique_together = ('user', 'date')  # Entry per user per day should be unique
+        ordering = ['-date']
 
     def __str__(self):
-        return f"{self.user.username};{self.date}"
+        return f"{self.user.username} - {self.date}"
