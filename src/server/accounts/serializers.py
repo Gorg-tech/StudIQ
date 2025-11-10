@@ -29,5 +29,4 @@ class LoginSerializer(serializers.Serializer):
 class StudyDaySerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyDay
-        fields = ['id', 'user', 'date']
-        read_only_fields = ['id', 'user']
+        fields = ['date']
