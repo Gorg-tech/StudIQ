@@ -87,6 +87,20 @@ def calculate_streak(user):
             break
     return streak
 
+def calculate_longest_streak(user):
+    days = StudyDay.objects.filter(user=user).values_list('date', flat=True).order_by('date')
+    longest_streak = 0
+    current_streak = 1
+
+    for i in range(1, len(days)):
+        if days[i] - days[i - 1] == timedelta(days=1):
+            current_streak += 1
+        else:
+            longest_streak = max(longest_streak, current_streak)
+            current_streak = 1
+    longest_streak = max(longest_streak, current_streak)
+    return longest_streak
+
 class StudyCalendarView(APIView):
     # get all study days and streak for the current user
     def get(self, request):
@@ -94,6 +108,7 @@ class StudyCalendarView(APIView):
         days = StudyDay.objects.filter(user=user)
         data = {
             "streak": calculate_streak(user),
-            "days": [d.date.isoformat() for d in days],
+            "longest_streak": calculate_longest_streak(user),
+            "days": [d.date.isoformat() for d in days]
         }
         return Response(data)
