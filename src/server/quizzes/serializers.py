@@ -165,7 +165,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class StudiengangSerializer(serializers.ModelSerializer):
     class Meta:
         model = Studiengang
-        fields = '__all__'
+        fields = ['id', 'name']
 
 class ModulSerializer(serializers.ModelSerializer):
     class Meta:
