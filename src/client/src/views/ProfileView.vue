@@ -80,7 +80,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { logout, isAuthenticated } from '@/services/auth'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'

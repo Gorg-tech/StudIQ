@@ -1,7 +1,10 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { useRoute } from 'vue-router'
 import BottomNavigation from './components/layout/BottomNavigation.vue'
 import apiClient from '@/services/api/client'
+
+const route = useRoute()
 
 apiClient.ensureCsrf()
 </script>
@@ -11,7 +14,7 @@ apiClient.ensureCsrf()
     <main class="content">
       <RouterView />
     </main>
-    <BottomNavigation />
+    <BottomNavigation v-if="route.path !== '/login' && route.path !== '/register'" />
   </div>
 </template>
 

@@ -34,7 +34,9 @@ export async function login({ username, password }) {
 
 // Logout
 export async function logout() {
-  return apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
+  const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
+  isAuthenticated.value = false;
+  return response;
 }
 
 /* Verwendung:
