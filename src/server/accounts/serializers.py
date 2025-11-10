@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, StudyDay
 from django.contrib.auth.password_validation import validate_password
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,3 +25,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
+class StudyDaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudyDay
+        fields = ['id', 'user', 'date']
+        read_only_fields = ['id', 'user']
