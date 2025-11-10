@@ -101,6 +101,11 @@ def calculate_longest_streak(user):
     longest_streak = max(longest_streak, current_streak)
     return longest_streak
 
+# Upon quiz completion, update streak by calling:
+# def register_study_activity(user):
+#    today = date.today()
+#    StudyDay.objects.get_or_create(user=user, date=today)
+
 class StudyCalendarView(APIView):
     # get all study days and streak for the current user
     def get(self, request):
