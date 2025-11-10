@@ -90,7 +90,7 @@ def calculate_streak(user):
 def calculate_longest_streak(user):
     days = StudyDay.objects.filter(user=user).values_list('date', flat=True).order_by('date')
     longest_streak = 0
-    current_streak = 1
+    current_streak = 0
 
     for i in range(1, len(days)):
         if days[i] - days[i - 1] == timedelta(days=1):
