@@ -87,8 +87,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+<<<<<<< HEAD
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
 import { store } from '@/stores/app.js'
+=======
+>>>>>>> d512ad3 (Updated RegisterView, LoginView, HomeView & Database (#194))
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'

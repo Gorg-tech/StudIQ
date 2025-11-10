@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from django.db.models import Q
@@ -27,7 +27,8 @@ from .serializers import (
     StudiengangSerializer,
     ModulSerializer,
     ModulDetailSerializer, 
-    AnswerOptionSerializer
+    AnswerOptionSerializer,
+    QuizForLernsetSerializer
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -131,7 +132,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
 class StudiengangViewSet(viewsets.ModelViewSet):
     queryset = Studiengang.objects.all()
     serializer_class = StudiengangSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class ModulViewSet(viewsets.ModelViewSet):
@@ -358,3 +359,23 @@ class SearchView(APIView):
                 results["studiengaenge"].append(StudiengangSerializer(item).data)
 
         return Response(results)
+
+class SuggestedQuizzesView(ListAPIView):
+    serializer_class = QuizForLernsetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.studiengang:
+            return Quiz.objects.none()
+        
+        # Get all modules for the user's studiengang
+        modules = user.studiengang.module.all()
+        
+        # Get all lernsets for these modules
+        lernsets = Lernset.objects.filter(modul__in=modules)
+        
+        # Get quizzes from these lernsets, ordered by creation date, limit to 3
+        quizzes = Quiz.objects.filter(lernset__in=lernsets).order_by('-created_at')[:3]
+        
+        return quizzes

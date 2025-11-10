@@ -3,11 +3,13 @@ from .models import User, StudyDay
 from django.contrib.auth.password_validation import validate_password
 
 class UserSerializer(serializers.ModelSerializer):
+    studiengang_name = serializers.CharField(source='studiengang.name', read_only=True)
+    
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'role', 'iq_level', 
                  'correct_answers', 'wrong_answers', 'solved_quizzes', 
-                 'streak', 'studiengang', 'semester']
+                 'streak', 'studiengang', 'studiengang_name']
         read_only_fields = ['id', 'iq_level', 'correct_answers', 
                            'wrong_answers', 'solved_quizzes', 'streak']
 
@@ -16,7 +18,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'studiengang', 'semester']
+        fields = ['username', 'email', 'password', 'studiengang']
         
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
