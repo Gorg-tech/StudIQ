@@ -269,5 +269,22 @@ Aufgaben nächste Woche(Vorschlag):
 - Testdaten erzeugen: Lernset/Quiz
 
 
+=== 3. Meeting 04.11.
 
+Stakeholder waren da!!
+Festhalten der Kritik in Miro
 
+*Retrospektive*
+
+* Hindernisse
+  - Bibliothek zu -> Ausweichraum S231 sehr unbequem wegen Sound und Größe, außerdem müssen immer Tische verschoben werden
+  - Probleme bei Branch-Konflikten
+  - Mehrer Arbeiten am gleichen Bug
+    -> bessere Kommunikation notwendig im neuen Discordkanal 
+  - Unzufriedenheit mit Bewertung auf SE1
+    -> Anke mehr um Feedback fragen
+
+* Positives
+  - Gute Einbindung von Gabriel
+  - Stakeholder waren zufrieden
+  - Pull-Request laufen nun gut nach etwas Übung
