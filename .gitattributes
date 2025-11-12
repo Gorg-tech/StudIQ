@@ -1,0 +1,2 @@
+# Treat SQLite binary as binary to avoid merge markers
+src/server/db.sqlite3 -merge

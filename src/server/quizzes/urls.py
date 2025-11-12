@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet, SearchView, AnswerOptionViewSet
+from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet, SearchView, AnswerOptionViewSet, SuggestedQuizzesView
 from .views import LeaderboardViewSet
 
 router = DefaultRouter()
@@ -18,6 +18,7 @@ router.register(r'answer-options', AnswerOptionViewSet)
 router.register(r'leaderboard', LeaderboardViewSet, basename='leaderboard')
 
 urlpatterns = [
+    path('suggested-quizzes/', SuggestedQuizzesView.as_view(), name='suggested-quizzes'),
     path('', include(router.urls)),
 
     # Brauchen wir erstmal nicht
@@ -25,6 +26,5 @@ urlpatterns = [
     # path('modules/<int:module_id>/lernsets/', views.LernsetsByModuleView.as_view(), name='module-lernsets'),
     # Nested: /api/lernsets/<int:lernset_id>/quizzes/
     path('lernsets/<uuid:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
-    # Add the new search endpoint
     path('search/', SearchView.as_view(), name='search'),
 ]

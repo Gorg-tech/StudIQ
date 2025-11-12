@@ -15,13 +15,12 @@ export async function checkAuth() {
 }
 
 // Registrierung
-export async function register({ username, email, password, studiengang, semester }) {
+export async function register({ username, email, password, studiengang }) {
   return apiClient.post(API_ENDPOINTS.AUTH.REGISTER, {
     username,
     email,
     password,
     studiengang,
-    semester
 });
 }
 
@@ -35,7 +34,9 @@ export async function login({ username, password }) {
 
 // Logout
 export async function logout() {
-  return apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
+  const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
+  isAuthenticated.value = false;
+  return response;
 }
 
 /* Verwendung:
@@ -53,7 +54,7 @@ async function handleLogin() {
 
 async function handleRegister() {
   try {
-    const user = await register({ username: 'test', email: 'test@mail.de', password: '1234', studiengang: 'Informatik', semester: 1 });
+    const user = await register({ username: 'test', email: 'test@mail.de', password: '1234', studiengang: 'Informatik' });
     // Weiterleitung oder User speichern
   } catch (err) {
     // Fehlerbehandlung

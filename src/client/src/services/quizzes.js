@@ -27,6 +27,10 @@ export async function getQuizQuestions(quizId) {
   return apiClient.get(API_ENDPOINTS.QUIZZES.QUESTIONS(quizId));
 }
 
+export async function getSuggestedQuizzes() {
+  return apiClient.get(API_ENDPOINTS.QUIZZES.SUGGESTED_QUIZZES);
+}
+
 /* Usage Example:
 
 import { getQuizzes } from '@/services/auth';

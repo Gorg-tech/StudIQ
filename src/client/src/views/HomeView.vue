@@ -11,30 +11,14 @@ import IconTimer from '@/components/icons/IconTimer.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 import IconChart from '@/components/icons/IconChart.vue'
 import { fetchUserStats } from '@/services/leaderboard'
+import { getSuggestedQuizzes } from '@/services/quizzes'
 
 
-const startQuiz = () => {
-  // TODO: Implement quiz start functionality
-  console.log('Starting quiz');
-}
-const openSettings = () => {
-  // TODO: Implement settings navigation
-  alert('Einstellungen öffnen');
-}
 
 const router = useRouter()
 const userStats = ref({
   streak: 0,
   rank: null
-})
-
-onMounted(async () => {
-  try {
-    const stats = await fetchUserStats()
-    userStats.value = stats
-  } catch (error) {
-    console.error('Fehler beim Laden der User-Statistiken:', error)
-  }
 })
 
 // Calculate days until exam period
@@ -47,11 +31,34 @@ const daysUntilExams = computed(() => {
 })
 
 // Sample data for suggested quizzes
-const suggestedQuizzes = ref([
-  { id: 1, title: 'Laufzeitberechnung', questions: 10, duration: 5, iconColor: '#ff9800', iconType: 'timer' },
-  { id: 2, title: 'Analysis', questions: 15, duration: 7, iconColor: '#4caf50', iconType: 'chart' },
-  { id: 3, title: 'C - Programmierung', questions: 33, duration: 13, iconColor: '#2196f3', iconType: 'code' },
-]);
+const suggestedQuizzes = ref([])
+
+onMounted(async () => {
+  try {
+    const stats = await fetchUserStats()
+    userStats.value = stats
+  } catch (error) {
+    console.error('Fehler beim Laden der User-Statistiken:', error)
+  }
+
+  try {
+    const quizzes = await getSuggestedQuizzes()
+    suggestedQuizzes.value = quizzes.map(quiz => ({
+      id: quiz.id,
+      title: quiz.title,
+      questions: quiz.question_count,
+      duration: Math.ceil((quiz.avg_time_spent || 300) / 60), // default 5 min if no avg_time
+      iconColor: '#ff9800', // default color
+      iconType: 'timer' // default icon
+    }))
+  } catch (error) {
+    console.error('Fehler beim Laden der vorgeschlagenen Quizze:', error)
+  }
+})
+
+const startQuiz = (quizId) => {
+  router.push({ name: 'quiz', params: { quizId } })
+}
 </script>
 
 <template>
@@ -180,22 +187,27 @@ const suggestedQuizzes = ref([
       <div class="suggested-quizzes">
         <h3>Vorgeschlagene Quizze</h3>
         <div class="quiz-suggestions-row">
-          <div
-            v-for="(quiz, index) in suggestedQuizzes"
-            :key="index"
-            class="quiz-suggestion-item"
-            @click="router.push('/quiz')"
-          >
-            <div class="quiz-suggestion-icon" :style="{ backgroundColor: quiz.iconColor + '1A' }">
-              <!-- Different icon based on quiz type -->
-              <IconTimer v-if="quiz.iconType === 'timer'" :color="quiz.iconColor" />
-              <IconChart v-else-if="quiz.iconType === 'chart'" :color="quiz.iconColor" />
-              <IconCode v-else-if="quiz.iconType === 'code'" :color="quiz.iconColor" />
+          <template v-if="suggestedQuizzes.length > 0">
+            <div 
+              v-for="quiz in suggestedQuizzes" 
+              :key="quiz.id"
+              class="quiz-suggestion-item"
+              @click="startQuiz(quiz.id)"
+            >
+              <div class="quiz-suggestion-icon" :style="{ backgroundColor: quiz.iconColor + '1A' }">
+                <!-- Different icon based on quiz type -->
+                <IconTimer v-if="quiz.iconType === 'timer'" :color="quiz.iconColor" />
+                <IconChart v-else-if="quiz.iconType === 'chart'" :color="quiz.iconColor" />
+                <IconCode v-else-if="quiz.iconType === 'code'" :color="quiz.iconColor" />
+              </div>
+              <div class="quiz-suggestion-content">
+                <h4>{{ quiz.title }}</h4>
+                <p class="quiz-meta">{{ quiz.questions }} Fragen - {{ quiz.duration }} Min</p>
+              </div>
             </div>
-            <div class="quiz-suggestion-content">
-              <h4>{{ quiz.title }}</h4>
-              <p class="quiz-meta">{{ quiz.questions }} Fragen - {{ quiz.duration }} Min</p>
-            </div>
+          </template>
+          <div v-else class="no-quizzes-message">
+            Keine Quizze verfügbar für deinen Studiengang.
           </div>
         </div>
       </div>
@@ -495,6 +507,15 @@ const suggestedQuizzes = ref([
   margin: 0;
   font-size: 0.8rem;
   color: var(--color-muted);
+}
+
+/* No quizzes message */
+.no-quizzes-message {
+  text-align: center;
+  color: var(--color-muted);
+  font-style: italic;
+  padding: 20px;
+  width: 100%;
 }
 
 /* Mobile responsiveness */

@@ -25,8 +25,12 @@
         </div>
 
         <div class="form-group">
-          <label for="studiengruppe">Studiengruppe <span class="hint">(Immat.jahr/Studiengang/Gruppe)</span>:</label>
-          <input id="studiengruppe" v-model="studiengruppe" placeholder="z.B. 22/041/61" required />
+          <label for="studiengang">Studiengang:</label>
+          <!-- Removed separate search input; single dropdown only -->
+          <select v-model="studiengang" required>
+            <option value="">Wähle einen Studiengang</option>
+            <option v-for="sg in studiengaenge" :key="sg.id" :value="sg.id">{{ sg.id }} - {{ sg.name }}</option>
+          </select>
         </div>
 
         <button type="submit" class="btn btn-primary register-btn">Registrieren</button>
@@ -41,39 +45,44 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '@/services/auth'
+import { getStudiengaenge } from '@/services/studiengaenge'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 
 const username = ref('')
 const email = ref('')
 const password = ref('')
-const studiengruppe = ref('')
+const studiengang = ref('')
 const errorMsg = ref('')
+const studiengaenge = ref([])
 const router = useRouter()
+
+onMounted(async () => {
+  try {
+    const response = await getStudiengaenge()
+
+    studiengaenge.value = Array.isArray(response) ? response : []
+  } catch (err) {
+    console.error('Failed to fetch studiengaenge:', err)
+    studiengaenge.value = []
+  }
+})
 
 async function handleRegister() {
   errorMsg.value = ''
   try {
-    const [immatJahr, studiengang, gruppe] = studiengruppe.value.split('/')
-
     await register({
       username: username.value,
       email: email.value,
       password: password.value,
-      immatJahr,
-      studiengang,
-      gruppe,
+      studiengang: studiengang.value,
     })
-
     router.push('/')
   } catch (err) {
-    // Fehler ausgeben, falls vorhanden
     if (err?.data) {
-      // Zeige das erste Fehlerfeld oder alles als JSON
       if (typeof err.data === 'object') {
-        // Fasse alle Fehler zusammen
         errorMsg.value = Object.values(err.data).flat().join(' ')
       } else {
         errorMsg.value = err.data
@@ -104,7 +113,7 @@ async function handleRegister() {
 }
 
 .register-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 32px 24px 24px 24px;
@@ -144,20 +153,23 @@ async function handleRegister() {
   font-weight: 400;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 0.6rem 0.8rem;
   border-radius: 8px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   font-size: 1rem;
-  background: #f9f9f9;
+  background: var(--card-bg);
+  color: var(--color-text);
   transition: border 0.2s;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   border: 1.5px solid var(--color-primary);
   outline: none;
-  background: #fff;
+  background: var(--card-bg);
 }
 
 .register-btn {
@@ -180,9 +192,9 @@ async function handleRegister() {
 }
 
 .register-error {
-  color: #d32f2f;
-  background: #fff0f0;
-  border: 1px solid #f8bbbb;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: 6px;
   padding: 10px 14px;
   margin-bottom: 12px;
