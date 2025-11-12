@@ -24,3 +24,14 @@ class User(AbstractUser):
     
     def __str__(self):
         return self.username
+    
+class StudyDay(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='study_days')
+    date = models.DateField()
+    
+    class Meta:
+        unique_together = ('user', 'date')  # Entry per user per day should be unique
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.date}"

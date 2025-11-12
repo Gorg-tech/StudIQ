@@ -8,7 +8,8 @@ export const API_ENDPOINTS = {
 
   USER: {
     ME: 'api/users/me/',
-    MY_STATS: 'api/users/me/stats/'
+    MY_STATS: 'api/users/me/stats/',
+    MY_STREAKS: 'api/users/me/streaks/'
   },
 
   SEARCH: (searchQuery, filter) => {

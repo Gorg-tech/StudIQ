@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import User, StudyDay
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -10,3 +10,7 @@ class CustomUserAdmin(UserAdmin):
                                       'wrong_answers', 'solved_quizzes', 
                                       'streak', 'studiengang')}),
     )
+
+@admin.register(StudyDay)
+class StudyDayAdmin(admin.ModelAdmin):
+    list_display = ('user', 'date')  # passt du an deine Felder an
