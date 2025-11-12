@@ -19,6 +19,7 @@ class RegisterView(APIView):
             user = serializer.save()
             login(request, user)  # Log the user in (creates session)
             return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        # Explicitly return serializer errors so missing studiengang is visible to client
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
