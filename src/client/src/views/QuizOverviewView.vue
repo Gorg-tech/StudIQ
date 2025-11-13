@@ -238,10 +238,11 @@ function formatDate(ts) {
 .hero-card {
   display: flex;
   gap: 1.25rem;
-  background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #fff7f0 100%); /* softened to warm bg */
   padding: 1.25rem;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(29, 78, 216, 0.06);
+  /* use orange shadow instead of blue */
+  box-shadow: 0 8px 30px rgba(255,106,0,0.06);
   align-items: stretch;
 }
 
@@ -257,7 +258,7 @@ function formatDate(ts) {
 
 .hero-sub {
   margin-top: 0.5rem;
-  color: #475569;
+  color: #111213ff;
 }
 
 /* meta */
@@ -298,16 +299,18 @@ function formatDate(ts) {
   padding: 1rem;
   border-radius: 12px;
   text-align:center;
-  box-shadow: 0 6px 20px rgba(2,6,23,0.04);
+  box-shadow: 0 6px 20px rgba(10, 10, 10, 0.04);
   width:100%;
 }
 .card-stats h4 { margin:0; color:#475569; }
-.stat-big { font-size: 2rem; margin-top: .5rem; color:#0b63d6; font-weight:700; }
+/* stat number color -> orange */
+.stat-big { font-size: 2rem; margin-top: .5rem; color:#ff6a00; font-weight:700; }
 .stat-sub { color:#6b7280; font-size:.9rem; margin-top:.5rem; }
 
 /* progress */
-.progress-bar { height:8px; background: #eef2ff; border-radius: 99px; margin-top:12px; overflow:hidden; }
-.progress-fill { height:100%; background: linear-gradient(90deg,#1e88e5,#1565c0); transition: width .4s ease; }
+/* warm progress background and orange fill */
+.progress-bar { height:8px; background: #fff3ea; border-radius: 99px; margin-top:12px; overflow:hidden; }
+.progress-fill { height:100%; background: linear-gradient(90deg,#ff8a3d,#ff6a00); transition: width .4s ease; }
 
 /* history list */
 .history-section { 
@@ -319,7 +322,8 @@ function formatDate(ts) {
 }
 .history-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.5rem; }
 .history-item { display:flex; justify-content:space-between; align-items:center; padding:.6rem; border-radius:8px; background:#fff; box-shadow: 0 3px 12px rgba(2,6,23,0.03); }
-.history-percent { font-weight:700; color:#0b63d6; font-size:1.05rem; margin-right:.6rem; }
+/* history percent color -> orange */
+.history-percent { font-weight:700; color:#ff6a00; font-size:1.05rem; margin-right:.6rem; }
 .history-info .muted { color:#6b7280; font-size:.85rem; }
 
 /* ensure full width on small screens */
@@ -348,12 +352,14 @@ function formatDate(ts) {
 .modal-content header { display:flex; justify-content:space-between; align-items:center; }
 .modal-body { margin-top: 0.9rem; }
 .stats-grid { display:flex; gap: .75rem; margin-bottom: .9rem; }
-.stat-card { flex:1; background:#f8fafc; padding:.6rem; border-radius:8px; text-align:center; }
+/* stat card background warmer and values orange */
+.stat-card { flex:1; background:#fff7f3; padding:.6rem; border-radius:8px; text-align:center; }
 .stat-label { color:#6b7280; font-size:.85rem; }
-.stat-value { font-weight:700; color:#0b63d6; font-size:1.25rem; margin-top:.25rem; }
+.stat-value { font-weight:700; color:#ff6a00; font-size:1.25rem; margin-top:.25rem; }
 
 .results-list { list-style:none; padding:0; margin:0; display:grid; gap:.5rem; max-height:240px; overflow:auto; }
-.result-item { padding:.6rem; border-radius:8px; background:#fff; border:1px solid #eef2ff; }
+/* result-item border warm */
+.result-item { padding:.6rem; border-radius:8px; background:#fff; border:1px solid #fff3ea; }
 .q-text { font-weight:600; color:#0f172a; }
 .a-row { display:flex; gap:.5rem; align-items:center; margin-top:.35rem; }
 .tag { padding: .18rem .45rem; border-radius:99px; font-size:.78rem; }
