@@ -80,20 +80,38 @@
           </header>
 
           <div class="modal-body">
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-label">Letzte Genauigkeit</div>
-                <div class="stat-value">{{ current.percentage ?? 0 }}%</div>
+            <div class="stats-grid two-columns">
+              <div class="stat-column">
+                <div class="stat-card">
+                  <div class="stat-label">Letzte Genauigkeit</div>
+                  <div class="stat-value">{{ current.percentage ?? 0 }}%</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Richtig</div>
+                  <div class="stat-value">{{ current.correctAnswers ?? 0 }}</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Gesamt</div>
+                  <div class="stat-value">{{ current.totalQuestions ?? 0 }}</div>
+                </div>
               </div>
-              <div class="stat-card">
-                <div class="stat-label">Richtig</div>
-                <div class="stat-value">{{ current.correctAnswers ?? 0 }}</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-label">Gesamt</div>
-                <div class="stat-value">{{ current.totalQuestions ?? 0 }}</div>
+
+              <div class="stat-column">
+                <div class="stat-card">
+                  <div class="stat-label">Insgesamt (Alle Durchläufe)</div>
+                  <div class="stat-value">{{ aggregate.avgPercentage }}%</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Richtig Gesamt</div>
+                  <div class="stat-value">{{ aggregate.correctAnswers }}</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Gesamtfragen</div>
+                  <div class="stat-value">{{ aggregate.totalQuestions }}</div>
+                </div>
               </div>
             </div>
+            <div class="muted" style="margin-top:.5rem">Versuche: {{ aggregate.attempts }}</div>
 
             <h4>Antworten</h4>
             <ul class="results-list">
@@ -119,7 +137,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getQuiz } from '@/services/quizzes'
 import IconSettings from '@/components/icons/IconSettings.vue'
@@ -136,10 +154,35 @@ const error = ref(null)
 // Keep existing quizHistory/dummy fallback if needed
 const quizHistory = ref([])
 
+// ensure currentRunIndex exists early so loader can set it
+const currentRunIndex = ref(0)
+
+// helper to load per-quiz history from localStorage
+function loadHistoryFromStorage() {
+  const qid = route.params.quizId
+  if (!qid) {
+    quizHistory.value = []
+    currentRunIndex.value = 0
+    return
+  }
+  const key = `quizHistory_${qid}`
+  try {
+    const raw = localStorage.getItem(key)
+    const parsed = raw ? JSON.parse(raw) : []
+    quizHistory.value = Array.isArray(parsed) ? parsed : []
+    // set index to latest run
+    currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
+  } catch (err) {
+    console.error('Error loading quizHistory from localStorage', err)
+    quizHistory.value = []
+    currentRunIndex.value = 0
+  }
+}
+
 // Fetch quiz from API on mount
 onMounted(async () => {
-  const quizId = route.params.quizId
-  if (!quizId) {
+  const qid = route.params.quizId
+  if (!qid) {
     error.value = 'Keine Quiz-ID vorhanden'
     loading.value = false
     return
@@ -147,23 +190,39 @@ onMounted(async () => {
 
   try {
     loading.value = true
-    const data = await getQuiz(quizId)
-    // Expect service to return the quiz object directly (consistent with other services)
+    const data = await getQuiz(qid)
     quiz.value = data
+    // load history after quiz known
+    loadHistoryFromStorage()
   } catch (err) {
     console.error('Error fetching quiz:', err)
     error.value = 'Fehler beim Laden des Quiz'
-    // Optional: keep a minimal fallback (previous dummy) or leave null
     quiz.value = null
   } finally {
     loading.value = false
   }
 })
 
-const currentRunIndex = ref(Math.max(quizHistory.value.length - 1, 0))
+// refresh history when the stats modal opens
+watch(showStats, (val) => {
+  if (val) loadHistoryFromStorage()
+})
+
+// refresh whenever route changes (user navigated back here)
+watch(() => route.fullPath, () => {
+  loadHistoryFromStorage()
+})
+
+// also listen to storage events (other tabs) to keep UI in sync
+function onStorageEvent(e) {
+  const qid = route.params.quizId
+  if (!qid) return
+  if (e.key === `quizHistory_${qid}`) loadHistoryFromStorage()
+}
+window.addEventListener('storage', onStorageEvent)
+onBeforeUnmount(() => window.removeEventListener('storage', onStorageEvent))
 
 const current = computed(() => {
-  // if no history, return a safe default object
   if (!Array.isArray(quizHistory.value) || quizHistory.value.length === 0) {
     return {
       timestamp: null,
@@ -173,16 +232,12 @@ const current = computed(() => {
       percentage: 0
     }
   }
-
-  // clamp index into valid range
   const idx = Math.min(Math.max(currentRunIndex.value || 0, 0), quizHistory.value.length - 1)
   const entry = quizHistory.value[idx] || { results: [] }
-
   const resultsArr = Array.isArray(entry.results) ? entry.results : []
   const correctAnswers = resultsArr.filter(r => r.isCorrect).length
   const totalQuestions = resultsArr.length
-  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0
-
+  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : (entry.percentage || 0)
   return {
     ...entry,
     results: resultsArr,
@@ -190,6 +245,23 @@ const current = computed(() => {
     totalQuestions,
     percentage
   }
+})
+
+// Aggregate across all runs (for modal "Insgesamt")
+const aggregate = computed(() => {
+  const runs = Array.isArray(quizHistory.value) ? quizHistory.value : []
+  if (runs.length === 0) {
+    return { attempts: 0, correctAnswers: 0, totalQuestions: 0, avgPercentage: 0, runs: [] }
+  }
+  let totalCorrect = 0
+  let totalQ = 0
+  runs.forEach(run => {
+    const results = Array.isArray(run.results) ? run.results : []
+    totalCorrect += results.filter(r => r.isCorrect).length
+    totalQ += results.length
+  })
+  const avgPercentage = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0
+  return { attempts: runs.length, correctAnswers: totalCorrect, totalQuestions: totalQ, avgPercentage, runs }
 })
 
 const errorRate = computed(() =>
@@ -215,7 +287,6 @@ function goToLernset() {
 }
 
 function showRun(idx) {
-  // clamp incoming idx and update
   const clamped = Math.min(Math.max(idx, 0), Math.max(quizHistory.value.length - 1, 0))
   currentRunIndex.value = clamped
 }
