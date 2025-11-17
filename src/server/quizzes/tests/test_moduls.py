@@ -44,3 +44,16 @@ class TestCaseMissingValues(TestCase):
     # Check that quiz would be invalid because title is required
         is_valid = quiz.lernset is not None and bool(quiz.title)
         self.assertFalse(is_valid)
+
+    def test_empty_quiz(self):
+        """Quiz with no questions should be considered invalid"""
+        quiz = Quiz(
+            title="Empty Quiz",
+            description="No questions",
+            lernset=self.lernset
+    )
+    # Check that quiz has no questions
+        self.assertEqual(quiz.questions.count(), 0)
+    # Check that quiz would be invalid because questions are required
+        is_valid = quiz.lernset is not None and quiz.questions.count() > 0
+        self.assertFalse(is_valid)  
