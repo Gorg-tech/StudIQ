@@ -1,0 +1,53 @@
+[
+  {
+    "test": "test_empty_quiz (quizzes.tests.test_moduls.TestCaseMissingValues.test_empty_quiz)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.005439"
+  },
+  {
+    "test": "test_lernset_without_modul (quizzes.tests.test_moduls.TestCaseMissingValues.test_lernset_without_modul)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.006625"
+  },
+  {
+    "test": "test_missing_quiz_title (quizzes.tests.test_moduls.TestCaseMissingValues.test_missing_quiz_title)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.007672"
+  },
+  {
+    "test": "test_search_lernset_by_title (quizzes.tests.test_moduls.TestSearchbar.test_search_lernset_by_title)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.010511"
+  },
+  {
+    "test": "test_search_lernset_no_results (quizzes.tests.test_moduls.TestSearchbar.test_search_lernset_no_results)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.012992"
+  },
+  {
+    "test": "test_search_quiz_by_title (quizzes.tests.test_moduls.TestSearchbar.test_search_quiz_by_title)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.015584"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (quizzes.tests.test_moduls.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.018191"
+  },
+  {
+    "test": "test_search_quiz_no_results (quizzes.tests.test_moduls.TestSearchbar.test_search_quiz_no_results)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.020519"
+  },
+  {
+    "test": "test_quiz_serializer (quizzes.tests.test_moduls.Testserializers.test_quiz_serializer)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 14:12:07.023729"
+  },
+  {
+    "test": "test_update_quiz_serializer (quizzes.tests.test_moduls.Testserializers.test_update_quiz_serializer)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/quizzes/tests/test_moduls.py\", line 131, in test_update_quiz_serializer\n    self.assertTrue(serializer.is_valid())\nAssertionError: False is not true\n",
+    "time": "2025-11-17 14:12:07.027434"
+  }
+]
