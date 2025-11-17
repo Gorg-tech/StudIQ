@@ -6,7 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
 from django.test import TestCase
-from quizzes.models import Quiz,Lernset, Modul
+from quizzes.models import Quiz,Lernset, Modul, Question, AnswerOption
 from quizzes.serializers import QuizSerializer
 from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
@@ -102,7 +102,6 @@ class TestSearchbar(TestCase):
         search_term = "NonExistingLernset"
         results = Lernset.objects.filter(title__icontains=search_term)
         self.assertEqual(len(results), 0)
-    
 class Testserializers(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="testuser", password="testpass")
@@ -110,8 +109,64 @@ class Testserializers(TestCase):
         self.lernset = Lernset.objects.create(title="Test Lernset", modul=self.modul, created_by=self.user)
         self.quiz = Quiz.objects.create(title="Sample Quiz", description="A sample quiz for testing", lernset=self.lernset, created_by=self.user)
 
-    def test_quiz_serializer(self):
-        """QuizSerializer should serialize quiz data correctly"""
+    def test_update_quiz_with_questions(self):
+        """Test the custom update method with questions and answer options"""
+        # Create initial question
+        question = Question.objects.create(
+            quiz=self.quiz,
+            text="Old question"
+        )
+        answer = AnswerOption.objects.create(
+            question=question,
+            text="Old answer",
+            is_correct=True
+        )
+
+        # Prepare update payload
+        update_data = {
+            'title': "Updated Quiz Title",
+            'description': "Updated description",
+            'questions': [
+                {
+                    'id': question.id,
+                    '_status': 'edited',
+                    'text': "Updated question",
+                    'answer_options': [
+                        {'id': answer.id, 'text': "Updated answer", 'is_correct': False},
+                        {'text': "New answer", 'is_correct': True}  # new answer
+                    ]
+                },
+                {
+                    '_status': 'new',
+                    'text': "Brand new question",
+                    'answer_options': [
+                        {'text': "Answer 1", 'is_correct': True}
+                    ]
+                }
+            ]
+        }
+
+        serializer = QuizSerializer(instance=self.quiz, data=update_data, partial=True)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        updated_quiz = serializer.save()
+
+        # Check quiz fields
+        self.assertEqual(updated_quiz.title, "Updated Quiz Title")
+        self.assertEqual(updated_quiz.description, "Updated description")
+
+        # Check updated question
+        q1 = Question.objects.get(id=question.id)
+        self.assertEqual(q1.text, "Updated question")
+        self.assertEqual(q1.answer_options.count(), 2)
+
+        # Check new question
+        self.assertEqual(updated_quiz.questions.count(), 2)
+        new_question = updated_quiz.questions.exclude(id=question.id).first()
+        self.assertEqual(new_question.text, "Brand new question")
+        self.assertEqual(new_question.answer_options.count(), 1)
+
+        def test_quiz_serializer(self):
+          """QuizSerializer should serialize quiz data correctly"""
         serializer = QuizSerializer(instance=self.quiz)
         data = serializer.data
 
@@ -119,17 +174,3 @@ class Testserializers(TestCase):
         self.assertEqual(data['description'], "A sample quiz for testing")
         self.assertEqual(data['lernset'], self.lernset.id)
         self.assertEqual(data['created_by'], self.user.username)
-
-    def test_update_quiz_serializer(self):
-        """QuizSerializer should update quiz data correctly"""
-        serializer = QuizSerializer(instance=self.quiz, data={
-            'title': "Updated Quiz Title",
-            'description': "Updated description",
-            'lernset': self.lernset.id,
-            'created_by': self.user.username
-        })
-        self.assertTrue(serializer.is_valid())
-        updated_quiz = serializer.save()
-
-        self.assertEqual(updated_quiz.title, "Updated Quiz Title")
-        self.assertEqual(updated_quiz.description, "Updated description")

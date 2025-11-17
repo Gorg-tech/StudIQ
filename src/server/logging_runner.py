@@ -37,21 +37,35 @@ class LoggingTestResult(unittest.TextTestResult):
         })
 
 class LoggingTestRunner(DiscoverRunner):
-    """Django test runner that logs all results."""
-    def run_suite(self, suite, **kwargs):
-        # Wrap the suite in our custom result
-        result = unittest.TextTestRunner(
-            resultclass=LoggingTestResult,
-            verbosity=2
-        ).run(suite)
+    MODULE_NAME_MAP = {
+        "test_moduls": "quiz",
+        "test_accounts": "acc",
+    }
 
-        # Write results to file
+    def run_tests(self, test_labels, **kwargs):
+        # Determine short name based on first label
+        if test_labels:
+            first_label = test_labels[0].split('.')[-1]
+            short_name = self.MODULE_NAME_MAP.get(first_label, "general")
+        else:
+            short_name = "general"
+
+        # Run Django tests normally, but wrap the result
+        suite = self.build_suite(test_labels, **kwargs)
+        runner = unittest.TextTestRunner(resultclass=LoggingTestResult, verbosity=2)
+        result = runner.run(suite)
+
+        # Save results to file
         folder = os.path.join(os.path.dirname(__file__), "test_logs")
         os.makedirs(folder, exist_ok=True)
-        filename = os.path.join(folder, f"test_results_{datetime.now().strftime('%Y-%m-%d_%H:%M')}.txt")
-
+        filename = os.path.join(
+            folder,
+            f"test_results_{short_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.txt"
+        )
         with open(filename, "w") as f:
             json.dump(result.logged_results, f, indent=2)
 
         print(f"Test results saved to {filename}")
-        return result
+
+        # Return total failures + errors as Django expects
+        return len(result.failures) + len(result.errors)
