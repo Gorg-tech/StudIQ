@@ -73,6 +73,7 @@ class UserStatsView(APIView):
         serializer = UserSerializer(request.user)
         data = serializer.data
         data['rank'] = self.get_user_rank(request.user.id)
+        data['streak'] = calculate_streak(request.user)
         return Response(data)
 
 def calculate_streak(user):
@@ -106,7 +107,7 @@ def calculate_longest_streak(user):
     longest_streak = max(longest_streak, current_streak)
     return longest_streak
 
-# Upon quiz completion, update streak by calling the following (but field in user model is not edited):
+# Upon quiz completion, update streak by calling the following:
 # def register_study_activity(user):
 #    today = date.today()
 #    StudyDay.objects.get_or_create(user=user, date=today)

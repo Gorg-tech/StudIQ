@@ -15,7 +15,6 @@ class User(AbstractUser):
     correct_answers = models.IntegerField(default=0)
     wrong_answers = models.IntegerField(default=0)
     solved_quizzes = models.IntegerField(default=0)
-    streak = models.IntegerField(default=0)
     registration_date = models.DateField(auto_now_add=True)
     # last_login is already part of AbstractUser
     
