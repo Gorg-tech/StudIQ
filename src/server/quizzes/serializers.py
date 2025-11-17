@@ -144,8 +144,8 @@ class LernsetSerializer(serializers.ModelSerializer):
 class QuizProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizProgress
-        fields = ['id', 'quiz', 'correct_answers', 'wrong_answers', 
-                 'last_reviewed', 'strength_score']
+        fields = ['id', 'quiz', 'correct_answers', 'wrong_answers',
+                 'last_reviewed', 'strength_score', 'attempts']
         
 class AchievementSerializer(serializers.ModelSerializer):
     class Meta:
