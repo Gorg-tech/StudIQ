@@ -1,0 +1,12 @@
+[
+  {
+    "test": "test_lernset_without_modul (quizzes.tests.test_serializer.TestCaseMissingValues.test_lernset_without_modul)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 13:30:05.193175"
+  },
+  {
+    "test": "test_missing_quiz_title (quizzes.tests.test_serializer.TestCaseMissingValues.test_missing_quiz_title)",
+    "status": "SUCCESS",
+    "time": "2025-11-17 13:30:05.194311"
+  }
+]
