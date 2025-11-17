@@ -1,9 +1,15 @@
-from django.shortcuts import render
+from itertools import chain
+from math import exp, floor
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from accounts.views import calculate_streak
+from accounts.serializers import UserSerializer
 from .models import (
     Quiz,
     Question,
@@ -30,14 +36,6 @@ from .serializers import (
     AnswerOptionSerializer,
     QuizForLernsetSerializer
 )
-from rest_framework.filters import SearchFilter, OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
-from itertools import chain
-from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth import get_user_model
-from rest_framework.permissions import IsAuthenticated
-from accounts.serializers import UserSerializer
 
 class AnswerOptionViewSet(viewsets.ModelViewSet):
     queryset = AnswerOption.objects.all()
@@ -379,3 +377,62 @@ class SuggestedQuizzesView(ListAPIView):
         quizzes = Quiz.objects.filter(lernset__in=lernsets).order_by('-created_at')[:3]
         
         return quizzes
+
+class QuizIQCalculationView(APIView):
+    """
+    View for calculating IQ points upon quiz completion.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, quiz_id):
+        """
+        Expected (in request):
+        {
+            "correct": int
+        }
+
+        Returns (in response):
+        {
+            "base_points": int,
+            "attempt_bonus_points": int,
+            "perfect_bonus_points": int,
+            "streak_bonus_points": int,
+            "total_points": int,
+            "prev_iq": int,
+            "new_iq": int
+        }
+        """
+        user = request.user
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
+        total = quiz.questions.count()
+
+        # formulas
+        attempt_bonus = 0.5 * exp(-0.5 * (quiz_progress.attempts))
+        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))
+        streak_bonus = 0.25 * (1 - exp(-0.1 * calculate_streak(user)))
+
+        base_points = floor(0.5 * total ** int(request.data.get("correct", 0)) / total
+                            if total > 0 else 0)
+        attempt_bonus_points = floor(base_points * attempt_bonus)
+        perfect_bonus_points = floor(base_points * perfect_bonus)
+        streak_bonus_points = floor(base_points * streak_bonus)
+
+        total_points = floor(
+            base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
+        )
+
+        prev_iq = user.iq_level
+        new_iq = prev_iq + total_points
+        user.iq_level = new_iq
+        user.save()
+
+        return Response({
+            "base_points": base_points,
+            "attempt_bonus_points": attempt_bonus_points,
+            "perfect_bonus_points": perfect_bonus_points,
+            "streak_bonus_points": streak_bonus_points,
+            "total_points": total_points,
+            "prev_iq": prev_iq,
+            "new_iq": new_iq
+        })

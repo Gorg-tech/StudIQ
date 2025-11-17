@@ -27,4 +27,5 @@ urlpatterns = [
     # Nested: /api/lernsets/<int:lernset_id>/quizzes/
     path('lernsets/<uuid:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
     path('search/', SearchView.as_view(), name='search'),
+    path('quizzes/<uuid:quiz_id>/calculate_iq/', views.QuizIQCalculationView.as_view(), name='quiz-calculate-iq'),
 ]
