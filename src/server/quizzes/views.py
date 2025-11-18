@@ -417,6 +417,9 @@ class QuizCompletionView(APIView):
         prev_iq = user.iq_level
         new_iq = prev_iq + total_points
         user.iq_level = new_iq
+        user.solved_quizzes += 1
+        user.correct_answers += int(request.data.get("correct", 0))
+        user.wrong_answers += total - int(request.data.get("correct", 0))
         user.save()
 
         quiz_progress.attempts += 1
