@@ -76,7 +76,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { getQuiz } from '@/services/quizzes'
+import { getQuiz, completeQuiz } from '@/services/quizzes'
 import Penguin from '@/components/Penguin.vue'
 
 const router = useRouter()
@@ -97,6 +97,9 @@ const result = ref(null)
 const correctCount = ref(0)
 const userAnswers = ref([])
 
+// session start timestamp for duration reporting
+const sessionStartTs = ref(null)
+
 const currentQuestion = computed(() => {
   if (!quiz.value.questions.length || currentIndex.value >= quiz.value.questions.length) return null
   const question = quiz.value.questions[currentIndex.value]
@@ -115,6 +118,7 @@ const progress = computed(() => {
 
 onMounted(async () => {
   try {
+    sessionStartTs.value = Date.now() // mark start time
     const data = await getQuiz(quizId.value)
     quiz.value = data
   } catch (err) {
@@ -149,14 +153,56 @@ function nextQuestion() {
   selectedSingle.value = null
   answered.value = false
   
-  if (currentIndex.value >= quiz.value.questions.length) { // Use quiz.value.questions here too
-    localStorage.setItem('quizResults', JSON.stringify(userAnswers.value))
+  if (currentIndex.value >= quiz.value.questions.length) {
+    // build run object
+    const total = quiz.value.questions.length
+    const correct = correctCount.value
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0
+    const run = {
+      timestamp: new Date().toISOString(),
+      results: userAnswers.value || [],
+      correctAnswers: correct,
+      totalQuestions: total,
+      percentage,
+      duration_seconds: sessionStartTs.value ? Math.round((Date.now() - sessionStartTs.value) / 1000) : null
+    }
+
+    // Persist locally under per-quiz key so overview can read it
+    const historyKey = `quizHistory_${quizId.value}`
+    try {
+      const existing = JSON.parse(localStorage.getItem(historyKey) || '[]')
+      existing.push(run)
+      localStorage.setItem(historyKey, JSON.stringify(existing))
+    } catch (e) {
+      console.error('Error saving quiz history to localStorage', e)
+    }
+
+    // Also keep compatibility with QuizResultView (single-run payload)
+    try {
+      localStorage.setItem('quizResults', JSON.stringify(userAnswers.value))
+    } catch (e) { /* ignore */ }
+
+    // Fire-and-forget: attempt to persist run on server
+    (async () => {
+      try {
+        await completeQuiz(quizId.value, {
+          score: correct,
+          total: total,
+          duration_seconds: run.duration_seconds,
+          results: userAnswers.value
+        })
+      } catch (err) {
+        // non-fatal: log and continue
+        console.warn('Failed to send completed run to server', err)
+      }
+    })()
+
     router.push({
       name: 'quiz-result',
       query: {
         quizId: quizId.value,
         correct: correctCount.value,
-        total: quiz.value.questions.length
+        total
       }
     })
   }
