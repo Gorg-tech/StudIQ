@@ -9,79 +9,73 @@
       <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
         <IconSettings />
       </button>
-      
     </header>
     <div v-if="loading">Lädt...</div>
     <div v-else-if="error">Fehler: {{ error.message }}</div>
     <div v-if="!loading">
-    <!-- Top Profile Section-->
-    <div class="profile-top">
-      <!-- Left side: Name + Leaderboard + Level Bar -->
-      <div class="profile-left">
-        <div class="profile-info">
-          <h2>{{ user.username }}</h2>
-          <p>Platz #{{ leaderboardPosition }}</p>
-        </div>
+      <!-- Top Profile Section-->
+      <div class="profile-top">
+        <!-- Left side: Name + Leaderboard + Level Bar -->
+        <div class="profile-left">
+          <div class="profile-info">
+            <h2>{{ user.username }}</h2>
+            <p>Platz #{{ leaderboardPosition }}</p>
+          </div>
 
-        <!-- Level Circle + Bar -->
-        <div class="level-bar-container">
-          <div class="level-circle">{{ userLevel }}</div>
-          <div class="level-bar-wrapper">
-            <div class="level-bar">
-              <div class="level-fill" :style="{ width: levelProgress + '%' }"></div>
+          <!-- Level Circle + Bar -->
+          <div class="level-bar-container">
+            <div class="level-circle">{{ userLevel }}</div>
+            <div class="level-bar-wrapper">
+              <div class="level-bar">
+                <div class="level-fill" :style="{ width: levelProgress + '%' }"></div>
+              </div>
+              <div class="level-percentage">{{ levelProgress }}%</div>
             </div>
-            <div class="level-percentage">{{ levelProgress }}%</div>
           </div>
         </div>
-        
-      </div>
 
-      <!-- Right side: Penguin aligned to top of name -->
-      <div class="profile-right">
-        <div class="penguin-bubble top-aligned">
-          <div class="bubble">{{ penguinSpeech }}</div>
-          <Penguin :clap="streakCount >= 3" />
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Streak Calendar Full Width -->
-    <div class="streak-card full-width">
-      <div class="week-row">
-        <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
-          <IconFlame v-if="day.learned" />
-          <IconFlame v-else class="inactive" />
-          <div class="day-label">{{ day.label }}</div>
-        </div>
-      </div>
-      <div class="streak-count">Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br>Beste Serie: <strong>{{ longestStreak }} Tage</strong></div>
-    </div>
-
-    <!-- Recent Quizzes Section (Home-style cards) -->
-    <div class="suggested-quizzes">
-      <h3>Zuletzt bearbeitete Quizze</h3>
-      <div class="quiz-suggestions-row">
-        <div
-          v-for="(quiz, index) in recentQuizzes"
-          :key="index"
-          class="quiz-suggestion-item"
-        >
-          <div class="quiz-suggestion-icon" :style="{ backgroundColor: '#2196f3' + '1A' }">
-            <IconCode /> <!-- can change based on type if needed -->
+        <!-- Right side: Penguin aligned to top of name -->
+        <div class="profile-right">
+          <div class="penguin-bubble top-aligned">
+            <div class="bubble">{{ penguinSpeech }}</div>
+            <Penguin :clap="streakCount >= 3" />
           </div>
-          <div class="quiz-suggestion-content">
-            <h4>{{ quiz.title }}</h4>
-            <p class="quiz-meta">{{ quiz.score }}/{{ quiz.total }} - {{ quiz.date }}</p>
+        </div>
+      </div>
+
+      <!-- Streak Calendar Full Width -->
+      <div class="streak-card full-width">
+        <div class="week-row">
+          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
+            <IconFlame v-if="day.learned" />
+            <IconFlame v-else class="inactive" />
+            <div class="day-label">{{ day.label }}</div>
+          </div>
+        </div>
+        <div class="streak-count">
+          Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br />Beste Serie:
+          <strong>{{ longestStreak }} Tage</strong>
+        </div>
+      </div>
+
+      <!-- Recent Quizzes Section (Home-style cards) -->
+      <div class="suggested-quizzes">
+        <h3>Zuletzt bearbeitete Quizze</h3>
+        <div class="quiz-suggestions-row">
+          <div v-for="(quiz, index) in recentQuizzes" :key="index" class="quiz-suggestion-item">
+            <div class="quiz-suggestion-icon" :style="{ backgroundColor: '#2196f3' + '1A' }">
+              <IconCode />
+              <!-- can change based on type if needed -->
+            </div>
+            <div class="quiz-suggestion-content">
+              <h4>{{ quiz.title }}</h4>
+              <p class="quiz-meta">{{ quiz.score }}/{{ quiz.total }} - {{ quiz.date }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
-
-</div>
-
 </template>
 
 <script setup>
@@ -102,8 +96,7 @@ const loading = ref(true)
 const error = ref(null)
 
 const leaderboardPosition = ref(12)
-const totalUsers = ref(20)
-const penguinSpeech = ref("Super gemacht! Weiter so 🐧")
+const penguinSpeech = ref('Super gemacht! Weiter so 🐧')
 
 // Level progress (hardcoded example)
 const userLevel = ref(3)
@@ -111,13 +104,13 @@ const levelProgress = ref(60) // percentage filled of the current level
 
 // Will be fetched from server
 const currentWeekStreak = ref([
-  { label: "Mo", learned: true },
-  { label: "Di", learned: false },
-  { label: "Mi", learned: false },
-  { label: "Do", learned: false },
-  { label: "Fr", learned: true },
-  { label: "Sa", learned: true },
-  { label: "So", learned: true }
+  { label: 'Mo', learned: true },
+  { label: 'Di', learned: false },
+  { label: 'Mi', learned: false },
+  { label: 'Do', learned: false },
+  { label: 'Fr', learned: true },
+  { label: 'Sa', learned: true },
+  { label: 'So', learned: true },
 ])
 
 const streakCount = ref(0)
@@ -125,18 +118,15 @@ const longestStreak = ref(0)
 
 // Hardcoded recent quiz results
 const recentQuizzes = ref([
-  { title: "Analysis", date: "2025-02-20", score: 8, total: 10 },
-  { title: "Programmierung", date: "2025-02-18", score: 7, total: 10 },
-  { title: "BWL Grundlagen", date: "2025-02-16", score: 9, total: 10 }
+  { title: 'Analysis', date: '2025-02-20', score: 8, total: 10 },
+  { title: 'Programmierung', date: '2025-02-18', score: 7, total: 10 },
+  { title: 'BWL Grundlagen', date: '2025-02-16', score: 9, total: 10 },
 ])
 
 onMounted(async () => {
   try {
     user.value = await store.getUser()
-    const [stats, streaks] = await Promise.all([
-      getSelfUserStats(),
-      getSelfUserStreaks()
-    ])
+    const [stats, streaks] = await Promise.all([getSelfUserStats(), getSelfUserStreaks()])
 
     leaderboardPosition.value = stats.rank
 
@@ -147,7 +137,7 @@ onMounted(async () => {
 
     const days = streaks.days || []
     const today = new Date()
-    const weekDays = ['So', 'Mo','Di','Mi','Do','Fr','Sa']
+    const weekDays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
 
     // current week streak
     const currentWeek = []
@@ -157,21 +147,16 @@ onMounted(async () => {
       const iso = day.toISOString().split('T')[0]
       currentWeek.push({
         label: weekDays[day.getDay()],
-        learned: days.includes(iso)
+        learned: days.includes(iso),
       })
     }
     currentWeekStreak.value = currentWeek
-  } catch(err) {
+  } catch (err) {
     error.value = `Fehler beim Laden des Profils: ${err.message}`
   } finally {
     loading.value = false
   }
-  
 })
-
-function handleLogout() {
-  router.push("/login")
-}
 </script>
 
 <style scoped>
@@ -219,7 +204,7 @@ function handleLogout() {
   background: #fff;
   border-radius: 12px;
   padding: 12px;
-  box-shadow: 0 2px 8px rgba(34,34,34,0.1);
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.1);
 }
 
 .profile-top {
@@ -287,7 +272,7 @@ function handleLogout() {
   background-color: #eee;
   border-radius: 8px;
   overflow: hidden;
-  min-width:100px;
+  min-width: 100px;
 }
 
 .level-fill {
@@ -314,7 +299,7 @@ function handleLogout() {
 .streak-card {
   background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(34,34,34,0.08);
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   padding: 20px;
   display: flex;
   flex-direction: column;
