@@ -102,7 +102,6 @@ const loading = ref(true)
 const error = ref(null)
 
 const leaderboardPosition = ref(12)
-const totalUsers = ref(20)
 const penguinSpeech = ref("Super gemacht! Weiter so 🐧")
 
 // Level progress (hardcoded example)
@@ -168,10 +167,6 @@ onMounted(async () => {
   }
   
 })
-
-function handleLogout() {
-  router.push("/login")
-}
 </script>
 
 <style scoped>
