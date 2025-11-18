@@ -114,7 +114,7 @@ const route = useRoute()
 
 const quizEdit = useQuizEditStore()
 
-const questionId = Number(route.params.questionId)
+const questionId = route.params.questionId
 const question = ref(null)
 
 const questionText = ref('')
@@ -130,52 +130,49 @@ const selectedTypeApi = computed(() =>
 )
 
 onMounted(async () => {
-
-  // Frage laden
   question.value = quizEdit.getQuestion(questionId)
-  if(!question.value) {
-    console.error('Frage nicht gefunden:', questionId)
-    if (quizEdit.quizId) {
-      router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
-    } else {
-      router.push({ name: 'lernset', params: { lernsetId: quizEdit.lernsetId } })
-    }
+  if (!question.value) {
+    const params = { lernsetId: quizEdit.lernsetId }
+    if (quizEdit.quizId) params.quizId = quizEdit.quizId
+    router.push({ name: 'edit-quiz', params })
     return
   }
 
   questionText.value = question.value.text || ''
   selectedType.value = getLabelFromApi(question.value.type) || QUESTION_TYPES[0].label
 
-  if(question.value._status === 'unchanged') {
-    // Wenn die Frage noch nicht geändert wurde, Antworten aus der Datenbank laden
-    const loadedAnswers = await getAnswers(questionId)
-    if (!loadedAnswers) {
-      console.error('Frage konnte nicht geladen werden:', questionId)
-      if (quizEdit.quizId) {
-        router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
-      } else {
-        router.push({ name: 'lernset', params: { lernsetId: quizEdit.lernsetId } })
-      }
-      return
-    }
-    // Für jede Antwortmöglichkeit ein neues Objekt erstellen und mit getAnswer correct Variable laden und in options speichern
-    for (const answer of loadedAnswers) {
-      const answerDetails = await getAnswer(answer.id)
-      options.value.push({
-        id: answer.id,
-        text: answer.text,
-        correct: answerDetails.correct,
-        _status: 'unchanged' 
-      })
-    }
-    
-  } else {
+  // Prefer already loaded options from store
+  if (question.value.options && question.value.options.length > 0) {
     options.value = question.value.options.map(opt => ({
       id: opt.id,
       text: opt.text,
       correct: opt.correct,
-      _status: opt._status
+      _status: opt._status || 'unchanged'
     }))
+    return
+  }
+
+  // Fallback: load from API only if no options present
+  try {
+    const loadedAnswers = await getAnswers(questionId)
+    if (!loadedAnswers) return
+    for (const answer of loadedAnswers) {
+      // If getAnswer not needed (answer already has is_correct), you can drop this extra call
+      let answerDetails
+      try {
+        answerDetails = await getAnswer(answer.id)
+      } catch {
+        answerDetails = answer
+      }
+      options.value.push({
+        id: answer.id,
+        text: answer.text,
+        correct: answerDetails?.correct ?? answerDetails?.is_correct ?? false,
+        _status: 'unchanged'
+      })
+    }
+  } catch (e) {
+    console.error('Antworten konnten nicht geladen werden', e)
   }
 })
 
@@ -243,11 +240,9 @@ function closeCancelPopup() {
 }
 function confirmCancel() {
   cancelPopup.value.open = false
-  if (quizEdit.quizId) {
-    router.push({ name: 'edit-quiz', params: { quizId: quizEdit.quizId, lernsetId: quizEdit.lernsetId } })
-  } else {
-    router.push({ name: 'lernset', params: { lernsetId: quizEdit.lernsetId } })
-  }
+  const params = { lernsetId: quizEdit.lernsetId }
+  if (quizEdit.quizId) params.quizId = quizEdit.quizId
+  router.push({ name: 'edit-quiz', params })
 }
 
 // Update delete button in option-actions:

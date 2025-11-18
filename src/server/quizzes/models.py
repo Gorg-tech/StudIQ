@@ -89,6 +89,7 @@ class QuizProgress(models.Model):
     wrong_answers = models.IntegerField(default=0)
     last_reviewed = models.DateTimeField(auto_now=True)
     strength_score = models.FloatField(default=0.0)
+    attempts = models.IntegerField(default=0)
     
     class Meta:
         unique_together = ('user', 'quiz')

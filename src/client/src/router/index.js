@@ -115,8 +115,9 @@ router.beforeEach((to, from, next) => {
   // Prevent accessing edit-quiz without quizId OR lernsetId
   if (to.name === 'edit-quiz') {
     const store = useQuizEditStore()
-    const hasQuiz = to.params && !(to.params.quizId || to.params.quizId === '')
-    const hasLernset = to.params && !(to.params.lernsetId || to.params.lernsetId === '') || store.lernsetId
+    // Check if a quizId or lernsetId was provided OR if the store already has a lernsetId
+    const hasQuiz = !!(to.params && to.params.quizId !== undefined && to.params.quizId !== '')
+    const hasLernset = !!((to.params && to.params.lernsetId !== undefined && to.params.lernsetId !== '') || store.lernsetId)
     if (!hasQuiz && !hasLernset) {
       if (from && from.name) {
         next(false)

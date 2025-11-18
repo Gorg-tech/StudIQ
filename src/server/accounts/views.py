@@ -54,28 +54,29 @@ def csrf(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
 
 
+def get_user_rank(user_id):
+    """Berechnet die Position eines Users im Leaderboard."""
+    User = get_user_model()
+    try:
+        target = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return None
+    # Anzahl der Nutzer mit höherer streak + 1
+    higher = User.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
+    return higher + 1
+
 class UserStatsView(APIView):
     """Return current user's stats (used by frontend at /api/users/me/stats/)."""
     permission_classes = [IsAuthenticated]
 
-    def get_user_rank(self, user_id):
-        """Berechnet die Position eines Users im Leaderboard."""
-        User = get_user_model()
-        try:
-            target = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return None
-        # Anzahl der Nutzer mit höherer streak + 1
-        higher = User.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
-        return higher + 1
-
     def get(self, request):
         serializer = UserSerializer(request.user)
         data = serializer.data
-        data['rank'] = self.get_user_rank(request.user.id)
+        data['rank'] = get_user_rank(request.user.id)
         return Response(data)
 
 def calculate_streak(user):
+    """Calculate the current study streak for a user and update user."""
     days = StudyDay.objects.filter(user=user).values_list('date', flat=True).order_by('-date')
     streak = 0
     last_day = date.today()
@@ -86,9 +87,13 @@ def calculate_streak(user):
             last_day = d
         else:
             break
+
+    user.streak = streak
+    user.save(update_fields=['streak'])
     return streak
 
 def calculate_longest_streak(user):
+    """Calculate the longest study streak for a user."""
     days = StudyDay.objects.filter(user=user).values_list('date', flat=True).order_by('date')
 
     if not days:
@@ -106,10 +111,12 @@ def calculate_longest_streak(user):
     longest_streak = max(longest_streak, current_streak)
     return longest_streak
 
-# Upon quiz completion, update streak by calling the following (but field in user model is not edited):
-# def register_study_activity(user):
-#    today = date.today()
-#    StudyDay.objects.get_or_create(user=user, date=today)
+# Upon quiz completion, update streak by calling the following:
+def register_study_activity(user):
+    """Register today's study activity for the user and update streak."""
+    today = date.today()
+    StudyDay.objects.get_or_create(user=user, date=today)
+    calculate_streak(user)
 
 class StudyCalendarView(APIView):
     permission_classes = [IsAuthenticated]
