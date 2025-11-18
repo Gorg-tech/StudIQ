@@ -1,16 +1,8 @@
 <template>
   <div class="quiz-overview-container">
-    <!-- Loading State -->
-    <div v-if="loading" class="loading-state">
-      Laden...
-    </div>
+    <div v-if="loading" class="loading-card">Lade Quiz …</div>
+    <div v-else-if="error" class="error-card">{{ error }}</div>
 
-    <!-- Error State -->
-    <div v-else-if="error" class="error-state">
-      {{ error }}
-    </div>
-
-    <!-- Content when loaded -->
     <template v-else-if="quiz">
       <!-- Main Quiz Card -->
       <div class="card quiz-card">
@@ -40,68 +32,122 @@
                 <span>Lernset: {{ quiz.lernset?.title || '-' }}</span>
               </div>
             </div>
-            <div class="button-row">
-              <button class="btn btn-primary" @click="startQuiz">
-                Quiz starten
-              </button>
-              <button class="btn" @click="goToLernset">
-                Zum Lernset
-              </button>
-              <button class="btn" @click="showStats = true">
-                Statistiken
-              </button>
+            <div class="meta-item small">
+              <strong>Ø Zeit</strong>
+              <span>{{ quiz.avg_time_spent ?? '-' }}s</span>
+            </div>
+            <div class="meta-item small">
+              <strong>Erstellt</strong>
+              <span>{{ formatDate(quiz.created_at) }}</span>
+            </div>
+            <div class="meta-item small">
+              <strong>von</strong>
+              <span>{{ quiz.created_by ?? '-' }}</span>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="btn btn-primary" @click="startQuiz">Quiz starten</button>
+            <button class="btn btn-ghost" @click="goToLernset">Zum Lernset</button>
+            <button class="btn btn-outline" @click="showStats = true">Statistiken</button>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="card-stats">
+            <h4>Letzte Runde</h4>
+            <div class="stat-big">{{ current.percentage ?? '-' }}%</div>
+            <div class="stat-sub">
+              <span>{{ current.correctAnswers ?? 0 }} / {{ current.totalQuestions ?? 0 }} richtig</span>
+              <span class="muted">• {{ formatDate(current.timestamp) }}</span>
+            </div>
+
+            <div class="progress-bar">
+              <div class="progress-fill" :style="{ width: (current.percentage ?? 0) + '%' }"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Statistik-Popup -->
+      <!-- history -->
+      <section class="history-section">
+        <h3>Verlauf</h3>
+        <div v-if="quizHistory.length === 0" class="no-history">Keine bisherigen Durchläufe</div>
+        <ul v-else class="history-list">
+          <li v-for="(h, i) in quizHistory.slice().reverse()" :key="i" class="history-item">
+            <div class="history-left">
+              <div class="history-percent">{{ h.percentage ?? '-' }}%</div>
+              <div class="history-info">
+                <div class="muted">{{ formatDate(h.timestamp) }}</div>
+                <div>{{ h.correctAnswers ?? 0 }} / {{ h.totalQuestions ?? 0 }} richtig</div>
+              </div>
+            </div>
+            <div class="history-right">
+              <button class="btn btn-sm" @click="showRun(quizHistory.length - 1 - i); showStats = true">Anzeigen</button>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- stats modal -->
       <div v-if="showStats" class="modal-overlay" @click.self="showStats = false">
         <div class="modal-content">
-          <h3>Statistiken</h3>
-          <div class="stats-row">
-            <div class="stat-square error-rate">
-              <div class="stat-label">Fehlerquote</div>
-              <div class="stat-value">{{ errorRate }}%</div>
-            </div>
-            <div class="stat-square correct-rate">
-              <div class="stat-label">Korrekte Antworten</div>
-              <div class="stat-value">{{ 100 - errorRate }}%</div>
-            </div>
-          </div>
-          <div class="stats-row">
-            <div class="stat-square attempts">
-              <div class="stat-label">Versuche</div>
-              <div class="stat-value">{{ quizHistory.length }}</div>
-            </div>
-          </div>
-          <button class="btn btn-secondary" @click="showStats = false" style="margin-top: 24px;">Schließen</button>
-        </div>
-      </div>
+          <header>
+            <h3>Statistiken — {{ quiz.title }}</h3>
+            <button class="btn-icon" @click="showStats = false">✕</button>
+          </header>
 
-      <!-- History Section -->
-      <div class="card history-section">
-        <h3>Verlauf deiner Durchgänge</h3>
-        <div class="history-list">
-          <div v-for="(entry, idx) in quizHistory" 
-               :key="entry.timestamp" 
-               class="history-item" 
-               @click="showRun(idx)"
-               :class="{ active: idx === currentRunIndex }">
-            <div class="history-date">
-              <span>{{ formatDate(entry.timestamp) }}</span>
-            </div>
-            <div class="history-result">
-              <span class="result-score">{{ entry.correctAnswers }} / {{ entry.totalQuestions }}</span>
-              <div class="progress-bar">
-                <div class="progress-fill" :style="{ width: entry.percentage + '%' }"></div>
+          <div class="modal-body">
+            <div class="stats-grid two-columns">
+              <div class="stat-column">
+                <div class="stat-card">
+                  <div class="stat-label">Letzte Genauigkeit</div>
+                  <div class="stat-value">{{ current.percentage ?? 0 }}%</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Richtig</div>
+                  <div class="stat-value">{{ current.correctAnswers ?? 0 }}</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Gesamt</div>
+                  <div class="stat-value">{{ current.totalQuestions ?? 0 }}</div>
+                </div>
               </div>
-              <span class="percentage">{{ entry.percentage }}%</span>
+
+              <div class="stat-column">
+                <div class="stat-card">
+                  <div class="stat-label">Insgesamt (Alle Durchläufe)</div>
+                  <div class="stat-value">{{ aggregate.avgPercentage }}%</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Richtig Gesamt</div>
+                  <div class="stat-value">{{ aggregate.correctAnswers }}</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Gesamtfragen</div>
+                  <div class="stat-value">{{ aggregate.totalQuestions }}</div>
+                </div>
+              </div>
             </div>
+            <div class="muted" style="margin-top:.5rem">Versuche: {{ aggregate.attempts }}</div>
+
+            <h4>Antworten</h4>
+            <ul class="results-list">
+              <li v-for="(r, idx) in current.results" :key="idx" class="result-item">
+                <div class="q-text">{{ r.question }}</div>
+                <div class="a-row">
+                  <span :class="['tag', r.isCorrect ? 'tag-good' : 'tag-bad']">
+                    {{ r.isCorrect ? 'Richtig' : 'Falsch' }}
+                  </span>
+                  <div class="muted">Gewählte: {{ r.selected ?? '-' }}</div>
+                </div>
+              </li>
+            </ul>
           </div>
-          <div class="no-history" v-if="quizHistory.length === 0">
-            <p>Du hast dieses Quiz noch nicht absolviert. Starte jetzt deinen ersten Durchgang!</p>
-          </div>
+
+          <footer class="modal-footer">
+            <button class="btn" @click="showStats = false">Schließen</button>
+          </footer>
         </div>
       </div>
     </template>
@@ -109,7 +155,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getQuiz } from '@/services/quizzes'
 import IconSettings from '@/components/icons/IconSettings.vue'
@@ -128,10 +174,35 @@ const error = ref(null)
 // Keep existing quizHistory/dummy fallback if needed
 const quizHistory = ref([])
 
+// ensure currentRunIndex exists early so loader can set it
+const currentRunIndex = ref(0)
+
+// helper to load per-quiz history from localStorage
+function loadHistoryFromStorage() {
+  const qid = route.params.quizId
+  if (!qid) {
+    quizHistory.value = []
+    currentRunIndex.value = 0
+    return
+  }
+  const key = `quizHistory_${qid}`
+  try {
+    const raw = localStorage.getItem(key)
+    const parsed = raw ? JSON.parse(raw) : []
+    quizHistory.value = Array.isArray(parsed) ? parsed : []
+    // set index to latest run
+    currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
+  } catch (err) {
+    console.error('Error loading quizHistory from localStorage', err)
+    quizHistory.value = []
+    currentRunIndex.value = 0
+  }
+}
+
 // Fetch quiz from API on mount
 onMounted(async () => {
-  const quizId = route.params.quizId
-  if (!quizId) {
+  const qid = route.params.quizId
+  if (!qid) {
     error.value = 'Keine Quiz-ID vorhanden'
     loading.value = false
     return
@@ -139,31 +210,78 @@ onMounted(async () => {
 
   try {
     loading.value = true
-    const data = await getQuiz(quizId)
-    // Expect service to return the quiz object directly (consistent with other services)
+    const data = await getQuiz(qid)
     quiz.value = data
+    // load history after quiz known
+    loadHistoryFromStorage()
   } catch (err) {
     console.error('Error fetching quiz:', err)
     error.value = 'Fehler beim Laden des Quiz'
-    // Optional: keep a minimal fallback (previous dummy) or leave null
     quiz.value = null
   } finally {
     loading.value = false
   }
 })
 
-const currentRunIndex = ref(quizHistory.value.length - 1)
+// refresh history when the stats modal opens
+watch(showStats, (val) => {
+  if (val) loadHistoryFromStorage()
+})
+
+// refresh whenever route changes (user navigated back here)
+watch(() => route.fullPath, () => {
+  loadHistoryFromStorage()
+})
+
+// also listen to storage events (other tabs) to keep UI in sync
+function onStorageEvent(e) {
+  const qid = route.params.quizId
+  if (!qid) return
+  if (e.key === `quizHistory_${qid}`) loadHistoryFromStorage()
+}
+window.addEventListener('storage', onStorageEvent)
+onBeforeUnmount(() => window.removeEventListener('storage', onStorageEvent))
+
 const current = computed(() => {
-  const entry = quizHistory.value[currentRunIndex.value]
-  const correctAnswers = entry.results.filter(r => r.isCorrect).length
-  const totalQuestions = entry.results.length
-  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0
+  if (!Array.isArray(quizHistory.value) || quizHistory.value.length === 0) {
+    return {
+      timestamp: null,
+      results: [],
+      correctAnswers: 0,
+      totalQuestions: 0,
+      percentage: 0
+    }
+  }
+  const idx = Math.min(Math.max(currentRunIndex.value || 0, 0), quizHistory.value.length - 1)
+  const entry = quizHistory.value[idx] || { results: [] }
+  const resultsArr = Array.isArray(entry.results) ? entry.results : []
+  const correctAnswers = resultsArr.filter(r => r.isCorrect).length
+  const totalQuestions = resultsArr.length
+  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : (entry.percentage || 0)
   return {
     ...entry,
+    results: resultsArr,
     correctAnswers,
     totalQuestions,
     percentage
   }
+})
+
+// Aggregate across all runs (for modal "Insgesamt")
+const aggregate = computed(() => {
+  const runs = Array.isArray(quizHistory.value) ? quizHistory.value : []
+  if (runs.length === 0) {
+    return { attempts: 0, correctAnswers: 0, totalQuestions: 0, avgPercentage: 0, runs: [] }
+  }
+  let totalCorrect = 0
+  let totalQ = 0
+  runs.forEach(run => {
+    const results = Array.isArray(run.results) ? run.results : []
+    totalCorrect += results.filter(r => r.isCorrect).length
+    totalQ += results.length
+  })
+  const avgPercentage = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0
+  return { attempts: runs.length, correctAnswers: totalCorrect, totalQuestions: totalQ, avgPercentage, runs }
 })
 
 const errorRate = computed(() =>
@@ -204,10 +322,12 @@ function goToEditQuiz() {
 }
 
 function showRun(idx) {
-  currentRunIndex.value = idx
+  const clamped = Math.min(Math.max(idx, 0), Math.max(quizHistory.value.length - 1, 0))
+  currentRunIndex.value = clamped
 }
 
 function formatDate(ts) {
+  if (!ts) return '-'
   const d = new Date(ts)
   return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
@@ -215,278 +335,145 @@ function formatDate(ts) {
 
 <style scoped>
 .quiz-overview-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Hero card */
+.hero-card {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-.card {
-  background-color: var(--card-bg);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 8px var(--card-shadow);
-  width: 100%;
-}
-.settings-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  padding-top: 8px;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  color: var(--color-primary);
-  transition: color 0.2s;
-}
-.settings-btn:hover {
-  color: var(--color-accent);
-}
-
-.settings-btn svg {
-  width: 2.2rem;
-  height: 2.2rem;
-}
-
-.quiz-header {
-  margin-bottom: 16px;
-}
-
-.quiz-header h2 {
-  color: var(--color-accent);
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.quiz-description {
-  font-size: 1.1rem;
-  color: var(--color-text);
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.quiz-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
-  background-color: var(--color-bg-light);
+  gap: 1.25rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fff7f0 100%); /* softened to warm bg */
+  padding: 1.25rem;
   border-radius: 12px;
-  padding: 16px;
+  /* use orange shadow instead of blue */
+  box-shadow: 0 8px 30px rgba(255,106,0,0.06);
+  align-items: stretch;
 }
 
-.meta-item {
-  font-size: 0.95rem;
-  color: var(--color-muted);
+.hero-left {
+  flex: 1 1 60%;
 }
 
-.button-row {
+.hero-title {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #0f172a;
+}
+
+.hero-sub {
+  margin-top: 0.5rem;
+  color: #111213ff;
+}
+
+/* meta */
+.meta-row {
   display: flex;
-  gap: 12px;
+  gap: .75rem;
+  margin-top: 12px;
   flex-wrap: wrap;
 }
-
-.stats-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+.meta-item {
+  background: rgba(15, 23, 42, 0.03);
+  padding: .45rem .6rem;
+  border-radius: 8px;
 }
+/* labels and values in meta boxes set to orange */
+.meta-item.small strong { display:block; font-size: .75rem; color: #0e0d0dff; }
+.meta-item.small span { font-weight:600; color:#ff6a00; }
 
-.stat-square {
-  background: var(--color-bg-light);
+/* Buttons */
+.button-row { margin-top: 16px; display:flex; gap:.6rem; align-items:center; }
+.btn { padding: .5rem .9rem; border-radius: 8px; border: none; cursor: pointer; background: transparent; }
+.btn-primary { 
+  background: linear-gradient(90deg,#ff8a3d,#ff6a00); 
+  color: #fff; 
+  box-shadow: 0 6px 18px rgba(255,106,0,0.12); 
+}
+.btn-ghost { border: 1px solid rgba(15,23,42,0.06); color:#0f172a; }
+.btn-outline { 
+  border: 1px solid rgba(255,106,0,0.12); 
+  color:#ff6a00; 
+}
+.btn-sm { padding: .35rem .6rem; font-size: .85rem; }
+
+/* Right stats card */
+.hero-right { width: 280px; display:flex; align-items:center; justify-content:center; }
+.card-stats {
+  background: white;
+  padding: 1rem;
   border-radius: 12px;
-  padding: 16px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-width: 100px;
+  text-align:center;
+  box-shadow: 0 6px 20px rgba(10, 10, 10, 0.04);
+  width:100%;
+}
+.card-stats h4 { margin:0; color:#475569; }
+/* stat number color -> orange */
+.stat-big { font-size: 2rem; margin-top: .5rem; color:#ff6a00; font-weight:700; }
+.stat-sub { color:#6b7280; font-size:.9rem; margin-top:.5rem; }
+
+/* progress */
+/* warm progress background and orange fill */
+.progress-bar { height:8px; background: #fff3ea; border-radius: 99px; margin-top:12px; overflow:hidden; }
+.progress-fill { height:100%; background: linear-gradient(90deg,#ff8a3d,#ff6a00); transition: width .4s ease; }
+
+/* history list */
+.history-section { 
+  margin-top: 1.25rem;
+  /* constrain history width to the main/left column so it lines up with the overview box */
+  max-width: calc(100% - 320px); /* 280px sidebar + ~40px gap */
+  margin-left: 0;
+  margin-right: auto;
+}
+.history-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.5rem; }
+.history-item { display:flex; justify-content:space-between; align-items:center; padding:.6rem; border-radius:8px; background:#fff; box-shadow: 0 3px 12px rgba(2,6,23,0.03); }
+/* history percent color -> orange */
+.history-percent { font-weight:700; color:#ff6a00; font-size:1.05rem; margin-right:.6rem; }
+.history-info .muted { color:#6b7280; font-size:.85rem; }
+
+/* ensure full width on small screens */
+@media (max-width: 899px) {
+  .history-section {
+    max-width: 100%;
+  }
+  .hero-right { width: auto; }
 }
 
-.error-rate {
-  background-color: var(--color-bg-light);
+/* tweak for larger displays if the gap or sidebar width changes */
+@media (min-width: 1200px) {
+  .history-section {
+    max-width: calc(100% - 320px);
+  }
 }
 
-.correct-rate {
-  background-color: var(--color-bg-light);
-}
-
-.attempts {
-  background-color: var(--color-bg-light);
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: var(--color-muted);
-  margin-bottom: 4px;
-}
-
-.stat-value {
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.history-section h3 {
-  color: var(--color-accent);
-  margin-bottom: 16px;
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.history-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background-color: var(--color-bg-light);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.history-item:hover {
-  background-color: var(--color-bg-hover);
-  transform: translateY(-2px);
-}
-
-.history-item.active {
-  background-color: var(--color-bg-hover);
-  border: 1px solid var(--color-border);
-}
-
-.history-date {
-  font-size: 0.9rem;
-  color: var(--color-muted);
-}
-
-.history-result {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.result-score {
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.progress-bar {
-  width: 100px;
-  height: 8px;
-  background-color: var(--color-border);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background-color: var(--color-primary);
-}
-
-.percentage {
-  font-weight: 500;
-  color: var(--color-primary);
-  min-width: 48px;
-  text-align: right;
-}
-
-.no-history {
-  text-align: center;
-  padding: 24px;
-  color: var(--color-muted);
-  background-color: var(--color-bg-light);
-  border-radius: 12px;
-}
-
+/* modal */
 .modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  backdrop-filter: blur(2px);
+  position: fixed; inset: 0; background: rgba(2,6,23,0.45); display:flex; align-items:center; justify-content:center; z-index:9999;
 }
-
 .modal-content {
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 32px 24px;
-  min-width: 320px;
-  max-width: 90vw;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: min(880px, 96%);
+  background: #fff; border-radius: 12px; padding: 1rem 1.15rem; box-shadow: 0 20px 50px rgba(2,6,23,0.35);
 }
+.modal-content header { display:flex; justify-content:space-between; align-items:center; }
+.modal-body { margin-top: 0.9rem; }
+.stats-grid { display:flex; gap: .75rem; margin-bottom: .9rem; }
+/* stat card background warmer and values orange */
+.stat-card { flex:1; background:#fff7f3; padding:.6rem; border-radius:8px; text-align:center; }
+.stat-label { color:#6b7280; font-size:.85rem; }
+.stat-value { font-weight:700; color:#ff6a00; font-size:1.25rem; margin-top:.25rem; }
 
-.modal-content h3 {
-  color: var(--color-accent);
-  margin-bottom: 24px;
-  font-size: 1.4rem;
-  text-align: center;
-}
+.results-list { list-style:none; padding:0; margin:0; display:grid; gap:.5rem; max-height:240px; overflow:auto; }
+/* result-item border warm */
+.result-item { padding:.6rem; border-radius:8px; background:#fff; border:1px solid #fff3ea; }
+.q-text { font-weight:600; color:#0f172a; }
+.a-row { display:flex; gap:.5rem; align-items:center; margin-top:.35rem; }
+.tag { padding: .18rem .45rem; border-radius:99px; font-size:.78rem; }
+.tag-good { background: #ecfdf5; color: #059669; }
+.tag-bad { background: #fff1f2; color: #dc2626; }
+.muted { color:#6b7280; font-size:.9rem; }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-  .stats-row {
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .stat-square {
-    flex: 0 0 calc(50% - 8px);
-    margin-bottom: 16px;
-  }
-  
-  .button-row {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .button-row .btn {
-    width: 100%;
-    margin-bottom: 8px;
-  }
-}
-
-@media (max-width: 600px) {
-  .quiz-meta-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .history-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .history-result {
-    width: 100%;
-  }
-  
-  .modal-content {
-    padding: 24px 16px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .quiz-overview-container {
-    padding: 0;
-  }
-  
-  .card {
-    padding: 32px;
-  }
-}
+/* small helpers */
+.loading-card, .error-card { padding:1rem; background:#fff; border-radius:10px; text-align:center; box-shadow:0 10px 30px rgba(2,6,23,0.04); }
+.btn-icon { background:transparent; border:none; cursor:pointer; font-size:1.05rem; }
 </style>
