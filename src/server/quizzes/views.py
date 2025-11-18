@@ -443,3 +443,26 @@ class QuizCompletionView(APIView):
             "prev_iq": prev_iq,
             "new_iq": new_iq
         })
+    
+    def get(self, request, quiz_id):
+        """
+        Get the number of attempts for the user on the specified quiz.
+        Returns: {
+            correct_answers: int,
+            wrong_answers = int,
+            last_reviewed = DateTime,
+            strength_score = float,
+            attempts = int
+        }
+        """
+        user = request.user
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
+
+        return Response({
+            "correct_answers": quiz_progress.correct_answers,
+            "wrong_answers": quiz_progress.wrong_answers,
+            "last_reviewed": quiz_progress.last_reviewed,
+            "strength_score": quiz_progress.strength_score,
+            "attempts": quiz_progress.attempts
+            })

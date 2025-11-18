@@ -168,6 +168,7 @@ onMounted(async () => {
   } else {
     error.value = new Error('Keine Quiz-ID angegeben')
   }
+  
   loading.value = false
 })
 
