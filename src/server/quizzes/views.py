@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
 from accounts.views import get_user_rank
 from accounts.serializers import UserSerializer
+from accounts.views import register_study_activity
 from .models import (
     Quiz,
     Question,
@@ -396,13 +397,14 @@ class QuizCompletionView(APIView):
         quiz = get_object_or_404(Quiz, id=quiz_id)
         quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
         total = quiz.questions.count()
+        streak = calculate_streak(user)
 
         # formulas
         attempt_bonus = 0.5 * exp(-0.5 * (quiz_progress.attempts))
         perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))
-        streak_bonus = 0.25 * (1 - exp(-0.1 * calculate_streak(user)))
+        streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
 
-        base_points = floor(0.5 * total ** int(request.data.get("correct", 0)) / total
+        base_points = floor(0.5 * total ** (int(request.data.get("correct", 0)) / total)
                             if total > 0 else 0)
         attempt_bonus_points = floor(base_points * attempt_bonus)
         perfect_bonus_points = floor(base_points * perfect_bonus)
@@ -417,7 +419,15 @@ class QuizCompletionView(APIView):
         user.iq_level = new_iq
         user.save()
 
+        quiz_progress.attempts += 1
+        quiz_progress.correct_answers += int(request.data.get("correct", 0))
+        quiz_progress.save()
+
+        register_study_activity(user)
+
         return Response({
+            "attempts": quiz_progress.attempts,
+            "streak": streak,
             "base_points": base_points,
             "attempt_bonus_points": attempt_bonus_points,
             "perfect_bonus_points": perfect_bonus_points,
