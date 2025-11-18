@@ -11,16 +11,10 @@
         </div>
         <div class="iq-bar">
           <div class="iq-segment iq-old" :style="{ width: iqOldWidth + '%', left: '0%' }" title="Bisheriger IQ-Level"></div>
-          <div class="iq-segment iq-base" :style="{ width: iqBaseWidth + '%', left: iqOldWidth + '%' }" title="Punkte für das Quiz" @mouseenter="hoverSegment('base')" @mouseleave="hoverSegment('')"></div>
-          <div class="iq-segment iq-perfect" :style="{ width: iqPerfectWidth + '%', left: (iqOldWidth + iqBaseWidth) + '%' }" title="Perfect-Score-Bonus" @mouseenter="hoverSegment('perfect')" @mouseleave="hoverSegment('')"></div>
-          <div class="iq-segment iq-streak" :style="{ width: iqStreakWidth + '%', left: (iqOldWidth + iqBaseWidth + iqPerfectWidth) + '%' }" title="Streak-Bonus" @mouseenter="hoverSegment('streak')" @mouseleave="hoverSegment('')"></div>
-          <div class="iq-segment iq-attempt" :style="{ width: iqAttemptWidth + '%', left: (iqOldWidth + iqBaseWidth + iqPerfectWidth + iqStreakWidth) + '%' }" title="Versuch-Bonus" @mouseenter="hoverSegment('attempt')" @mouseleave="hoverSegment('')"></div>
-          <div v-if="hoveredSegment" class="iq-tooltip" :class="'iq-tooltip-' + hoveredSegment">
-            <span v-if="hoveredSegment === 'base'">Basis-Punkte: Punkte für das Quiz</span>
-            <span v-if="hoveredSegment === 'perfect'">Perfect-Score-Bonus: Alle Fragen richtig!</span>
-            <span v-if="hoveredSegment === 'streak'">Streak-Bonus: Deine aktuelle Serie</span>
-            <span v-if="hoveredSegment === 'attempt'">Versuch-Bonus: Bonus für die Anzahl der Versuche</span>
-          </div>
+          <div class="iq-segment iq-base" :style="{ width: iqBaseWidth + '%', left: iqOldWidth + '%' }" title="Punkte für das Quiz"></div>
+          <div class="iq-segment iq-perfect" :style="{ width: iqPerfectWidth + '%', left: (iqOldWidth + iqBaseWidth) + '%' }" title="Perfect-Score-Bonus"></div>
+          <div class="iq-segment iq-streak" :style="{ width: iqStreakWidth + '%', left: (iqOldWidth + iqBaseWidth + iqPerfectWidth) + '%' }" title="Streak-Bonus"></div>
+          <div class="iq-segment iq-attempt" :style="{ width: iqAttemptWidth + '%', left: (iqOldWidth + iqBaseWidth + iqPerfectWidth + iqStreakWidth) + '%' }" title="Versuch-Bonus"></div>
         </div>
         <div class="iq-bar-scale">
           <span>0</span>
@@ -67,10 +61,6 @@
 </template>
 
 <script setup>
-const hoveredSegment = ref('')
-function hoverSegment(seg) {
-  hoveredSegment.value = seg
-}
 const iqOldWidth = ref(0)
 const showBaseLabel = ref(false)
 const showPerfectLabel = ref(false)
@@ -276,34 +266,11 @@ function goToOverview() {
   position: absolute;
   top: 0;
   transition: width 0.6s cubic-bezier(.4,1.4,.6,1), left 0.6s cubic-bezier(.4,1.4,.6,1), box-shadow 0.2s;
-  cursor: pointer;
 }
 .iq-segment:hover {
-  box-shadow: 0 0 0 3px rgba(33,150,243,0.18);
-  filter: brightness(1.08);
+  filter: brightness(1.2);
   z-index: 2;
 }
-.iq-tooltip {
-  position: absolute;
-  top: -38px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  color: #222;
-  padding: 7px 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(34,34,34,0.12);
-  font-size: 1rem;
-  font-weight: 500;
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 10;
-  animation: popIn 0.3s;
-}
-.iq-tooltip-base { border: 2px solid var(--color-secondary); color: var(--color-secondary); }
-.iq-tooltip-perfect { border: 2px solid #ffd700; color: #ffd700; }
-.iq-tooltip-streak { border: 2px solid #4caf50; color: #4caf50; }
-.iq-tooltip-attempt { border: 2px solid #2196f3; color: #2196f3; }
 .iq-base {
   background: var(--color-secondary);
 }
