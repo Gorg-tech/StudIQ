@@ -1,4 +1,3 @@
-
 <template>
   <div class="quiz-overview-container">
     <!-- Loading State -->
@@ -18,7 +17,7 @@
         <div class="quiz-header">
           <h2>{{ quiz.title }}</h2>
         </div>
-        <button class="settings-btn" @click="router.push('/edit-quiz/')" aria-label="Einstellungen">
+        <button class="settings-btn" @click="goToEditQuiz" :disabled="loading" aria-label="Einstellungen">
           <IconSettings />
         </button>
         <div class="quiz-content">
@@ -114,10 +113,12 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getQuiz } from '@/services/quizzes'
 import IconSettings from '@/components/icons/IconSettings.vue'
+import { useQuizEditStore } from '@/stores/editQuiz'
 
 const showStats = ref(false)
 const router = useRouter()
 const route = useRoute()
+const quizEdit = useQuizEditStore()
 
 // Replace local dummy quiz with API-driven state
 const quiz = ref(null)
@@ -185,6 +186,21 @@ function goToLernset() {
   } else {
     router.push('/')
   }
+}
+
+function goToEditQuiz() {
+  if (!quiz.value || !quiz.value.id) {
+    error.value = 'Quiz konnte nicht bearbeitet werden (ID fehlt)'
+    return
+  }
+  // Try to read lernset id: could be a number or object with id
+  const lernsetId = quiz.value.lernset && typeof quiz.value.lernset === 'object'
+    ? quiz.value.lernset.id
+    : quiz.value.lernset
+  if (lernsetId) {
+    quizEdit.setLernset(lernsetId)
+  }
+  router.push({ name: 'edit-quiz', params: { quizId: quiz.value.id, lernsetId } })
 }
 
 function showRun(idx) {
