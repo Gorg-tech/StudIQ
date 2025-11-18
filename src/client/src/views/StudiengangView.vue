@@ -1,101 +1,122 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 
+// API
+import { getStudiengangById } from '@/services/studiengaenge'
+
+const route = useRoute()
 const router = useRouter()
+
 const studiengang = ref(null)
 const loading = ref(true)
 const error = ref(null)
 
-// Dummy Daten
-const dummyStudiengang = {
-  id: 'I41',  
-  name: "Bachelor Informatik",
-  semester: 6,
-  department: "Informatik und Mathematik",
-  degree: "Bachelor of Science",
-  duration: 6,
-  credits: 180,
-  modules: [
-    { id: "I128", name: "Programmierung 1", credits: 6 },
-    { id: "I128", name: "Algorithmen und Datenstrukturen", credits: 6 },
-    { id: "I128", name: "Mathematik für Informatiker", credits: 8 }
-  ]
-}
-
 onMounted(async () => {
   try {
-    // TODO: Scraper hier einbetten
-    studiengang.value = dummyStudiengang
-    loading.value = false
+    const studiengangId = route.params.studiengangId
+    const sg = await getStudiengangById(studiengangId)
+console.log('Studiengang data:', sg)
+    // Beschreibung parsen
+    if (sg.description) {
+      const degreeMatch = sg.description.match(/Abschluss:\s*([^,]+)/)
+      const durationMatch = sg.description.match(/Regelstudienzeit:\s*(\d+)\s*Semester/)
+      
+      sg.degree = degreeMatch ? degreeMatch[1].trim() : ''
+      sg.duration = durationMatch ? Number(durationMatch[1]) : null
+    } else console.error('Description error')
+
+    studiengang.value = sg
   } catch (err) {
-    error.value = 'Fehler beim Laden des Studiengangs'
     console.error('Error loading Studiengang:', err)
+    error.value = 'Fehler beim Laden des Studiengangs'
+  } finally {
+    loading.value = false
   }
 })
 
+
 const goToModul = (modulId) => {
-  router.push({ name: 'modul', params: { modulId: modulId }})  // Zeigt auf einzigstes Modul 
+  router.push({ name: 'modul', params: { modulId } })
 }
 </script>
 
 <template>
   <div class="studiengang-view">
-    <div v-if="loading" class="loading">
-      Laden...
-    </div>
-
-    <div v-else-if="error" class="error">
-      {{ error }}
-    </div>
+    <div v-if="loading" class="loading">Laden...</div>
+    <div v-else-if="error" class="error">{{ error }}</div>
 
     <div v-else class="studiengang-content">
       <header class="studiengang-header">
         <LogoStudIQ class="logo" />
+
         <div class="studiengang-title">
-          <h1>{{ studiengang.name }}</h1>
-          <span class="studiengang-number">Studiengang-Nr: {{ studiengang.id }}</span>
+          <h1>{{ studiengang?.name }}</h1>
+          <span class="studiengang-number">Studiengang-Nr: {{ studiengang?.id }}</span>
         </div>
+
+        <!-- Beschreibung -->
+        <p class="studiengang-description" v-if="studiengang?.description">
+          {{ studiengang.description }}
+        </p>
+
+        <!-- Modulux-Link -->
+        <a
+          v-if="studiengang?.modulux_url"
+          :href="studiengang.modulux_url"
+          target="_blank"
+          class="modulux-link"
+        >
+          Modulux öffnen
+        </a>
+
         <div class="studiengang-info">
-          <p class="semester">{{ studiengang.semester }}. Semester</p>
-          <p class="department">Fachbereich: {{ studiengang.department }}</p>
+          <p class="semester" v-if="studiengang?.semester">
+            {{ studiengang.semester }}. Semester
+          </p>
+          <p class="department" v-if="studiengang?.department">
+            Fachbereich: {{ studiengang.department }}
+          </p>
         </div>
       </header>
 
       <section class="studiengang-details">
         <h2>Studiengangdetails</h2>
         <div class="info-grid">
-          <div class="info-item">
+          <div class="info-item" v-if="studiengang?.degree">
             <strong>Abschluss:</strong>
             <span>{{ studiengang.degree }}</span>
           </div>
-          <div class="info-item">
+
+          <div class="info-item" v-if="studiengang?.duration">
             <strong>Regelstudienzeit:</strong>
             <span>{{ studiengang.duration }} Semester</span>
           </div>
-          <div class="info-item">
+
+          <div class="info-item" v-if="studiengang?.credits">
             <strong>ECTS:</strong>
             <span>{{ studiengang.credits }} Credits</span>
           </div>
         </div>
       </section>
 
-      <section class="module-list">
-        <h2>Module</h2>
-        <div v-if="studiengang.modules?.length" class="modules-grid">
-          <div 
-            v-for="modul in studiengang.modules" 
-            :key="modul.id"
-            class="module-card"
-            @click="goToModul(modul.id)"
-          >
-            <h3>{{ modul.name }}</h3>
-            <p>{{ modul.credits }} ECTS</p>
+      <section class="module-list" v-if="studiengang?.module?.length">
+          <h2>Module</h2>
+            <div class="modules-grid">
+            <div
+              v-for="modul in studiengang.module"
+                :key="modul.modulId"
+                class="module-card"
+                @click="goToModul(modul.modulId)"
+              >
+          <h3>{{ modul.name }}</h3>
+            
+              
           </div>
         </div>
-        <p v-else>Keine Module verfügbar</p>
       </section>
+
     </div>
   </div>
 </template>
@@ -192,13 +213,30 @@ const goToModul = (modulId) => {
   font-weight: 500;
 }
 
+.studiengang-description {
+  margin: 1rem 0;
+  color: var(--color-muted);
+}
+
+.modulux-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
 section h2 {
   color: var(--color-accent, #1565c0);
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
 }
 
-.studiengang-details, .module-list {
+.studiengang-details,
+.module-list {
   background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;

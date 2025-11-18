@@ -191,9 +191,11 @@ class FeedbackSerializer(serializers.ModelSerializer):
         fields = ['id', 'quiz', 'rating', 'comment', 'submitted_at']
 
 class StudiengangSerializer(serializers.ModelSerializer):
+    module = ModulShortSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Studiengang
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'description', 'modulux_url', 'module']
 
 class ModulSerializer(serializers.ModelSerializer):
     class Meta:
