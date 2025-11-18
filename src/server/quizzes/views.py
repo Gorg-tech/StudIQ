@@ -1,5 +1,6 @@
 from itertools import chain
 from math import exp, floor
+from datetime import datetime
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
@@ -398,14 +399,14 @@ class QuizCompletionView(APIView):
         quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
         total = quiz.questions.count()
         streak = calculate_streak(user)
+        accuracy = int(request.data.get("correct", 0)) / total if total > 0 else 0
 
         # formulas
         attempt_bonus = 0.5 * exp(-0.5 * (quiz_progress.attempts))
-        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))
+        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25)) if accuracy == 1.0 else 0
         streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
 
-        base_points = floor(0.5 * total ** (int(request.data.get("correct", 0)) / total)
-                            if total > 0 else 0)
+        base_points = floor(0.5 * total ** (accuracy))
         attempt_bonus_points = floor(base_points * attempt_bonus)
         perfect_bonus_points = floor(base_points * perfect_bonus)
         streak_bonus_points = floor(base_points * streak_bonus)
@@ -414,6 +415,7 @@ class QuizCompletionView(APIView):
             base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
         )
 
+        # update user and quiz progress
         prev_iq = user.iq_level
         new_iq = prev_iq + total_points
         user.iq_level = new_iq
@@ -424,6 +426,8 @@ class QuizCompletionView(APIView):
 
         quiz_progress.attempts += 1
         quiz_progress.correct_answers += int(request.data.get("correct", 0))
+        quiz_progress.wrong_answers += total - int(request.data.get("correct", 0))
+        quiz_progress.last_reviewed = datetime.now()
         quiz_progress.save()
 
         register_study_activity(user)
