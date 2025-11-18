@@ -24,6 +24,31 @@ const isNewQuiz = ref(!route.params.quizId)
 const errorMessage = ref('')
 
 onMounted(async () => {
+  // If quiz already loaded in store, reuse it (no re-fetch)
+  if (quizEdit.quizLoaded) {
+    // If navigating to a different quiz ID than stored, fetch that one
+    if (quizId.value && quizEdit.quizId !== quizId.value) {
+      const quiz = await getQuiz(quizId.value)
+      quizEdit.setQuiz({
+        id: quiz.id,
+        title: quiz.title,
+        lernset: quiz.lernset,
+        questions: quiz.questions.map(q => ({
+          id: q.id,
+          text: q.text,
+          type: q.type,
+          options: q.answer_options.map(opt => ({
+            id: opt.id,
+            text: opt.text,
+            correct: opt.is_correct,
+            _status: 'unchanged'
+          })),
+          _status: 'unchanged'
+        }))
+      })
+    }
+    return
+  }
 
   if (isNewQuiz.value) {
     const lernset = route.params.lernsetId || quizEdit.lernsetId || null
@@ -34,29 +59,30 @@ onMounted(async () => {
       router.push('/')
       return
     }
-    // Nur lokal initialisieren - Speicherung erst bei Click auf den Button "Speichern"
-    if(!quizEdit.quizLoaded) {
-      quizEdit.quizLoaded = true
-      quizEdit.questions = [
-      ]
+    quizEdit.quizLoaded = true
+    // Ensure questions array initialized
+    if (!quizEdit.questions.length) {
+      quizEdit.questions = []
     }
-    return
   } else {
     const quiz = await getQuiz(quizId.value)
-    quizEdit.quizTitle = quiz.title
-    quizEdit.setLernset(quiz.lernset)
-    quizEdit.questions = quiz.questions.map(q => ({
-      id: q.id,
-      text: q.text,
-      type: q.type,
-      options: q.answer_options.map(opt => ({
-        id: opt.id,
-        text: opt.text,
-        correct: opt.is_correct,
-        _status: 'edited'
-      })),
-      _status: 'edited'
-    }))
+    quizEdit.setQuiz({
+      id: quiz.id,
+      title: quiz.title,
+      lernset: quiz.lernset,
+      questions: quiz.questions.map(q => ({
+        id: q.id,
+        text: q.text,
+        type: q.type,
+        options: q.answer_options.map(opt => ({
+          id: opt.id,
+          text: opt.text,
+          correct: opt.is_correct,
+          _status: 'unchanged'
+        })),
+        _status: 'unchanged'
+      }))
+    })
   }
 })
 
@@ -117,22 +143,37 @@ const saveQuiz = async () => {
       answer_options: q.options ? q.options.map(opt => ({
         id: opt.id,
         text: opt.text,
-        is_correct: opt.correct
+        is_correct: opt.correct,
+        _status: opt._status
       })) : []
-    })).filter(q => q._status !== 'unchanged')
+    })).filter(q => {
+      if (q._status !== 'unchanged') return true;
+      if (q.answer_options && q.answer_options.some(opt => opt._status !== 'unchanged')) {
+        q._status = 'edited';
+        return true;
+      }
+      return false;
+    })
   }
 
-  if (isNewQuiz.value) {
-    await createQuiz(quizData)
-  } else {
-    await updateQuiz(quizId.value, quizData)
-  }
+  console.log('saveQuiz -> quizData being sent:', JSON.stringify(quizData, null, 2))
 
-  quizEdit.resetQuiz()
-  router.push({ 
-    name: 'lernset', 
-    params: { lernsetId: quizEdit.lernsetId } 
-  })
+  try {
+    if (isNewQuiz.value) {
+      await createQuiz(quizData)
+    } else {
+      await updateQuiz(quizId.value, quizData)
+    }
+
+    quizEdit.resetQuiz()
+    router.push({ 
+      name: 'lernset', 
+      params: { lernsetId: quizEdit.lernsetId } 
+    })
+  } catch (error) {
+    errorMessage.value = 'Fehler beim Speichern des Quiz. Bitte versuche es später erneut.'
+    console.error('Error saving quiz:', error)
+  }
 }
 
 const addQuestion = async () => {
@@ -187,7 +228,7 @@ const cancelDelete = () => {
 <template>
   <div class="edit-quiz-view">
     <header class="edit-header">
-      <h1>Quiz erstellen</h1>
+      <h1>{{ isNewQuiz ? 'Quiz erstellen' : 'Quiz bearbeiten' }}</h1>
     </header>
     <main class="edit-main">
       <section class="quiz-title-section card">
@@ -297,6 +338,11 @@ const cancelDelete = () => {
 .edit-header h1 {
   font-size: 2rem;
   font-weight: 700;
+}
+.edit-header .edit-subtitle {
+  font-size: 1.1rem;
+  color: var(--color-muted, #888);
+  margin-top: 4px;
 }
 .edit-main {
   display: flex;

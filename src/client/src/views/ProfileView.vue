@@ -11,36 +11,40 @@
       </button>
       
     </header>
-
+    <div v-if="loading">Lädt...</div>
+    <div v-else-if="error">Fehler: {{ error.message }}</div>
+    <div v-if="!loading">
     <!-- Top Profile Section-->
-<div class="profile-top">
-  <!-- Left side: Name + Leaderboard + Level Bar -->
-  <div class="profile-left">
-    <div class="profile-info">
-      <h2>{{ store.user.name }}</h2>
-      <p>Platz: {{ leaderboardPosition }}/{{ totalUsers }}</p>
-    </div>
-
-    <!-- Level Circle + Bar -->
-    <div class="level-bar-container">
-      <div class="level-circle">{{ userLevel }}</div>
-      <div class="level-bar-wrapper">
-        <div class="level-bar">
-          <div class="level-fill" :style="{ width: levelProgress + '%' }"></div>
+    <div class="profile-top">
+      <!-- Left side: Name + Leaderboard + Level Bar -->
+      <div class="profile-left">
+        <div class="profile-info">
+          <h2>{{ user.username }}</h2>
+          <p>Platz #{{ leaderboardPosition }}</p>
         </div>
-        <div class="level-percentage">{{ levelProgress }}%</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Right side: Penguin aligned to top of name -->
-  <div class="profile-right">
-   <div class="penguin-bubble top-aligned">
-      <div class="bubble">{{ penguinSpeech }}</div>
-        <Penguin :clap="streakCount >= 3" />
+        <!-- Level Circle + Bar -->
+        <div class="level-bar-container">
+          <div class="level-circle">{{ userLevel }}</div>
+          <div class="level-bar-wrapper">
+            <div class="level-bar">
+              <div class="level-fill" :style="{ width: levelProgress + '%' }"></div>
+            </div>
+            <div class="level-percentage">{{ levelProgress }}%</div>
+          </div>
+        </div>
+        
       </div>
+
+      <!-- Right side: Penguin aligned to top of name -->
+      <div class="profile-right">
+        <div class="penguin-bubble top-aligned">
+          <div class="bubble">{{ penguinSpeech }}</div>
+          <Penguin :clap="streakCount >= 3" />
+        </div>
+      </div>
+
     </div>
-  </div>
 
     <!-- Streak Calendar Full Width -->
     <div class="streak-card full-width">
@@ -51,7 +55,7 @@
           <div class="day-label">{{ day.label }}</div>
         </div>
       </div>
-      <div class="streak-count">Aktuelle Serie: <strong>{{ streakCount }} Tage</strong></div>
+      <div class="streak-count">Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br>Beste Serie: <strong>{{ longestStreak }} Tage</strong></div>
     </div>
 
     <!-- Recent Quizzes Section (Home-style cards) -->
@@ -73,26 +77,29 @@
         </div>
       </div>
     </div>
-    </div>
+
+  </div>
+
+</div>
 
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
+import { store } from '@/stores/app.js'
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'
 import IconSettings from '@/components/icons/IconSettings.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 
-// Hardcoded user
-const store = {
-  user: { name: "Max Mustermann" }
-}
-
 const router = useRouter()
-const showMenu = ref(false)
+const user = ref(null)
+
+const loading = ref(true)
+const error = ref(null)
 
 const leaderboardPosition = ref(12)
 const totalUsers = ref(20)
@@ -102,7 +109,7 @@ const penguinSpeech = ref("Super gemacht! Weiter so 🐧")
 const userLevel = ref(3)
 const levelProgress = ref(60) // percentage filled of the current level
 
-
+// Will be fetched from server
 const currentWeekStreak = ref([
   { label: "Mo", learned: true },
   { label: "Di", learned: false },
@@ -113,14 +120,8 @@ const currentWeekStreak = ref([
   { label: "So", learned: true }
 ])
 
-const streakCount = computed(() => {
-  let count = 0
-  for (let i = currentWeekStreak.value.length - 1; i >= 0; i--) {
-    if (currentWeekStreak.value[i].learned) count++
-    else break
-  }
-  return count
-})
+const streakCount = ref(0)
+const longestStreak = ref(0)
 
 // Hardcoded recent quiz results
 const recentQuizzes = ref([
@@ -128,6 +129,45 @@ const recentQuizzes = ref([
   { title: "Programmierung", date: "2025-02-18", score: 7, total: 10 },
   { title: "BWL Grundlagen", date: "2025-02-16", score: 9, total: 10 }
 ])
+
+onMounted(async () => {
+  try {
+    user.value = await store.getUser()
+    const [stats, streaks] = await Promise.all([
+      getSelfUserStats(),
+      getSelfUserStreaks()
+    ])
+
+    leaderboardPosition.value = stats.rank
+
+    streakCount.value = streaks.streak
+    longestStreak.value = streaks.longest_streak
+    // TODO: user_level, level_progress (only "iq_level" in backend)
+    // TODO: Total users (no backend support yet)
+
+    const days = streaks.days || []
+    const today = new Date()
+    const weekDays = ['So', 'Mo','Di','Mi','Do','Fr','Sa']
+
+    // current week streak
+    const currentWeek = []
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(today)
+      day.setDate(today.getDate() - (6 - i))
+      const iso = day.toISOString().split('T')[0]
+      currentWeek.push({
+        label: weekDays[day.getDay()],
+        learned: days.includes(iso)
+      })
+    }
+    currentWeekStreak.value = currentWeek
+  } catch(err) {
+    error.value = `Fehler beim Laden des Profils: ${err.message}`
+  } finally {
+    loading.value = false
+  }
+  
+})
 
 function handleLogout() {
   router.push("/login")
@@ -272,7 +312,7 @@ function handleLogout() {
 }
 
 .streak-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(34,34,34,0.08);
   padding: 20px;
@@ -335,7 +375,7 @@ function handleLogout() {
 }
 
 .quiz-suggestion-item {
-  background-color: #f9f9f9;
+  background-color: var(--card-bg);
   border-radius: 10px;
   padding: 16px;
   min-width: 180px;
@@ -345,11 +385,10 @@ function handleLogout() {
   gap: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid #eee;
 }
 
 .quiz-suggestion-item:hover {
-  background-color: #f5f5f5;
+  background-color: color-mix(in oklab, var(--card-bg) 80%, #888 20%);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }

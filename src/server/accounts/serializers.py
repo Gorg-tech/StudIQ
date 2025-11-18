@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, StudyDay
 from django.contrib.auth.password_validation import validate_password
+from quizzes.models import Studiengang
 
 class UserSerializer(serializers.ModelSerializer):
     studiengang_name = serializers.CharField(source='studiengang.name', read_only=True)
@@ -15,6 +16,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    # Require a valid Studiengang ID on registration
+    studiengang = serializers.PrimaryKeyRelatedField(
+        queryset=Studiengang.objects.all(),
+        required=True,
+        error_messages={
+            'required': 'Studiengang ist erforderlich.',
+            'does_not_exist': 'Ungültiger Studiengang.',
+            'incorrect_type': 'Studiengang muss eine gültige ID sein.'
+        }
+    )
     
     class Meta:
         model = User
@@ -27,3 +38,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
+class StudyDaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudyDay
+        fields = ['date']

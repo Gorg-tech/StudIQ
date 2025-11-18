@@ -1,9 +1,18 @@
-from django.shortcuts import render
+from itertools import chain
+from math import exp, floor
+from datetime import datetime
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from accounts.views import calculate_streak
+from accounts.views import get_user_rank
+from accounts.serializers import UserSerializer
+from accounts.views import register_study_activity
 from .models import (
     Quiz,
     Question,
@@ -30,14 +39,6 @@ from .serializers import (
     AnswerOptionSerializer,
     QuizForLernsetSerializer
 )
-from rest_framework.filters import SearchFilter, OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
-from itertools import chain
-from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth import get_user_model
-from rest_framework.permissions import IsAuthenticated
-from accounts.serializers import UserSerializer
 
 class AnswerOptionViewSet(viewsets.ModelViewSet):
     queryset = AnswerOption.objects.all()
@@ -174,17 +175,6 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_user_rank(self, user_id):
-        """Berechnet die Position eines Users im Leaderboard."""
-        User = get_user_model()
-        try:
-            target = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return None
-        # Anzahl der höheren streaks + 1
-        higher = User.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
-        return higher + 1
-
     def get_users_around(self, user_id, before=1, after=1): 
         """Holt Nutzer vor und nach dem gegebenen User. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
         User = get_user_model()
@@ -251,7 +241,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         serialized = self.get_serializer(combined, many=True).data
 
         for item in serialized:
-            item['rank'] = self.get_user_rank(item['id'])
+            item['rank'] = get_user_rank(item['id'])
 
         return Response({
             'users': serialized,
@@ -379,3 +369,77 @@ class SuggestedQuizzesView(ListAPIView):
         quizzes = Quiz.objects.filter(lernset__in=lernsets).order_by('-created_at')[:3]
         
         return quizzes
+
+class QuizCompletionView(APIView):
+    """
+    View for calculating IQ points upon quiz completion and increasing user's IQ level
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, quiz_id):
+        """
+        Expected (in request):
+        {
+            "correct": int
+        }
+
+        Returns (in response):
+        {
+            "base_points": int,
+            "attempt_bonus_points": int,
+            "perfect_bonus_points": int,
+            "streak_bonus_points": int,
+            "total_points": int,
+            "prev_iq": int,
+            "new_iq": int
+        }
+        """
+        user = request.user
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
+        total = quiz.questions.count()
+        streak = calculate_streak(user)
+        accuracy = int(request.data.get("correct", 0)) / total if total > 0 else 0
+
+        # formulas
+        attempt_bonus = 0.5 * exp(-0.5 * (quiz_progress.attempts))
+        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25)) if accuracy == 1.0 else 0
+        streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
+
+        base_points = floor(0.5 * total ** (accuracy))
+        attempt_bonus_points = floor(base_points * attempt_bonus)
+        perfect_bonus_points = floor(base_points * perfect_bonus)
+        streak_bonus_points = floor(base_points * streak_bonus)
+
+        total_points = floor(
+            base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
+        )
+
+        # update user and quiz progress
+        prev_iq = user.iq_level
+        new_iq = prev_iq + total_points
+        user.iq_level = new_iq
+        user.solved_quizzes += 1
+        user.correct_answers += int(request.data.get("correct", 0))
+        user.wrong_answers += total - int(request.data.get("correct", 0))
+        user.save()
+
+        quiz_progress.attempts += 1
+        quiz_progress.correct_answers += int(request.data.get("correct", 0))
+        quiz_progress.wrong_answers += total - int(request.data.get("correct", 0))
+        quiz_progress.last_reviewed = datetime.now()
+        quiz_progress.save()
+
+        register_study_activity(user)
+
+        return Response({
+            "attempts": quiz_progress.attempts,
+            "streak": streak,
+            "base_points": base_points,
+            "attempt_bonus_points": attempt_bonus_points,
+            "perfect_bonus_points": perfect_bonus_points,
+            "streak_bonus_points": streak_bonus_points,
+            "total_points": total_points,
+            "prev_iq": prev_iq,
+            "new_iq": new_iq
+        })

@@ -8,7 +8,8 @@ export const API_ENDPOINTS = {
 
   USER: {
     ME: 'api/users/me/',
-    MY_STATS: 'api/users/me/stats/'
+    MY_STATS: 'api/users/me/stats/',
+    MY_STREAKS: 'api/users/me/streaks/'
   },
 
   SEARCH: (searchQuery, filter) => {
@@ -42,6 +43,7 @@ export const API_ENDPOINTS = {
     QUESTIONS: (quizId) => `api/quizzes/${quizId}/questions/`,
     QUESTION_DETAIL: (quizId, questionId) => `api/quizzes/${quizId}/questions/${questionId}/`,
     SUGGESTED_QUIZZES: 'api/suggested-quizzes/',
+    COMPLETE: (quizId) => `api/quizzes/${quizId}/complete/`,
   },
 
   QUESTIONS: {

@@ -4,15 +4,33 @@
     <div v-else-if="error" class="error-card">{{ error }}</div>
 
     <template v-else-if="quiz">
-      <div class="hero-card">
-        <div class="hero-left">
-          <h1 class="hero-title">{{ quiz.title }}</h1>
-          <p class="hero-sub">{{ quiz.description }}</p>
-
-          <div class="meta-row">
-            <div class="meta-item small">
-              <strong>Fragen</strong>
-              <span>{{ quiz.questions?.length ?? '-' }}</span>
+      <!-- Main Quiz Card -->
+      <div class="card quiz-card">
+        <div class="quiz-header">
+          <h2>{{ quiz.title }}</h2>
+        </div>
+        <button class="settings-btn" @click="goToEditQuiz" :disabled="loading" aria-label="Einstellungen">
+          <IconSettings />
+        </button>
+        <div class="quiz-content">
+          <div class="quiz-info">
+            <p class="quiz-description">{{ quiz.description }}</p>
+            <div class="quiz-meta-grid">
+              <div class="meta-item">
+                <span>Erstellt am: {{ formatDate(quiz.created_at) }}</span>
+              </div>
+              <div class="meta-item">
+                <span>von: {{ quiz.created_by }}</span>
+              </div>
+              <div class="meta-item">
+                <span>Fragen: {{ quiz.questions.length }}</span>
+              </div>
+              <div class="meta-item">
+                <span>Ø Zeit: {{ quiz.avg_time_spent || '-' }}s</span>
+              </div>
+              <div class="meta-item">
+                <span>Lernset: {{ quiz.lernset?.title || '-' }}</span>
+              </div>
             </div>
             <div class="meta-item small">
               <strong>Ø Zeit</strong>
@@ -141,10 +159,12 @@ import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getQuiz } from '@/services/quizzes'
 import IconSettings from '@/components/icons/IconSettings.vue'
+import { useQuizEditStore } from '@/stores/editQuiz'
 
 const showStats = ref(false)
 const router = useRouter()
 const route = useRoute()
+const quizEdit = useQuizEditStore()
 
 // Replace local dummy quiz with API-driven state
 const quiz = ref(null)
@@ -284,6 +304,21 @@ function goToLernset() {
   } else {
     router.push('/')
   }
+}
+
+function goToEditQuiz() {
+  if (!quiz.value || !quiz.value.id) {
+    error.value = 'Quiz konnte nicht bearbeitet werden (ID fehlt)'
+    return
+  }
+  // Try to read lernset id: could be a number or object with id
+  const lernsetId = quiz.value.lernset && typeof quiz.value.lernset === 'object'
+    ? quiz.value.lernset.id
+    : quiz.value.lernset
+  if (lernsetId) {
+    quizEdit.setLernset(lernsetId)
+  }
+  router.push({ name: 'edit-quiz', params: { quizId: quiz.value.id, lernsetId } })
 }
 
 function showRun(idx) {

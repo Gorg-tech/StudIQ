@@ -13,16 +13,22 @@ const password = ref('')
 const email = ref('')
 const language = ref('Deutsch')
 
+// Sichtbarkeit des Passworts
+const showPassword = ref(false)
+
 onMounted(() => {
   username.value = localStorage.getItem('username') || 'Kein Benutzer'
   password.value = localStorage.getItem('password') || '••••••••'
+  email.value = localStorage.getItem('email') || 'Keine Email'
 })
 
 // Aktionen
 const goBack = () => router.push('/')
 const toggleDarkmode = () => themeStore.toggleTheme()
-const changePassword = () => alert(' Passwort ändern (noch Dummy)')
-const changeLanguage = () => alert(' Sprache ändern (noch Dummy)')
+const changePassword = () => alert('Passwort ändern (noch Dummy)')
+const changeLanguage = () => alert('Sprache ändern (noch Dummy)')
+const togglePasswordVisibility = () => (showPassword.value = !showPassword.value)
+const showCredits = () => alert('Team: StudIQ-Entwicklerteam\nVersion: 1.0.0')
 
 // Ausloggen: löscht Daten & leitet zum Login
 const handleLogout = async () => {
@@ -39,12 +45,13 @@ const handleLogout = async () => {
   <div class="edit-quiz-view">
     <header class="edit-header">
       <h1>Einstellungen</h1>
+      <button class="credit-btn" @click="showCredits">i</button>
     </header>
 
     <main class="edit-main">
       <!-- Darstellung -->
       <section class="quiz-questions-section card">
-        <label class="block-label">Allgemein</label>
+        <label class="block-label">Darstellung</label>
         <div class="setting-item">
           <p>Darkmode</p>
           <label class="switch">
@@ -68,13 +75,17 @@ const handleLogout = async () => {
           <p>Benutzername: <b>{{ username }}</b></p> 
         </div>
         <div class="setting-item">
-          <p>Passwort: <b>{{ password }}</b></p>
-          <button class="edit-btn" @click="changePassword">✏️</button>
+          <p>Passwort: 
+            <b>{{ showPassword ? password : '••••••••' }}</b>
+          </p>
+          <button class="small-btn" @click="togglePasswordVisibility">
+            {{ showPassword ? 'Verbergen' : 'Anzeigen' }}
+          </button>
         </div>
       </section>
 
       <!-- Aktionen -->
-      <div class="edit-actions">
+      <div class="edit-actions-column">
         <button class="btn btn-secondary" @click="goBack">Zurück</button>
         <button class="btn btn-primary login-btn" @click="handleLogout">Ausloggen</button>
       </div>
@@ -93,12 +104,40 @@ const handleLogout = async () => {
 
 .edit-header {
   margin-bottom: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .edit-header h1 {
   font-size: 2rem;
   font-weight: 700;
+}
+
+/* Credit Button rechts von der Überschrift */
+.credit-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: darkorange;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.credit-btn:hover {
+  background-color: darkorange;
 }
 
 .edit-main {
@@ -122,30 +161,37 @@ const handleLogout = async () => {
   color: var(--color-muted, #888);
 }
 
-.questions-section-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--color-accent);
-  margin: 0;
-}
-
-.edit-actions {
+.edit-actions-column {
   display: flex;
-  justify-content: space-between;
-  gap: 18px;
+  flex-direction: column;
+  gap: 12px;
   margin-top: 10px;
 }
 
 .edit-btn {
   background: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
   transition: transform 0.1s;
 }
 
 .edit-btn:hover {
   transform: scale(1.2);
+}
+
+.small-btn {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.small-btn:hover {
+  background-color: #ddd;
 }
 
 .setting-item {
@@ -197,10 +243,8 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-
 .btn.btn-primary.login-btn {
-  margin-top: 10px;
-  width: 75%;
+  width: 100%;
   font-size: 1.1rem;
   padding: 12px 0;
   background-color: var(--color-primary, #2196f3);
@@ -216,8 +260,7 @@ input:checked + .slider:before {
 }
 
 .btn.btn-secondary {
-   margin-top: 10px;
-  width: 25%;
+  width: 100%;
   background-color: #ccc;
   color: #222;
   border: none;
