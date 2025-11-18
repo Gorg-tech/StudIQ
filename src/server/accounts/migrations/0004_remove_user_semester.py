@@ -14,8 +14,4 @@ class Migration(migrations.Migration):
             model_name='user',
             name='semester',
         ),
-        migrations.RemoveField(
-            model_name='user',
-            name='streak',
-        ),
     ]

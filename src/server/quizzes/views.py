@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
+from accounts.views import get_user_rank
 from accounts.serializers import UserSerializer
 from .models import (
     Quiz,
@@ -172,17 +173,6 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_user_rank(self, user_id):
-        """Berechnet die Position eines Users im Leaderboard."""
-        User = get_user_model()
-        try:
-            target = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return None
-        # Anzahl der höheren streaks + 1
-        higher = User.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
-        return higher + 1
-
     def get_users_around(self, user_id, before=1, after=1): 
         """Holt Nutzer vor und nach dem gegebenen User. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
         User = get_user_model()
@@ -249,7 +239,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         serialized = self.get_serializer(combined, many=True).data
 
         for item in serialized:
-            item['rank'] = self.get_user_rank(item['id'])
+            item['rank'] = get_user_rank(item['id'])
 
         return Response({
             'users': serialized,
@@ -378,9 +368,9 @@ class SuggestedQuizzesView(ListAPIView):
         
         return quizzes
 
-class QuizIQCalculationView(APIView):
+class QuizCompletionView(APIView):
     """
-    View for calculating IQ points upon quiz completion.
+    View for calculating IQ points upon quiz completion and increasing user's IQ level
     """
     permission_classes = [IsAuthenticated]
 
