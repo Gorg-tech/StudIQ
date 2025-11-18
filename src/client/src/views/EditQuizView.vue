@@ -82,6 +82,7 @@ onMounted(async () => {
         })),
         _status: 'unchanged'
       }))
+    })
   }
 })
 
