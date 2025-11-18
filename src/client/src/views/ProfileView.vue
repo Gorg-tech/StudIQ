@@ -312,7 +312,7 @@ function handleLogout() {
 }
 
 .streak-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(34,34,34,0.08);
   padding: 20px;
@@ -375,7 +375,7 @@ function handleLogout() {
 }
 
 .quiz-suggestion-item {
-  background-color: #f9f9f9;
+  background-color: var(--card-bg);
   border-radius: 10px;
   padding: 16px;
   min-width: 180px;
@@ -385,11 +385,10 @@ function handleLogout() {
   gap: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid #eee;
 }
 
 .quiz-suggestion-item:hover {
-  background-color: #f5f5f5;
+  background-color: color-mix(in oklab, var(--card-bg) 80%, #888 20%);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
