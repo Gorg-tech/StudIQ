@@ -16,6 +16,11 @@ GET /api/lernsets/{lernsetId}/quizzes/         – Quizze eines Lernsets
   ```bash
   python manage.py makemigrations && python manage.py migrate
   ```
+- **Datenbank initialisieren (nach Klonen des Projekts):**
+  ```bash
+  python manage.py migrate
+  python scraper/populate_db.py
+  ```
 - **Admin-Zugang für Entwicklung:**  
   - Benutzername: `admin`  
   - Passwort: `admin`
@@ -34,10 +39,6 @@ Vorteile dieser Methode:
 - Sicherere Lösung als Token im Local Storage
 - CSRF-Schutz durch Django's CSRF-Mechanismus
 - Automatische Session-Verwaltung
-
-> **Hinweis:**  
-> **Alle API-Endpunkte (außer Registrierung und Login) erfordern eine Authentifizierung!**  
-> Nicht authentifizierte Anfragen werden mit HTTP 403 oder 401 abgelehnt.
 
 ## Server starten
 ```bash
