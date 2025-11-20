@@ -35,10 +35,6 @@ Vorteile dieser Methode:
 - CSRF-Schutz durch Django's CSRF-Mechanismus
 - Automatische Session-Verwaltung
 
-> **Hinweis:**  
-> **Alle API-Endpunkte (außer Registrierung und Login) erfordern eine Authentifizierung!**  
-> Nicht authentifizierte Anfragen werden mit HTTP 403 oder 401 abgelehnt.
-
 ## Server starten
 ```bash
 cd src/server
