@@ -16,6 +16,11 @@ GET /api/lernsets/{lernsetId}/quizzes/         – Quizze eines Lernsets
   ```bash
   python manage.py makemigrations && python manage.py migrate
   ```
+- **Datenbank initialisieren (nach Klonen des Projekts):**
+  ```bash
+  python manage.py migrate
+  python scraper/populate_db.py
+  ```
 - **Admin-Zugang für Entwicklung:**  
   - Benutzername: `admin`  
   - Passwort: `admin`
