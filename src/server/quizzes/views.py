@@ -163,7 +163,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     """
     ViewSet for the leaderboard. Supports 2 query-parameters:
     - limit: amount of top users (e.g. the top 3)
-    - around: amnount of users in front and after the self-user
+    - around: amount of users in front and after the self-user
 
     returns {
       users: [ ...serialized users in display order... ],
@@ -175,7 +175,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_users_around(self, user_id, before=1, after=1): 
+    def get_users_around(self, user_id, before=1, after=1):
         """Retrieves users in front and behind the user. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
         user = get_user_model()
         try: 
