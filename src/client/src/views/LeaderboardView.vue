@@ -15,32 +15,78 @@ const hasMoreAfter = ref(false)
 const hasMoreBefore = ref(false)
 const selfUser = ref(null)
 
-onMounted(async () => {
+const TAB_ALL = 'all'
+const TAB_STUDIENGANG = 'studiengang'
+const TAB_FRIENDS = 'friends'
+const tabs = [
+  { key: TAB_ALL, label: 'Alle' },
+  { key: TAB_STUDIENGANG, label: 'Studiengang' },
+  { key: TAB_FRIENDS, label: 'Freunde' }
+]
+const activeTab = ref(TAB_ALL)
 
-    try {
-        const user_data = await store.getUser()
-        selfUser.value = user_data
-        const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT)
-        if (!data) {
-        throw new Error('Keine Daten vom Server erhalten')
-        }
-        leaderboard.value = data.users || []
-        hasMoreAfter.value = data.has_more_after
-        hasMoreBefore.value = data.has_more_before
-    } catch (err) {
-        console.error('Leaderboard Error:', err)
-        error.value = `Fehler beim Laden des Leaderboards: ${err.message}`
-    } finally {
-        isLoading.value = false
-    }
+function selectTab(tabKey) {
+  if (activeTab.value === tabKey) return
+  activeTab.value = tabKey
+  if (tabKey === TAB_ALL) {
+    fetchLeaderboardAll()
+  } else if (tabKey === TAB_STUDIENGANG) {
+    fetchLeaderboardStudiengang()
+  } else if (tabKey === TAB_FRIENDS) {
+    fetchLeaderboardFriends()
+  }
+}
+
+// When button pressed, call API for new leaderboard-list
+async function fetchLeaderboardAll() {
+  isLoading.value = true;
+  try {
+      const user_data = await store.getUser()
+      selfUser.value = user_data
+      const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT)
+      if (!data) {
+      throw new Error('Keine Daten vom Server erhalten')
+      }
+      leaderboard.value = data.users || []
+      hasMoreAfter.value = data.has_more_after
+      hasMoreBefore.value = data.has_more_before
+  } catch (err) {
+      console.error('Leaderboard Error:', err)
+      error.value = `Fehler beim Laden des Leaderboards: ${err.message}`
+  } finally {
+      isLoading.value = false
+  }
+}
+async function fetchLeaderboardStudiengang() {
+  isLoading.value = true;
+  // TODO: API-Call für Studiengang
+}
+async function fetchLeaderboardFriends() {
+  isLoading.value = true;
+  // TODO: API-Call für Freunde
+}
+
+onMounted(async () => {
+  fetchLeaderboardAll();
 })
 </script>
 
 <template>
   <div class="leaderboard-view">
+
     <header class="leaderboard-header">
       <h1>Leaderboard</h1>
       <p class="subtitle">Top Streaks der StudIQ Community</p>
+      <div class="leaderboard-tabs">
+        <button
+          v-for="tab in tabs"
+          :key="tab.key"
+          :class="['leaderboard-tab', { active: activeTab === tab.key }]"
+          @click="selectTab(tab.key)"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
     </header>
 
     <main class="leaderboard-content">
@@ -110,6 +156,36 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.leaderboard-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.leaderboard-tab {
+  background: none;
+  border: none;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-top: 1em;
+  padding: 8px 60px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.leaderboard-tab.active {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+.leaderboard-tab.active:hover {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+.leaderboard-tab:hover {
+  background: color-mix(in oklab, var(--color-bg) 90%, #888888 10%);
+  color: var(--color-primary);
+}
 .leaderboard-view {
   max-width: 800px;
   margin: 0 auto;
