@@ -161,11 +161,11 @@ class QuizzesByLernsetView(ListAPIView):
 
 class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet für das Leaderboard. Unterstützt zwei query-Parameter:
-    - limit: Anzahl der Top-Nutzer, die vorne angezeigt werden (z.B. 3)
-    - around: Anzahl der Nutzer vor/nach dem aktuellen User, die angezeigt werden
+    ViewSet for the leaderboard. Supports 2 query-parameters:
+    - limit: amount of top users (e.g. the top 3)
+    - around: amnount of users in front and after the self-user
 
-    Gibt zurück: {
+    returns {
       users: [ ...serialized users in display order... ],
       current_user_rank: int,
       top_count: int,
@@ -176,7 +176,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_users_around(self, user_id, before=1, after=1): 
-        """Holt Nutzer vor und nach dem gegebenen User. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
+        """Retrieves users in front and behind the user. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
         User = get_user_model()
         try: 
             current_user = User.objects.get(id=user_id) 
