@@ -308,7 +308,7 @@ class ModuluxScraper:
                 'examinations': get_cell_text(8),
                 'prerequisites': get_cell_text(9),
                 'languages': get_cell_text(10),
-                'startSemester': get_cell_text(11),
+                'turnus': get_cell_text(11),
                 'curriculum': get_cell_text(12),
                 'moduluxLink': '',
                 'sdgs': get_cell_text(14)
@@ -333,5 +333,5 @@ if __name__ == "__main__":
     parser.add_argument('--mode', choices=['programs', 'modules', 'both'], default='both', help='Modus: programs für Studiengänge, modules für Module, both für beides')
     args = parser.parse_args()
     
-    scraper = ModuluxScraper(headless=False)
+    scraper = ModuluxScraper(headless=True)
     scraper.scrape_modulux(mode=args.mode)
