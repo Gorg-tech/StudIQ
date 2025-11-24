@@ -2,10 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
-import { logout } from '@/services/auth'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const themeStore = useThemeStore()
+const userStore = useUserStore()
 
 // Daten aus localStorage (Login)
 const username = ref('')
@@ -33,7 +34,7 @@ const showCredits = () => alert('Team: StudIQ-Entwicklerteam\nVersion: 1.0.0')
 // Ausloggen: löscht Daten & leitet zum Login
 const handleLogout = async () => {
   try {
-    await logout()
+    await userStore.logout()
     router.push('/login')
   } catch (error) {
     console.error('Logout failed:', error)

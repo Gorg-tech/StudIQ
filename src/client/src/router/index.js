@@ -13,6 +13,8 @@ import ModulView from '@/views/ModulView.vue'
 import LernsetView from '@/views/LernsetView.vue'
 import HomeViewSettings from '@/views/HomeViewSettings.vue'
 import { isAuthenticated } from '@/services/auth.js'
+import { getQuiz } from '@/services/quizzes'
+import { useUserStore } from '@/stores/user'
 import { useQuizEditStore } from '@/stores/editQuiz'
 import StudiengangView from '@/views/StudiengangView.vue'
 import LeaderboardView from '@/views/LeaderboardView.vue'
@@ -99,7 +101,7 @@ const router = createRouter({
 })
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // Login and Register routes are always accessible
   if (to.name === 'login' || to.name === 'register') {
     next()
@@ -114,17 +116,36 @@ router.beforeEach((to, from, next) => {
 
   // Prevent accessing edit-quiz without quizId OR lernsetId
   if (to.name === 'edit-quiz') {
-    const store = useQuizEditStore()
-    // Check if a quizId or lernsetId was provided OR if the store already has a lernsetId
-    const hasQuiz = !!(to.params && to.params.quizId !== undefined && to.params.quizId !== '')
-    const hasLernset = !!((to.params && to.params.lernsetId !== undefined && to.params.lernsetId !== '') || store.lernsetId)
-    if (!hasQuiz && !hasLernset) {
-      if (from && from.name) {
-        next(false)
-      } else {
-        next({ name: 'home' })
-      }
+    const quizEditStore = useQuizEditStore()
+    const userStore = useUserStore()
+    await userStore.loadCurrentUser()
+    const hasQuizParam = !!(to.params && to.params.quizId)
+    const hasLernsetParam = !!(to.params && to.params.lernsetId)
+    const hasStoredLernset = !!quizEditStore.lernsetId
+    if (!hasQuizParam && !hasLernsetParam && !hasStoredLernset) {
+      // No context for creating/editing
+      next(from && from.name ? false : { name: 'home' })
       return
+    }
+    // If editing existing quiz, verify permission
+    if (hasQuizParam) {
+      try {
+        const quiz = await getQuiz(to.params.quizId)
+        const creator = quiz.created_by || quiz.createdBy || quiz.creator_username || null
+        const isOwner = creator && userStore.username && creator === userStore.username
+        const isMod = userStore.isModerator()
+        if (!isOwner && !isMod) {
+          // Deny access; redirect to quiz overview (read-only)
+          next({ name: 'quiz-overview', params: { quizId: to.params.quizId } })
+          return
+        }
+        // Store creator for later UI checks if not already set
+        if (!quizEditStore.quizCreator) quizEditStore.quizCreator = creator
+      } catch (e) {
+        // If quiz fetch fails, block navigation
+        next(from && from.name ? false : { name: 'home' })
+        return
+      }
     }
   }
 
