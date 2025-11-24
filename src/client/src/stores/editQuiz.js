@@ -7,13 +7,15 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
   const quizTitle = ref('Mein Quiz')
   const lernsetId = ref(null)
   const questions = ref([])
+  const quizCreator = ref(null)
 
-  function setQuiz({ id, title, questions: qs, lernset }) {
+  function setQuiz({ id, title, questions: qs, lernset, created_by }) {
     quizLoaded.value = true
     quizId.value = id || null
     quizTitle.value = title || 'Mein Quiz'
     lernsetId.value = lernset || lernsetId.value || null
     questions.value = qs ? qs.map(q => ({ ...q, id: String(q.id) })) : []
+    quizCreator.value = created_by || null
   }
 
   function setLernset(id) {
@@ -28,6 +30,7 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
     quizTitle.value = 'Mein Quiz'
     lernsetId.value = keptLernset
     questions.value = []
+    quizCreator.value = null
   }
 
   
@@ -50,7 +53,7 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
   }
 
   return {
-    quizId, quizTitle, questions, quizLoaded, lernsetId,
+    quizId, quizTitle, questions, quizLoaded, lernsetId, quizCreator,
     setQuiz, resetQuiz, updateQuestion, addQuestion, setLernset, removeQuestion, getQuestion
   }
 })

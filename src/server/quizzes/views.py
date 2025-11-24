@@ -46,15 +46,8 @@ class AnswerOptionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        # schnelle Debug-Ausgaben (entfernen/ersetzen durch logger in Prod)
-        print("AnswerOption.create headers:", dict(request.headers))
-        print("AnswerOption.create content_type:", request.content_type)
-        print("AnswerOption.create body:", request.data)
-
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
-            # zeigen, welche Validierungsfehler vorliegen
-            print("AnswerOption.create validation errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)
@@ -73,6 +66,18 @@ class QuizViewSet(viewsets.ModelViewSet):
         # Automatically set the created_by to the current user
         serializer.save(created_by=self.request.user)
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to edit this quiz."}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to delete this quiz."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
@@ -90,6 +95,18 @@ class LernsetViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Not found."}, status=404)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to edit this lernset."}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to delete this lernset."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
 class QuizProgressViewSet(viewsets.ModelViewSet):
     serializer_class = QuizProgressSerializer
