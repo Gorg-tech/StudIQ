@@ -26,6 +26,15 @@ class ModuluxScraper:
         options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
         
         self.browser = webdriver.Chrome(options=options)
+        self._last_progress_time = time.time()
+
+    def _progress(self, current, total, prefix=''):
+        """Leichte Fortschrittsanzeige, begrenzt auf max 5 Updates/Sek."""
+        now = time.time()
+        if now - self._last_progress_time >= 0.2 or current == total:
+            pct = (current / total * 100) if total else 0
+            print(f"{prefix}{current}/{total} ({pct:5.1f}%)", flush=True)
+            self._last_progress_time = now
     
     def scrape_modulux(self, mode='both'):
         """
@@ -105,7 +114,7 @@ class ModuluxScraper:
                     # Besuche die Detailseite jedes Studiengangs und extrahiere Module
                     for i, program in enumerate(programs):
                         if program['moduluxLink']:
-                            print(f'Verarbeite Studiengang {i+1}/{len(programs)}: {program["programName"]} für Module')
+                            self._progress(i+1, len(programs), prefix='[Module aus Studiengängen] ')
                             try:
                                 self.browser.get(program['moduluxLink'])
                                 modules = self._extract_modules()
@@ -129,7 +138,7 @@ class ModuluxScraper:
                 # Besuche die Detailseite jedes Studiengangs für Details und Module
                 for i, program in enumerate(programs):
                     if program['moduluxLink']:
-                        print(f'Verarbeite Studiengang {i+1}/{len(programs)}: {program["programName"]}')
+                        self._progress(i+1, len(programs), prefix='[Details] ')
                         try:
                             self._get_program_details(program)
                         except Exception as e:
@@ -278,8 +287,9 @@ class ModuluxScraper:
         
         modules = []
         for i, row in enumerate(rows):
-            if i % 100 == 0:
-                print(f'Verarbeite Modul {i+1}/{len(rows)}...')
+            # Fortschritt alle 25 Elemente
+            if i % 25 == 0 or i+1 == len(rows):
+                self._progress(i+1, len(rows), prefix='[Module] ')
             cells = row.find_elements(By.CSS_SELECTOR, 'th, td')
             
             # Helper function to get text content from a cell
