@@ -13,22 +13,25 @@ const route = useRoute()
 
 const moduleName = ref('')
 const moduleDescription = ref('')
+
 const moduleLink = ref('')
-const moduleResponsible = ref('')
+const moduleDozent = ref('')
 const moduleExams = ref('')
 
 // convenience computed lists split by newlines or commas
-const moduleResponsibleList = computed(() => {
-  return (moduleResponsible.value || '')
+const moduleDozentList = computed(() => {
+  return (moduleDozent.value || '')
     .split(/\r?\n|,\s*/)
     .map(s => s.trim())
     .filter(Boolean)
 })
 
 const moduleExamsList = computed(() => {
+  console.info("Exams: " +moduleExams)
   const raw = (moduleExams.value || '').trim()
   if (!raw) return []
 
+  
   // If the text contains explicit exam labels, split by these labels so
   // we keep the full description after each label intact.
   const labelRe = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)/i
@@ -170,9 +173,10 @@ onMounted(() => {
   getModul(modulId)
     .then(modulData => {
   moduleName.value = modulData.name + ' (' + modulId + ')'
-  // parse description to separate Verantwortlich and Prüfungen if present
-  const rawDesc = modulData.description || `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
-  parseModuleDescription(rawDesc)
+
+  moduleDozent.value = modulData.dozent_name || 'Unbekannter Dozent'
+  moduleExams.value = modulData.examinations || 'Keine Prüfungen erkannt'
+
   moduleLink.value = modulData.modulux_url || 'https://apps.htw-dresden.de/modulux/frontend/module/'
       
       // Check if lernsets data exists in the response
@@ -193,55 +197,11 @@ onMounted(() => {
       // Fall back to placeholder data if API call fails
       moduleName.value = `Modul ${modulId}`
       moduleDescription.value = `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
-      moduleResponsible.value = ''
+      moduleDozent.value = ''
       moduleExams.value = ''
       moduleLink.value = 'https://www.htw-dresden.de/'
     })
 })
-
-// Helper: try to extract sections 'Verantwortlich:' and 'Prüfungen:' from a free-text description
-// TODO: Backend sollte lieber Beschreibung in aufgeteilten Feldern schicken, dann ist es einfacher, evtl auch für zukünftige Filter
-function parseModuleDescription(text) {
-  const desc = text || ''
-  // Look for the labels (case-insensitive)
-  const idxResp = desc.search(/Verantwortlich:/i)
-  const idxPruef = desc.search(/Prüfungen:|Prüfung:/i)
-
-  if (idxResp === -1 && idxPruef === -1) {
-    // nothing to split
-    moduleDescription.value = desc
-    moduleResponsible.value = ''
-    moduleExams.value = ''
-    return
-  }
-
-  // Determine order and slice accordingly
-  let main = desc
-  let resp = ''
-  let pruef = ''
-
-  if (idxResp !== -1 && idxPruef !== -1) {
-    if (idxResp < idxPruef) {
-      main = desc.slice(0, idxResp).trim()
-      resp = desc.slice(idxResp + 'Verantwortlich:'.length, idxPruef).trim()
-      pruef = desc.slice(idxPruef + (desc.slice(idxPruef).toLowerCase().startsWith('prüfungen:') ? 'Prüfungen:'.length : 'Prüfung:'.length)).trim()
-    } else {
-      main = desc.slice(0, idxPruef).trim()
-      pruef = desc.slice(idxPruef + (desc.slice(idxPruef).toLowerCase().startsWith('prüfungen:') ? 'Prüfungen:'.length : 'Prüfung:'.length)).trim()
-      resp = desc.slice(idxResp + 'Verantwortlich:'.length).trim()
-    }
-  } else if (idxResp !== -1) {
-    main = desc.slice(0, idxResp).trim()
-    resp = desc.slice(idxResp + 'Verantwortlich:'.length).trim()
-  } else if (idxPruef !== -1) {
-    main = desc.slice(0, idxPruef).trim()
-    pruef = desc.slice(idxPruef + (desc.slice(idxPruef).toLowerCase().startsWith('prüfungen:') ? 'Prüfungen:'.length : 'Prüfung:'.length)).trim()
-  }
-
-  moduleDescription.value = main || ''
-  moduleResponsible.value = resp || ''
-  moduleExams.value = pruef || ''
-}
 
 </script>
 
@@ -264,10 +224,10 @@ function parseModuleDescription(text) {
         <h2 class="desc-title">Modulbeschreibung</h2>
         <p class="module-description">{{ moduleDescription }}</p>
 
-        <div v-if="moduleResponsibleList.length" class="module-subsection">
+        <div v-if="moduleDozentList.length" class="module-subsection">
           <h3 class="sub-title">Verantwortlich</h3>
           <ul class="sub-list">
-            <li v-for="(person, idx) in moduleResponsibleList" :key="'resp-'+idx">{{ person }}</li>
+            <li v-for="(person, idx) in moduleDozentList" :key="'resp-'+idx">{{ person }}</li>
           </ul>
         </div>
 
