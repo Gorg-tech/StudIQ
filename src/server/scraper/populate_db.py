@@ -157,11 +157,28 @@ def populate_database():
         examinations_raw = module_data.get('examinations', 'N/A')
         examinations = ' '.join(examinations_raw.split())
 
+        turnus = module_data.get('turnus', 'N/A')
+        languages_raw = module_data.get('languages', 'N/A')
+        # Parse languages into a list
+        if languages_raw and languages_raw != 'Keine Angabe':
+            # Split by newlines, clean, and extract language names
+            lines = [line.strip() for line in languages_raw.split('\n') if line.strip()]
+            languages = []
+            for line in lines:
+                # Extract language if it starts with a capital letter (Deutsch, Englisch, etc.)
+                if line and line[0].isupper() and not line.startswith('in Veranstaltung'):
+                    languages.append(line.split()[0])  # Take first word
+            languages = list(set(languages))  # Unique
+        else:
+            languages = []
+
         modul, created = Modul.objects.update_or_create(
             modulId=module_id,
             defaults={
                 'name': module_name,
-                'description': f"Prüfungen: {examinations}",
+                'examinations': examinations,
+                'turnus': turnus,
+                'languages': languages,
                 'credits': credits,
                 'semester': 0,  # Default
                 'modulux_url': module_data.get('moduluxLink', ''),
