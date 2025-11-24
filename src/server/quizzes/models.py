@@ -19,6 +19,8 @@ class Modul(models.Model):
     description = models.TextField(blank=True)
     credits = models.IntegerField()
     modulux_url = models.URLField(blank=True)
+    dozent_name = models.CharField(max_length=100, blank=True)
+    dozent_email = models.EmailField(blank=True)
     studiengang = models.ManyToManyField(Studiengang, related_name='module')
     
     def __str__(self):
