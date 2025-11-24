@@ -27,7 +27,7 @@ const moduleDozentList = computed(() => {
 })
 
 const moduleExamsList = computed(() => {
-  console.info("Exams: " +moduleExams)
+  console.info("Exams: " + moduleExams.value)
   const raw = (moduleExams.value || '').trim()
   if (!raw) return []
 

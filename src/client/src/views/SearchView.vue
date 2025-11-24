@@ -83,8 +83,11 @@
             {{ item.questions?.length || 0 }} Fragen – {{ item.avg_time_spent || 0 }} Min
           </div>
           <div v-else-if="item.type === 'Modul'" class="quiz-stats">
-            Dozenten: {{ item.dozent_name }}
-            Semester: {{ item.semester }} – Credits: {{ item.credits }} – Modul-ID: {{ item.modulId }}
+            <strong>Dozenten:</strong> {{ item.dozent_name }}
+            <br>
+            <strong>Semester:</strong> {{ item.semester }} – 
+            <strong>Credits:</strong> {{ item.credits }} – 
+            <strong>Modul-ID:</strong> {{ item.modulId }}
           </div>
           <div v-else-if="item.type === 'Studiengang'" class="quiz-stats">
             ID: {{ item.id }}
@@ -375,5 +378,10 @@ onMounted(() => {
   font-size: 0.85rem;
   color: var(--color-muted);
   margin-bottom: 6px;
+}
+
+.quiz-stats strong {
+  font-weight: 700;
+  color: var(--color-text); /* optional */
 }
 </style>
