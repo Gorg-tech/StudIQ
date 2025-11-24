@@ -327,32 +327,74 @@ class SearchView(APIView):
         modules_qs = Modul.objects.none()
         studiengaenge_qs = Studiengang.objects.none()
 
+        # Helper function to build Q object for multi-word search
+        def build_search_q(fields, query):
+            words = query.split()
+            if not words:
+                return Q()
+            q_objects = Q()
+            for word in words:
+                word_q = Q()
+                for field in fields:
+                    word_q |= Q(**{f"{field}__icontains": word})
+                q_objects &= word_q
+            return q_objects
+
+        # Increase limit for candidates to allow better sorting
+        candidate_limit = min(limit * 4, 100)  # Collect more candidates for sorting
+
         if not filter_type or filter_type.lower() == "lernsets":
             lernsets_qs = Lernset.objects.filter(
-                Q(title__icontains=query) | Q(description__icontains=query)
-            )[:limit]
+                build_search_q(['title', 'description'], query)
+            )[:candidate_limit]
 
         if not filter_type or filter_type.lower() == "quizzes":
             quizzes_qs = Quiz.objects.filter(
-                Q(title__icontains=query) | Q(description__icontains=query)
-            )[:limit]
+                build_search_q(['title', 'description'], query)
+            )[:candidate_limit]
 
         if not filter_type or filter_type.lower() == "modules":
             modules_qs = Modul.objects.filter(
-                Q(name__icontains=query)
-                | Q(description__icontains=query)
-                | Q(modulId__icontains=query)
-            )[:limit]
+                build_search_q(['name', 'dozent_name', 'modulId'], query)
+            )[:candidate_limit]
 
         if not filter_type or filter_type.lower() == "studiengaenge":
             studiengaenge_qs = Studiengang.objects.filter(
-                Q(name__icontains=query)
-                | Q(description__icontains=query)
-                | Q(id__icontains=query)
-            )[:limit]
+                build_search_q(['name', 'description', 'id'], query)
+            )[:candidate_limit]
 
-        # Combine all results and limit to top 'limit' across types
-        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))[:limit]
+        # Combine all results
+        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))
+
+        # Calculate relevance score for each item
+        def calculate_relevance(item):
+            import re
+            words = query.lower().split()
+            score = 0
+            text_fields = []
+            if isinstance(item, Lernset):
+                text_fields = [item.title, item.description]
+            elif isinstance(item, Quiz):
+                text_fields = [item.title, item.description]
+            elif isinstance(item, Modul):
+                text_fields = [item.name, item.dozent_name or '', item.modulId]
+            elif isinstance(item, Studiengang):
+                text_fields = [item.name, item.description, item.id]
+            
+            for field in text_fields:
+                if field:
+                    field_lower = field.lower()
+                    for word in words:
+                        # Check for whole word match (higher score)
+                        if re.search(r'\b' + re.escape(word) + r'\b', field_lower):
+                            score += 2
+                        elif word in field_lower:
+                            score += 1
+            return score
+
+        # Sort by relevance score descending, then limit
+        all_items.sort(key=lambda item: calculate_relevance(item), reverse=True)
+        all_items = all_items[:limit]
 
         # Serialize and categorize
         for item in all_items:
