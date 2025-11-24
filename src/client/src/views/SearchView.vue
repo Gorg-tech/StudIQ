@@ -83,6 +83,7 @@
             {{ item.questions?.length || 0 }} Fragen – {{ item.avg_time_spent || 0 }} Min
           </div>
           <div v-else-if="item.type === 'Modul'" class="quiz-stats">
+            Dozenten: {{ item.dozent_name }}
             Semester: {{ item.semester }} – Credits: {{ item.credits }} – Modul-ID: {{ item.modulId }}
           </div>
           <div v-else-if="item.type === 'Studiengang'" class="quiz-stats">
