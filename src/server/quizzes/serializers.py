@@ -47,6 +47,7 @@ class QuizSerializer(serializers.ModelSerializer):
             for answer_data in answer_options:
                 answer_data_copy = answer_data.copy()
                 answer_data_copy.pop('id', None)  # Pop id since model has no id field
+                answer_data_copy.pop('_status', None)  # Pop _status as it's not a model field
                 AnswerOption.objects.create(question=question, **answer_data_copy)
         
         return quiz
@@ -81,6 +82,7 @@ class QuizSerializer(serializers.ModelSerializer):
                 question = Question.objects.create(quiz=instance, **question_data)
                 for answer_data in answer_options_data:
                     answer_data.pop('id', None)
+                    answer_data.pop('_status', None)
                     AnswerOption.objects.create(question=question, **answer_data)
                     
             elif status == 'edited' and question_id:

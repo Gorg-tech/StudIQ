@@ -90,13 +90,16 @@ const goBack = () => {
   showBackModal.value = true
 }
 const confirmBack = () => {
-  quizEdit.resetQuiz()
-  quizEdit.quizLoaded = false
+  // If editing existing quiz, go back to its overview; otherwise back to lernset
+  const existingQuizId = quizEdit.quizId
+  const targetLernset = quizEdit.lernsetId
+  quizEdit.resetQuiz(true)
   showBackModal.value = false
-  router.push({ 
-    name: 'lernset', 
-    params: { lernsetId: quizEdit.lernsetId } 
-  })
+  if (existingQuizId) {
+    router.push({ name: 'quiz-overview', params: { quizId: existingQuizId } })
+  } else {
+    router.push({ name: 'lernset', params: { lernsetId: targetLernset } })
+  }
 }
 const cancelBack = () => {
   showBackModal.value = false
@@ -135,41 +138,46 @@ const saveQuiz = async () => {
     description: '',
     is_public: true,
     lernset: quizEdit.lernsetId,
-    questions: quizEdit.questions.map(q => ({
-      id: q.id,
-      text: q.text,
-      type: q.type,
-      _status: q._status,
-      answer_options: q.options ? q.options.map(opt => ({
-        id: opt.id,
-        text: opt.text,
-        is_correct: opt.correct,
-        _status: opt._status
-      })) : []
-    })).filter(q => {
-      if (q._status !== 'unchanged') return true;
-      if (q.answer_options && q.answer_options.some(opt => opt._status !== 'unchanged')) {
-        q._status = 'edited';
-        return true;
-      }
-      return false;
-    })
+    questions: quizEdit.questions
+      .filter(q => q._status !== 'deleted')
+      .map(q => ({
+        ...(q._status !== 'new' ? { id: q.id } : {}),
+        text: q.text,
+        type: q.type,
+        _status: q._status,
+        answer_options: (q.options || [])
+          .filter(opt => opt._status !== 'deleted')
+          .map(opt => ({
+            ...(opt._status !== 'new' ? { id: opt.id } : {}),
+            text: opt.text,
+            is_correct: opt.correct,
+            _status: opt._status
+          }))
+      }))
+      .filter(q => {
+        // Keep all new/edited/deleted questions; for unchanged only keep if answers changed
+        if (q._status !== 'unchanged') return true
+        if (q.answer_options && q.answer_options.some(opt => opt._status !== 'unchanged')) {
+          q._status = 'edited'
+          return true
+        }
+        return false
+      })
   }
 
   console.log('saveQuiz -> quizData being sent:', JSON.stringify(quizData, null, 2))
 
   try {
+    let newQuizId = quizId.value
     if (isNewQuiz.value) {
-      await createQuiz(quizData)
+      const createdQuiz = await createQuiz(quizData)
+      newQuizId = createdQuiz.id
     } else {
       await updateQuiz(quizId.value, quizData)
     }
 
-    quizEdit.resetQuiz()
-    router.push({ 
-      name: 'lernset', 
-      params: { lernsetId: quizEdit.lernsetId } 
-    })
+    quizEdit.resetQuiz() // no need to preserve lernset for quiz overview
+    router.push({ name: 'quiz-overview', params: { quizId: newQuizId } })
   } catch (error) {
     errorMessage.value = 'Fehler beim Speichern des Quiz. Bitte versuche es später erneut.'
     console.error('Error saving quiz:', error)
@@ -178,12 +186,12 @@ const saveQuiz = async () => {
 
 const addQuestion = async () => {
   const newQuestion = {
-    id: Date.now(), // temporäre ID
+    id: Date.now().toString(), // temporäre ID
     text: '',
     type: QUESTION_TYPES[0].api, 
     options: [
-      { id: Date.now() + 1, text: '', correct: false, _status: 'new' },
-      { id: Date.now() + 2, text: '', correct: false, _status: 'new' }
+      { id: Date.now().toString() + '1', text: '', correct: false, _status: 'new' },
+      { id: Date.now().toString() + '2', text: '', correct: false, _status: 'new' }
     ],
     _status: 'new'
   }

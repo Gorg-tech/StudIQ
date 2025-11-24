@@ -13,18 +13,20 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
     quizId.value = id || null
     quizTitle.value = title || 'Mein Quiz'
     lernsetId.value = lernset || lernsetId.value || null
-    questions.value = qs ? [...qs] : []
+    questions.value = qs ? qs.map(q => ({ ...q, id: String(q.id) })) : []
   }
 
   function setLernset(id) {
     lernsetId.value = id
   }
 
-  function resetQuiz() {
+  function resetQuiz(preserveLernset = false) {
+    // Reset quiz editing state; optionally keep current lernset to allow redirect back.
+    const keptLernset = preserveLernset ? lernsetId.value : null
     quizLoaded.value = false
     quizId.value = null
-    quizTitle.value = ''
-    lernsetId.value = null
+    quizTitle.value = 'Mein Quiz'
+    lernsetId.value = keptLernset
     questions.value = []
   }
 
