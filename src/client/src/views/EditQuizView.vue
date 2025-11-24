@@ -178,12 +178,12 @@ const saveQuiz = async () => {
 
 const addQuestion = async () => {
   const newQuestion = {
-    id: Date.now(), // temporäre ID
+    id: Date.now().toString(), // temporäre ID
     text: '',
     type: QUESTION_TYPES[0].api, 
     options: [
-      { id: Date.now() + 1, text: '', correct: false, _status: 'new' },
-      { id: Date.now() + 2, text: '', correct: false, _status: 'new' }
+      { id: Date.now().toString() + '1', text: '', correct: false, _status: 'new' },
+      { id: Date.now().toString() + '2', text: '', correct: false, _status: 'new' }
     ],
     _status: 'new'
   }
