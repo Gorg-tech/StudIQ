@@ -178,11 +178,11 @@ class QuizzesByLernsetView(ListAPIView):
 
 class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet für das Leaderboard. Unterstützt zwei query-Parameter:
-    - limit: Anzahl der Top-Nutzer, die vorne angezeigt werden (z.B. 3)
-    - around: Anzahl der Nutzer vor/nach dem aktuellen User, die angezeigt werden
+    ViewSet for the leaderboard. Supports 2 query-parameters:
+    - limit: amount of top users (e.g. the top 3)
+    - around: amount of users in front and after the self-user
 
-    Gibt zurück: {
+    returns {
       users: [ ...serialized users in display order... ],
       current_user_rank: int,
       top_count: int,
@@ -192,16 +192,16 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_users_around(self, user_id, before=1, after=1): 
-        """Holt Nutzer vor und nach dem gegebenen User. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
-        User = get_user_model()
+    def get_users_around(self, user_id, before=1, after=1):
+        """Retrieves users in front and behind the user. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
+        user = get_user_model()
         try: 
-            current_user = User.objects.get(id=user_id) 
-        except User.DoesNotExist: 
+            current_user = user.objects.get(id=user_id) 
+        except user.DoesNotExist: 
             return [] 
         
         # Robust approach: build ordered list of user ids by rank and slice by index.
-        ordered_ids = list(User.objects.order_by('-streak', 'id').values_list('id', flat=True)) 
+        ordered_ids = list(user.objects.order_by('-streak', 'id').values_list('id', flat=True)) 
         try: 
             idx = ordered_ids.index(current_user.id) 
         except ValueError: 
@@ -210,7 +210,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         end = min(len(ordered_ids), idx + after + 1) 
         slice_ids = ordered_ids[start:end] 
         # Fetch the user objects for these ids and preserve the order from slice_ids 
-        users_qs = User.objects.filter(id__in=slice_ids) 
+        users_qs = user.objects.filter(id__in=slice_ids) 
         users_map = {u.id: u for u in users_qs} 
         ordered_users = [users_map[_id] for _id in slice_ids if _id in users_map] 
         return ordered_users
@@ -227,26 +227,28 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         except (ValueError, TypeError):
             around = 1
 
-        User = get_user_model()
+        user = get_user_model()
 
         # Fetch top users
-        top_users = list(User.objects.order_by('-streak', 'id')[:top_count]) if top_count > 0 else []
+        top_users = list(user.objects.order_by('-streak', 'id')[:top_count]) if top_count > 0 else []
 
         # Fetch users around current user
         around_users = []
+        has_more_before = False
+        has_more_after = False
         if request.user and request.user.is_authenticated and around > 0:
             around_users = self.get_users_around(request.user.id, before=around, after=around)
             
             # check if last user in around_users is last of everyone and if yes, set has_more_after to False
             last_around_user = around_users[-1] if around_users else None
             first_around_user = around_users[0] if around_users else None
-            all_users = list(User.objects.order_by('-streak', 'id'))
+            all_users = list(user.objects.order_by('-streak', 'id'))
 
             idx_top_last = all_users.index(top_users[-1]) if top_users else -1
             idx_around_first = all_users.index(first_around_user) if first_around_user else -1
 
             has_more_before = idx_around_first > idx_top_last + 1
-            has_more_after = User.objects.order_by('-streak', 'id').last().id != last_around_user.id if last_around_user else True
+            has_more_after = user.objects.order_by('-streak', 'id').last().id != last_around_user.id if last_around_user else True
 
         # Combine top and around, preserving order and removing duplicates
         combined = list(top_users)
