@@ -38,7 +38,7 @@
             <button class="btn btn-primary" @click="startQuiz">Quiz starten</button>
             <button class="btn btn-ghost" @click="goToLernset">Zum Lernset</button>
             <button class="btn btn-outline" @click="showStats = true">Statistiken</button>
-            <button class="settings-btn" @click="goToEditQuiz" :disabled="loading" aria-label="Einstellungen">
+            <button v-if="canEdit" class="settings-btn" @click="goToEditQuiz" :disabled="loading" aria-label="Einstellungen">
               <IconSettings />
             </button>
           </div>
@@ -151,11 +151,13 @@ import { useRouter, useRoute } from 'vue-router'
 import { getQuiz, getQuizSessions } from '@/services/quizzes'    // <-- added getQuizSessions
 import IconSettings from '@/components/icons/IconSettings.vue'
 import { useQuizEditStore } from '@/stores/editQuiz'
+import { useUserStore } from '@/stores/user'
 
 const showStats = ref(false)
 const router = useRouter()
 const route = useRoute()
 const quizEdit = useQuizEditStore()
+const userStore = useUserStore()
 
 // Replace local dummy quiz with API-driven state
 const quiz = ref(null)
@@ -232,8 +234,13 @@ onMounted(async () => {
     loading.value = true
     const data = await getQuiz(qid)
     quiz.value = data
-    // load history (server first, localStorage fallback)
-    await loadHistoryFromStorage()
+    // Persist creator for later permission checks (mirrors edit route behavior)
+    const creator = data.created_by || data.createdBy || data.creator_username || null
+    if (creator) quizEdit.quizCreator = creator
+    // Ensure user data loaded for permission checks
+    await userStore.loadCurrentUser()
+    // load history after quiz known
+    loadHistoryFromStorage()
   } catch (err) {
     console.error('Error fetching quiz:', err)
     error.value = 'Fehler beim Laden des Quiz'
@@ -351,6 +358,14 @@ function formatDate(ts) {
   const d = new Date(ts)
   return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
+
+// Only allow edit if current user is creator or has moderator role
+const canEdit = computed(() => {
+  if (!quiz.value) return false
+  const creator = quiz.value.created_by || quiz.value.createdBy || quiz.value.creator_username || quizEdit.quizCreator
+  if (!userStore.loaded) return false
+  return userStore.isOwner(creator) || userStore.isModerator()
+})
 </script>
 
 <style scoped>
