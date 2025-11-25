@@ -5,6 +5,11 @@
 *~
 .vscode
 
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
 # Python Bytecode-Dateien
 **/*.pyc
 **/*.pyo
