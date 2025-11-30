@@ -4,3 +4,4 @@
 * Carmina Langer <carmina.langer@stud.htw-dresden.de>
 * Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
 * Hans Brudek <hans.brudek@stud.htw-dresden.de>
+* Gabriel Wulkow Moreira da Silva <gabriel.wulkowmoreiradasilva@stud.htw-dresden.de>
