@@ -50,7 +50,7 @@ Falls Bugs bearbeitet werden, wird vorher ein Issue dafür erstellt, damit klar 
 - Backend: Nutzung der Richtlinien von https://pylint.readthedocs.io/en/stable/[Pylint] für einen sauberen Python-Code
 - Frontend: Nutzung der Richtlinien von https://eslint.org/docs/latest/[ESLint] für einen sauberen JavaScript-Code
     * Jedes Dokument startet mit einem Kommentarblock, der den Zweck des Dokuments beschreibt
-    * Falls Inline-Funktion mit mehr als 2 Zeilen verwendet wird, wird diese in eine separate Funktion ausgelagert. 
+    * Falls Inline-Funktion mit mehr als 5 Zeilen verwendet wird, wird diese in eine separate Funktion ausgelagert. 
     * Funktionen entsprechen den Vorgaben von Pylint bezüglich Kommentaren und Benennung
 
 Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt.
