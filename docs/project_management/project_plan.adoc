@@ -45,6 +45,14 @@ Falls jemand noch zusätzliche Ausgaben übernimmt, welche nicht durch Tasks kla
 
 Falls Bugs bearbeitet werden, wird vorher ein Issue dafür erstellt, damit klar ist, wer woran arbeitet. Bei Bugs, deren Fixzeit >10min liegt, wird vorher im nächsten Meeting kommuniziert, ob und von wem er gefixt wird.
 
+*Code-Stilrichtlinien:*
+
+- Backend: Nutzung der Richtlinien von https://pylint.readthedocs.io/en/stable/[Pylint] für einen sauberen Python-Code
+- Frontend: Nutzung der Richtlinien von https://eslint.org/docs/latest/[ESLint] für einen sauberen JavaScript-Code
+    * Jedes Dokument startet mit einem Kommentarblock, der den Zweck des Dokuments beschreibt
+    * Fall Inline-Funktion mit mehr als 2 Zeilen verwendet wird, wird diese in eine separate Funktion ausgelagert. 
+    * Funktionen entsprechen den Vorgaben von Pylint bezüglich Kommentaren und Benennung
+
 Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt.
 
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
