@@ -12,7 +12,7 @@ Beschreibt die Arbeitsweise des Projektteams und die Hinderniss dieser Arbeitswe
 == Projektorganisation
 .Teammitglieder:
 - Georg Richter - Product Owner
-- Hans Brudek - Scrum Manager
+- Hans Brudek - Scrum Master
 - Eric Wolf - Dev, Architekturverantwortlicher
 - Vincent Karmanoczki - Dev
 - Gabriel Wulkow Moreira da Silva -  Dev
