@@ -1,4 +1,5 @@
 ```vue name=ModuleOverview.vue
+Beschreibung: View der Modulübersicht mit Details und Lernsets
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -18,6 +19,42 @@ const moduleLink = ref('')
 const moduleDozent = ref('')
 const moduleExams = ref('')
 
+/**
+ * Parses a raw exam description string into a structured list of exam entries. 
+ * Spliting by Exam-Labels
+ * 
+ * @param {string} rawValue
+ *        The raw exam description text
+ *
+ * @returns {string[]}
+ *          A cleaned list of exam descriptions with Exam Type and Description
+ */
+function parseExamList(rawValue) {
+
+  const labelRe = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)/i
+
+  if (labelRe.test(rawValue)) {
+    const reGlobal = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)[\s:\-]*/ig
+    const matches = [...rawValue.matchAll(reGlobal)]
+
+    if (matches.length) {
+      const parts = []
+      for (let i = 0; i < matches.length; i++) {
+        const start = matches[i].index
+        const end = (i + 1 < matches.length) ? matches[i + 1].index : rawValue.length
+        const slice = rawValue.slice(start, end).trim()
+        if (slice) parts.push(slice)
+      }
+      return parts
+    }
+  }
+  // fallback: split by newlines/commas
+  return rawValue
+    .split(/\r?\n|,\s*/)
+    .map(s => s.trim())
+    .filter(Boolean)
+}
+
 // convenience computed lists split by newlines or commas
 const moduleDozentList = computed(() => {
   return (moduleDozent.value || '')
@@ -29,47 +66,32 @@ const moduleDozentList = computed(() => {
 const moduleExamsList = computed(() => {
   console.info("Exams: " + moduleExams.value)
   const raw = (moduleExams.value || '').trim()
-  if (!raw) return []
-
-  
-  // If the text contains explicit exam labels, split by these labels so
-  // we keep the full description after each label intact.
-  const labelRe = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)/i
-  if (labelRe.test(raw)) {
-    const reGlobal = /(Schriftliche Prüfungsleistung|Alternative Prüfungsleistung|Mü?ndliche Prüfungsleistung)[\s:\-]*/ig
-    const matches = [...raw.matchAll(reGlobal)]
-    if (matches.length) {
-      const parts = []
-      for (let i = 0; i < matches.length; i++) {
-        const start = matches[i].index
-        const end = (i + 1 < matches.length) ? matches[i + 1].index : raw.length
-        const slice = raw.slice(start, end).trim()
-        if (slice) parts.push(slice)
-      }
-      return parts
-    }
-  }
-
-  // Fallback: split on newlines or commas
-  return raw
-    .split(/\r?\n|,\s*/)
-    .map(s => s.trim())
-    .filter(Boolean)
+  if (!raw) 
+    return []
+  return parseExamList(moduleExams.value)
 })
 
-// Detect presence of the three exact exam type phrases (case-insensitive)
-const hasSchriftliche = computed(() => {
-  return moduleExamsList.value.some(e => /schriftliche\s*prüfungsleistung/i.test(e))
-})
+const EXAM_TYPES = {
+  schriftliche: /schriftliche\s*prüfungsleistung/i,
+  alternative: /alternative\s*prüfungsleistung/i,
+  mündliche: /mü?ndliche\s*prüfungsleistung/i
+}
 
-const hasAlternative = computed(() => {
-  return moduleExamsList.value.some(e => /alternative\s*prüfungsleistung/i.test(e))
-})
+/**
+ * Checks if a given exam type is present in the moduleExamsList.
+ *
+ * @param {RegExp} regex - Case-insensitive regex matching "Schriftliche Prüfungsleistung" etc.
+ * @returns {boolean} IsPresent?
+ */
+function hasExamType(regex) {
+  return moduleExamsList.value.some(e => regex.test(e))
+}
+ 
+const hasSchriftliche = computed(() => hasExamType(EXAM_TYPES.schriftliche))
+const hasAlternative  = computed(() => hasExamType(EXAM_TYPES.alternative))
+const hasMuendliche   = computed(() => hasExamType(EXAM_TYPES.mündliche))
 
-const hasMuendliche = computed(() => {
-  return moduleExamsList.value.some(e => /mü?ndliche\s*prüfungsleistung/i.test(e))
-})
-
+//Falls keine der Labels passt, Zusammenfassen in otherExams
 const otherExams = computed(() => {
   const reS = /schriftliche\s*prüfungsleistung/i
   const reA = /alternative\s*prüfungsleistung/i
@@ -77,30 +99,25 @@ const otherExams = computed(() => {
   return moduleExamsList.value.filter(e => !reS.test(e) && !reA.test(e) && !reM.test(e))
 })
 
-// Extract trailing descriptions after the labels, e.g. "Schriftliche Prüfungsleistung: Klausur"
-const schriftlicheDetails = computed(() => {
-  const re = /schriftliche\s*prüfungsleistung\s*[:\-]?\s*/i
-  return moduleExamsList.value
-    .filter(e => re.test(e))
-    .map(e => e.replace(re, '').trim())
-    .filter(Boolean)
-})
+/**
+ * Extracts details after a given exam type label.
+ * Example: "Schriftliche Prüfungsleistung: Klausur"
+ *
+ * @param {RegExp} regex - Regex matching the exam label including optional suffixes.
+ * @returns {string[]} ExamDetails
+ */
+function extractExamDetails(regex) {
+  const detailRegex = new RegExp(regex.source + "\\s*[:\\-]?\\s*", "i")
 
-const alternativeDetails = computed(() => {
-  const re = /alternative\s*prüfungsleistung\s*[:\-]?\s*/i
   return moduleExamsList.value
-    .filter(e => re.test(e))
-    .map(e => e.replace(re, '').trim())
+    .filter(e => detailRegex.test(e))
+    .map(e => e.replace(detailRegex, '').trim())
     .filter(Boolean)
-})
+}
 
-const muendlicheDetails = computed(() => {
-  const re = /mü?ndliche\s*prüfungsleistung\s*[:\-]?\s*/i
-  return moduleExamsList.value
-    .filter(e => re.test(e))
-    .map(e => e.replace(re, '').trim())
-    .filter(Boolean)
-})
+const schriftlicheDetails = computed(() => extractExamDetails(EXAM_TYPES.schriftliche))
+const alternativeDetails  = computed(() => extractExamDetails(EXAM_TYPES.alternative))
+const muendlicheDetails   = computed(() => extractExamDetails(EXAM_TYPES.mündliche))
 
 // We keep a single exams list (`moduleExamsList`) and render it as bullets in one box.
 
@@ -142,65 +159,87 @@ const handleCloseConfirmModal = () => {
   pendingLernsetDescription.value = ''
 }
 
-const handleCreateLernset = (title, description) => {
-  // API-Call
-  // id, title, description, modul
-  const newSet = {
-    title: title,
-    description: description,
-    modul: route.params.modulId // Use dynamic modulId
+/**
+ * 
+ * @param {string} title Lernset-Title 
+ * @param {string} description Lernset-Description
+ */
+async function handleCreateLernset(title, description) {
+
+  //Contente of API-Call
+  const payload = {
+    title,
+    description,
+    modul: route.params.modulId
   }
 
-  const newLernset = createLernset(newSet)
-  newLernset
-    .then(response => {
-      lernsets.value.push({
-        id: response.id,
-        title: response.title,
-        quizCount: 0
-      })
-      handleCloseConfirmModal()
+  const onSuccess = (data) => {
+    lernsets.value.push({
+      id: data.id,
+      title: data.title,
+      quizCount: 0
     })
-    .catch(error => {
-      console.error('Fehler beim Erstellen des Lernsets:', error)
-    })
+    handleCloseConfirmModal()
+  }
+
+  try {
+    const response = await createLernset(payload)
+    onSuccess(response)
+  } 
+  catch (err) {
+    console.error("Fehler beim Erstellen des Lernsets:", err)
+  }
+}
+
+/**
+ * Loads module data, populates UI state handles Lernset extraction.
+ *  - Handles API errors by applying fallback values
+ *
+ * @async
+ * @function loadModuleData
+ *
+ * @returns {Promise<void>}
+ *          Resolves once all module data has been loaded and mapped into
+ *          reactive UI state variables.
+ */
+async function loadModuleData() {
+  const modulId = route.params.modulId
+  
+  try {
+    const modulData = await getModul(modulId)
+
+    moduleName.value = modulData.name + ' (' + modulId + ')'
+    moduleDozent.value = modulData.dozent_name || 'Unbekannter Dozent'
+    moduleExams.value = modulData.examinations || 'Keine Prüfungen erkannt'
+    moduleLink.value = modulData.modulux_url || 'https://apps.htw-dresden.de/modulux/frontend/module/'
+        
+    // Check if lernsets data exists in the response
+    if (modulData.lernsets && Array.isArray(modulData.lernsets)) {
+      lernsets.value = modulData.lernsets.map(set => ({
+        id: set.id,
+        title: set.title,
+        quizCount: set.quiz_count || 0
+      }));
+    } else {
+      // If no lernsets in the response, initialize with an empty array
+      lernsets.value = [];
+      console.log('No lernsets data found in module response');
+    }
+  }
+  catch(error){
+    console.error('Fehler beim Laden des Moduls:', error)
+    // Fall back to placeholder data if API call fails
+    moduleName.value = `Modul ${modulId}`
+    moduleDescription.value = `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
+    moduleDozent.value = ''
+    moduleExams.value = ''
+    moduleLink.value = 'https://www.htw-dresden.de/'
+  }
 
 }
 
 onMounted(() => {
-  const modulId = route.params.modulId
-  
-  getModul(modulId)
-    .then(modulData => {
-  moduleName.value = modulData.name + ' (' + modulId + ')'
-
-  moduleDozent.value = modulData.dozent_name || 'Unbekannter Dozent'
-  moduleExams.value = modulData.examinations || 'Keine Prüfungen erkannt'
-
-  moduleLink.value = modulData.modulux_url || 'https://apps.htw-dresden.de/modulux/frontend/module/'
-      
-      // Check if lernsets data exists in the response
-      if (modulData.lernsets && Array.isArray(modulData.lernsets)) {
-        lernsets.value = modulData.lernsets.map(set => ({
-          id: set.id,
-          title: set.title,
-          quizCount: set.quiz_count || 0
-        }));
-      } else {
-        // If no lernsets in the response, initialize with an empty array
-        lernsets.value = [];
-        console.log('No lernsets data found in module response');
-      }
-    })
-    .catch(error => {
-      console.error('Fehler beim Laden des Moduls:', error)
-      // Fall back to placeholder data if API call fails
-      moduleName.value = `Modul ${modulId}`
-      moduleDescription.value = `Dieses Modul behandelt grundlegende Themen für ${modulId}.`
-      moduleDozent.value = ''
-      moduleExams.value = ''
-      moduleLink.value = 'https://www.htw-dresden.de/'
-    })
+  loadModuleData()
 })
 
 </script>
