@@ -70,16 +70,7 @@ export const API_ENDPOINTS = {
     BASE: 'api/sessions/',
     COMPLETE: (sessionId) => `api/sessions/${sessionId}/complete/`,
   },
-
-  FEEDBACK: {
-    BASE: 'api/feedback/',
-    DETAIL: (feedbackId) => `api/feedback/${feedbackId}/`,
-  },
-
-  ACHIEVEMENTS: {
-    BASE: 'api/achievements/',
-    USER: 'api/achievements/user/',
-  },
+  
   LEADERBOARD: {
     BASE: () => `api/leaderboard`,
     LIMIT: (limit = 3) => `api/leaderboard?limit=${limit}`,
