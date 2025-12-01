@@ -58,9 +58,12 @@ export const API_ENDPOINTS = {
     DETAIL: (optionId) => `api/answer-options/${optionId}/`
   },
 
-  PROGRESS: {
-    BASE: 'api/progress/',
-    DETAIL: (progressId) => `api/progress/${progressId}/`,
+  /*
+    Not used anywhere currently
+  */
+  ATTEMPTS: {
+    BASE: 'api/attempts/',
+    DETAIL: (attemptId) => `api/attempts/${attemptId}/`,
   },
 
   SESSIONS: {

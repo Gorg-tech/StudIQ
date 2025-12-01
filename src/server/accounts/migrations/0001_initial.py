@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('role', models.CharField(choices=[('STUDENT', 'Student'), ('MODERATOR', 'Moderator'), ('LECTURER', 'Lecturer')], default='STUDENT', max_length=10)),
-                ('iq_level', models.IntegerField(default=0)),
+                ('iq_score', models.IntegerField(default=0)),
                 ('correct_answers', models.IntegerField(default=0)),
                 ('wrong_answers', models.IntegerField(default=0)),
                 ('solved_quizzes', models.IntegerField(default=0)),

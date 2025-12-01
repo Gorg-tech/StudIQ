@@ -7,7 +7,7 @@
       <div class="iq-bar-container">
         <div class="iq-level-label">
           <span>IQ-Level</span>
-          <div class="iq-level-value">{{ iq_level }}</div>
+          <div class="iq-level-value">{{ iq_score }}</div>
         </div>
         <div class="iq-bar">
           <div class="iq-segment iq-old" :style="{ width: iqOldWidth + '%', left: '0%' }" title="Bisheriger IQ-Level"></div>
@@ -88,7 +88,7 @@ const percentage = computed(() =>
 )
 
 
-const iq_level = ref(0)
+const iq_score = ref(0)
 const iq_base = ref(0)
 const iq_perfect = ref(0)
 const iq_streak = ref(0)
@@ -161,7 +161,7 @@ onMounted(async () => {
     iq_total.value = iq_calc.total_points || 0
     iq_prev.value = iq_calc.prev_iq || 0
     iq_new.value = iq_calc.new_iq || 0
-    iq_level.value = Math.floor(iq_calc.new_iq / 100)
+    iq_score.value = Math.floor(iq_calc.new_iq / 100)
     attempts.value = iq_calc.attempts || 1
     streak.value = iq_calc.streak || 0
     animateBar()

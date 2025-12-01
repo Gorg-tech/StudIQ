@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const username = ref(null)
   const email = ref(null)
   const role = ref(null)
-  const iq_level = ref(0)
+  const iq_score = ref(0)
   const streak = ref(0)
   const correct_answers = ref(0)
   const wrong_answers = ref(0)
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
       username.value = data.username || null
       email.value = data.email || null
       role.value = data.role || null
-      iq_level.value = data.iq_level || 0
+      iq_score.value = data.iq_score || 0
       streak.value = data.streak || 0
       correct_answers.value = data.correct_answers || 0
       wrong_answers.value = data.wrong_answers || 0
@@ -51,7 +51,7 @@ export const useUserStore = defineStore('user', () => {
     username.value = null
     email.value = null
     role.value = null
-    iq_level.value = 0
+    iq_score.value = 0
     streak.value = 0
     correct_answers.value = 0
     wrong_answers.value = 0
@@ -80,7 +80,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
-    id, username, email, role, iq_level, streak, correct_answers, wrong_answers, solved_quizzes, studiengang, studiengang_name,
+    id, username, email, role, iq_score, streak, correct_answers, wrong_answers, solved_quizzes, studiengang, studiengang_name,
     loaded, loading, error,
     loadCurrentUser, reset, logout, isModerator, isOwner
   }

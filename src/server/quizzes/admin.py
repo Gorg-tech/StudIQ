@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Studiengang, Modul, Lernset, Quiz, Question, AnswerOption,
-    QuizProgress, Achievement, QuizSession, Feedback, UserAchievement
+    QuizAttempt, QuizSession, Feedback
 )
 
 @admin.register(Studiengang)
@@ -11,9 +11,9 @@ class StudiengangAdmin(admin.ModelAdmin):
 
 @admin.register(Modul)
 class ModulAdmin(admin.ModelAdmin):
-    list_display = ('modulId', 'name', 'semester', 'credits')
+    list_display = ('modulId', 'name', 'credits')
     search_fields = ('name', 'modulId')
-    list_filter = ('semester', 'studiengang')
+    list_filter = ('studiengang')
 
 @admin.register(Lernset)
 class LernsetAdmin(admin.ModelAdmin):
@@ -38,19 +38,10 @@ class AnswerOptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'text', 'is_correct', 'question')
     list_filter = ('is_correct', 'question')
 
-@admin.register(QuizProgress)
-class QuizProgressAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers', 'last_reviewed', 'strength_score')
+@admin.register(QuizAttempt)
+class QuizAttemptAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers', 'last_reviewed', 'attempts')
     list_filter = ('user', 'quiz')
-
-@admin.register(Achievement)
-class AchievementAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'unlock_criteria')
-
-@admin.register(UserAchievement)
-class UserAchievementAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'achievement', 'unlocked_at')
-    list_filter = ('achievement', 'unlocked_at')
 
 @admin.register(QuizSession)
 class QuizSessionAdmin(admin.ModelAdmin):
