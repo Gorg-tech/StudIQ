@@ -110,7 +110,6 @@ class Feedback(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='feedback')
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='feedback')
     rating = models.IntegerField()
-    comment = models.TextField(blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

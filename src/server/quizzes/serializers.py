@@ -161,7 +161,7 @@ class QuizSessionSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['id', 'quiz', 'rating', 'comment', 'submitted_at']
+        fields = ['id', 'quiz', 'rating', 'submitted_at']
 
 class StudiengangSerializer(serializers.ModelSerializer):
     module = ModulShortSerializer(many=True, read_only=True)

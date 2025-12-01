@@ -13,7 +13,8 @@ class StudiengangAdmin(admin.ModelAdmin):
 class ModulAdmin(admin.ModelAdmin):
     list_display = ('modulId', 'name', 'credits')
     search_fields = ('name', 'modulId')
-    list_filter = ('studiengang')
+    # list_filter must be a tuple/list; ensure proper tuple syntax
+    list_filter = ('studiengang',)
 
 @admin.register(Lernset)
 class LernsetAdmin(admin.ModelAdmin):
@@ -45,8 +46,8 @@ class QuizAttemptAdmin(admin.ModelAdmin):
 
 @admin.register(QuizSession)
 class QuizSessionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'quiz', 'start_time', 'end_time', 'score', 'mode')
-    list_filter = ('mode', 'user')
+    list_display = ('id', 'user', 'quiz', 'start_time', 'end_time')
+    list_filter = ('user', 'quiz')
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
