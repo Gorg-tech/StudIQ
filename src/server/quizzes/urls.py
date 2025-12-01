@@ -1,7 +1,15 @@
+"""
+REST URL Routers for quiz-related requests.
+
+This file defines the URLs for the REST API and which views to call.
+"""
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizProgressViewSet, AchievementViewSet, QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet, SearchView, AnswerOptionViewSet, SuggestedQuizzesView
+from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, AchievementViewSet,\
+                    QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet,\
+                    SearchView, AnswerOptionViewSet, SuggestedQuizzesView
 from .views import LeaderboardViewSet
 
 router = DefaultRouter()
@@ -23,9 +31,11 @@ urlpatterns = [
 
     # Brauchen wir erstmal nicht
     # Nested: /api/module/<module_id>/lernsets/
-    # path('modules/<int:module_id>/lernsets/', views.LernsetsByModuleView.as_view(), name='module-lernsets'),
+    # path('modules/<int:module_id>/lernsets/', views.LernsetsByModuleView.as_view(),
+    #      name='module-lernsets'),
     # Nested: /api/lernsets/<int:lernset_id>/quizzes/
-    path('lernsets/<uuid:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(), name='lernset-quizzes'),
+    path('lernsets/<uuid:lernset_id>/quizzes/', views.QuizzesByLernsetView.as_view(),
+         name='lernset-quizzes'),
     path('search/', SearchView.as_view(), name='search'),
     path('quizzes/<uuid:quiz_id>/complete/', views.QuizCompletionView.as_view(), name='complete'),
 ]
