@@ -50,7 +50,7 @@ sequenceDiagram
 sequenceDiagram
     participant U as User
     participant FE as Browser (Vue SPA)
-    participant API as ApiClient (Axios/Fetch)
+    participant API as ApiClient (Fetch)
     participant AUTH as Auth API (accounts.urls)
     
     %% Initialer App-Start: Prüfen, ob eingeloggt
@@ -109,9 +109,9 @@ sequenceDiagram
     note over QS: Holt Quiz + QuizProgress.get_or_create(user, quiz)
 
     QS->>QS: total = quiz.questions.count()<br/>accuracy = correct/total<br/>Punkte + Boni berechnen
-    QS->>ACC: User laden und updaten (iq_level, solved_quizzes, correct_answers, wrong_answers)
+    QS->>ACC: User laden und updaten (iq_score, solved_quizzes, correct_answers, wrong_answers)
     ACC-->>QS: User gespeichert
-    QS->>QS: QuizProgress updaten (attempts, correct_answers, wrong_answers, last_reviewed)
+    QS->>QS: QuizAttempts updaten (attempts, correct_answers, wrong_answers, last_reviewed)
     QS->>ACC: register_study_activity(user)<br/>→ StudyDay + streak
     ACC-->>QS: streak aktualisiert
     QS-->>API: 200 OK + { attempts, streak, base_points, ... , prev_iq, new_iq }
