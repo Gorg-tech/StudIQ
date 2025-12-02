@@ -208,7 +208,7 @@ onMounted(async () => {
 }
 
 .friends-popup {
-  background: white;  
+  background: white;
   padding: 20px;
   border-radius: 14px;
   width: 320px;
