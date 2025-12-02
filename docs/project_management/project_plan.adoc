@@ -1,5 +1,5 @@
 = Projektplan: StudIQ
-Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Radmir Mullagaliev <radmir.mullagaliev@stud.htw-dresden.de>
+Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Gabriel Wulkow Moreira da Silva <gabriel.wulkowmoreiradasilva@stud.htw-dresden.de>
 25.04.2025
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -12,17 +12,16 @@ Beschreibt die Arbeitsweise des Projektteams und die Hinderniss dieser Arbeitswe
 == Projektorganisation
 .Teammitglieder:
 - Georg Richter - Product Owner
-- Hans Brudek - Scrum Manager
+- Hans Brudek - Scrum Master
+- Eric Wolf - Dev, Architekturverantwortlicher
 - Vincent Karmanoczki - Dev
-- Eric Wolf - Dev
-- Radmir Mullagaliev - Dev
+- Gabriel Wulkow Moreira da Silva -  Dev
 - Carmina Langer - Dev
-//Introduce the project team, team members, and roles that they play during this project. If applicable, introduce work areas, domains, or technical work packages that are assigned to team members. Introduce neighboring projects, relationships, and communication channels. If the project is introduced somewhere else, reference that location with a link.
-
+- (inaktiv) Radmir Mullagaliev - Dev
 
 == Praktiken und Bewertung
 .Meeting-Termin:
-*jeden Mittwoch 13:45 in der Bib*
+*jeden Dienstag 15:30 in der S231*
 Falls Raum nicht verfügar, dann spontane Entscheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
 xref:../Meeting-Dok.adoc[Meeting-Dokumentation.adoc]
@@ -42,24 +41,41 @@ Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem M
 
 Zum Meeting werden die gemachten Aufgaben vorgestellt und besprochen und, falls sie fertig erledigt sind, neue zugeteilt. Dies erfolgt in Abstimmung mit den Teammitgliedern.
 
-Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt.
+Falls jemand noch zusätzliche Ausgaben übernimmt, welche nicht durch Tasks klar definiert sind, werden dies zusammen mit den Files auf denen man dafür arbeitet, im Discord-Kanal "Git-Überschneidungen" kommuniziert, damit keine Doppelarbeit entsteht.
 
+Falls Bugs bearbeitet werden, wird vorher ein Issue dafür erstellt, damit klar ist, wer woran arbeitet. Bei Bugs, deren Fixzeit >10min liegt, wird vorher im nächsten Meeting kommuniziert, ob und von wem er gefixt wird.
+
+*Code-Stilrichtlinien:*
+
+- Backend: Nutzung der Richtlinien von https://pylint.readthedocs.io/en/stable/[Pylint] für einen sauberen Python-Code
+- Frontend: Nutzung der Richtlinien von https://eslint.org/docs/latest/[ESLint] für einen sauberen JavaScript-Code
+    * Jedes Dokument startet mit einem Kommentarblock, der den Zweck des Dokuments beschreibt
+    * Falls Inline-Funktion mit mehr als 5 Zeilen verwendet wird, wird diese in eine separate Funktion ausgelagert. 
+    * Funktionen entsprechen den Vorgaben von Pylint bezüglich Kommentaren und Benennung
+
+Eine Iteration dauert 4 Wochen. Am Ende dieser Iteration werden die Stakeholder für ein Review eingeladen und eine Retrospektive durchgeführt.
 
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
 
 
 === Definition of Ready
 // Listen Sie hier die Kriterien auf, die ein Product Backlog Item (z.B. User Story) erfüllen muss, damit es bei der Sprint-Planung berücksichtigt werden kann
-Für Erfüllung geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
+Das PBI aus dem Backlog ist klar mit Akzeptanzkriterien beschrieben, welche von allen Temmitgliedern abgesegnet wurden. Ebenfalls wurde das Item priorisiert und geschätzt (Estimate).
+Der Status wird auf dem Github-Issue auf "Ready" gesetzt und kann zur Bearbeitung ausgewählt werden.
 
 === Definition of Done
 
-Coding-Task:Code wurde im Teammeting grob vorgestellt und als ok abgesegnet.
--> Kann auf GitHub als Done markiert werden
-// Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
+Für Erfüllung geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
+
+Coding-Task:
+- Code entspricht Struktur- und Dokumentationsrichtlinien des Projekts.
+- Code wurde im Teammeting grob vorgestellt und als ok abgesegnet.
+- Neu Implementierter Code im Backend muss zu 50% durch Unit-Tests abgedeckt sein
+
+-> Kann auf GitHub als "Done" markiert werden
 
 == Deployment
-Eigenen Branch erstellen und darauf arbeiten. Falls die Aufgabe unabhängig von den Aufgaben anderer Teammitglieder ist, soll der Branch kurz vor Meetingbeginn mit dem Main-Branch gemergt werden. Sonst bereits eher bis zu einem abgesprochenen Termin.
+Projekt wird auf einem Webserver deployed, der von Eric bereitgestellt wird. Zugangsdaten werden im Teammeeting kommuniziert.
 //Outline the strategy for deploying the software (and its updates) into the production environment.
 
 
@@ -92,3 +108,13 @@ Raum S128 manchmal belegt, dann etwas nervend spontan einen neuen Raum zu finden
 * Durch Gespräch mit anderer Gruppe: Idee für bessere Iterations-Einteilung +
     -> Alle 2 Wochen: Aufgabenverteilung, evtl Sprint Review mit Stakeholdern +
     -> Jede sontige Woche: normales Meeting zum Absprechen und Kommunikation des BEarbeitungsfortschritts
+
+=== 4. Iteration
+
+* Mehrer Arbeiten am gleichen Bug
+    -> bessere Kommunikation notwendig 
+    -> Erstellung von neuem Discordkanal "Git-Überschneidungen" 
+    -> Erstellen von Issues für Bugs bevor mit der Arbeit begonnen wird
+
+* Unzufriedenheit mit Bewertung auf SE1
+    -> Dozierende mehr um Feedback fragen

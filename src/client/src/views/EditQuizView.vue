@@ -23,48 +23,13 @@ const isNewQuiz = ref(!route.params.quizId)
 
 const errorMessage = ref('')
 
-onMounted(async () => {
-  // If quiz already loaded in store, reuse it (no re-fetch)
-  if (quizEdit.quizLoaded) {
-    // If navigating to a different quiz ID than stored, fetch that one
-    if (quizId.value && quizEdit.quizId !== quizId.value) {
-      const quiz = await getQuiz(quizId.value)
-      quizEdit.setQuiz({
-        id: quiz.id,
-        title: quiz.title,
-        lernset: quiz.lernset,
-        questions: quiz.questions.map(q => ({
-          id: q.id,
-          text: q.text,
-          type: q.type,
-          options: q.answer_options.map(opt => ({
-            id: opt.id,
-            text: opt.text,
-            correct: opt.is_correct,
-            _status: 'unchanged'
-          })),
-          _status: 'unchanged'
-        }))
-      })
-    }
-    return
-  }
-
-  if (isNewQuiz.value) {
-    const lernset = route.params.lernsetId || quizEdit.lernsetId || null
-    if (lernset)
-      quizEdit.setLernset(lernset)
-    else {
-      alert('Kein Lernset ausgewählt. Bitte erstelle ein Quiz über die Lernset-Seite.')
-      router.push('/')
-      return
-    }
-    quizEdit.quizLoaded = true
-    // Ensure questions array initialized
-    if (!quizEdit.questions.length) {
-      quizEdit.questions = []
-    }
-  } else {
+/**
+ * Loads Quiz-Data from Server
+ * Writes Data to quizEdit
+ * 
+ * @param {String} quizId Quiz-Id
+ */
+async function fetch_quiz(quizId){
     const quiz = await getQuiz(quizId.value)
     quizEdit.setQuiz({
       id: quiz.id,
@@ -83,55 +48,123 @@ onMounted(async () => {
         _status: 'unchanged'
       }))
     })
-  }
-})
-
-const goBack = () => {
-  showBackModal.value = true
 }
-const confirmBack = () => {
-  // If editing existing quiz, go back to its overview; otherwise back to lernset
+
+/**
+ * Initializes the quiz on component mount.
+ *  - If the store already has a loaded quiz:
+ *      → Reuse it unless the route quizId differs, then re-fetch.
+ *  - If creating a new quiz:
+ *      → Ensure a Lernset is available and prepare an empty quiz state.
+ *  - If editing an existing quiz:
+ *      → Fetch the quiz data from the server.
+ * 
+ * Handles navigation when no Lernset is available for new quizzes.
+ */
+async function initializeQuiz() {
+  // Case 1: Quiz already loaded in store
+  if (quizEdit.quizLoaded) {
+    if (quizId.value && quizEdit.quizId !== quizId.value) {
+      await fetch_quiz(quizId.value)
+    }
+    return
+  }
+
+  // Case 2: New quiz creation
+  if (isNewQuiz.value) {
+    const lernsetId =
+      route.params.lernsetId ||
+      quizEdit.lernsetId ||
+      null
+
+    if (!lernsetId) {
+      alert('Kein Lernset ausgewählt. Bitte erstelle ein Quiz über die Lernset-Seite.')
+      router.push('/')
+      return
+    }
+
+    quizEdit.setLernset(lernsetId)
+    quizEdit.quizLoaded = true
+
+    // Ensure questions array exists
+    if (!quizEdit.questions.length) {
+      quizEdit.questions = []
+    }
+
+    return
+  }
+
+  // Case 3: Editing existing quiz
+  await fetch_quiz(quizId.value)
+}
+
+/**
+ * Handler for "Back"-Button clicked
+ * - resets Quiz
+ * - sends User to QuizOverview or LernsetOverview
+ */
+function handle_backrouting(){
   const existingQuizId = quizEdit.quizId
   const targetLernset = quizEdit.lernsetId
   quizEdit.resetQuiz(true)
   showBackModal.value = false
   if (existingQuizId) {
+    //Mode: EditQuiz
     router.push({ name: 'quiz-overview', params: { quizId: existingQuizId } })
   } else {
+    //Mode: CreateQuiz
     router.push({ name: 'lernset', params: { lernsetId: targetLernset } })
   }
+}
+
+const goBack = () => {
+  showBackModal.value = true
+}
+const confirmBack = () => {
+  handle_backrouting()
 }
 const cancelBack = () => {
   showBackModal.value = false
 }
 
-const saveQuiz = async () => {
+/**
+ * Checks Quiz-Data on correct Values and correct related Question-Data to achieve a correct Save
+ * 
+ * @returns {bool} If Quiz has correct Values
+ */
+function quiz_has_correct_values(){
   errorMessage.value = ''
-
   if (!quizEdit.quizTitle.trim()) {
     errorMessage.value = 'Quiz-Titel ist erforderlich.'
-    return
+    return false
   }
 
   if (quizEdit.questions.length === 0) {
     errorMessage.value = 'Mindestens eine Frage ist erforderlich.'
-    return
+    return false
   }
 
   for (const q of quizEdit.questions) {
     if (q._status === 'deleted') continue
     if (!q.options || q.options.length < 2) {
       errorMessage.value = 'Jede Frage muss mindestens zwei Antwortoptionen haben.'
-      return
+      return false
     }
     for (const opt of q.options) {
       if (!opt.text || opt.text.trim() === '') {
         errorMessage.value = 'Alle Antwortoptionen müssen einen Text haben.'
-        return
+        return false
       }
     }
   }
+  return true
+}
 
+/**
+ * Gives API-Call for Request to Edit(Create/Update) the Quiz
+ * Maps current given quiz-Data for Edit-Request and sends it to the API-Service
+ */
+async function send_edit_request() {
   // Bereite die Quiz-Daten vor
   const quizData = {
     title: quizEdit.quizTitle,
@@ -184,7 +217,24 @@ const saveQuiz = async () => {
   }
 }
 
-const addQuestion = async () => {
+/**
+ * Saves Quiz into Server
+ * 
+ * Checks for correct Values, 
+ * Maps new Data for Server-Compatibility, Sends Create/Update-Request
+ */
+async function saveQuiz(){
+  if(!quiz_has_correct_values()){
+    return
+  }
+  send_edit_request()
+}
+
+/**
+ * Adds Question to View, initializes Answer-Values
+ */
+async function addQuestion()
+{
   const newQuestion = {
     id: Date.now().toString(), // temporäre ID
     text: '',
@@ -199,7 +249,11 @@ const addQuestion = async () => {
   router.push({ name: 'edit-question', params: { questionId: newQuestion.id } })
 }
 
-const deleteLocalQuestion = (id) => {
+/**
+ * Deletes a Question of the Quiz
+ * @param id Id from the Question to be deleted
+ */
+function deleteLocalQuestion(id){
 
   const q = quizEdit.getQuestion(id)
   if (q._status === 'new') {
@@ -209,28 +263,54 @@ const deleteLocalQuestion = (id) => {
   }
 }
 
-const goToQuestion = (questionId) => {
-  // Immer lokale Frage suchen und ID an EditQuestionView übergeben
+/**
+ * Sends User to the EditQuestionView
+ * @param questionId ID of the Question to be edites
+ */
+function goToQuestion(questionId){
+  // Always search for local Question, then send Id to EditQuestionView
   router.push({ name: 'edit-question', params: { questionId } })
 }
 
-const confirmDelete = (event, questionId) => {
+/**
+ * Öffnet den Löschdialog für eine bestimmte Frage.
+ * @param {Event} event - Das Click-Event, dessen Propagation gestoppt wird.
+ * @param {number|string} questionId - Die ID der zu löschenden Frage.
+ */
+function confirmDelete(event, questionId)
+{
   event.stopPropagation()
   questionToDelete.value = questionId
   questionToDeleteText.value = quizEdit.getQuestion(questionToDelete.value).text
   showDeleteModal.value = true
 }
-const deleteQuestionDialog = async () => {
+
+/**
+ * Löscht die aktuell ausgewählte Frage endgültig und schließt den Dialog.
+ * @returns {Promise<void>} Wird aufgelöst, sobald der Löschvorgang abgeschlossen ist.
+ */
+async function deleteQuestionDialog()
+{
   deleteLocalQuestion(questionToDelete.value)
   showDeleteModal.value = false
   questionToDelete.value = null
   questionToDeleteText.value = ''
 }
-const cancelDelete = () => {
+
+/**
+ * Bricht den Löschvorgang ab und setzt den Dialog zurück.
+ */
+function cancelDelete()
+{
   showDeleteModal.value = false
   questionToDelete.value = null
   questionToDeleteText.value = ''
 }
+
+onMounted(async () => {
+  initializeQuiz()
+})
+
 </script>
 
 <template>
