@@ -93,8 +93,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME', 'studiq_db'),
         'USER': os.environ.get('DB_USER', 'studiq_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', '8u!X@3z#Qw$1'),
-        'HOST': os.environ.get('DB_HOST', '192.168.0.66'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'not_set'),
+        'HOST': os.environ.get('DB_HOST', '0.0.0.0'),
         'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
             'charset': 'utf8mb4',
