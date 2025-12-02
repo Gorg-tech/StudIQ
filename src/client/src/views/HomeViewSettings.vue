@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
+import { useUserStore } from '@/stores/user'
 import { logout } from '@/services/auth'
 import { getSelfUser } from '@/services/user'
 
@@ -77,10 +78,10 @@ const handleLogout = async () => {
           <p>E-Mail: <b>{{ email }}</b></p>
         </div>
         <div class="setting-item">
-          <p>Benutzername: <b>{{ username }}</b></p> 
+          <p>Benutzername: <b>{{ username }}</b></p>
         </div>
         <div class="setting-item">
-          <p>Passwort: 
+          <p>Passwort:
             <b>{{ showPassword ? password : '••••••••' }}</b>
           </p>
           <button class="small-btn" @click="togglePasswordVisibility">

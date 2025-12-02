@@ -188,7 +188,7 @@ const addQuestion = async () => {
   const newQuestion = {
     id: Date.now().toString(), // temporäre ID
     text: '',
-    type: QUESTION_TYPES[0].api, 
+    type: QUESTION_TYPES[0].api,
     options: [
       { id: Date.now().toString() + '1', text: '', correct: false, _status: 'new' },
       { id: Date.now().toString() + '2', text: '', correct: false, _status: 'new' }
@@ -274,8 +274,8 @@ const cancelDelete = () => {
           </div>
           <div class="question-preview">
             <span class="question-text">{{ question.text || `Fragetext für Frage ${idx + 1}` }}</span>
-            <button 
-              class="btn-icon question-delete" 
+            <button
+              class="btn-icon question-delete"
               @click.stop="confirmDelete($event, question.id, question.text)"
               aria-label="Frage löschen"
             >
