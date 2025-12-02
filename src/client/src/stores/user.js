@@ -80,8 +80,24 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
-    id, username, email, role, iq_score, streak, correct_answers, wrong_answers, solved_quizzes, studiengang, studiengang_name,
-    loaded, loading, error,
-    loadCurrentUser, reset, logout, isModerator, isOwner
+    id,
+    username,
+    email,
+    role,
+    iq_score,
+    streak,
+    correct_answers,
+    wrong_answers,
+    solved_quizzes,
+    studiengang,
+    studiengang_name,
+    loaded,
+    loading,
+    error,
+    loadCurrentUser,
+    reset,
+    logout,
+    isModerator,
+    isOwner,
   }
 })
