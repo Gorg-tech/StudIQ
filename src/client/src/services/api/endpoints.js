@@ -58,25 +58,19 @@ export const API_ENDPOINTS = {
     DETAIL: (optionId) => `api/answer-options/${optionId}/`
   },
 
-  PROGRESS: {
-    BASE: 'api/progress/',
-    DETAIL: (progressId) => `api/progress/${progressId}/`,
+  /*
+    Not used anywhere currently
+  */
+  ATTEMPTS: {
+    BASE: 'api/attempts/',
+    DETAIL: (attemptId) => `api/attempts/${attemptId}/`,
   },
 
   SESSIONS: {
     BASE: 'api/sessions/',
     COMPLETE: (sessionId) => `api/sessions/${sessionId}/complete/`,
   },
-
-  FEEDBACK: {
-    BASE: 'api/feedback/',
-    DETAIL: (feedbackId) => `api/feedback/${feedbackId}/`,
-  },
-
-  ACHIEVEMENTS: {
-    BASE: 'api/achievements/',
-    USER: 'api/achievements/user/',
-  },
+  
   LEADERBOARD: {
     BASE: () => `api/leaderboard`,
     LIMIT: (limit = 3) => `api/leaderboard?limit=${limit}`,
