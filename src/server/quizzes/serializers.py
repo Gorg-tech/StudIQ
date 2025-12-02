@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Quiz, Question, AnswerOption, Lernset, QuizProgress, Achievement, QuizSession, Feedback, Studiengang, Modul
+from .models import Quiz, Question, AnswerOption, Lernset, QuizAttempt, QuizSession, Feedback, Studiengang, Modul
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
     _status = serializers.CharField(write_only=True, required=False)
@@ -27,8 +27,7 @@ class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = [
-            'id', 'title', 'description', 'created_at', 'created_by',
-            'rating_score', 'rating_count', 'avg_time_spent', 
+            'id', 'title', 'description', 'created_at', 'created_by', 'avg_time_spent', 
             'is_public', 'lernset', 'lernset_title', 'questions'
         ]
         
@@ -117,8 +116,7 @@ class QuizForLernsetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = [
-            'id', 'title', 'description', 'created_at', 'created_by', 'creator_username',
-            'rating_score', 'rating_count', 'avg_time_spent', 
+            'id', 'title', 'description', 'created_at', 'created_by', 'creator_username', 'avg_time_spent', 
             'is_public', 'lernset', 'question_count'
         ]
 
@@ -149,26 +147,21 @@ class LernsetSerializer(serializers.ModelSerializer):
         validated_data['modul'] = modul
         return super().create(validated_data)
 
-class QuizProgressSerializer(serializers.ModelSerializer):
+class QuizAttemptSerializer(serializers.ModelSerializer):
     class Meta:
-        model = QuizProgress
+        model = QuizAttempt
         fields = ['id', 'quiz', 'correct_answers', 'wrong_answers',
-                 'last_reviewed', 'strength_score', 'attempts']
-        
-class AchievementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Achievement
-        fields = ['id', 'name', 'description', 'unlock_criteria', 'icon_url']
+                 'last_reviewed', 'attempts']
         
 class QuizSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizSession
-        fields = ['id', 'quiz', 'start_time', 'end_time', 'score', 'mode']
+        fields = ['id', 'quiz', 'start_time', 'end_time']
         
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['id', 'quiz', 'rating', 'comment', 'submitted_at']
+        fields = ['id', 'quiz', 'rating', 'submitted_at']
 
 class StudiengangSerializer(serializers.ModelSerializer):
     module = ModulShortSerializer(many=True, read_only=True)
