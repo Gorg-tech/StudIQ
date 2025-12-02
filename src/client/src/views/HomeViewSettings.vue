@@ -3,23 +3,27 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
 import { logout } from '@/services/auth'
+import { getSelfUser } from '@/services/user'
 
 const router = useRouter()
 const themeStore = useThemeStore()
 
-// Daten aus localStorage (Login)
 const username = ref('')
-const password = ref('')
+const password = ref('••••••••')   // niemals echtes Passwort laden
 const email = ref('')
 const language = ref('Deutsch')
 
-// Sichtbarkeit des Passworts
 const showPassword = ref(false)
 
-onMounted(() => {
-  username.value = localStorage.getItem('username') || 'Kein Benutzer'
-  password.value = localStorage.getItem('password') || '••••••••'
-  email.value = localStorage.getItem('email') || 'Keine Email'
+onMounted(async () => {
+  try {
+    const self = await getSelfUser()
+
+    username.value = self.username
+    email.value    = self.email
+  } catch (error) {
+    console.error('Fehler beim Laden der Nutzerdaten', error)
+  }
 })
 
 // Aktionen
@@ -30,7 +34,6 @@ const changeLanguage = () => alert('Sprache ändern (noch Dummy)')
 const togglePasswordVisibility = () => (showPassword.value = !showPassword.value)
 const showCredits = () => alert('Team: StudIQ-Entwicklerteam\nVersion: 1.0.0')
 
-// Ausloggen: löscht Daten & leitet zum Login
 const handleLogout = async () => {
   try {
     await logout()
@@ -40,6 +43,7 @@ const handleLogout = async () => {
   }
 }
 </script>
+
 
 <template>
   <div class="edit-quiz-view">
