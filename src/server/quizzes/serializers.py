@@ -47,85 +47,65 @@ class QuizSerializer(serializers.ModelSerializer):
             for answer_data in answer_options:
                 answer_data_copy = answer_data.copy()
                 answer_data_copy.pop('id', None)  # Pop id since model has no id field
+                answer_data_copy.pop('_status', None)  # Pop _status as it's not a model field
                 AnswerOption.objects.create(question=question, **answer_data_copy)
         
         return quiz
         
 
     def update(self, instance, validated_data):
-        print("--- Starting Quiz Update ---")
-        print(f"Quiz ID: {instance.id}")
-        print(f"Incoming validated data: {validated_data}")
-
         questions_data = validated_data.pop('questions', [])
         # Update Quiz fields
         for attr, value in validated_data.items():
-            print(f"Updating quiz attribute '{attr}' to '{value}'")
             setattr(instance, attr, value)
         instance.save()
         
         # Verarbeite Questions basierend auf ihrem Status
-        print("\n--- Processing Questions ---")
         for question_data in questions_data:
             status = question_data.pop('_status', None)
             question_id = question_data.get('id') # Use .get() to avoid removing it
             answer_options_data = question_data.pop('answer_options', [])
             
-            print(f"\nProcessing Question with ID: {question_id}, Status: {status}")
-            print(f"Question data: {question_data}")
-
             if status == 'new':
-                print("  Action: Creating new question.")
                 # Remove temporary frontend ID
                 question_data.pop('id', None)
                 question = Question.objects.create(quiz=instance, **question_data)
                 for answer_data in answer_options_data:
                     answer_data.pop('id', None)
+                    answer_data.pop('_status', None)
                     AnswerOption.objects.create(question=question, **answer_data)
                     
             elif status == 'edited' and question_id:
-                print("  Action: Editing existing question.")
                 question = Question.objects.get(id=question_id, quiz=instance)
                 question.text = question_data.get('text', question.text)
                 question.type = question_data.get('type', question.type)
                 question.save()
-                print(f"  Saved changes for question text: {question.text}")
                 
                 # Update or create AnswerOptions
                 existing_answer_ids = set(question.answer_options.values_list('id', flat=True))
                 received_answer_ids = set()
 
-                print("  --- Processing Answer Options ---")
                 for answer_data in answer_options_data:
                     answer_id = answer_data.get('id')
                     answer_status = answer_data.pop('_status', 'unchanged')
-                    print(f"    Answer ID: {answer_id}, Status: {answer_status}, Data: {answer_data}")
 
                     if answer_status == 'new':
-                        print("      Action: Creating new answer.")
                         answer_data.pop('id', None)
                         AnswerOption.objects.create(question=question, **answer_data)
                     elif answer_status == 'edited' and answer_id in existing_answer_ids:
-                        print("      Action: Editing existing answer.")
                         answer_instance = AnswerOption.objects.get(id=answer_id)
                         answer_instance.text = answer_data.get('text', answer_instance.text)
                         answer_instance.is_correct = answer_data.get('is_correct', answer_instance.is_correct)
                         answer_instance.save()
                         received_answer_ids.add(answer_id)
                     elif answer_status == 'deleted' and answer_id in existing_answer_ids:
-                        print("      Action: Deleting answer.")
                         AnswerOption.objects.filter(id=answer_id).delete()
                     elif answer_id in existing_answer_ids:
-                         print("      Action: Answer unchanged.")
                          received_answer_ids.add(answer_id)
 
             elif status == 'deleted' and question_id:
-                print(f"  Action: Deleting question with ID {question_id}")
                 Question.objects.filter(id=question_id, quiz=instance).delete()
-            else:
-                print(f"  Action: No status or unknown status '{status}', skipping question modification.")
         
-        print("\n--- Finished Quiz Update ---")
         return instance
 
 class QuizForLernsetSerializer(serializers.ModelSerializer):

@@ -46,15 +46,8 @@ class AnswerOptionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        # schnelle Debug-Ausgaben (entfernen/ersetzen durch logger in Prod)
-        print("AnswerOption.create headers:", dict(request.headers))
-        print("AnswerOption.create content_type:", request.content_type)
-        print("AnswerOption.create body:", request.data)
-
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
-            # zeigen, welche Validierungsfehler vorliegen
-            print("AnswerOption.create validation errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)
@@ -73,6 +66,18 @@ class QuizViewSet(viewsets.ModelViewSet):
         # Automatically set the created_by to the current user
         serializer.save(created_by=self.request.user)
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to edit this quiz."}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to delete this quiz."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
@@ -90,6 +95,18 @@ class LernsetViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Not found."}, status=404)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to edit this lernset."}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.created_by and request.user.role != 'MODERATOR':
+            return Response({"detail": "You do not have permission to delete this lernset."}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
 class QuizProgressViewSet(viewsets.ModelViewSet):
     serializer_class = QuizProgressSerializer
@@ -161,11 +178,11 @@ class QuizzesByLernsetView(ListAPIView):
 
 class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet für das Leaderboard. Unterstützt zwei query-Parameter:
-    - limit: Anzahl der Top-Nutzer, die vorne angezeigt werden (z.B. 3)
-    - around: Anzahl der Nutzer vor/nach dem aktuellen User, die angezeigt werden
+    ViewSet for the leaderboard. Supports 2 query-parameters:
+    - limit: amount of top users (e.g. the top 3)
+    - around: amount of users in front and after the self-user
 
-    Gibt zurück: {
+    returns {
       users: [ ...serialized users in display order... ],
       current_user_rank: int,
       top_count: int,
@@ -175,16 +192,16 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_users_around(self, user_id, before=1, after=1): 
-        """Holt Nutzer vor und nach dem gegebenen User. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
-        User = get_user_model()
+    def get_users_around(self, user_id, before=1, after=1):
+        """Retrieves users in front and behind the user. Returns a list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...] """ 
+        user = get_user_model()
         try: 
-            current_user = User.objects.get(id=user_id) 
-        except User.DoesNotExist: 
+            current_user = user.objects.get(id=user_id) 
+        except user.DoesNotExist: 
             return [] 
         
         # Robust approach: build ordered list of user ids by rank and slice by index.
-        ordered_ids = list(User.objects.order_by('-streak', 'id').values_list('id', flat=True)) 
+        ordered_ids = list(user.objects.order_by('-streak', 'id').values_list('id', flat=True)) 
         try: 
             idx = ordered_ids.index(current_user.id) 
         except ValueError: 
@@ -193,7 +210,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         end = min(len(ordered_ids), idx + after + 1) 
         slice_ids = ordered_ids[start:end] 
         # Fetch the user objects for these ids and preserve the order from slice_ids 
-        users_qs = User.objects.filter(id__in=slice_ids) 
+        users_qs = user.objects.filter(id__in=slice_ids) 
         users_map = {u.id: u for u in users_qs} 
         ordered_users = [users_map[_id] for _id in slice_ids if _id in users_map] 
         return ordered_users
@@ -210,26 +227,28 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         except (ValueError, TypeError):
             around = 1
 
-        User = get_user_model()
+        user = get_user_model()
 
         # Fetch top users
-        top_users = list(User.objects.order_by('-streak', 'id')[:top_count]) if top_count > 0 else []
+        top_users = list(user.objects.order_by('-streak', 'id')[:top_count]) if top_count > 0 else []
 
         # Fetch users around current user
         around_users = []
+        has_more_before = False
+        has_more_after = False
         if request.user and request.user.is_authenticated and around > 0:
             around_users = self.get_users_around(request.user.id, before=around, after=around)
             
             # check if last user in around_users is last of everyone and if yes, set has_more_after to False
             last_around_user = around_users[-1] if around_users else None
             first_around_user = around_users[0] if around_users else None
-            all_users = list(User.objects.order_by('-streak', 'id'))
+            all_users = list(user.objects.order_by('-streak', 'id'))
 
             idx_top_last = all_users.index(top_users[-1]) if top_users else -1
             idx_around_first = all_users.index(first_around_user) if first_around_user else -1
 
             has_more_before = idx_around_first > idx_top_last + 1
-            has_more_after = User.objects.order_by('-streak', 'id').last().id != last_around_user.id if last_around_user else True
+            has_more_after = user.objects.order_by('-streak', 'id').last().id != last_around_user.id if last_around_user else True
 
         # Combine top and around, preserving order and removing duplicates
         combined = list(top_users)
@@ -310,32 +329,74 @@ class SearchView(APIView):
         modules_qs = Modul.objects.none()
         studiengaenge_qs = Studiengang.objects.none()
 
+        # Helper function to build Q object for multi-word search
+        def build_search_q(fields, query):
+            words = query.split()
+            if not words:
+                return Q()
+            q_objects = Q()
+            for word in words:
+                word_q = Q()
+                for field in fields:
+                    word_q |= Q(**{f"{field}__icontains": word})
+                q_objects &= word_q
+            return q_objects
+
+        # Increase limit for candidates to allow better sorting
+        candidate_limit = min(limit * 4, 100)  # Collect more candidates for sorting
+
         if not filter_type or filter_type.lower() == "lernsets":
             lernsets_qs = Lernset.objects.filter(
-                Q(title__icontains=query) | Q(description__icontains=query)
-            )[:limit]
+                build_search_q(['title', 'description'], query)
+            )[:candidate_limit]
 
         if not filter_type or filter_type.lower() == "quizzes":
             quizzes_qs = Quiz.objects.filter(
-                Q(title__icontains=query) | Q(description__icontains=query)
-            )[:limit]
+                build_search_q(['title', 'description'], query)
+            )[:candidate_limit]
 
         if not filter_type or filter_type.lower() == "modules":
             modules_qs = Modul.objects.filter(
-                Q(name__icontains=query)
-                | Q(description__icontains=query)
-                | Q(modulId__icontains=query)
-            )[:limit]
+                build_search_q(['name', 'dozent_name', 'modulId'], query)
+            )[:candidate_limit]
 
         if not filter_type or filter_type.lower() == "studiengaenge":
             studiengaenge_qs = Studiengang.objects.filter(
-                Q(name__icontains=query)
-                | Q(description__icontains=query)
-                | Q(id__icontains=query)
-            )[:limit]
+                build_search_q(['name', 'description', 'id'], query)
+            )[:candidate_limit]
 
-        # Combine all results and limit to top 'limit' across types
-        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))[:limit]
+        # Combine all results
+        all_items = list(chain(lernsets_qs, quizzes_qs, modules_qs, studiengaenge_qs))
+
+        # Calculate relevance score for each item
+        def calculate_relevance(item):
+            import re
+            words = query.lower().split()
+            score = 0
+            text_fields = []
+            if isinstance(item, Lernset):
+                text_fields = [item.title, item.description]
+            elif isinstance(item, Quiz):
+                text_fields = [item.title, item.description]
+            elif isinstance(item, Modul):
+                text_fields = [item.name, item.dozent_name or '', item.modulId]
+            elif isinstance(item, Studiengang):
+                text_fields = [item.name, item.description, item.id]
+            
+            for field in text_fields:
+                if field:
+                    field_lower = field.lower()
+                    for word in words:
+                        # Check for whole word match (higher score)
+                        if re.search(r'\b' + re.escape(word) + r'\b', field_lower):
+                            score += 2
+                        elif word in field_lower:
+                            score += 1
+            return score
+
+        # Sort by relevance score descending, then limit
+        all_items.sort(key=lambda item: calculate_relevance(item), reverse=True)
+        all_items = all_items[:limit]
 
         # Serialize and categorize
         for item in all_items:
@@ -443,3 +504,26 @@ class QuizCompletionView(APIView):
             "prev_iq": prev_iq,
             "new_iq": new_iq
         })
+    
+    def get(self, request, quiz_id):
+        """
+        Get the number of attempts for the user on the specified quiz.
+        Returns: {
+            correct_answers: int,
+            wrong_answers = int,
+            last_reviewed = DateTime,
+            strength_score = float,
+            attempts = int
+        }
+        """
+        user = request.user
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
+
+        return Response({
+            "correct_answers": quiz_progress.correct_answers,
+            "wrong_answers": quiz_progress.wrong_answers,
+            "last_reviewed": quiz_progress.last_reviewed,
+            "strength_score": quiz_progress.strength_score,
+            "attempts": quiz_progress.attempts
+            })

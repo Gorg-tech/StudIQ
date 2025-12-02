@@ -7,25 +7,30 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
   const quizTitle = ref('Mein Quiz')
   const lernsetId = ref(null)
   const questions = ref([])
+  const quizCreator = ref(null)
 
-  function setQuiz({ id, title, questions: qs, lernset }) {
+  function setQuiz({ id, title, questions: qs, lernset, created_by }) {
     quizLoaded.value = true
     quizId.value = id || null
     quizTitle.value = title || 'Mein Quiz'
     lernsetId.value = lernset || lernsetId.value || null
-    questions.value = qs ? [...qs] : []
+    questions.value = qs ? qs.map(q => ({ ...q, id: String(q.id) })) : []
+    quizCreator.value = created_by || null
   }
 
   function setLernset(id) {
     lernsetId.value = id
   }
 
-  function resetQuiz() {
+  function resetQuiz(preserveLernset = false) {
+    // Reset quiz editing state; optionally keep current lernset to allow redirect back.
+    const keptLernset = preserveLernset ? lernsetId.value : null
     quizLoaded.value = false
     quizId.value = null
-    quizTitle.value = ''
-    lernsetId.value = null
+    quizTitle.value = 'Mein Quiz'
+    lernsetId.value = keptLernset
     questions.value = []
+    quizCreator.value = null
   }
 
   
@@ -48,7 +53,7 @@ export const useQuizEditStore = defineStore('quizEdit', () => {
   }
 
   return {
-    quizId, quizTitle, questions, quizLoaded, lernsetId,
+    quizId, quizTitle, questions, quizLoaded, lernsetId, quizCreator,
     setQuiz, resetQuiz, updateQuestion, addQuestion, setLernset, removeQuestion, getQuestion
   }
 })
