@@ -183,7 +183,7 @@ function selectType(type) {
 
 function addOption() {
   options.value.push({
-    id: Date.now(),
+    id: Date.now().toString(),
     text: '',
     correct: false,
     _status: 'new'

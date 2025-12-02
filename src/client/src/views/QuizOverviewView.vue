@@ -38,7 +38,7 @@
             <button class="btn btn-primary" @click="startQuiz">Quiz starten</button>
             <button class="btn btn-ghost" @click="goToLernset">Zum Lernset</button>
             <button class="btn btn-outline" @click="showStats = true">Statistiken</button>
-            <button class="settings-btn" @click="goToEditQuiz" :disabled="loading" aria-label="Einstellungen">
+            <button v-if="canEdit" class="settings-btn" @click="goToEditQuiz" :disabled="loading" aria-label="Einstellungen">
               <IconSettings />
             </button>
           </div>
@@ -148,14 +148,16 @@
 <script setup>
 import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { getQuiz } from '@/services/quizzes'
+import { getQuiz, getQuizSessions } from '@/services/quizzes'    // <-- added getQuizSessions
 import IconSettings from '@/components/icons/IconSettings.vue'
 import { useQuizEditStore } from '@/stores/editQuiz'
+import { useUserStore } from '@/stores/user'
 
 const showStats = ref(false)
 const router = useRouter()
 const route = useRoute()
 const quizEdit = useQuizEditStore()
+const userStore = useUserStore()
 
 // Replace local dummy quiz with API-driven state
 const quiz = ref(null)
@@ -168,20 +170,49 @@ const quizHistory = ref([])
 // ensure currentRunIndex exists early so loader can set it
 const currentRunIndex = ref(0)
 
-// helper to load per-quiz history from localStorage
-function loadHistoryFromStorage() {
+// helper to load per-quiz history (try server first, fallback to localStorage)
+async function loadHistoryFromStorage() {
   const qid = route.params.quizId
   if (!qid) {
     quizHistory.value = []
     currentRunIndex.value = 0
     return
   }
+
+  // Try server sessions first
+  try {
+    const sessions = await getQuizSessions(qid)
+    // apiClient.get may return response body directly (service helpers in this project return parsed body)
+    const runs = Array.isArray(sessions) ? sessions : (sessions?.results || sessions?.data || [])
+    if (Array.isArray(runs) && runs.length > 0) {
+      // normalize server session shape to expected run shape used in the UI
+      quizHistory.value = runs.map(s => {
+        const results = Array.isArray(s.results) ? s.results : (s.answers || [])
+        const correctAnswers = typeof s.score === 'number' ? s.score : results.filter(r => r.isCorrect).length
+        const totalQuestions = typeof s.total === 'number' ? s.total : results.length
+        const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : (s.percentage || 0)
+        return {
+          timestamp: s.end_time || s.created_at || s.start_time || s.timestamp || null,
+          results: results,
+          correctAnswers,
+          totalQuestions,
+          percentage
+        }
+      })
+      currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
+      return
+    }
+  } catch (err) {
+    // server call failed -> fallback to localStorage silently
+    console.warn('Failed to fetch quiz sessions from server, falling back to localStorage', err)
+  }
+
+  // Fallback: localStorage key
   const key = `quizHistory_${qid}`
   try {
     const raw = localStorage.getItem(key)
     const parsed = raw ? JSON.parse(raw) : []
     quizHistory.value = Array.isArray(parsed) ? parsed : []
-    // set index to latest run
     currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
   } catch (err) {
     console.error('Error loading quizHistory from localStorage', err)
@@ -203,6 +234,11 @@ onMounted(async () => {
     loading.value = true
     const data = await getQuiz(qid)
     quiz.value = data
+    // Persist creator for later permission checks (mirrors edit route behavior)
+    const creator = data.created_by || data.createdBy || data.creator_username || null
+    if (creator) quizEdit.quizCreator = creator
+    // Ensure user data loaded for permission checks
+    await userStore.loadCurrentUser()
     // load history after quiz known
     loadHistoryFromStorage()
   } catch (err) {
@@ -322,6 +358,14 @@ function formatDate(ts) {
   const d = new Date(ts)
   return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
+
+// Only allow edit if current user is creator or has moderator role
+const canEdit = computed(() => {
+  if (!quiz.value) return false
+  const creator = quiz.value.created_by || quiz.value.createdBy || quiz.value.creator_username || quizEdit.quizCreator
+  if (!userStore.loaded) return false
+  return userStore.isOwner(creator) || userStore.isModerator()
+})
 </script>
 
 <style scoped>

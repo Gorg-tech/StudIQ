@@ -7,6 +7,7 @@ import { getSelfUser } from '@/services/user'
 
 const router = useRouter()
 const themeStore = useThemeStore()
+const userStore = useUserStore()
 
 const username = ref('')
 const password = ref('••••••••')   // niemals echtes Passwort laden
@@ -36,7 +37,7 @@ const showCredits = () => alert('Team: StudIQ-Entwicklerteam\nVersion: 1.0.0')
 
 const handleLogout = async () => {
   try {
-    await logout()
+    await userStore.logout()
     router.push('/login')
   } catch (error) {
     console.error('Logout failed:', error)

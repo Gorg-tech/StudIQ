@@ -12,9 +12,15 @@ GET /api/lernsets/{lernsetId}/quizzes/         – Quizze eines Lernsets
 
 ## Datenbank & Administration
 - SQLite (automatisch als `db.sqlite3` erstellt)
+ - Alternatively you can configure a remote MySQL/MariaDB server and connect using environment variables (see `README_MYSQL.md`).
 - Nach Modelländerungen:  
   ```bash
   python manage.py makemigrations && python manage.py migrate
+  ```
+- **Datenbank initialisieren (nach Klonen des Projekts):**
+  ```bash
+  python manage.py migrate
+  python scraper/populate_db.py
   ```
 - **Admin-Zugang für Entwicklung:**  
   - Benutzername: `admin`  
@@ -27,6 +33,17 @@ GET /api/lernsets/{lernsetId}/quizzes/         – Quizze eines Lernsets
   [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)  
   Hier lassen sich User, Quizze, Lernsets und weitere Daten verwalten.
 
+## Verwendung eines entfernten MySQL/MariaDB-Servers
+
+Um eine Verbindung zur entfernten MySQL-Datenbank herzustellen:
+
+1. Kopiere die Beispiel-Umgebungsdatei:
+   ```bash
+   cp .env.sample .env
+   ```
+
+2. Bearbeite `.env` und setze das korrekte `DB_PASSWORD`.
+
 ## Authentifizierung
 Die Authentifizierung erfolgt über Cookie-basierte Sessions. Bei erfolgreichem Login/Register wird ein Session-Cookie gesetzt, das bei nachfolgenden Anfragen automatisch mitgesendet wird.
 
@@ -35,23 +52,11 @@ Vorteile dieser Methode:
 - CSRF-Schutz durch Django's CSRF-Mechanismus
 - Automatische Session-Verwaltung
 
-> **Hinweis:**  
-> **Alle API-Endpunkte (außer Registrierung und Login) erfordern eine Authentifizierung!**  
-> Nicht authentifizierte Anfragen werden mit HTTP 403 oder 401 abgelehnt.
-
 ## Server starten
 ```bash
 cd src/server
 python manage.py runserver
 ```
-
-## Version **Control**
-**Kleiner Hinweis:** Während der Entwicklung checken wir die `db.sqlite3` Datei mit ins GitHub-Repo ein – macht den Einstieg einfacher für alle.
-
-**Ist eigentlich nicht so der Bringer und auch nicht ganz ungefährlich!** In der Datenbank stecken sensible Infos wie Passwort-Hashes und persönliche Daten.
-
-Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wandern!
-
 ## API-Endpoints
 
 ### Authentifizierung
@@ -122,16 +127,6 @@ Für die richtige Produktion sollte die Datei definitiv in die `.gitignore` wand
 - `GET /api/sessions/` – Eigene Quiz-Sitzungen abrufen
 - `POST /api/sessions/` – Neue Quiz-Sitzung starten
 - `POST /api/sessions/{id}/complete/` – Quiz-Sitzung beenden und Antworten einreichen
-
-### Feedback
-- `GET /api/feedback/` – Eigenes Feedback abrufen
-- `POST /api/feedback/` – Neues Feedback abgeben
-- `PUT /api/feedback/{id}/` – Feedback aktualisieren
-- `DELETE /api/feedback/{id}/` – Feedback löschen
-
-### Errungenschaften
-- `GET /api/achievements/` – Alle Errungenschaften abrufen
-- `GET /api/achievements/user/` – Eigene freigeschaltete Errungenschaften abrufen
 
 ### Leaderboard
 - `GET /api/leaderboard?limit=N&around=M` – Die ersten N User des Leaderboards und M Users um den self-user herum (nach Streak)

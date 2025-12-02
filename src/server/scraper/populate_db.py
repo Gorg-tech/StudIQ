@@ -3,6 +3,22 @@ import sys
 import django
 import json
 import re
+import time
+
+def _truncate(s, max_len):
+    """Safely truncate strings to fit DB column max lengths."""
+    if s is None:
+        return ''
+    s = str(s)
+    return s[:max_len]
+
+def _progress(current, total, prefix='', last=[0]):
+    """Simple rate-limited progress print (every ~0.25s or on completion)."""
+    now = time.time()
+    if now - last[0] >= 0.25 or current == total:
+        pct = (current/total*100) if total else 0
+        print(f"{prefix}{current}/{total} ({pct:5.1f}%)", flush=True)
+        last[0] = now
 
 def setup_django():
     """
@@ -43,7 +59,8 @@ def populate_database():
 
     created_programs_count = 0
     updated_programs_count = 0
-    for program in programs_data:
+    total_programs = len(programs_data)
+    for idx, program in enumerate(programs_data):
         details = program.get('details', {})
         program_id = details.get('Studiengangsnummer')
         
@@ -55,6 +72,7 @@ def populate_database():
         
         # Clean up the name
         program_name = program_name.replace(program_id, '').strip()
+        program_name = _truncate(program_name, 100)
 
         studiengang, created = Studiengang.objects.update_or_create(
             id=program_id,
@@ -68,6 +86,8 @@ def populate_database():
             created_programs_count += 1
         else:
             updated_programs_count += 1
+        if idx % 25 == 0 or idx+1 == total_programs:
+            _progress(idx+1, total_programs, prefix='[Studiengänge] ')
     
     print(f'Finished Studiengang: {created_programs_count} created, {updated_programs_count} updated.')
 
@@ -107,7 +127,8 @@ def populate_database():
     updated_modules_count = 0
     linked_relations_count = 0
     
-    for base_id, module_info in latest_modules.items():
+    total_modules = len(latest_modules)
+    for idx, (base_id, module_info) in enumerate(latest_modules.items()):
         module_data = module_info['data']
         module_id = base_id # Use the cleaned base ID
 
@@ -118,24 +139,60 @@ def populate_database():
         except (ValueError, TypeError):
             credits = 0
 
-        # Clean module name
+        # Clean module name and ensure it fits DB column
         module_name = module_data.get('moduleName', 'N/A').split('\n')[0].strip()
+        module_name = _truncate(module_name, 100)
 
-        # Clean up responsible and examinations fields
-        responsible_raw = module_data.get('responsible', 'N/A')
-        responsible = ' '.join(responsible_raw.split())
+        # Responsible (name + email separated)
+        responsible_raw = module_data.get('responsible', '').strip()
+        # Normalize obfuscated email forms like (at), [at], " at ", "(at)" without spaces
+        email_normalized_source = re.sub(r'\s*(?:\(|\[)?at(?:\)|\])\s*', '@', responsible_raw, flags=re.IGNORECASE)
+        # Also remove multiple @ occurrences collapse spaces
+        email_normalized_source = ' '.join(email_normalized_source.split())
+        email_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', email_normalized_source)
+        responsible_email = _truncate(email_match.group(0) if email_match else '', 254)
+        responsible_name = responsible_raw
+        if responsible_email:
+            # Remove the (at) part variants from name as well
+            responsible_name = responsible_name.replace(responsible_email.replace('@','(at)'), '')
+            responsible_name = responsible_name.replace(responsible_email, '')
+        # Clean leftover obfuscations like (at) or [at]
+        responsible_name = re.sub(r'(?:\(|\[)?at(?:\)|\])', '', responsible_name, flags=re.IGNORECASE)
+        # Remove stray punctuation
+        responsible_name = responsible_name.replace('(', '').replace(')', '').replace('[','').replace(']','').strip(' ,;-')
+        # Collapse whitespace
+        responsible_name = ' '.join(responsible_name.split())
+        responsible_name = _truncate(responsible_name, 100)
 
         examinations_raw = module_data.get('examinations', 'N/A')
         examinations = ' '.join(examinations_raw.split())
+
+        turnus = module_data.get('turnus', 'N/A')
+        languages_raw = module_data.get('languages', 'N/A')
+        # Parse languages into a list
+        if languages_raw and languages_raw != 'Keine Angabe':
+            # Split by newlines, clean, and extract language names
+            lines = [line.strip() for line in languages_raw.split('\n') if line.strip()]
+            languages = []
+            for line in lines:
+                # Extract language if it starts with a capital letter (Deutsch, Englisch, etc.)
+                if line and line[0].isupper() and not line.startswith('in Veranstaltung'):
+                    languages.append(line.split()[0])  # Take first word
+            languages = list(set(languages))  # Unique
+        else:
+            languages = []
 
         modul, created = Modul.objects.update_or_create(
             modulId=module_id,
             defaults={
                 'name': module_name,
-                'description': f"Verantwortlich: {responsible}\nPrüfungen: {examinations}",
+                'examinations': examinations,
+                'turnus': turnus,
+                'languages': languages,
                 'credits': credits,
-                'semester': 0, # Default
-                'modulux_url': module_data.get('moduluxLink', '')
+                'modulux_url': module_data.get('moduluxLink', ''),
+                'dozent_name': responsible_name,
+                'dozent_email': responsible_email,
             }
         )
         if created:
@@ -155,6 +212,9 @@ def populate_database():
                 linked_relations_count += 1
             except Studiengang.DoesNotExist:
                 print(f"WARNING: Studiengang with ID '{prog_id}' not found for module '{module_id}'.")
+
+        if idx % 100 == 0 or idx+1 == total_modules:
+            _progress(idx+1, total_modules, prefix='[Module] ')
 
     print(f'Finished Modul: {created_modules_count} created, {updated_modules_count} updated.')
     print(f'Created {linked_relations_count} links between modules and programs.')

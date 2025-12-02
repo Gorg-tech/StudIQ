@@ -1,7 +1,6 @@
 import apiClient from './api/client';
 import { API_ENDPOINTS } from './api/endpoints';
 
-
 // Login
 export async function getQuizzes(lernsetID) {
   return apiClient.get(API_ENDPOINTS.LERNSETS.QUIZZES(lernsetID));
@@ -37,6 +36,12 @@ export async function completeQuiz(quizId, sessionData) {
   // Uses API_ENDPOINTS.QUIZZES.DETAIL(quizId) which ends with `/api/quizzes/{id}/`
   // so append `complete/` to form `/api/quizzes/{id}/complete/`
   return apiClient.post(`${API_ENDPOINTS.QUIZZES.DETAIL(quizId)}complete/`, sessionData)
+}
+
+// Add this helper to fetch quiz sessions/attempts from the backend
+export async function getQuizSessions(quizId) {
+  // server exposes /api/sessions/?quiz=<quizId> via QuizSessionViewSet
+  return apiClient.get(`${API_ENDPOINTS.SESSIONS.BASE}?quiz=${quizId}`)
 }
 
 /* Usage Example:

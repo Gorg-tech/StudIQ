@@ -15,10 +15,13 @@ class Studiengang(models.Model):
 class Modul(models.Model):
     modulId = models.CharField(max_length=50, primary_key=True)
     name = models.CharField(max_length=100)
-    semester = models.IntegerField()
-    description = models.TextField(blank=True)
+    examinations = models.TextField(blank=True)
+    turnus = models.CharField(max_length=50, blank=True)
+    languages = models.JSONField(blank=True, default=list)
     credits = models.IntegerField()
     modulux_url = models.URLField(blank=True)
+    dozent_name = models.CharField(max_length=100, blank=True)
+    dozent_email = models.EmailField(blank=True)
     studiengang = models.ManyToManyField(Studiengang, related_name='module')
     
     def __str__(self):
@@ -46,8 +49,6 @@ class Quiz(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    rating_score = models.IntegerField(default=0)
-    rating_count = models.IntegerField(default=0)
     is_public = models.BooleanField(default=False)  
     lernset = models.ForeignKey(Lernset, on_delete=models.CASCADE, related_name='quizzes')
     
@@ -82,53 +83,25 @@ class AnswerOption(models.Model):
     def __str__(self):
         return f"{self.text[:30]} ({'Correct' if self.is_correct else 'Incorrect'})"
 
-class QuizProgress(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_progress')
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='progress')
+class QuizAttempt(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_attempts')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='attempts')
     correct_answers = models.IntegerField(default=0)
     wrong_answers = models.IntegerField(default=0)
     last_reviewed = models.DateTimeField(auto_now=True)
-    strength_score = models.FloatField(default=0.0)
     attempts = models.IntegerField(default=0)
     
     class Meta:
         unique_together = ('user', 'quiz')
         
     def __str__(self):
-        return f"{self.user.username}'s progress on {self.quiz.title}"
-
-class Achievement(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    unlock_criteria = models.CharField(max_length=255)
-    icon_url = models.URLField()
-    
-    # Many-to-many relationship with User through UserAchievement
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='UserAchievement')
-    
-    def __str__(self):
-        return self.name
-
-class UserAchievement(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
-    unlocked_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        unique_together = ('user', 'achievement')
-
-class QuizMode(models.TextChoices):
-    PRACTICE = 'PRACTICE', 'Practice'
-    SIMULATION = 'SIMULATION', 'Simulation'
-    FLASHCARDS = 'FLASHCARDS', 'Flashcards'
+        return f"{self.user.username}'s attempt data on {self.quiz.title}"
 
 class QuizSession(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_sessions')
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='sessions')
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    score = models.IntegerField(default=0)
-    mode = models.CharField(max_length=20, choices=QuizMode.choices, default=QuizMode.PRACTICE)
     
     def __str__(self):
         return f"{self.user.username} - {self.quiz.title} - {self.start_time.strftime('%Y-%m-%d %H:%M')}"
@@ -137,7 +110,6 @@ class Feedback(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='feedback')
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='feedback')
     rating = models.IntegerField()
-    comment = models.TextField(blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
