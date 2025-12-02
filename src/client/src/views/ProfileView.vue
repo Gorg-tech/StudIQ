@@ -135,7 +135,7 @@ onMounted(async () => {
 
     streakCount.value = streaks.streak
     longestStreak.value = streaks.longest_streak
-    // TODO: user_level, level_progress (only "iq_level" in backend)
+    // TODO: user_level, level_progress (only "iq_score" in backend)
     // TODO: Total users (no backend support yet)
 
     const days = streaks.days || []

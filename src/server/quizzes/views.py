@@ -17,8 +17,7 @@ from .models import (
     Quiz,
     Question,
     Lernset,
-    QuizProgress,
-    Achievement,
+    QuizAttempt,
     QuizSession,
     Feedback,
     Studiengang,
@@ -29,8 +28,7 @@ from .serializers import (
     QuizSerializer,
     QuestionSerializer,
     LernsetSerializer,
-    QuizProgressSerializer,
-    AchievementSerializer,
+    QuizAttemptSerializer,
     QuizSessionSerializer,
     FeedbackSerializer,
     StudiengangSerializer,
@@ -108,21 +106,15 @@ class LernsetViewSet(viewsets.ModelViewSet):
             return Response({"detail": "You do not have permission to delete this lernset."}, status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
-class QuizProgressViewSet(viewsets.ModelViewSet):
-    serializer_class = QuizProgressSerializer
+class QuizAttemptViewSet(viewsets.ModelViewSet):
+    serializer_class = QuizAttemptSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return QuizProgress.objects.filter(user=self.request.user)
+        return QuizAttempt.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-class AchievementViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Achievement.objects.all()
-    serializer_class = AchievementSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class QuizSessionViewSet(viewsets.ModelViewSet):
@@ -457,13 +449,13 @@ class QuizCompletionView(APIView):
         """
         user = request.user
         quiz = get_object_or_404(Quiz, id=quiz_id)
-        quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
+        quiz_attempt, _ = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
         total = quiz.questions.count()
         streak = calculate_streak(user)
         accuracy = int(request.data.get("correct", 0)) / total if total > 0 else 0
 
         # formulas
-        attempt_bonus = 0.5 * exp(-0.5 * (quiz_progress.attempts))
+        attempt_bonus = 0.5 * exp(-0.5 * (quiz_attempt.attempts))
         perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25)) if accuracy == 1.0 else 0
         streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
 
@@ -477,24 +469,24 @@ class QuizCompletionView(APIView):
         )
 
         # update user and quiz progress
-        prev_iq = user.iq_level
+        prev_iq = user.iq_score
         new_iq = prev_iq + total_points
-        user.iq_level = new_iq
+        user.iq_score = new_iq
         user.solved_quizzes += 1
         user.correct_answers += int(request.data.get("correct", 0))
         user.wrong_answers += total - int(request.data.get("correct", 0))
         user.save()
 
-        quiz_progress.attempts += 1
-        quiz_progress.correct_answers += int(request.data.get("correct", 0))
-        quiz_progress.wrong_answers += total - int(request.data.get("correct", 0))
-        quiz_progress.last_reviewed = datetime.now()
-        quiz_progress.save()
+        quiz_attempt.attempts += 1
+        quiz_attempt.correct_answers += int(request.data.get("correct", 0))
+        quiz_attempt.wrong_answers += total - int(request.data.get("correct", 0))
+        quiz_attempt.last_reviewed = datetime.now()
+        quiz_attempt.save()
 
         register_study_activity(user)
 
         return Response({
-            "attempts": quiz_progress.attempts,
+            "attempts": quiz_attempt.attempts,
             "streak": streak,
             "base_points": base_points,
             "attempt_bonus_points": attempt_bonus_points,
@@ -518,12 +510,11 @@ class QuizCompletionView(APIView):
         """
         user = request.user
         quiz = get_object_or_404(Quiz, id=quiz_id)
-        quiz_progress, _ = QuizProgress.objects.get_or_create(user=user, quiz=quiz)
+        quiz_attempt, _ = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
 
         return Response({
-            "correct_answers": quiz_progress.correct_answers,
-            "wrong_answers": quiz_progress.wrong_answers,
-            "last_reviewed": quiz_progress.last_reviewed,
-            "strength_score": quiz_progress.strength_score,
-            "attempts": quiz_progress.attempts
+            "correct_answers": quiz_attempt.correct_answers,
+            "wrong_answers": quiz_attempt.wrong_answers,
+            "last_reviewed": quiz_attempt.last_reviewed,
+            "attempts": quiz_attempt.attempts
             })
