@@ -288,3 +288,31 @@ Festhalten der Kritik in Miro
   - Gute Einbindung von Gabriel
   - Stakeholder waren zufrieden
   - Pull-Request laufen nun gut nach etwas Übung
+
+== 5. Iteration
+
+=== 3. Meeting 25.11.
+
+- Datenbank auf Raspberry Pie von Eric umlagern
+
+- Aufräumen: Backend- Daten,API-Verbindungen, Leere Frontend-Felder 
+  (Vincent)
+- Offline-Funktionalität entfernen-> mehr serverside
+              
+- Arbeit mit Pylint:
+    Benennung einheitlich
+    ausführliche Dokumentierung jedes Files
+
+  Auch im Frontend einheitliche Variablenbenennung und Dokumentation
+
+- Jeder macht seinen Code (auf Dokumentationsbranch)
+
+- Falls man arbeitet, in dc einloggen
+
+- Sequenzdiagramm (nach Datenbankumstellung)
+
+- Stakeholder erst 9.12.
+
+- Retrospektive 2.12.
+
+- Treff Mittwoch 11:30
