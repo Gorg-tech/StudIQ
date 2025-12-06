@@ -6,23 +6,47 @@
         <h1><LogoStudIQ /></h1>
         <p class="tagline">Dein Begleiter für die Prüfungsvorbereitung</p>
       </div>
+
       <button class="settings-btn" @click="router.push('/settings/')" aria-label="Einstellungen">
         <IconSettings />
       </button>
     </header>
+
+    <!-- Freunde Popup -->
+    <div class="friends-popup-backdrop" v-if="showFriends" @click.self="showFriends = false">
+      <div class="friends-popup">
+
+        <h3>Freundesliste</h3>
+
+        <button class="add-friend-btn" @click="addFriend">Freund hinzufügen</button>
+
+        <ul class="friends-list">
+          <li v-for="friend in friends" :key="friend.id">
+            <span>{{ friend.name }}</span>
+            <span class="level">Level {{ friend.level }}</span>
+          </li>
+        </ul>
+
+        <button class="close-btn" @click="showFriends = false">Schließen</button>
+      </div>
+    </div>
+
+    <!-- Profile etc. -->
     <div v-if="loading">Lädt...</div>
     <div v-else-if="error">Fehler: {{ error.message }}</div>
     <div v-if="!loading">
+
       <!-- Top Profile Section-->
       <div class="profile-top">
-        <!-- Left side: Name + Leaderboard + Level Bar -->
         <div class="profile-left">
           <div class="profile-info">
             <h2>{{ user.username }}</h2>
             <p>Platz #{{ leaderboardPosition }}</p>
           </div>
 
-          <!-- Level Circle + Bar -->
+          <button class="friends-btn" @click="showFriends = true">👥</button>
+
+          <!-- Level Bar -->
           <div class="level-bar-container">
             <div class="level-circle">{{ userLevel }}</div>
             <div class="level-bar-wrapper">
@@ -34,7 +58,6 @@
           </div>
         </div>
 
-        <!-- Right side: Penguin aligned to top of name -->
         <div class="profile-right">
           <div class="penguin-bubble top-aligned">
             <div class="bubble">{{ penguinSpeech }}</div>
@@ -43,7 +66,7 @@
         </div>
       </div>
 
-      <!-- Streak Calendar Full Width -->
+      <!-- Streak Calendar -->
       <div class="streak-card full-width">
         <div class="week-row">
           <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
@@ -53,19 +76,18 @@
           </div>
         </div>
         <div class="streak-count">
-          Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br />Beste Serie:
-          <strong>{{ longestStreak }} Tage</strong>
+          Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br />
+          Beste Serie: <strong>{{ longestStreak }} Tage</strong>
         </div>
       </div>
 
-      <!-- Recent Quizzes Section (Home-style cards) -->
+      <!-- Recent Quizzes -->
       <div class="suggested-quizzes">
         <h3>Zuletzt bearbeitete Quizze</h3>
         <div class="quiz-suggestions-row">
           <div v-for="(quiz, index) in recentQuizzes" :key="index" class="quiz-suggestion-item">
             <div class="quiz-suggestion-icon" :style="{ backgroundColor: '#2196f3' + '1A' }">
               <IconCode />
-              <!-- can change based on type if needed -->
             </div>
             <div class="quiz-suggestion-content">
               <h4>{{ quiz.title }}</h4>
@@ -74,6 +96,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -83,6 +106,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
 import { store } from '@/stores/app.js'
+
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
 import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'
@@ -90,33 +114,33 @@ import IconSettings from '@/components/icons/IconSettings.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 
 const router = useRouter()
-const user = ref(null)
 
+const user = ref(null)
 const loading = ref(true)
 const error = ref(null)
 
 const leaderboardPosition = ref(12)
 const penguinSpeech = ref('Super gemacht! Weiter so 🐧')
 
-// Level progress (hardcoded example)
 const userLevel = ref(3)
-const levelProgress = ref(60) // percentage filled of the current level
+const levelProgress = ref(60)
 
-// Will be fetched from server
-const currentWeekStreak = ref([
-  { label: 'Mo', learned: true },
-  { label: 'Di', learned: false },
-  { label: 'Mi', learned: false },
-  { label: 'Do', learned: false },
-  { label: 'Fr', learned: true },
-  { label: 'Sa', learned: true },
-  { label: 'So', learned: true },
-])
-
+const currentWeekStreak = ref([])
 const streakCount = ref(0)
 const longestStreak = ref(0)
 
-// Hardcoded recent quiz results
+const showFriends = ref(false)
+const friends = ref([
+  { id: 1, name: 'Benutzer A', level: 5 },
+  { id: 2, name: 'Benutzer B', level: 3 },
+  { id: 3, name: 'Benutzer C', level: 8 },
+])
+
+function addFriend() {
+  console.log("Freund hinzufügen wurde geklickt")
+  // zukünftige API hier einbauen
+}
+
 const recentQuizzes = ref([
   { title: 'Analysis', date: '2025-02-20', score: 8, total: 10 },
   { title: 'Programmierung', date: '2025-02-18', score: 7, total: 10 },
@@ -129,17 +153,13 @@ onMounted(async () => {
     const [stats, streaks] = await Promise.all([getSelfUserStats(), getSelfUserStreaks()])
 
     leaderboardPosition.value = stats.rank
-
     streakCount.value = streaks.streak
     longestStreak.value = streaks.longest_streak
-    // TODO: user_level, level_progress (only "iq_level" in backend)
-    // TODO: Total users (no backend support yet)
 
     const days = streaks.days || []
     const today = new Date()
     const weekDays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
 
-    // current week streak
     const currentWeek = []
     for (let i = 0; i < 7; i++) {
       const day = new Date(today)
@@ -160,7 +180,83 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Keep your original profile styles for header, penguin, streak, etc. */
+.profile { display: flex; flex-direction: column; gap: 24px; max-width: 800px; margin: 0 auto; }
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.friends-btn {
+  margin-right: 12px;
+  background: #ddd;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.friends-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0,45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.friends-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
+
+.add-friend-btn {
+  width: 100%;
+  background: var(--color-primary);
+  color: white;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-friend-btn:hover {
+  background: var(--color-accent);
+}
+
+
+.friends-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.friends-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.close-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .profile {
   display: flex;
   flex-direction: column;

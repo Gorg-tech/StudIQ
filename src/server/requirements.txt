@@ -1,0 +1,9 @@
+django==5.2.3
+djangorestframework
+django-filter
+PyMySQL
+# Optional (native) client for MySQL / MariaDB. On Linux systems you may need
+# to install packaging dependencies before installing mysqlclient, e.g.
+#   sudo apt-get install build-essential default-libmysqlclient-dev
+# Then:
+#   pip install mysqlclient

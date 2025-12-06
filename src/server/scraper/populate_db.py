@@ -5,6 +5,13 @@ import json
 import re
 import time
 
+def _truncate(s, max_len):
+    """Safely truncate strings to fit DB column max lengths."""
+    if s is None:
+        return ''
+    s = str(s)
+    return s[:max_len]
+
 def _progress(current, total, prefix='', last=[0]):
     """Simple rate-limited progress print (every ~0.25s or on completion)."""
     now = time.time()
@@ -65,6 +72,7 @@ def populate_database():
         
         # Clean up the name
         program_name = program_name.replace(program_id, '').strip()
+        program_name = _truncate(program_name, 100)
 
         studiengang, created = Studiengang.objects.update_or_create(
             id=program_id,
@@ -131,8 +139,9 @@ def populate_database():
         except (ValueError, TypeError):
             credits = 0
 
-        # Clean module name
+        # Clean module name and ensure it fits DB column
         module_name = module_data.get('moduleName', 'N/A').split('\n')[0].strip()
+        module_name = _truncate(module_name, 100)
 
         # Responsible (name + email separated)
         responsible_raw = module_data.get('responsible', '').strip()
@@ -141,7 +150,7 @@ def populate_database():
         # Also remove multiple @ occurrences collapse spaces
         email_normalized_source = ' '.join(email_normalized_source.split())
         email_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', email_normalized_source)
-        responsible_email = email_match.group(0) if email_match else ''
+        responsible_email = _truncate(email_match.group(0) if email_match else '', 254)
         responsible_name = responsible_raw
         if responsible_email:
             # Remove the (at) part variants from name as well
@@ -153,6 +162,7 @@ def populate_database():
         responsible_name = responsible_name.replace('(', '').replace(')', '').replace('[','').replace(']','').strip(' ,;-')
         # Collapse whitespace
         responsible_name = ' '.join(responsible_name.split())
+        responsible_name = _truncate(responsible_name, 100)
 
         examinations_raw = module_data.get('examinations', 'N/A')
         examinations = ' '.join(examinations_raw.split())
@@ -180,7 +190,6 @@ def populate_database():
                 'turnus': turnus,
                 'languages': languages,
                 'credits': credits,
-                'semester': 0,  # Default
                 'modulux_url': module_data.get('moduluxLink', ''),
                 'dozent_name': responsible_name,
                 'dozent_email': responsible_email,

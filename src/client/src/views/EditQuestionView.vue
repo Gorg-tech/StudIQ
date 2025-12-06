@@ -341,7 +341,7 @@ function toggleCorrect(idx) {
 }
 
 .edit-question-card {
-  background: var(--card-bg); 
+  background: var(--card-bg);
   border-radius: 16px;
   box-shadow: var(--color-shadow);
   padding: 32px 16px;
@@ -365,7 +365,7 @@ function toggleCorrect(idx) {
   font-size: 1rem;
   margin-top: 8px;
   resize: vertical;
-  background: var(--card-bg); 
+  background: var(--card-bg);
   color: var(--color-text);
 }
 
@@ -415,7 +415,7 @@ function toggleCorrect(idx) {
   gap: 12px;
 }
 .option-item {
-  background: var(--card-bg); 
+  background: var(--card-bg);
   border-radius: 10px;
   padding: 12px;
   display: flex;
@@ -424,7 +424,7 @@ function toggleCorrect(idx) {
   position: relative;
   min-height: 48px;
   border: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08); 
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   cursor: pointer;
   transition: background-color 0.2s;
 }
