@@ -1,0 +1,47 @@
+[
+  {
+    "test": "test_empty_quiz (tests.modul.test_modul_quiz.TestCaseMissingValues.test_empty_quiz)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:02.988500"
+  },
+  {
+    "test": "test_lernset_without_modul (tests.modul.test_modul_quiz.TestCaseMissingValues.test_lernset_without_modul)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:03.067505"
+  },
+  {
+    "test": "test_missing_quiz_title (tests.modul.test_modul_quiz.TestCaseMissingValues.test_missing_quiz_title)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:03.159043"
+  },
+  {
+    "test": "test_search_lernset_by_title (tests.modul.test_modul_quiz.TestSearchbar.test_search_lernset_by_title)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:03.430783"
+  },
+  {
+    "test": "test_search_lernset_no_results (tests.modul.test_modul_quiz.TestSearchbar.test_search_lernset_no_results)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:03.703434"
+  },
+  {
+    "test": "test_search_quiz_by_title (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_by_title)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:03.857148"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:03.986608"
+  },
+  {
+    "test": "test_search_quiz_no_results (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_no_results)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:04.120241"
+  },
+  {
+    "test": "test_quiz_serializer (tests.modul.test_modul_quiz.Testserializers.test_quiz_serializer)",
+    "status": "SUCCESS",
+    "time": "2025-12-06 17:01:04.376419"
+  }
+]

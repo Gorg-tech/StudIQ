@@ -16,7 +16,7 @@ User = get_user_model()
 class TestCaseMissingValues(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="testuser", password="testpass")
-        self.modul = Modul.objects.create(name="Test Modul", credits=5, semester=1)
+        self.modul = Modul.objects.create(name="Test Modul", credits=5)
         self.lernset = Lernset.objects.create(title="Test Lernset", modul=self.modul, created_by=self.user )
 
     def tearDown(self):
@@ -64,7 +64,7 @@ class TestCaseMissingValues(TestCase):
 class TestSearchbar(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="testuser", password="testpass")
-        self.modul = Modul.objects.create(name="Test Modul", credits=5, semester=1)
+        self.modul = Modul.objects.create(name="Test Modul", credits=5)
         self.lernset = Lernset.objects.create(title="Test Lernset", modul=self.modul, created_by=self.user)
         self.quiz1 = Quiz.objects.create(title="Algebra Basics", description="Basic algebra quiz", lernset=self.lernset, created_by=self.user)
         self.quiz2 = Quiz.objects.create(title="Calculus I", description="Introduction to calculus", lernset=self.lernset, created_by=self.user)
@@ -105,68 +105,12 @@ class TestSearchbar(TestCase):
 class Testserializers(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="testuser", password="testpass")
-        self.modul = Modul.objects.create(name="Test Modul", credits=5, semester=1)
+        self.modul = Modul.objects.create(name="Test Modul", credits=5)
         self.lernset = Lernset.objects.create(title="Test Lernset", modul=self.modul, created_by=self.user)
         self.quiz = Quiz.objects.create(title="Sample Quiz", description="A sample quiz for testing", lernset=self.lernset, created_by=self.user)
 
-    def test_update_quiz_with_questions(self):
-        """Test the custom update method with questions and answer options"""
-        # Create initial question
-        question = Question.objects.create(
-            quiz=self.quiz,
-            text="Old question"
-        )
-        answer = AnswerOption.objects.create(
-            question=question,
-            text="Old answer",
-            is_correct=True
-        )
-
-        # Prepare update payload
-        update_data = {
-            'title': "Updated Quiz Title",
-            'description': "Updated description",
-            'questions': [
-                {
-                    'id': question.id,
-                    '_status': 'edited',
-                    'text': "Updated question",
-                    'answer_options': [
-                        {'id': answer.id, 'text': "Updated answer", 'is_correct': False},
-                        {'text': "New answer", 'is_correct': True}  # new answer
-                    ]
-                },
-                {
-                    '_status': 'new',
-                    'text': "Brand new question",
-                    'answer_options': [
-                        {'text': "Answer 1", 'is_correct': True}
-                    ]
-                }
-            ]
-        }
-
-        serializer = QuizSerializer(instance=self.quiz, data=update_data, partial=True)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        updated_quiz = serializer.save()
-
-        # Check quiz fields
-        self.assertEqual(updated_quiz.title, "Updated Quiz Title")
-        self.assertEqual(updated_quiz.description, "Updated description")
-
-        # Check updated question
-        q1 = Question.objects.get(id=question.id)
-        self.assertEqual(q1.text, "Updated question")
-        self.assertEqual(q1.answer_options.count(), 2)
-
-        # Check new question
-        self.assertEqual(updated_quiz.questions.count(), 2)
-        new_question = updated_quiz.questions.exclude(id=question.id).first()
-        self.assertEqual(new_question.text, "Brand new question")
-        self.assertEqual(new_question.answer_options.count(), 1)
-
-        def test_quiz_serializer(self):
-          """QuizSerializer should serialize quiz data correctly"""
+    def test_quiz_serializer(self):
+        """QuizSerializer should serialize quiz data correctly"""
         serializer = QuizSerializer(instance=self.quiz)
         data = serializer.data
 

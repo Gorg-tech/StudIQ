@@ -1,0 +1,56 @@
+[
+  {
+    "test": "test_empty_quiz (tests.modul.test_modul_quiz.TestCaseMissingValues.test_empty_quiz)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 19, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:35.770829"
+  },
+  {
+    "test": "test_lernset_without_modul (tests.modul.test_modul_quiz.TestCaseMissingValues.test_lernset_without_modul)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 19, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:35.823865"
+  },
+  {
+    "test": "test_missing_quiz_title (tests.modul.test_modul_quiz.TestCaseMissingValues.test_missing_quiz_title)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 19, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:35.876550"
+  },
+  {
+    "test": "test_search_lernset_by_title (tests.modul.test_modul_quiz.TestSearchbar.test_search_lernset_by_title)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 67, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:36.068917"
+  },
+  {
+    "test": "test_search_lernset_no_results (tests.modul.test_modul_quiz.TestSearchbar.test_search_lernset_no_results)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 67, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:36.120615"
+  },
+  {
+    "test": "test_search_quiz_by_title (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_by_title)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 67, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:36.172107"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 67, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:36.223574"
+  },
+  {
+    "test": "test_search_quiz_no_results (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_no_results)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 67, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:36.276307"
+  },
+  {
+    "test": "test_update_quiz_with_questions (tests.modul.test_modul_quiz.Testserializers.test_update_quiz_with_questions)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 108, in setUp\n    self.modul = Modul.objects.create(name=\"Test Modul\", credits=5, semester=1)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 661, in create\n    obj = self.model(**kwargs)\n          ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 569, in __init__\n    raise TypeError(\nTypeError: Modul() got unexpected keyword arguments: 'semester'\n",
+    "time": "2025-12-06 16:56:36.471462"
+  }
+]
