@@ -4,6 +4,8 @@ import os
 import json
 from datetime import datetime
 
+"""python manage.py test tests.modul.test_modul_quiz"""
+
 class LoggingTestResult(unittest.TextTestResult):
     """Tracks all test outcomes."""
     def __init__(self, *args, **kwargs):
@@ -43,29 +45,43 @@ class LoggingTestRunner(DiscoverRunner):
     }
 
     def run_tests(self, test_labels, **kwargs):
-        # Determine short name based on first label
-        if test_labels:
-            first_label = test_labels[0].split('.')[-1]
-            short_name = self.MODULE_NAME_MAP.get(first_label, "general")
-        else:
-            short_name = "general"
+        group = "general"
+        submodule = "general"
 
-        # Run Django tests normally, but wrap the result
+        if test_labels:
+            parts = test_labels[0].split('.')
+
+            # Extract test group (modul, integration, ...)
+            if len(parts) > 1:
+                group = parts[1]
+
+            # Extract the test module name from the file name
+            filename = parts[-1]  # e.g. "test_modul_quiz"
+            name_parts = filename.split('_')
+
+            # last part is usually the test module name
+            if len(name_parts) >= 2:
+                submodule = name_parts[-1]  # quiz / accounts / account
+
+        short_name = f"{group}_{submodule}"
+
+        # Run Django tests
         suite = self.build_suite(test_labels, **kwargs)
         runner = unittest.TextTestRunner(resultclass=LoggingTestResult, verbosity=2)
         result = runner.run(suite)
 
-        # Save results to file
+        # Save logs
         folder = os.path.join(os.path.dirname(__file__), "test_logs")
         os.makedirs(folder, exist_ok=True)
+
         filename = os.path.join(
             folder,
-            f"test_results_{short_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.txt"
+            f"test_results_{short_name}_{datetime.now().strftime('%m-%d')}.txt"
         )
+
         with open(filename, "w") as f:
             json.dump(result.logged_results, f, indent=2)
 
         print(f"Test results saved to {filename}")
 
-        # Return total failures + errors as Django expects
         return len(result.failures) + len(result.errors)
