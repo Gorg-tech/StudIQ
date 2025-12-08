@@ -136,8 +136,8 @@ def get_user_rank(user_id, user_set):
         target = user_set.get(id=user_id)
     except user_set.DoesNotExist:
         return None
-    # Number of users with a higher streak + 1
-    higher = user_set.filter(streak__gt=target.iq_score).values('iq_score')\
+    # Number of users with a higher iq_score + 1
+    higher = user_set.filter(iq_score__gt=target.iq_score).values('iq_score')\
                             .distinct().count()
     return higher + 1
 
