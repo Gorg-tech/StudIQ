@@ -72,12 +72,12 @@ class AnswerOptionAdmin(admin.ModelAdmin):
 
 @admin.register(QuizAttempt)
 class QuizAttemptAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers', 'last_reviewed', 'attempts')
     """
     Admin interface for QuizAttempt model.
     Displays user progress on quizzes, including correct/wrong answers and review date.
     """
-    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers', 'last_reviewed', 'strength_score')
+    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers',
+                    'last_reviewed', 'attempts')
     list_filter = ('user', 'quiz')
 
 @admin.register(QuizSession)
