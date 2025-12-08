@@ -5,6 +5,13 @@ This file registers all relevant models for the Django admin interface and
 customizes their display, search, and filter options for superusers.
 """
 
+"""
+Admin Configuration for account related objects.
+
+This file registers all relevant models for the Django admin interface and
+customizes their display, search, and filter options for superusers.
+"""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, StudyDay, PendingFriendRequest
