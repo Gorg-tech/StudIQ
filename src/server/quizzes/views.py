@@ -20,7 +20,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
 from accounts.views import get_user_rank
-from accounts.serializers import UserSerializer
+from accounts.serializers import LeaderboardUserSerializer
 from accounts.views import register_study_activity
 from .models import (
     Quiz,
@@ -231,7 +231,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     and how many users to show around the current user (around)
     and in what category ('all', 'friends', 'studiengang').
     """
-    serializer_class = UserSerializer
+    serializer_class = LeaderboardUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_users_around(self, user_id, user_model, before=1, after=1):
@@ -289,10 +289,11 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
             user_model = user_model.filter(studiengang=request.user.studiengang)
 
         # Sort user_model by iq_score, fetch the first users and the users around current user
-        user_model = user_model.order_by('-iq_score', 'id')
+        user_model = user_model.only('id', 'username', 'iq_score', 'streak', 'solved_quizzes')\
+                                .order_by('-iq_score', 'id')
         top_users = list(user_model[:top_count])
         around_users = self.get_users_around(request.user.id, user_model,
-                                                before=around, after=around)
+                                            before=around, after=around)
 
         # check if last user in around_users is last of everyone
         all_users = list(user_model)
