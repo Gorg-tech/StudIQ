@@ -8,7 +8,6 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from quizzes.models import Studiengang
-
 class UserRole(models.TextChoices):
     """
     A datatype representing the role of the user.
@@ -40,6 +39,7 @@ class User(AbstractUser):
 
     # Will be linked to Studiengang later
     studiengang = models.ForeignKey(Studiengang, on_delete=models.SET_NULL, null=True, blank=True)
+    friends = models.ManyToManyField('self', symmetrical=True)
 
     def __str__(self):
         return self.username
@@ -63,26 +63,6 @@ class StudyDay(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.date}"
-
-class Friendship(models.Model):
-    """
-    Represents a friendship between two users.
-
-    Attributes:
-        user, friend, created_at
-    """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendships')
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends_of')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        """
-        Defines primary key behaviour for user,friend pairs.
-        """
-        unique_together = ('user', 'friend')
-
-    def __str__(self):
-        return f"{self.user.username} is friends with {self.friend.username}"
 
 class PendingFriendRequest(models.Model):
     """
