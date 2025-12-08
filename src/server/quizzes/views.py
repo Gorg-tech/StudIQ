@@ -283,7 +283,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
 
         # Get subset of users based on category
         if category == 'friends':
-            friends_ids = request.user.friendships.values_list('friend__id', flat=True)
+            friends_ids = request.user.friends.values_list('id', flat=True)
             user_model = user_model.filter(Q(id__in=friends_ids) | Q(id=request.user.id))
         elif category == 'studiengang' and request.user.studiengang:
             user_model = user_model.filter(studiengang=request.user.studiengang)
