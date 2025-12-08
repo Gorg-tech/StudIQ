@@ -122,29 +122,28 @@ def csrf(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
 
 
-def get_user_rank(user_id):
+def get_user_rank(user_id, user_set):
     """
-    Calculate the leaderboard rank of a user based on their streak.
+    Calculate the leaderboard rank of a user based on their iq_score.
 
     Args:
         user_id (int): The ID of the user.
-
+        user_set (User model): the user model to query (contains all users that count)
     Returns:
         int or None: The user's rank (1-based), or None if user does not exist.
     """
-    user = get_user_model()
     try:
-        target = user.objects.get(id=user_id)
-    except user.DoesNotExist:
+        target = user_set.objects.get(id=user_id)
+    except user_set.DoesNotExist:
         return None
     # Number of users with a higher streak + 1
-    higher = user.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
+    higher = user_set.objects.filter(streak__gt=target.iq_score).values('iq_score')\
+                            .distinct().count()
     return higher + 1
 
 class UserStatsView(APIView):
     """
     API endpoint to return the current user's statistics, including leaderboard rank.
-    Used by the frontend at /api/users/me/stats/.
     """
     permission_classes = [IsAuthenticated]
 
