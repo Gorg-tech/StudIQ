@@ -128,16 +128,16 @@ def get_user_rank(user_id, user_set):
 
     Args:
         user_id (int): The ID of the user.
-        user_set (User model): the user model to query (contains all users that count)
+        user_set (QuerySet): The user model queryset to search in.
     Returns:
         int or None: The user's rank (1-based), or None if user does not exist.
     """
     try:
-        target = user_set.objects.get(id=user_id)
+        target = user_set.get(id=user_id)
     except user_set.DoesNotExist:
         return None
     # Number of users with a higher streak + 1
-    higher = user_set.objects.filter(streak__gt=target.iq_score).values('iq_score')\
+    higher = user_set.filter(streak__gt=target.iq_score).values('iq_score')\
                             .distinct().count()
     return higher + 1
 
@@ -159,7 +159,7 @@ class UserStatsView(APIView):
         """
         serializer = UserSerializer(request.user)
         data = serializer.data
-        data['rank'] = get_user_rank(request.user.id)
+        data['rank'] = get_user_rank(request.user.id, get_user_model().objects.all())
         return Response(data)
 
 def calculate_streak(user):

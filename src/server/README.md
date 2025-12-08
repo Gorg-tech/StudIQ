@@ -134,4 +134,4 @@ python manage.py runserver
 - `POST /api/sessions/{id}/complete/` – Quiz-Sitzung beenden und Antworten einreichen
 
 ### Leaderboard
-- `GET /api/leaderboard?limit=N&around=M` – Die ersten N User des Leaderboards und M Users um den self-user herum (nach Streak)
+- `GET /api/leaderboard?limit=N&around=M&category=O` – Die ersten N User des Leaderboards und M Users um den self-user herum (nach Streak); O kann 'all', 'friends', 'studiengang' sein 
