@@ -141,9 +141,9 @@ class QuizAttempt(models.Model):
     Attributes:
         user, quiz, correct_answers, wrong_answers, last_reviewed, attempts
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, 
-                             related_name='attempts')
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='progress')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                             related_name='quiz_attempts')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='attempts')
     correct_answers = models.IntegerField(default=0)
     wrong_answers = models.IntegerField(default=0)
     last_reviewed = models.DateTimeField(auto_now=True)
