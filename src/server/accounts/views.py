@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
-from .models import StudyDay, PendingFriendRequest, Friendship
+from .models import StudyDay, PendingFriendRequest
 
 class RegisterView(APIView):
     """
@@ -295,11 +295,10 @@ class FriendRequestsView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             if PendingFriendRequest.objects.filter(from_user=to_user, to_user=from_user).exists():
                 # Accept the friend request
-                Friendship.objects.create(user=from_user, friend=to_user)
-                Friendship.objects.create(user=to_user, friend=from_user)
+                to_user.friends.add(from_user)
                 PendingFriendRequest.objects.filter(from_user=to_user, to_user=from_user).delete()
                 return Response({'detail': 'Friend request accepted.'}, status=status.HTTP_200_OK)
-            if Friendship.objects.filter(user=from_user, friend=to_user).exists():
+            if from_user.friends.filter(id=to_user.id).exists():
                 return Response({'error': 'You are already friends.'},
                                 status=status.HTTP_400_BAD_REQUEST)
             PendingFriendRequest.objects.create(from_user=from_user, to_user=to_user)
@@ -343,10 +342,5 @@ class FriendsListView(APIView):
         Returns:
             Response: List of friends.
         """
-        user = request.user
-        friends = user.friendships.all()
-        data = [{
-            "friend_username": f.friend.username,
-            "since": f.created_at.isoformat()
-        } for f in friends]
-        return Response(data)
+        friends = request.user.friends.all()
+        return Response([{"username": f.username} for f in friends])

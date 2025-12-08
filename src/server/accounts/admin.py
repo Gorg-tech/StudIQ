@@ -7,7 +7,7 @@ customizes their display, search, and filter options for superusers.
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, StudyDay, Friendship, PendingFriendRequest
+from .models import User, StudyDay, PendingFriendRequest
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
@@ -19,11 +19,11 @@ class CustomUserAdmin(UserAdmin):
     in the admin interface. Adjusts list display and fieldsets for better management
     of user profiles by superusers.
     """
-    list_display = ('id', 'username', 'email', 'role', 'iq_score', 'streak')  
+    list_display = ('id', 'username', 'email', 'role', 'iq_score', 'streak')
     fieldsets = UserAdmin.fieldsets + (
         ('StudIQ Profile', {'fields': ('role', 'iq_score', 'correct_answers', 
                                       'streak', 'wrong_answers', 'solved_quizzes',
-                                      'studiengang')}),
+                                      'studiengang', 'friends')}),
     )
 
 @admin.register(StudyDay)
@@ -34,15 +34,6 @@ class StudyDayAdmin(admin.ModelAdmin):
     Adds StudyDays to the admin interface to create/delete StudyDays easily.
     """
     list_display = ('user', 'date')
-
-@admin.register(Friendship)
-class FriendshipAdmin(admin.ModelAdmin):
-    """
-    Custom admin configuration for the Friendship model.
-
-    Adds Friendships to the admin interface to manage user friendships.
-    """
-    list_display = ('user', 'friend', 'created_at')
 
 @admin.register(PendingFriendRequest)
 class PendingFriendRequestAdmin(admin.ModelAdmin):
