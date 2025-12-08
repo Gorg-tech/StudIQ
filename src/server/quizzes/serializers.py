@@ -234,17 +234,6 @@ class QuizAttemptSerializer(serializers.ModelSerializer):
         fields = ['id', 'quiz', 'correct_answers', 'wrong_answers',
                  'last_reviewed', 'attempts']
 
-class AchievementSerializer(serializers.ModelSerializer):
-    """
-    Serializes Achievement objects, representing unlockable achievements for users.
-    """
-    class Meta:
-        """
-        Meta class defining the model and fields to be serialized.
-        """
-        model = Achievement
-        fields = ['id', 'name', 'description', 'unlock_criteria', 'icon_url']
-
 class QuizSessionSerializer(serializers.ModelSerializer):
     """
     Serializes QuizSession objects, representing a user's session while solving a quiz.
