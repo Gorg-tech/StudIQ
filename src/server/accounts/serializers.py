@@ -24,10 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
         Sets certain fields as read-only.
         """
         model = User
-        fields = ['id', 'username', 'email', 'role', 'iq_level', 
+        fields = ['id', 'username', 'email', 'role', 'iq_score', 
                  'correct_answers', 'wrong_answers', 'solved_quizzes', 
                  'streak', 'studiengang', 'studiengang_name']
-        read_only_fields = ['id', 'iq_level', 'correct_answers', 
+        read_only_fields = ['id', 'iq_score', 'correct_answers', 
                            'wrong_answers', 'solved_quizzes', 'streak']
 
 class RegisterSerializer(serializers.ModelSerializer):

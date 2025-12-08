@@ -7,9 +7,9 @@ This file defines the URLs for the REST API and which views to call.
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, AchievementViewSet,\
-                    QuizSessionViewSet, FeedbackViewSet, StudiengangViewSet, ModulViewSet,\
-                    SearchView, AnswerOptionViewSet, SuggestedQuizzesView
+from .views import QuizViewSet, QuestionViewSet, LernsetViewSet, QuizAttemptViewSet, QuizSessionViewSet,\
+                    FeedbackViewSet, StudiengangViewSet, ModulViewSet, SearchView,\
+                    AnswerOptionViewSet, SuggestedQuizzesView
 from .views import LeaderboardViewSet
 
 router = DefaultRouter()
@@ -17,7 +17,7 @@ router.register(r'modules', ModulViewSet, basename='modules')
 router.register(r'lernsets', LernsetViewSet, basename='lernsets')
 router.register(r'quizzes', QuizViewSet, basename='quizzes')
 router.register(r'questions', QuestionViewSet, basename='questions')
-router.register(r'achievements', AchievementViewSet)
+router.register(r'attempts', QuizAttemptViewSet, basename='attempts')
 router.register(r'sessions', QuizSessionViewSet, basename='sessions')
 router.register(r'feedback', FeedbackViewSet, basename='feedback')
 router.register(r'studiengaenge', StudiengangViewSet)

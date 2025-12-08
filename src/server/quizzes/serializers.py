@@ -7,8 +7,8 @@ support nested structures for more complex objects, such as quizzes containing q
 """
 
 from rest_framework import serializers
-from .models import Quiz, Question, AnswerOption, Lernset, QuizProgress,\
-                    Achievement, QuizSession, Feedback, Studiengang, Modul
+from .models import Quiz, Question, AnswerOption, Lernset, QuizAttempt,\
+                    QuizSession, Feedback, Studiengang, Modul
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
     """
@@ -58,8 +58,7 @@ class QuizSerializer(serializers.ModelSerializer):
         """
         model = Quiz
         fields = [
-            'id', 'title', 'description', 'created_at', 'created_by',
-            'rating_score', 'rating_count', 'avg_time_spent', 
+            'id', 'title', 'description', 'created_at', 'created_by', 'avg_time_spent', 
             'is_public', 'lernset', 'lernset_title', 'questions'
         ]
 
@@ -160,8 +159,7 @@ class QuizForLernsetSerializer(serializers.ModelSerializer):
         """
         model = Quiz
         fields = [
-            'id', 'title', 'description', 'created_at', 'created_by', 'creator_username',
-            'rating_score', 'rating_count', 'avg_time_spent', 
+            'id', 'title', 'description', 'created_at', 'created_by', 'creator_username', 'avg_time_spent', 
             'is_public', 'lernset', 'question_count'
         ]
 
@@ -224,17 +222,17 @@ class LernsetSerializer(serializers.ModelSerializer):
         validated_data['modul'] = modul
         return super().create(validated_data)
 
-class QuizProgressSerializer(serializers.ModelSerializer):
+class QuizAttemptSerializer(serializers.ModelSerializer):
     """
-    Serializes QuizProgress objects, representing a user's statistics for a quiz.
+    Serializes QuizAttempt objects, representing a user's statistics for a quiz.
     """
     class Meta:
         """
         Meta class defining the model and fields to be serialized.
         """
-        model = QuizProgress
+        model = QuizAttempt
         fields = ['id', 'quiz', 'correct_answers', 'wrong_answers',
-                 'last_reviewed', 'strength_score', 'attempts']
+                 'last_reviewed', 'attempts']
 
 class AchievementSerializer(serializers.ModelSerializer):
     """
@@ -257,7 +255,7 @@ class QuizSessionSerializer(serializers.ModelSerializer):
         Meta class defining the model and fields to be serialized.
         """
         model = QuizSession
-        fields = ['id', 'quiz', 'start_time', 'end_time', 'score', 'mode']
+        fields = ['id', 'quiz', 'start_time', 'end_time']
 
 class FeedbackSerializer(serializers.ModelSerializer):
     """
@@ -268,7 +266,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         Meta class defining the model and fields to be serialized.
         """
         model = Feedback
-        fields = ['id', 'quiz', 'rating', 'comment', 'submitted_at']
+        fields = ['id', 'quiz', 'rating', 'submitted_at']
 
 class StudiengangSerializer(serializers.ModelSerializer):
     """

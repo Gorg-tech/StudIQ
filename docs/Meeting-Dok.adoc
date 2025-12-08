@@ -288,3 +288,46 @@ Festhalten der Kritik in Miro
   - Gute Einbindung von Gabriel
   - Stakeholder waren zufrieden
   - Pull-Request laufen nun gut nach etwas Übung
+
+== 5. Iteration
+
+=== 3. Meeting 25.11.
+
+- Datenbank auf Raspberry Pie von Eric umlagern
+- Aufräumen: Backend- Daten,API-Verbindungen, Leere Frontend-Felder 
+  (Vincent)
+- Offline-Funktionalität entfernen-> mehr serverside
+              
+- Arbeit mit Pylint:
+    Benennung einheitlich
+    ausführliche Dokumentierung jedes Files
+
+  Auch im Frontend einheitliche Variablenbenennung und Dokumentation
+
+- Jeder macht seinen Code (auf Dokumentationsbranch)
+- Falls man arbeitet, in dc einloggen
+- Sequenzdiagramm (nach Datenbankumstellung)
+- Stakeholder erst 9.12.
+- Retrospektive 2.12.
+- Treff Mittwoch 11:30
+
+=== 4. Meeting 02.12
+
+* Hindernisse
+  - Online-zuschaltung schwierig
+  - Viele Erkenntnisse durch Fachaustausch
+    - Ungute Strukturierung von Scrum für Scrum-Master
+    - Probleme bei Software-Entwicklung nicht an Hans weitergeleitet
+    - Funktionsweise der Meetings muss geändert werden
+    -> 15-30 Minuten Review
+    -> ggf Extra Meetings für Retro, Stakeholder-Treff,...
+    - Einführen von Refinement wichtig
+    - wenig Dokumentation im Code
+    
+* Positives
+  - Datenbank umgelagert
+  - Ziele wurden gesetzt und umgesetzt
+  - Backend wurde von mehr Personen für Coding angefasst
+
+Weekly wöchentlich extra als DC-Meeting
+Plattform-Findung wichtig
