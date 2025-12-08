@@ -63,3 +63,44 @@ class StudyDay(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.date}"
+
+class Friendship(models.Model):
+    """
+    Represents a friendship between two users.
+
+    Attributes:
+        user, friend, created_at
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendships')
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends_of')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        """
+        Defines primary key behaviour for user,friend pairs.
+        """
+        unique_together = ('user', 'friend')
+
+    def __str__(self):
+        return f"{self.user.username} is friends with {self.friend.username}"
+
+class PendingFriendRequest(models.Model):
+    """
+    Represents a pending friend request between two users.
+
+    Attributes:
+        from_user, to_user, sent_at
+    """
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name='received_friend_requests')
+    sent_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        """
+        Defines primary key behaviour for from_user,to_user pairs.
+        """
+        unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f"Friend request from {self.from_user.username} to {self.to_user.username}"

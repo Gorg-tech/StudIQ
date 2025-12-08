@@ -8,7 +8,7 @@ support nested structures for more complex objects, such as quizzes containing q
 
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import User, StudyDay
+from .models import User, StudyDay, Friendship, PendingFriendRequest
 from quizzes.models import Studiengang
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,3 +78,29 @@ class StudyDaySerializer(serializers.ModelSerializer):
         """
         model = StudyDay
         fields = ['date']
+
+class FriendshipSerializer(serializers.ModelSerializer):
+    """
+    Serializes Friendship objects, representing friendships between users.
+    """
+    friend = UserSerializer(read_only=True)
+
+    class Meta:
+        """
+        Meta class defining the model and fields to be serialized for Friendship.
+        """
+        model = Friendship
+        fields = ['id', 'friend', 'created_at']
+
+class PendingFriendRequestSerializer(serializers.ModelSerializer):
+    """
+    Serializes PendingFriendRequest objects, representing pending friend requests between users.
+    """
+    from_user = UserSerializer(read_only=True)
+
+    class Meta:
+        """
+        Meta class defining the model and fields to be serialized for PendingFriendRequest.
+        """
+        model = PendingFriendRequest
+        fields = ['id', 'from_user', 'sent_at']
