@@ -10,7 +10,7 @@ import IconSearch from '@/components/icons/IconSearch.vue'
 import IconTimer from '@/components/icons/IconTimer.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 import IconChart from '@/components/icons/IconChart.vue'
-import { fetchUserStats } from '@/services/leaderboard'
+import { getSelfUserStats } from '@/services/user'
 import { getSuggestedQuizzes } from '@/services/quizzes'
 
 
@@ -35,7 +35,7 @@ const suggestedQuizzes = ref([])
 
 onMounted(async () => {
   try {
-    const stats = await fetchUserStats()
+    const stats = await getSelfUserStats()
     userStats.value = stats
   } catch (error) {
     console.error('Fehler beim Laden der User-Statistiken:', error)
