@@ -72,9 +72,7 @@ export const API_ENDPOINTS = {
   },
   
   LEADERBOARD: {
-    BASE: () => `api/leaderboard`,
-    LIMIT: (limit = 3) => `api/leaderboard?limit=${limit}`,
-    AROUND: (limit = 3, around = 1) => `api/leaderboard?limit=${limit}&around=${around}`,
+    BASE: (limit = 3, around = 1, category = 'all') => `api/leaderboard?limit=${limit}&around=${around}&category=${encodeURIComponent(category)}`,
   }
 };
 
