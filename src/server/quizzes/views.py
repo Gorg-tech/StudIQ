@@ -7,6 +7,15 @@ achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz c
 """
 
 import re
+"""
+View classes for quiz-related API endpoints.
+
+This file contains all Django REST Framework viewsets and API views for the quiz app.
+It provides endpoints for CRUD operations on quizzes, questions, answer options, lernsets, modules,
+achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz completion logic.
+"""
+
+import re
 from itertools import chain
 from math import exp, floor
 from datetime import datetime
@@ -20,7 +29,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
 from accounts.views import get_user_rank
-from accounts.serializers import UserSerializer
+from accounts.serializers import LeaderboardUserSerializer
 from accounts.views import register_study_activity
 from .models import (
     Quiz,
@@ -43,11 +52,16 @@ from .serializers import (
     StudiengangSerializer,
     ModulSerializer,
     ModulDetailSerializer,
+    ModulDetailSerializer,
     AnswerOptionSerializer,
     QuizForLernsetSerializer
 )
 
 class AnswerOptionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing AnswerOption objects.
+    Supports CRUD operations for answer options of quiz questions.
+    """
     """
     API endpoint for managing AnswerOption objects.
     Supports CRUD operations for answer options of quiz questions.
@@ -71,12 +85,18 @@ class QuizViewSet(viewsets.ModelViewSet):
     Handles creation, update, and deletion of quizzes,
     with permission checks for creators and moderators.
     """
+    """
+    API endpoint for managing Quiz objects.
+    Handles creation, update, and deletion of quizzes,
+    with permission checks for creators and moderators.
+    """
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Not found."}, status=404)
+
 
     def perform_create(self, serializer):
         # Automatically set the created_by to the current user
@@ -87,6 +107,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to edit this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
+            return Response({"detail": "You do not have permission to edit this quiz."},
+                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -94,9 +116,15 @@ class QuizViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to delete this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
+            return Response({"detail": "You do not have permission to delete this quiz."},
+                            status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
 class QuestionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing Question objects.
+    Supports CRUD operations for quiz questions.
+    """
     """
     API endpoint for managing Question objects.
     Supports CRUD operations for quiz questions.
@@ -112,11 +140,18 @@ class LernsetViewSet(viewsets.ModelViewSet):
     Handles creation, update, and deletion of lernsets, with permission checks
     for creators and moderators.
     """
+    """
+    API endpoint for managing Lernset objects.
+    Handles creation, update, and deletion of lernsets, with permission checks
+    for creators and moderators.
+    """
     queryset = Lernset.objects.all()
     serializer_class = LernsetSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        # Automatically set the created_by to the current user
+        serializer.save(created_by=self.request.user)
         # Automatically set the created_by to the current user
         serializer.save(created_by=self.request.user)
 
@@ -128,6 +163,8 @@ class LernsetViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to edit this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
+            return Response({"detail": "You do not have permission to edit this lernset."},
+                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -135,9 +172,15 @@ class LernsetViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to delete this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
+            return Response({"detail": "You do not have permission to delete this lernset."},
+                            status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
 class QuizAttemptViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing QuizAttempt objects.
+    Allows users to view and update their quiz attempt statistics.
+    """
     """
     API endpoint for managing QuizAttempt objects.
     Allows users to view and update their quiz attempt statistics.
@@ -152,6 +195,10 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class QuizSessionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing QuizSession objects.
+    Allows users to track their quiz solving sessions.
+    """
     """
     API endpoint for managing QuizSession objects.
     Allows users to track their quiz solving sessions.
@@ -171,6 +218,10 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     API endpoint for managing Feedback objects.
     Allows users to submit and view feedback for quizzes.
     """
+    """
+    API endpoint for managing Feedback objects.
+    Allows users to submit and view feedback for quizzes.
+    """
     serializer_class = FeedbackSerializer
     permission_classes = [IsAuthenticated]
 
@@ -186,12 +237,21 @@ class StudiengangViewSet(viewsets.ModelViewSet):
     API endpoint for managing Studiengang (field of study) objects.
     Allows listing, creating, updating, and deleting study programs.
     """
+    """
+    API endpoint for managing Studiengang (field of study) objects.
+    Allows listing, creating, updating, and deleting study programs.
+    """
     queryset = Studiengang.objects.all()
     serializer_class = StudiengangSerializer
     permission_classes = [AllowAny]
 
 
 class ModulViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for managing Modul (module) objects.
+    Allows listing, creating, updating, and deleting modules.
+    Uses a detailed serializer for retrieve actions.
+    """
     """
     API endpoint for managing Modul (module) objects.
     Allows listing, creating, updating, and deleting modules.
@@ -208,10 +268,15 @@ class ModulViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         # Use ModulDetailSerializer here instead of ModulSerializer
         serializer = ModulDetailSerializer(instance)
+        # Use ModulDetailSerializer here instead of ModulSerializer
+        serializer = ModulDetailSerializer(instance)
         return Response(serializer.data)
 
 
 class QuizzesByLernsetView(ListAPIView):
+    """
+    API endpoint for listing all quizzes belonging to a specific Lernset.
+    """
     """
     API endpoint for listing all quizzes belonging to a specific Lernset.
     """
@@ -226,30 +291,29 @@ class QuizzesByLernsetView(ListAPIView):
 class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Read-only API endpoint for the leaderboard.
-    Returns top users and users around the current user, with rank and streak information.
+    Returns top users and users around the current user, with rank, streak and IQ information.
     Supports query parameters for how many top users to show (limit)
-    and how many users to show around the current user (around).
+    and how many users to show around the current user (around)
+    and in what category ('all', 'friends', 'studiengang').
     """
-    serializer_class = UserSerializer
+    serializer_class = LeaderboardUserSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_users_around(self, user_id, before=1, after=1):
+    def get_users_around(self, user_id, user_model, before=1, after=1):
         """
         Retrieves users in front and behind the user.
         Args:
             user_id (long): The id of the current user
+            user_model (QuerySet): The user model queryset to search in
             before (int): how many users to return in front
-            after (int): how many users to return behind 
+            after (int): how many users to return behind
         Returns:
-            list: [user_before_n, ..., user_before_1, current_user, user_after_1, ...]"""
-        user = get_user_model()
-        try:
-            current_user = user.objects.get(id=user_id)
-        except user.DoesNotExist:
-            return []
+            list: [user_before_n, ..., user_before_1, current_user, user_after_1, ..., user_after_m]
+        """
+        current_user = user_model.get(id=user_id)
 
-        # Robust approach: build ordered list of user ids by rank and slice by index.
-        ordered_ids = list(user.objects.order_by('-streak', 'id').values_list('id', flat=True))
+        # reduce model to ordered ids only for indexing
+        ordered_ids = list(user_model.values_list('id', flat=True))
         try:
             idx = ordered_ids.index(current_user.id)
         except ValueError:
@@ -258,7 +322,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         end = min(len(ordered_ids), idx + after + 1)
         slice_ids = ordered_ids[start:end]
         # Fetch the user objects for these ids and preserve the order from slice_ids
-        users_qs = user.objects.filter(id__in=slice_ids)
+        users_qs = user_model.filter(id__in=slice_ids)
         users_map = {u.id: u for u in users_qs}
         ordered_users = [users_map[_id] for _id in slice_ids if _id in users_map]
         return ordered_users
@@ -275,30 +339,35 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         except (ValueError, TypeError):
             around = 1
 
-        user = get_user_model()
+        try:
+            category = request.query_params.get('category', 'all').lower()
+        except (ValueError, TypeError):
+            category = 'all'
 
-        # Fetch top users
-        top_users = list(user.objects.order_by('-streak', 'id')[:top_count])\
-                    if top_count > 0 else []
+        user_model = get_user_model().objects.all()
 
-        # Fetch users around current user
-        around_users = []
-        has_more_before = False
-        has_more_after = False
-        if request.user and request.user.is_authenticated and around > 0:
-            around_users = self.get_users_around(request.user.id, before=around, after=around)
+        # Get subset of users based on category
+        if category == 'friends':
+            friends_ids = request.user.friends.values_list('id', flat=True)
+            user_model = user_model.filter(Q(id__in=friends_ids) | Q(id=request.user.id))
+        elif category == 'studiengang' and request.user.studiengang:
+            user_model = user_model.filter(studiengang=request.user.studiengang)
 
-            # check if last user in around_users is last of everyone
-            last_around_user = around_users[-1] if around_users else None
-            first_around_user = around_users[0] if around_users else None
-            all_users = list(user.objects.order_by('-streak', 'id'))
+        # Sort user_model by iq_score, fetch the first users and the users around current user
+        user_model = user_model.only('id', 'username', 'iq_score', 'streak', 'solved_quizzes')\
+                                .order_by('-iq_score', 'id')
+        top_users = list(user_model[:top_count])
+        around_users = self.get_users_around(request.user.id, user_model,
+                                            before=around, after=around)
 
-            idx_top_last = all_users.index(top_users[-1]) if top_users else -1
-            idx_around_first = all_users.index(first_around_user) if first_around_user else -1
+        # check if last user in around_users is last of everyone
+        all_users = list(user_model)
 
-            has_more_before = idx_around_first > idx_top_last + 1
-            has_more_after = user.objects.order_by('-streak', 'id').last()\
-                .id != last_around_user.id if last_around_user else True
+        idx_top_last = all_users.index(top_users[-1]) if top_users else -1
+        idx_around_first = all_users.index(around_users[0]) if around_users else -1
+
+        has_more_before = idx_around_first > idx_top_last + 1
+        has_more_after = user_model.last().id != around_users[-1].id if around_users else True
 
         # Combine top and around, preserving order and removing duplicates
         combined = list(top_users)
@@ -310,7 +379,7 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
         serialized = self.get_serializer(combined, many=True).data
 
         for item in serialized:
-            item['rank'] = get_user_rank(item['id'])
+            item['rank'] = get_user_rank(item['id'], user_model)
 
         return Response({
             'users': serialized,
@@ -325,9 +394,30 @@ class SearchView(APIView):
     API endpoint for searching lernsets, quizzes, modules, and study programs.
     Supports filtering and relevance-based result ordering.
     """
+    """
+    API endpoint for searching lernsets, quizzes, modules, and study programs.
+    Supports filtering and relevance-based result ordering.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """
+        Gets all lernsets, quizzes, modules and studiengaenge
+        that match the filter word given in the query param "q".
+        The returned types can be limited by the "filter" query param,
+        the amount of returned objects can be limited by the "limit" query param.
+
+        Args:
+            request (Request): The API GET Request including query params
+        
+        Returns:
+            dict: {
+                "lernsets": [...],
+                "quizzes": [...],
+                "modules": [...],
+                "studiengaenge": [...]
+            }
+        """
         """
         Gets all lernsets, quizzes, modules and studiengaenge
         that match the filter word given in the query param "q".
@@ -453,6 +543,7 @@ class SearchView(APIView):
             elif isinstance(item, Studiengang):
                 text_fields = [item.name, item.description, item.id]
 
+
             for field in text_fields:
                 if field:
                     field_lower = field.lower()
@@ -465,6 +556,7 @@ class SearchView(APIView):
             return score
 
         # Sort by relevance score descending, then limit
+        all_items.sort(key=calculate_relevance, reverse=True)
         all_items.sort(key=calculate_relevance, reverse=True)
         all_items = all_items[:limit]
 
@@ -486,6 +578,10 @@ class SuggestedQuizzesView(ListAPIView):
     API endpoint for suggesting quizzes to the user based on their field of study.
     Returns recent quizzes from modules in the user's study program.
     """
+    """
+    API endpoint for suggesting quizzes to the user based on their field of study.
+    Returns recent quizzes from modules in the user's study program.
+    """
     serializer_class = QuizForLernsetSerializer
     permission_classes = [IsAuthenticated]
 
@@ -494,19 +590,27 @@ class SuggestedQuizzesView(ListAPIView):
         if not user.studiengang:
             return Quiz.objects.none()
 
+
         # Get all modules for the user's studiengang
         modules = user.studiengang.module.all()
+
 
         # Get all lernsets for these modules
         lernsets = Lernset.objects.filter(modul__in=modules)
 
+
         # Get quizzes from these lernsets, ordered by creation date, limit to 3
         quizzes = Quiz.objects.filter(lernset__in=lernsets).order_by('-created_at')[:3]
+
 
         return quizzes
 
 class QuizCompletionView(APIView):
     """
+    API endpoint for handling quiz completion.
+    Calculates and awards IQ points, updates user and quiz progress,
+    and returns a breakdown of earned points.
+    Also provides quiz progress details via GET.
     API endpoint for handling quiz completion.
     Calculates and awards IQ points, updates user and quiz progress,
     and returns a breakdown of earned points.
@@ -518,12 +622,16 @@ class QuizCompletionView(APIView):
         """
         Calculates the points the user receives, updates the user and returns results.
 
+        Calculates the points the user receives, updates the user and returns results.
+
         Expected (in request):
+        dict: {
         dict: {
             "correct": int
         }
 
         Returns (in response):
+        dict: {
         dict: {
             "base_points": int,
             "attempt_bonus_points": int,
@@ -543,6 +651,8 @@ class QuizCompletionView(APIView):
 
         # formulas
         attempt_bonus = 0.5 * exp(-0.5 * (quiz_attempt.attempts))
+        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
+                        if accuracy == 1.0 else 0
         perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
                         if accuracy == 1.0 else 0
         streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
@@ -584,6 +694,7 @@ class QuizCompletionView(APIView):
             "prev_iq": prev_iq,
             "new_iq": new_iq
         })
+
 
     def get(self, request, quiz_id):
         """

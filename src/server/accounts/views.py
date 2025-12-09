@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
-from .models import StudyDay
+from .models import StudyDay, PendingFriendRequest
 
 class RegisterView(APIView):
     """
@@ -122,29 +122,28 @@ def csrf(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
 
 
-def get_user_rank(user_id):
+def get_user_rank(user_id, user_set):
     """
-    Calculate the leaderboard rank of a user based on their streak.
+    Calculate the leaderboard rank of a user based on their iq_score.
 
     Args:
         user_id (int): The ID of the user.
-
+        user_set (QuerySet): The user model queryset to search in.
     Returns:
         int or None: The user's rank (1-based), or None if user does not exist.
     """
-    user = get_user_model()
     try:
-        target = user.objects.get(id=user_id)
-    except user.DoesNotExist:
+        target = user_set.get(id=user_id)
+    except user_set.DoesNotExist:
         return None
-    # Number of users with a higher streak + 1
-    higher = user.objects.filter(streak__gt=target.streak).values('streak').distinct().count()
+    # Number of users with a higher iq_score + 1
+    higher = user_set.values('iq_score').filter(iq_score__gt=target.iq_score)\
+                            .distinct().count()
     return higher + 1
 
 class UserStatsView(APIView):
     """
     API endpoint to return the current user's statistics, including leaderboard rank.
-    Used by the frontend at /api/users/me/stats/.
     """
     permission_classes = [IsAuthenticated]
 
@@ -160,7 +159,7 @@ class UserStatsView(APIView):
         """
         serializer = UserSerializer(request.user)
         data = serializer.data
-        data['rank'] = get_user_rank(request.user.id)
+        data['rank'] = get_user_rank(request.user.id, get_user_model().objects.all())
         return Response(data)
 
 def calculate_streak(user):
@@ -252,3 +251,95 @@ class StudyCalendarView(APIView):
             "days": [d.date.isoformat() for d in days]
         }
         return Response(data)
+
+class FriendRequestsView(APIView):
+    """
+    API endpoint to retrieve the user's pending friend requests.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieve all pending friend requests for the current user.
+
+        Args:
+            request (Request): The HTTP request.
+        Returns:
+            Response: List of pending friend requests.
+        """
+        user = request.user
+        requests = PendingFriendRequest.objects.filter(to_user=user)
+        data = [{
+            "from_user": req.from_user.username,
+            "sent_at": req.sent_at.isoformat()
+        } for req in requests]
+        return Response(data)
+
+    def post(self, request):
+        """
+        Send a friend request to another user or accept a friend request if they sent it first.
+
+        Args:
+            request (Request): The HTTP request containing 'to_user' username.
+
+        Returns:
+            Response: Success message or error.
+        """
+        from_user = request.user
+        to_username = request.data.get('to_user')
+        try:
+            to_user = get_user_model().objects.get(username=to_username)
+            if PendingFriendRequest.objects.filter(from_user=from_user, to_user=to_user).exists():
+                return Response({'error': 'Friend request already sent.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            if PendingFriendRequest.objects.filter(from_user=to_user, to_user=from_user).exists():
+                # Accept the friend request
+                to_user.friends.add(from_user)
+                PendingFriendRequest.objects.filter(from_user=to_user, to_user=from_user).delete()
+                return Response({'detail': 'Friend request accepted.'}, status=status.HTTP_200_OK)
+            if from_user.friends.filter(id=to_user.id).exists():
+                return Response({'error': 'You are already friends.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            PendingFriendRequest.objects.create(from_user=from_user, to_user=to_user)
+            return Response({'detail': 'Friend request sent.'}, status=status.HTTP_201_CREATED)
+        except get_user_model().DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request):
+        """
+        Decline a friend request from another user.
+
+        Args:
+            request (Request): The HTTP request containing 'from_user' username.
+        Returns:
+            Response: Success message or error.
+        """
+        to_user = request.user
+        from_username = request.data.get('from_user')
+        try:
+            from_user = get_user_model().objects.get(username=from_username)
+            req = PendingFriendRequest.objects.filter(from_user=from_user, to_user=to_user)
+            if req.exists():
+                req.delete()
+                return Response({'detail': 'Friend request declined.'}, status=status.HTTP_200_OK)
+            return Response({'error': 'No such friend request.'}, status=status.HTTP_404_NOT_FOUND)
+        except get_user_model().DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+class FriendsListView(APIView):
+    """
+    API endpoint to retrieve the user's friends list.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieve all friends for the current user.
+
+        Args:
+            request (Request): The HTTP request.
+        Returns:
+            Response: List of friends.
+        """
+        friends = request.user.friends.all()
+        return Response([{"username": f.username} for f in friends])

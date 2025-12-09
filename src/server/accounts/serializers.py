@@ -7,8 +7,9 @@ support nested structures for more complex objects, such as quizzes containing q
 """
 
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import User, StudyDay
+from .models import User, StudyDay, PendingFriendRequest
 from quizzes.models import Studiengang
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,3 +79,36 @@ class StudyDaySerializer(serializers.ModelSerializer):
         """
         model = StudyDay
         fields = ['date']
+
+class PendingFriendRequestSerializer(serializers.ModelSerializer):
+    """
+    Serializes PendingFriendRequest objects, representing pending friend requests between users.
+    """
+    from_user = UserSerializer(read_only=True)
+
+    class Meta:
+        """
+        Meta class defining the model and fields to be serialized for PendingFriendRequest.
+        """
+        model = PendingFriendRequest
+        fields = ['id', 'from_user', 'sent_at']
+
+class LeaderboardUserSerializer(serializers.ModelSerializer):
+    """
+    Serializes User objects for leaderboard display, including rank, streak, and solved quizzes.
+    """
+    rank = serializers.SerializerMethodField()
+    streak = serializers.IntegerField()
+    solved_quizzes = serializers.IntegerField()
+
+    class Meta:
+        """
+        Meta class defining the model and fields to be serialized for leaderboard users."""
+        model = get_user_model()
+        fields = ['id', 'username', 'rank', 'iq_score', 'streak', 'solved_quizzes']
+
+    def get_rank(self, obj):
+        """
+        Retrieves the rank of the user from the context provided during serialization.
+        """
+        return self.context.get('ranks', {}).get(obj.id, None)

@@ -69,6 +69,11 @@ python manage.py runserver
 - `PUT /api/users/me/` – Eigene Benutzerdaten aktualisieren
 - `GET /api/users/me/stats` – Der Rank und die Statistiken des self-users
 - `GET /api/users/me/streaks` – Die Streak- und Streaktage
+- **Freunde**
+  - `GET /api/users/me/friends` - Freundesliste abrufen
+  - `GET /api/users/me/friend-requests` - Alle Freundesanfragen an einen selbst abrufen
+  - `POST /api/users/me/friend-requests` - Freundesanfage an jemanden senden oder akzeptieren
+  - `DELETE /api/users/me/friend-requests` - Freundesanfang von jemandem ablehnen
 
 ### Suche
  - `GET /api/search/?q={query}&filter={type}` – Suche über alle Inhalte
@@ -129,4 +134,4 @@ python manage.py runserver
 - `POST /api/sessions/{id}/complete/` – Quiz-Sitzung beenden und Antworten einreichen
 
 ### Leaderboard
-- `GET /api/leaderboard?limit=N&around=M` – Die ersten N User des Leaderboards und M Users um den self-user herum (nach Streak)
+- `GET /api/leaderboard?limit=N&around=M&category=O` – Die ersten N User des Leaderboards und M Users um den self-user herum (nach Streak); O kann 'all', 'friends', 'studiengang' sein 

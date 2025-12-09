@@ -29,21 +29,21 @@ function selectTab(tabKey) {
   if (activeTab.value === tabKey) return
   activeTab.value = tabKey
   if (tabKey === TAB_ALL) {
-    fetchLeaderboardAll()
+    loadLeaderboard('all')
   } else if (tabKey === TAB_STUDIENGANG) {
-    fetchLeaderboardStudiengang()
+    loadLeaderboard('studiengang')
   } else if (tabKey === TAB_FRIENDS) {
-    fetchLeaderboardFriends()
+    loadLeaderboard('friends')
   }
 }
 
 // When button pressed, call API for new leaderboard-list
-async function fetchLeaderboardAll() {
+async function loadLeaderboard(category) {
   isLoading.value = true;
   try {
       const user_data = await store.getUser()
       selfUser.value = user_data
-      const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT)
+      const data = await fetchLeaderboard(TOP_COUNT, AROUND_COUNT, category)
       if (!data) {
       throw new Error('Keine Daten vom Server erhalten')
       }
@@ -57,17 +57,9 @@ async function fetchLeaderboardAll() {
       isLoading.value = false
   }
 }
-async function fetchLeaderboardStudiengang() {
-  isLoading.value = true;
-  // TODO: API-Call für Studiengang
-}
-async function fetchLeaderboardFriends() {
-  isLoading.value = true;
-  // TODO: API-Call für Freunde
-}
 
 onMounted(async () => {
-  fetchLeaderboardAll();
+  loadLeaderboard('all');
 })
 </script>
 
@@ -76,7 +68,7 @@ onMounted(async () => {
 
     <header class="leaderboard-header">
       <h1>Leaderboard</h1>
-      <p class="subtitle">Top Streaks der StudIQ Community</p>
+      <p class="subtitle">Top Studenten der StudIQ Community</p>
       <div class="leaderboard-tabs">
         <button
           v-for="tab in tabs"
@@ -109,13 +101,16 @@ onMounted(async () => {
             <div class="user-info">
                 <div class="username">{{ user.username }}</div>
                 <div class="stats">
-                <span class="streak">
-                    <IconFlame class="streak-icon" />
-                    {{ user.streak }} Tage Streak
-                </span>
-                <span class="total-quizzes">
-                    {{ user.solved_quizzes }} Quizze abgeschlossen
-                </span>
+                  <span class="iq-score">
+                      {{ user.iq_score }} IQ Punkte
+                  </span>
+                  <span class="streak">
+                      <IconFlame class="streak-icon" />
+                      {{ user.streak }} Tage Streak
+                  </span>
+                  <span class="total-quizzes">
+                      {{ user.solved_quizzes }} Quizze abgeschlossen
+                  </span>
                 </div>
             </div>
             </div>
@@ -136,6 +131,9 @@ onMounted(async () => {
           <div class="user-info">
             <div class="username">{{ user.username }}</div>
             <div class="stats">
+              <span class="iq-score">
+                {{ user.iq_score }} IQ Punkte
+              </span>
               <span class="streak">
                 <IconFlame class="streak-icon" />
                 {{ user.streak }} Tage Streak
@@ -227,6 +225,7 @@ onMounted(async () => {
   font-size: 1.5rem;
   font-weight: bold;
   min-width: 48px;
+  margin-right: 1em;
   text-align: center;
   color: var(--color-primary);
 }
