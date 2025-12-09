@@ -30,7 +30,7 @@ const errorMessage = ref('')
  * @param {String} quizId Quiz-Id
  */
 async function fetch_quiz(quizId){
-    const quiz = await getQuiz(quizId.value)
+    const quiz = await getQuiz(quizId)
     quizEdit.setQuiz({
       id: quiz.id,
       title: quiz.title,
