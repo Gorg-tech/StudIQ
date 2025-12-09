@@ -1,0 +1,17 @@
+[
+  {
+    "test": "test_name_not_unique (tests.modul.test_modul_acc.TestRegistration.test_name_not_unique)",
+    "status": "SUCCESS",
+    "time": "2025-12-07 12:16:55.585264"
+  },
+  {
+    "test": "test_registration_with_missing_password (tests.modul.test_modul_acc.TestRegistration.test_registration_with_missing_password)",
+    "status": "SUCCESS",
+    "time": "2025-12-07 12:16:55.802376"
+  },
+  {
+    "test": "test_registration_with_missing_username (tests.modul.test_modul_acc.TestRegistration.test_registration_with_missing_username)",
+    "status": "SUCCESS",
+    "time": "2025-12-07 12:16:56.026658"
+  }
+]

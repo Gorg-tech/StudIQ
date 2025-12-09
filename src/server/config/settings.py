@@ -184,3 +184,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Use the custom logging test runner
+TEST_RUNNER = 'logging_runner.LoggingTestRunner'
