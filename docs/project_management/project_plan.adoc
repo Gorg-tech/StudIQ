@@ -20,7 +20,7 @@ Beschreibt die Arbeitsweise des Projektteams und die Hinderniss dieser Arbeitswe
 - (inaktiv) Radmir Mullagaliev - Dev
 
 == Praktiken und Bewertung
-.Meeting-Termin:
+.Weekly-Meeting-Termin:
 *jeden Dienstag 15:30 in der S231*
 Falls Raum nicht verfügar, dann spontane Entscheidung von Georg
 Meetingprotokollierung erfolgt durch Georg Richter in 
@@ -30,16 +30,21 @@ Risiken werden festgehalten in einem Riskboard über Github:
 https://github.com/users/Gorg-tech/projects/7/views/10[Riskboard]
 
 
-*Backup: jedem issue wird, wenn nötig, ein zusätzlicher assigne zugeteilt*
+*Backup: jedem Issue wird, wenn nötig, ein zusätzlicher Assigne zugeteilt*
 
-Aufgaben sind in Github festgehalten und ergeben sich aus dem Backlog : https://github.com/users/Gorg-tech/projects/7/views/1[Backlog] .Dort sollte jeder wöchentlich nachgucken, was er zu tun hat, dies tun und sich so auf das Meeting vorbereiten.
+Am Anfang der Iteration erfolgt im ersten Weekly mit allen Teammitgliedern ein Refinement des Backlogs, in dem neue User Stories und Bugs aus dem https://github.com/users/Gorg-tech/projects/7/views/1[Product Backlog] geschätzt werden, und wo entschieden wird, welche User Stories umgesetzt werden bzw. welche Bugs noch nicht bearbeiteten gefixt werden sollten. Wenn User Stories zur Bearbeitung ausgewählt, wird ihr Status auf 'Ready' gesetzt.
+
+Kurz nach dem Refinement werden auf Basis der User Stories und Bugs (auf Github) im Status 'Ready', sowie unter Beachtung organisatorischer Nötigkeiten, vom PO Tasks erstellt, welche man auf dem Github Project im Reiter https://github.com/users/Gorg-tech/projects/7/views/11[Meeting-Tasks] einsehen kann.
+Beim Meeting am *Mittwoch nach dem Refinement um 17:30 im Discord* mit allen Teammitgliedern werden die Aufgaben zugeteilt, welche die Mitglieder für die derzeitige neue Iteration bearbeiten. Mit der Zuweisung wird der Bearbeitungsstand auf 'In Progress' gesetzt. 
+Die Zuweisung erfolgt möglichst so, dass der Workload im Team gleich verteilt ist.
 
 Jedes Mitglied eröffnet eine Branch zum Bearbeiten der zugeteilten Aufgabe. Die Branches sind wie folgt zu benennen: 
 art/kurze-beschreibung-der-aufgabe
-Die Aufgabe kann die folgenden Arten haben: feature, bugfix, update
-Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem Mergen von einem anderen Teammitglied überprüft wird.
+Die Aufgabe kann die folgenden Arten haben: feature, bugfix, update, documentation
+Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem Mergen von mindestens einem anderen Teammitglied überprüft wird.
 
-Zum Meeting werden die gemachten Aufgaben vorgestellt und besprochen und, falls sie fertig erledigt sind, neue zugeteilt. Dies erfolgt in Abstimmung mit den Teammitgliedern.
+Zum jedem Weekly
+
 
 Falls jemand noch zusätzliche Ausgaben übernimmt, welche nicht durch Tasks klar definiert sind, werden dies zusammen mit den Files auf denen man dafür arbeitet, im Discord-Kanal "Git-Überschneidungen" kommuniziert, damit keine Doppelarbeit entsteht.
 
