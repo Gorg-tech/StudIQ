@@ -43,8 +43,12 @@ art/kurze-beschreibung-der-aufgabe
 Die Aufgabe kann die folgenden Arten haben: feature, bugfix, update, documentation
 Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem Mergen von mindestens einem anderen Teammitglied überprüft wird.
 
-Zum jedem Weekly
+Zum jedem Weekly nach dem ersten bis zum Ende der Iteration wird der Stand der Taskbearbeitung abgrfragt. Falls Kommunikationsbedarf mit einem großen Teil des Teams wegen einer Aufgabe, wird das Weekly zur kurzen Absprache darüber verwendet. 
+Das Weekly sollte nicht länger als 15 Minuten dauern.
 
+Am Ende der Iteration werden die Stakeholder zu einem Treffen eingeladen, wo der Entwicklungs-Fortschritt der Iteration reviewt wird, und das Team neuen Input an User-Stories und auftretenden Bugs bekommt, die in der nächsten Iteration bearbeitet werden können (nicht müssen).
+
+Nach dem Treffen mit den Stakeholdern erfolgt eine Retrospektive mit dem gesamten Team.
 
 Falls jemand noch zusätzliche Ausgaben übernimmt, welche nicht durch Tasks klar definiert sind, werden dies zusammen mit den Files auf denen man dafür arbeitet, im Discord-Kanal "Git-Überschneidungen" kommuniziert, damit keine Doppelarbeit entsteht.
 
@@ -123,3 +127,18 @@ Raum S128 manchmal belegt, dann etwas nervend spontan einen neuen Raum zu finden
 
 * Unzufriedenheit mit Bewertung auf SE1
     -> Dozierende mehr um Feedback fragen
+
+=== 5. Iteration 
+
+* Online-zuschaltung schwierig
+    -> Nutzung von https://meet.jit.si/SE2/StudIQ[juitsu] für Online-Meetings, falls jemand aus dem HTW-Gelände heraus teilnimmt, sonst Discord
+* Viele Erkenntnisse durch Fachaustausch
+    - Probleme bei Software-Entwicklung(zB Probleme bei Verständnis von Backendfiles) wurden nicht an SM Hans weitergeleitet
+        -> SM konnt Workflow nicht verbessern
+    - Funktionsweise der Meetings muss geändert werden
+    -> 15-30 Minuten Review
+    -> ggf Extra Meetings für Retro, Stakeholder-Treff,...
+    - Einführen von Refinement wichtig
+    - Mehr Dokumentation im Code wichtig
+    
+* Aufgabenzuteilung und -bearbeitung funktioniert gut, da gesetzte Feature-Ziele umgesetzt wurden konnten
