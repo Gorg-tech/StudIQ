@@ -11,7 +11,7 @@ export const API_ENDPOINTS = {
     MY_STATS: 'api/users/me/stats/',
     MY_STREAKS: 'api/users/me/streaks/',
     MY_FRIENDS: 'api/users/me/friends/',
-    FRIEND_REQUESTS: 'api/users/me/friend-requests/',
+    FRIEND_REQUESTS: 'api/users/me/friend-requests',
   },
 
   SEARCH: (searchQuery, filter) => {
