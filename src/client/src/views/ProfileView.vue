@@ -191,7 +191,7 @@ onMounted(async () => {
 
 .friends-btn {
   margin-right: 12px;
-  background: #ddd;
+  background: color-mix(in oklab, var(--color-bg) 70%, #888888 30%);
   border: none;
   padding: 6px 10px;
   border-radius: 8px;
@@ -201,14 +201,15 @@ onMounted(async () => {
 .friends-popup-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0,45);
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .friends-popup {
-  background: white;
+  background: var(--color-bg);
   padding: 20px;
   border-radius: 14px;
   width: 320px;
@@ -419,6 +420,7 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  z-index: 0;
 }
 
 .day-label {
