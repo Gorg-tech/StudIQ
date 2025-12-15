@@ -19,3 +19,8 @@ export async function declineFriendRequest(username) {
     return apiClient.delete(API_ENDPOINTS.USER.FRIEND_REQUESTS, data);
 }
 
+export async function removeFriend(username) {
+    const data = { username: username };
+    return apiClient.delete(API_ENDPOINTS.USER.MY_FRIENDS, data);
+}
+
