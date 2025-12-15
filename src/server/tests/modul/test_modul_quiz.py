@@ -190,8 +190,6 @@ class TestCaseQuiz(TestCase):
         self.assertEqual(quiz.description, "A new quiz")
         self.assertEqual(quiz.lernset, self.lernset)
 
-
-
     def test_create_new_question_in_existing_quiz_succeeds(self):
         data = {
         "title": self.quiz.title,
