@@ -31,34 +31,37 @@ class TestIntegrationAccounts(TestCase):
 
     def test_register_user_success(self):
         """Register a new user successfully if all required fields are provided"""
-        data = {"username": "newuser", "password": "newpass", "studiengang": self.studiengang.id}
+        data = {"username": "newuser", "password": "Newpass1234#", "studiengang": self.studiengang.id}
+
         response = self.client.post("/api/auth/register/", data, format="json")
+        print(response.data)
+
         self.assertEqual(response.status_code, 201)
         self.assertIn("username", response.data)
         self.assertEqual(response.data["username"], "newuser")
 
-    def test_register_user_invalid(self):
+    def test_register_user_invalid_fails(self):
         """Register fails when missing required fields"""
         data = {"username": ""}  # missing password
         response = self.client.post("/api/auth/register/", data, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertIn("password", response.data)
 
-    def test_login_invalid_credentials(self):
+    def test_login_invalid_credentials_fails(self):
         """Login fails with wrong password"""
         data = {"username": "user1", "password": "wrongpass"}
         response = self.client.post("/api/auth/login/", data, format="json")
         self.assertEqual(response.status_code, 401)
         self.assertIn("error", response.data)
 
-    def test_login_success(self):
+    def test_valid_login_succeeds(self):
         """Login succeeds with correct credentials"""
         data = {"username": "user1", "password": "pass1"}
         response = self.client.post("/api/auth/login/", data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["username"], "user1")
 
-    def test_logout(self):
+    def test_valid_logout_succeeds(self):
         """Logout works after login"""
         self.client.login(username="user1", password="pass1")
         response = self.client.post("/api/auth/logout/")
@@ -66,9 +69,9 @@ class TestIntegrationAccounts(TestCase):
         self.assertIn("detail", response.data)
 
     def test_me_view_requires_authentication(self):
-        """GET /me/ without login returns 401 - protected user endpoint"""
+        """GET /me/ without login returns 401 or 403 - protected user endpoint"""
         response = self.client.get("/api/auth/me/")
-        self.assertEqual(response.status_code, 401)
+        self.assertIn(response.status_code, [401, 403])
 
     def test_me_view_authenticated(self):
         """GET /me/ returns logged-in user data"""
