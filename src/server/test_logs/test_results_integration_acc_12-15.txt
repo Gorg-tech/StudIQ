@@ -1,0 +1,44 @@
+[
+  {
+    "test": "test_create_and_get_quiz (tests.integration.test_integration_acc.TestIntegrationAccounts.test_create_and_get_quiz)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:18:56.620033"
+  },
+  {
+    "test": "test_login_invalid_credentials (tests.integration.test_integration_acc.TestIntegrationAccounts.test_login_invalid_credentials)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:18:58.587658"
+  },
+  {
+    "test": "test_login_success (tests.integration.test_integration_acc.TestIntegrationAccounts.test_login_success)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:19:00.789735"
+  },
+  {
+    "test": "test_logout (tests.integration.test_integration_acc.TestIntegrationAccounts.test_logout)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:19:03.448378"
+  },
+  {
+    "test": "test_me_view_authenticated (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_authenticated)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:19:06.077254"
+  },
+  {
+    "test": "test_me_view_requires_authentication (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_requires_authentication)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 71, in test_me_view_requires_authentication\n    self.assertEqual(response.status_code, 401)\nAssertionError: 403 != 401\n",
+    "time": "2025-12-15 17:19:07.509513"
+  },
+  {
+    "test": "test_register_user_invalid (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_invalid)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:19:08.957813"
+  },
+  {
+    "test": "test_register_user_success (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_success)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 36, in test_register_user_success\n    self.assertEqual(response.status_code, 201)\nAssertionError: 400 != 201\n",
+    "time": "2025-12-15 17:19:10.311025"
+  }
+]

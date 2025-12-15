@@ -1,4 +1,17 @@
-[
+[                                   Stmts     miss cover
+-------------------------------------------------------
+quizzes/__init__.py                      0      0   100%
+quizzes/admin.py                        42      0   100%
+quizzes/apps.py                          4      0   100%
+quizzes/migrations/0001_initial.py       8      8     0%
+quizzes/migrations/__init__.py           0      0   100%
+quizzes/models.py                       93      9    90%
+quizzes/serializers.py                 140     27    81%
+quizzes/urls.py                         18     18     0%
+quizzes/views.py                       321    321     0%
+--------------------------------------------------------
+TOTAL                                  626    383    39%
+
   {
     "test": "test_correct_answer_changeable_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_correct_answer_changeable_succeeds)",
     "status": "FAILURE",

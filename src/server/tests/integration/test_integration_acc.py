@@ -6,6 +6,8 @@ from quizzes.models import Studiengang
 from quizzes.models import Quiz
 from quizzes.models import Lernset
 from quizzes.models import Modul
+from django.conf import settings
+settings.ALLOWED_HOSTS = ['testserver']  # Ensure testserver is allowed
 User = get_user_model()
 
 class TestIntegrationAccounts(TestCase):
@@ -22,14 +24,10 @@ class TestIntegrationAccounts(TestCase):
         
         self.client = APIClient()
         
-        self.modul = Modul.objects.create(name="Modul 101", modulId="M101", semester=1, credits=5)
+        self.modul = Modul.objects.create(name="Modul 101", modulId="M101", credits=5)
         self.modul.studiengang.set([self.studiengang])  # Only here if Modul.studiengang is ManyToMany
         
         self.lernset = Lernset.objects.create(title="Sample Lernset", created_by=self.user1, modul=self.modul)
-
-
-    def tearDown(self):
-        return super().tearDown()
 
     def test_register_user_success(self):
         """Register a new user successfully if all required fields are provided"""
