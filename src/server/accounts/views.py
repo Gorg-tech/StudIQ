@@ -342,7 +342,7 @@ class FriendsListView(APIView):
         Args:
             request (Request): The HTTP request.
         Returns:
-            Response: List of friends.
+            Response: List of users.
         """
         friends = request.user.friends.all()
-        return Response([{"username": f.username} for f in friends])
+        return Response([{"username": f.username, "iq_score": f.iq_score} for f in friends])
