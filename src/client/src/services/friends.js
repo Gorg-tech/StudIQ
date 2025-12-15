@@ -2,7 +2,7 @@ import apiClient from './api/client';
 import { API_ENDPOINTS } from './api/endpoints';
 
 export async function getFriends() {
-    return apiClient.get(API_ENDPOINTS.USER.FRIENDS);
+    return apiClient.get(API_ENDPOINTS.USER.MY_FRIENDS);
 }
 
 export async function getFriendRequests() {
