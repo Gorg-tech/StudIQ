@@ -346,5 +346,4 @@ class FriendsListView(APIView):
         """
         friends = request.user.friends.all()
         return Response([{"username": f.username, "iq_score": f.iq_score,
-                          "studiengang": f.studiengang.name if f.studiengang else '',
                           "streak": f.streak} for f in friends])
