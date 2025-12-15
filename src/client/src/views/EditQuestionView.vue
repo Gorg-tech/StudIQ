@@ -50,7 +50,7 @@
               />
             </div>
             <div class="option-actions">
-              <button class="btn-icon delete-option" @click.stop="deleteOption(idx)" aria-label="Antwort löschen">
+              <button v-if="activeOptionsCount > 2" class="btn-icon delete-option" @click.stop="deleteOption(idx)" aria-label="Antwort löschen">
                 <IconTrash />
               </button>
             </div>
@@ -128,6 +128,8 @@ const errorMessage = ref('')
 const selectedTypeApi = computed(() =>
   QUESTION_TYPES.find(q => q.label === selectedType.value)?.api || QUESTION_TYPES[0].api
 )
+
+const activeOptionsCount = computed(() => options.value.filter(o => o._status !== 'deleted').length)
 
 onMounted(async () => {
   question.value = quizEdit.getQuestion(questionId)
@@ -246,8 +248,7 @@ function confirmCancel() {
 }
 
 // Update delete button in option-actions:
-function deleteOption(idx, event) {
-  event.stopPropagation()
+function deleteOption(idx) {
   openDeletePopup(idx)
 }
 
@@ -265,31 +266,33 @@ async function saveQuestion() {
     return
   }
 
-  if (options.value.length < 2) {
+  const activeOptions = options.value.filter(o => o._status !== 'deleted')
+
+  if (activeOptions.length < 2) {
     errorMessage.value = 'Mindestens zwei Antwortoptionen sind erforderlich.'
     return
   }
 
-  for (const opt of options.value) {
+  for (const opt of activeOptions) {
     if (!opt.text || opt.text.trim() === '') {
       errorMessage.value = 'Alle Antwortoptionen müssen einen Text haben.'
       return
     }
   }
 
-  const texts = options.value.map(opt => opt.text.trim().toLowerCase())
+  const texts = activeOptions.map(opt => opt.text.trim().toLowerCase())
   if (new Set(texts).size !== texts.length) {
     errorMessage.value = 'Alle Antwortoptionen müssen einen eindeutigen Text haben.'
     return
   }
 
-  const hasCorrect = options.value.some(opt => opt.correct)
+  const hasCorrect = activeOptions.some(opt => opt.correct)
   if (!hasCorrect) {
     errorMessage.value = 'Mindestens eine Antwortoption muss als korrekt markiert sein.'
     return
   }
 
-  const correctCount = options.value.filter(opt => opt.correct).length
+  const correctCount = activeOptions.filter(opt => opt.correct).length
   const autoType = correctCount === 1 ? 'SINGLE_CHOICE' : 'MULTIPLE_CHOICE'
   selectedType.value = QUESTION_TYPES.find(q => q.api === autoType)?.label || selectedType.value
 
