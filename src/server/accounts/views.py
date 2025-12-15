@@ -347,3 +347,24 @@ class FriendsListView(APIView):
         friends = request.user.friends.all()
         return Response([{"username": f.username, "iq_score": f.iq_score,
                           "streak": f.streak} for f in friends])
+    
+    def delete(self, request):
+        """
+        Remove a friend from the user's friends list.
+
+        Args:
+            request (Request): The HTTP request containing 'username'.
+
+        Returns:
+            Response: Success message or error.
+        """
+        user = request.user
+        friend_username = request.data.get('username')
+        try:
+            friend = get_user_model().objects.get(username=friend_username)
+            if user.friends.filter(id=friend.id).exists():
+                user.friends.remove(friend)
+                return Response({'detail': 'Friend removed.'}, status=status.HTTP_200_OK)
+            return Response({'error': 'User is not your friend.'}, status=status.HTTP_400_BAD_REQUEST)
+        except get_user_model().DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)

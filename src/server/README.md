@@ -71,6 +71,7 @@ python manage.py runserver
 - `GET /api/users/me/streaks` – Die Streak- und Streaktage
 - **Freunde**
   - `GET /api/users/me/friends` - Freundesliste abrufen
+  - `DELETE /api/users/me/friends` - Freunde löschen
   - `GET /api/users/me/friend-requests` - Alle Freundesanfragen an einen selbst abrufen
   - `POST /api/users/me/friend-requests` - Freundesanfage an jemanden senden oder akzeptieren
   - `DELETE /api/users/me/friend-requests` - Freundesanfang von jemandem ablehnen
