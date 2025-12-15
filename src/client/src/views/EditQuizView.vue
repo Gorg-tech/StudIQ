@@ -139,8 +139,9 @@ function quiz_has_correct_values(){
     return false
   }
 
-  if (quizEdit.questions.length === 0) {
-    errorMessage.value = 'Mindestens eine Frage ist erforderlich.'
+  // Require at least 3 questions
+  if (quizEdit.questions.length < 3) {
+    errorMessage.value = 'Bitte füge mindestens 3 Fragen hinzu, bevor du das Quiz speicherst.'
     return false
   }
 
