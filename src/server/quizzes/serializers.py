@@ -67,6 +67,11 @@ class QuizSerializer(serializers.ModelSerializer):
         create Quiz with nested Questions and AnswerOptions
         """
         questions_data = validated_data.pop('questions', [])
+        # Require at least 3 questions to create a quiz
+        if len(questions_data) < 3:
+            raise serializers.ValidationError({
+                'questions': 'Ein Quiz muss mindestens 3 Fragen enthalten.'
+            })
 
         quiz = Quiz.objects.create(**validated_data)
 
