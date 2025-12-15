@@ -12,17 +12,47 @@
       </button>
     </header>
 
-    <!-- Freunde Popup -->
+    <!-- Friends Popup -->
     <div class="friends-popup-backdrop" v-if="showFriends" @click.self="showFriends = false">
       <div class="friends-popup">
-        <h3>Freundesliste</h3>
+        <div v-if="friendRequests.length" class="friend-requests-section">
+          <h4>Freundschaftsanfragen</h4>
+          <ul class="friend-requests-list">
+            <li v-for="req in friendRequests" :key="req.from_user" class="friend-request-row">
+              <span>{{ req.from_user }}</span>
+              <button class="friend-accept-btn" @click="acceptFriendRequestAction(req.from_user)">✔️</button>
+              <button class="friend-decline-btn" @click="declineFriendRequestAction(req.from_user)">❌</button>
+            </li>
+          </ul>
+        </div>
+        <div v-if="friends.length" class="friends-section">
+          <h3>Freundesliste</h3>
+          <div class="friends-table-wrapper">
+            <table class="friends-table">
+              <thead>
+                <tr>
+                  <th>Benutzername</th>
+                  <th>Streak</th>
+                  <th>IQ</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="friend in friends" :key="friend.username">
+                  <td>{{ friend.username }}</td>
+                  <td>{{ friend.streak ?? '-' }}</td>
+                  <td>{{ friend.iq_score ?? '-' }}</td>
+                  <td>
+                    <button class="friend-delete-btn" @click="friendToDelete = friend">
+                      <IconTrashcan />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         <button class="add-friend-btn" @click="showAddFriend = true">Freund hinzufügen</button>
-        <ul class="friends-list">
-          <li v-for="friend in friends" :key="friend.username">
-            <span>{{ friend.username }}</span>
-            <span class="level">IQ Score {{ friend.iq_score }}</span>
-          </li>
-        </ul>
         <button class="close-btn" @click="showFriends = false">Schließen</button>
       </div>
     </div>
@@ -52,6 +82,18 @@
       </div>
     </div>
 
+    <!-- Delete Friend Confirmation Popup -->
+    <div class="friends-popup-backdrop" v-if="friendToDelete != null" @click.self="closeDeleteFriend">
+      <div class="friends-popup">
+        <h3>Freund entfernen</h3>
+        <p>Möchtest du <strong>{{ friendToDelete?.username }}</strong> wirklich aus deiner Freundesliste entfernen?</p>
+        <div class="add-friend-btn-row">
+          <button class="add-friend-send-btn" @click="deleteFriend(friendToDelete)">Entfernen</button>
+          <button class="add-friend-cancel-btn" @click="closeDeleteFriend">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Profile etc. -->
     <div v-if="loading">Lädt...</div>
     <div v-else-if="error">Fehler: {{ error.message }}</div>
@@ -65,7 +107,10 @@
             <p>Platz #{{ leaderboardPosition }}</p>
           </div>
 
-          <button class="friends-btn" @click="showFriends = true">👥</button>
+          <button class="friends-btn" @click="showFriends = true">
+            👥
+            <span v-if="friendRequests.length" class="friend-requests-badge">{{ friendRequests.length }}</span>
+          </button>
 
           <!-- Level Bar -->
           <div class="level-bar-container">
@@ -134,6 +179,7 @@ import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'
 import IconSettings from '@/components/icons/IconSettings.vue'
 import IconCode from '@/components/icons/IconCode.vue'
+import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 
 const router = useRouter()
 
@@ -157,11 +203,9 @@ const showAddFriend = ref(false)
 const addFriendUsername = ref('')
 const addFriendError = ref('')
 const addFriendLoading = ref(false)
-const friends = ref([
-  { username: 1, username: 'Benutzer A', iq_score: 5 },
-  { username: 2, username: 'Benutzer B', iq_score: 3 },
-  { username: 3, username: 'Benutzer C', iq_score: 8 },
-])
+const friends = ref([])
+const friendRequests = ref([])
+const friendToDelete = ref(null)
 
 function loadFriends() {
   getFriends().then(fetchedFriends => {
@@ -171,10 +215,46 @@ function loadFriends() {
   })
 }
 
+function loadFriendRequests() {
+  getFriendRequests().then(requests => {
+    friendRequests.value = requests
+  }).catch(err => {
+    console.error('Error loading friend requests:', err)
+  })
+}
+
 function closeAddFriend() {
   showAddFriend.value = false
   addFriendUsername.value = ''
   addFriendError.value = ''
+}
+
+function closeDeleteFriend() {
+  friendToDelete.value = null
+}
+
+function deleteFriend(friend) {
+  alert(`Freund ${friend.username} entfernen (Backend noch nicht implementiert)`);
+  closeDeleteFriend()
+}
+
+async function acceptFriendRequestAction(username) {
+  try {
+    await sendOrAcceptFriendRequest(username)
+    loadFriends()
+    loadFriendRequests()
+  } catch (e) {
+    alert(`Fehler beim Akzeptieren der Freundschaftsanfrage: ${e.message || 'Unbekannter Fehler.'}`)
+  }
+}
+
+async function declineFriendRequestAction(username) {
+  try {
+    await declineFriendRequest(username)
+    loadFriendRequests()
+  } catch (e) {
+    alert(`Fehler beim Ablehnen der Freundschaftsanfrage: ${e.message || 'Unbekannter Fehler.'}`)
+  }
 }
 
 async function submitAddFriend() {
@@ -213,6 +293,7 @@ const recentQuizzes = ref([
 onMounted(async () => {
   try {
     loadFriends()
+    loadFriendRequests()
     user.value = await store.getUser()
     const [stats, streaks] = await Promise.all([getSelfUserStats(), getSelfUserStreaks()])
 
@@ -255,6 +336,7 @@ onMounted(async () => {
 
 .friends-btn {
   margin-right: 12px;
+  color: var(--color-text);
   background: color-mix(in oklab, var(--color-bg) 70%, #888888 30%);
   border: none;
   padding: 6px 10px;
@@ -285,25 +367,78 @@ onMounted(async () => {
 .add-friend-btn {
   width: 100%;
   background: var(--color-primary);
-  color: var(--color-on-primary, #fff);
-  padding: 8px 0;
+  color: var(--text-color);
+  padding: 10px 0;
   border-radius: 8px;
   border: none;
-  margin-bottom: 10px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.2s;
+  transition: opacity 0.2s;
 }
 
 .add-friend-btn:hover {
-  background: var(--color-accent);
+  opacity: 0.9;
 }
+
+.friend-requests-section h4,
+.friends-section h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: underline;
+  margin: 0 0 8px 0;
+}
+
+.friend-requests-list {
+  padding-left: 12px;
+  margin-bottom: 12px;
+}
+
+.friend-request-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.friend-accept-btn, .friend-decline-btn {
+  padding: 6px 8px;
+  border-radius: 8px;
+  min-width: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+}
+.friend-accept-btn { background: var(--color-green); }
+.friend-decline-btn { background: var(--color-red); }
+.friend-accept-btn:hover, .friend-decline-btn:hover { opacity: 0.9; }
+
+.friends-table-wrapper { display: flex; justify-content: center; margin-bottom: 8px; }
+.friends-table { width: 100%; max-width: 460px; border-collapse: collapse; margin: 0 auto; }
+.friends-table th, .friends-table td { padding: 10px 14px; text-align: center; }
+.friends-table th { background: var(--color-primary); color: var(--color-on-primary, #fff); font-weight: 700; }
+.friends-table td { vertical-align: middle; }
+.friends-table tr:nth-child(even) { background: color-mix(in oklab, var(--color-bg) 92%, #888 8%); }
+
+.add-friend-btn { margin-top: 10px; }
+
+.friend-delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+}
+.friend-delete-btn svg { width: 1.1rem; height: 1.1rem; color: var(--color-red); }
+.friend-delete-btn:hover { background: color-mix(in oklab, var(--color-red) 12%, transparent); }
 
 .add-friend-input {
   width: 100%;
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid var(--color-primary, #2196f3);
+  border: 1px solid var(--color-primary);
   margin-bottom: 8px;
   font-size: 1rem;
   background: var(--color-bg);
@@ -312,7 +447,7 @@ onMounted(async () => {
 }
 
 .add-friend-error {
-  color: var(--color-error, #d32f2f);
+  color: var(--color-red);
   font-size: 0.95rem;
   margin-bottom: 8px;
   min-height: 1.2em;
@@ -327,16 +462,16 @@ onMounted(async () => {
 .add-friend-send-btn {
   flex: 1;
   background: var(--color-primary);
-  color: var(--color-on-primary, #fff);
+  color: var(--color-text);
   border: none;
   border-radius: 8px;
   padding: 8px 0;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: opacity 0.2s;
 }
 .add-friend-send-btn:hover {
-  background: var(--color-accent);
+  opacity: 0.9;
 }
 
 .add-friend-cancel-btn {
@@ -351,8 +486,8 @@ onMounted(async () => {
   transition: background 0.2s;
 }
 .add-friend-cancel-btn:hover {
-  background: var(--color-accent);
-  color: var(--color-on-primary, #fff);
+  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+  color: var(--color-text);
 }
 
 
@@ -366,18 +501,23 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   padding: 6px 0;
-  border-bottom: 1px solid #eee;
 }
 
 .close-btn {
   width: 100%;
   margin-top: 12px;
   padding: 10px;
-  background: #2196f3;
-  color: white;
+  background: var(--color-secondary);
+  color: var(--color-text);
   border: none;
   border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+  opacity: 0.9;
 }
 
 .profile {
@@ -416,16 +556,6 @@ onMounted(async () => {
   height: 2.2rem;
 }
 
-.settings-popup {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  background: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.1);
-}
-
 .profile-top {
   display: flex;
   justify-content: space-between;
@@ -456,7 +586,7 @@ onMounted(async () => {
 
 .profile-info p {
   margin: 0;
-  color: #666;
+  color: color-mix(in oklab, var(--text-color) 50%, transparent);
   font-size: 0.9rem;
 }
 
@@ -482,13 +612,14 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  margin-bottom: 10px;
 }
 
 /* Smaller Bar */
 .level-bar {
   flex: 1;
   height: 10px;
-  background-color: #eee;
+  background-color: color-mix(in oklab, var(--color-text) 20%, transparent);
   border-radius: 8px;
   overflow: hidden;
   min-width: 100px;
@@ -497,7 +628,7 @@ onMounted(async () => {
 .level-fill {
   height: 100%;
   width: 60%;
-  background-color: var(--color-accent);
+  background-color: color-mix(in oklab, var(--color-text) 30%, transparent);
   border-radius: 8px 0 0 8px;
   transition: width 0.5s ease;
 }
@@ -505,7 +636,7 @@ onMounted(async () => {
 .level-percentage {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #666;
+  color: color-mix(in oklab, var(--text-color) 40%, transparent);
   white-space: nowrap;
 }
 
