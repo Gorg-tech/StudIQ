@@ -15,19 +15,40 @@
     <!-- Freunde Popup -->
     <div class="friends-popup-backdrop" v-if="showFriends" @click.self="showFriends = false">
       <div class="friends-popup">
-
         <h3>Freundesliste</h3>
-
-        <button class="add-friend-btn" @click="addFriend">Freund hinzufügen</button>
-
+        <button class="add-friend-btn" @click="showAddFriend = true">Freund hinzufügen</button>
         <ul class="friends-list">
-          <li v-for="friend in friends" :key="friend.id">
-            <span>{{ friend.name }}</span>
-            <span class="level">Level {{ friend.level }}</span>
+          <li v-for="friend in friends" :key="friend.username">
+            <span>{{ friend.username }}</span>
+            <span class="level">IQ Score {{ friend.iq_score }}</span>
           </li>
         </ul>
-
         <button class="close-btn" @click="showFriends = false">Schließen</button>
+      </div>
+    </div>
+
+    <!-- Add Friend Popup -->
+    <div class="friends-popup-backdrop" v-if="showAddFriend" @click.self="closeAddFriend">
+      <div class="friends-popup">
+        <h3>Freund hinzufügen</h3>
+        <form @submit.prevent="submitAddFriend">
+          <input
+            v-model="addFriendUsername"
+            class="add-friend-input"
+            type="text"
+            :disabled="addFriendLoading"
+            placeholder="Benutzername eingeben"
+            autocomplete="off"
+            required
+          />
+          <div v-if="addFriendError" class="add-friend-error">{{ addFriendError }}</div>
+          <div class="add-friend-btn-row">
+            <button type="submit" class="add-friend-send-btn" :disabled="addFriendLoading">
+              {{ addFriendLoading ? 'Senden...' : 'Schicken' }}
+            </button>
+            <button type="button" class="add-friend-cancel-btn" @click="closeAddFriend" :disabled="addFriendLoading">Abbrechen</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -105,6 +126,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
+import { getFriends, sendOrAcceptFriendRequest, declineFriendRequest, getFriendRequests} from '@/services/friends.js'
 import { store } from '@/stores/app.js'
 
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
@@ -129,16 +151,57 @@ const currentWeekStreak = ref([])
 const streakCount = ref(0)
 const longestStreak = ref(0)
 
+
 const showFriends = ref(false)
+const showAddFriend = ref(false)
+const addFriendUsername = ref('')
+const addFriendError = ref('')
+const addFriendLoading = ref(false)
 const friends = ref([
-  { id: 1, name: 'Benutzer A', level: 5 },
-  { id: 2, name: 'Benutzer B', level: 3 },
-  { id: 3, name: 'Benutzer C', level: 8 },
+  { username: 1, username: 'Benutzer A', iq_score: 5 },
+  { username: 2, username: 'Benutzer B', iq_score: 3 },
+  { username: 3, username: 'Benutzer C', iq_score: 8 },
 ])
 
-function addFriend() {
-  console.log("Freund hinzufügen wurde geklickt")
-  // zukünftige API hier einbauen
+function loadFriends() {
+  getFriends().then(fetchedFriends => {
+    friends.value = fetchedFriends
+  }).catch(err => {
+    console.error('Error loading friends:', err)
+  })
+}
+
+function closeAddFriend() {
+  showAddFriend.value = false
+  addFriendUsername.value = ''
+  addFriendError.value = ''
+}
+
+async function submitAddFriend() {
+  addFriendError.value = ''
+  addFriendLoading.value = true
+  try {
+    const username = addFriendUsername.value.trim()
+    const res = await sendOrAcceptFriendRequest(username)
+    closeAddFriend()
+    showFriends.value = true
+    if(res.status === 200) {
+      // Accepted existing request
+      alert(`Du bist jetzt mit ${username} befreundet!`)
+      loadFriends()
+    } else {
+      // Sent new request
+      alert(`Freundschaftsanfrage an ${username} gesendet!`)
+    }
+  } catch (e) {
+    if (e && e.data && e.data.error) {
+      addFriendError.value = e.data.error
+    } else {
+      addFriendError.value = 'Unbekannter Fehler.'
+    }
+  } finally {
+    addFriendLoading.value = false
+  }
 }
 
 const recentQuizzes = ref([
@@ -149,6 +212,7 @@ const recentQuizzes = ref([
 
 onMounted(async () => {
   try {
+    loadFriends()
     user.value = await store.getUser()
     const [stats, streaks] = await Promise.all([getSelfUserStats(), getSelfUserStreaks()])
 
@@ -217,20 +281,78 @@ onMounted(async () => {
   box-shadow: 0 4px 14px rgba(0,0,0,0.45);
 }
 
+
 .add-friend-btn {
   width: 100%;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-on-primary, #fff);
   padding: 8px 0;
   border-radius: 8px;
   border: none;
   margin-bottom: 10px;
   cursor: pointer;
   font-weight: 600;
+  transition: background 0.2s;
 }
 
 .add-friend-btn:hover {
   background: var(--color-accent);
+}
+
+.add-friend-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary, #2196f3);
+  margin-bottom: 8px;
+  font-size: 1rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+.add-friend-error {
+  color: var(--color-error, #d32f2f);
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  min-height: 1.2em;
+}
+
+.add-friend-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.add-friend-send-btn {
+  flex: 1;
+  background: var(--color-primary);
+  color: var(--color-on-primary, #fff);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.add-friend-send-btn:hover {
+  background: var(--color-accent);
+}
+
+.add-friend-cancel-btn {
+  flex: 1;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 8px 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.add-friend-cancel-btn:hover {
+  background: var(--color-accent);
+  color: var(--color-on-primary, #fff);
 }
 
 
