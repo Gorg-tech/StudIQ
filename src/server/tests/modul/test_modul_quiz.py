@@ -1,65 +1,268 @@
-
-import os
-import django
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-django.setup()
-
 from django.test import TestCase
 from quizzes.models import Quiz,Lernset, Modul, Question, AnswerOption
-from quizzes.serializers import QuizSerializer
+from quizzes.serializers import QuestionSerializer, QuizSerializer
 from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
-class TestCaseMissingValues(TestCase):
+class TestCaseQuiz(TestCase):
+
     def setUp(self):
+        # Shared user
         self.user = User.objects.create(username="testuser", password="testpass")
+
+        # Shared module
         self.modul = Modul.objects.create(name="Test Modul", credits=5)
-        self.lernset = Lernset.objects.create(title="Test Lernset", modul=self.modul, created_by=self.user )
 
-    def tearDown(self):
-        return super().tearDown()
+        # Shared lernset
+        self.lernset = Lernset.objects.create(
+            title="Test Lernset",
+            modul=self.modul,
+            created_by=self.user
+        )
+
+        # Shared quiz with 3 questions
+        self.quiz = Quiz.objects.create(
+            title="Sample Quiz",
+            description="A sample quiz for testing",
+            lernset=self.lernset,
+            created_by=self.user
+        )
+
+        # Questions for nested tests
+        self.question1 = Question.objects.create(
+            quiz=self.quiz,
+            text="Question 1",
+            type="SINGLE_CHOICE"
+        )
+        self.question2 = Question.objects.create(
+            quiz=self.quiz,
+            text="Question 2",
+            type="SINGLE_CHOICE"
+        )
+        self.question3 = Question.objects.create(
+            quiz=self.quiz,
+            text="Question 3",
+            type="SINGLE_CHOICE"
+        )
+
+        # Answer options for question1
+        self.answer1 = AnswerOption.objects.create(
+            question=self.question1,
+            text="Answer 1",
+            is_correct=True
+        )
+        self.answer2 = AnswerOption.objects.create(
+            question=self.question1,
+            text="Answer 2",
+            is_correct=False
+        )
+
+    def test_quiz_with_no_questions_fails(self):
+        # Create a quiz with no questions
+        data = {
+            "title": "Empty Quiz",
+            "description": "This quiz has no questions",
+            "lernset": self.lernset.id,
+            "questions": []
+        }   
+        serializer = QuizSerializer(data=data)
+        self.assertFalse(serializer.is_valid())  
+
+    #Quiz serializer
+       
+    def test_edit_answer_options_succeeds(self):
+        data= {
+            "title": self.quiz.title,
+            "description": self.quiz.description,
+            "lernset": self.lernset.id,
+            "questions": [
+                {
+                    "id": self.question1.id,
+                    "_status": "edited",
+                    "text": self.question1.text,
+                    "type": self.question1.type,
+                    "answer_options": [
+                        {
+                            "id": str(self.answer1.id),
+                            "text": "Updated Answer 1",
+                            "is_correct": True,
+                            "_status": "edited"
+                        },
+                        {
+                            "id": str(self.answer2.id),
+                            "text": "Updated Answer 2",
+                            "is_correct": False,
+                            "_status": "edited"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        serializer=QuizSerializer(instance=self.quiz, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        quiz = serializer.save()
+
+
+        self.answer1.refresh_from_db()
+        self.answer2.refresh_from_db()
+
+        self.assertEqual(self.answer1.text, "Updated Answer 1")
+        self.assertEqual(self.answer2.text, "Updated Answer 2") 
+
+    def test_delete_question_removes_answer_options(self):
+        # Prepare data to delete question1
+        data = {
+        "title": self.quiz.title,
+        "description": self.quiz.description,
+        "lernset": self.lernset.id,
+        "questions": [
+            {
+                "id": str(self.question1.id),
+                "_status": "deleted",
+                "text": self.question1.text,
+                "type": self.question1.type,
+                "answer_options": []
+            },
+            {
+                "id": str(self.question2.id),
+                "_status": "unchanged",
+                "text": self.question2.text,
+                "type": self.question2.type,
+                "answer_options": [
+                    {
+                        "id": str(self.question2.answer_options.first().id) if self.question2.answer_options.exists() else None,
+                        "text": "Answer B",
+                        "is_correct": True,
+                        "_status": "unchanged"
+                    }
+                ]
+            }
+        ]
+    }
+
+        serializer = QuizSerializer(instance=self.quiz, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        quiz = serializer.save()
+
+        # Question1 should be gone
+        with self.assertRaises(Question.DoesNotExist):
+            Question.objects.get(id=self.question1.id)
+
+        # Question2 should still exist
+        self.assertTrue(Question.objects.filter(id=self.question2.id).exists())
+
+        # All answer options for question1 are gone
+        self.assertEqual(AnswerOption.objects.filter(question=self.question1).count(), 0)
+
     
-    def test_lernset_without_modul(self):
-        """Ensure creating a Lernset without a connection to a modul is considered invalid"""
-        lernset = Lernset(
-            title="Orphan Lernset",
-            created_by=self.user,
-            modul=None  # modul is missing
-    )
-    # Check that lernset is None
-        self.assertIsNone(lernset.modul_id)
-    # Check that lernset would be invalid because modul is required
-        is_valid = lernset.modul_id is not None and bool(lernset.title)
-        self.assertFalse(is_valid)
+    def test_create_quiz_with_valid_data_succeeds(self):
+        data = {
+            "title": "New Quiz",
+            "description": "A new quiz",
+            "created_by_id": self.user.id,
+            "lernset": self.lernset.id,
+            "questions": [{
+                "text": "New Question 1",
+                "type": "SINGLE_CHOICE",
+                "_status": "new",
+                "answer_options": [
+                    {
+                        "text": "New Answer 1",
+                        "is_correct": True,
+                        "_status": "new"
+                    },
+                    {
+                        "text": "New Answer 2",     
+                        "is_correct": False,
+                        "_status": "new"
+                    }
+                ]
+            }]
+        }
+        serializer = QuizSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        quiz = serializer.save()
+        self.assertEqual(quiz.title, "New Quiz")
+        self.assertEqual(quiz.description, "A new quiz")
+        self.assertEqual(quiz.lernset, self.lernset)
 
-    def test_missing_quiz_title(self):
-        """Quiz without title should be considered invalid"""
-        quiz = Quiz(
-            title=None,
-            description="No title",
-            lernset=self.lernset
-    )
-    # Check that title is missing
-        self.assertIsNone(quiz.title)
-    # Check that quiz would be invalid because title is required
-        is_valid = quiz.lernset is not None and bool(quiz.title)
-        self.assertFalse(is_valid)
 
-    def test_empty_quiz(self):
-        """Quiz with no questions should be considered invalid"""
-        quiz = Quiz(
-            title="Empty Quiz",
-            description="No questions",
-            lernset=self.lernset
-    )
-    # Check that quiz has no questions
-        self.assertEqual(quiz.questions.count(), 0)
-    # Check that quiz would be invalid because questions are required
-        is_valid = quiz.lernset is not None and quiz.questions.count() > 0
-        self.assertFalse(is_valid)  
+
+    def test_create_new_question_in_existing_quiz_succeeds(self):
+        data = {
+        "title": self.quiz.title,
+        "description": self.quiz.description,
+        "lernset": self.lernset.id,
+        "questions": [
+            {
+                "text": "New Question",
+                "type": "SINGLE_CHOICE",
+                "_status": "new",
+                "answer_options": [
+                    {
+                        "text": "New Answer 1",
+                        "is_correct": True,
+                        "_status": "new"
+                    },
+                    {
+                        "text": "New Answer 2",
+                        "is_correct": False,
+                        "_status": "new"
+                    }
+                ]
+            }
+        ]
+    }   
+        
+        serializer=QuizSerializer(instance=self.quiz, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        quiz = serializer.save()
+        self.assertEqual(quiz.questions.count(), 4)
+        new_question = quiz.questions.get(text="New Question")
+
+    def test_correct_answer_changeable_succeeds(self):
+        data = {
+        "title": self.quiz.title,
+        "description": self.quiz.description,
+        "lernset": self.lernset.id,
+        "questions": [
+            {
+                "id": str(self.question1.id),
+                "_status": "edited",
+                "text": self.question1.text,
+                "type": self.question1.type,
+                "answer_options": [
+                    {
+                        "id": str(self.answer1.id),
+                        "text": "Updated Answer 1",
+                        "is_correct": False,
+                        "_status": "edited"
+                    },
+                    {
+                        "id": str(self.answer2.id),
+                        "text": "Updated Answer 2",
+                        "is_correct": True,
+                        "_status": "edited"
+                    }
+                ]
+            }
+        ]
+    }
+        serializer=QuizSerializer(instance=self.quiz, data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        quiz = serializer.save()
+        self.answer1.refresh_from_db()
+        self.answer2.refresh_from_db()
+
+        updated_answer1 = AnswerOption.objects.get(id=self.answer1.id)
+        updated_answer2 = AnswerOption.objects.get(id=self.answer2.id)
+        self.assertFalse(updated_answer1.is_correct)
+        self.assertTrue(updated_answer2.is_correct)
+
 
 class TestSearchbar(TestCase):
     def setUp(self):
@@ -70,14 +273,14 @@ class TestSearchbar(TestCase):
         self.quiz2 = Quiz.objects.create(title="Calculus I", description="Introduction to calculus", lernset=self.lernset, created_by=self.user)
         self.quiz3 = Quiz.objects.create(title="Geometry Fundamentals", description="Basics of geometry", lernset=self.lernset, created_by=self.user)
 
-    def test_search_quiz_by_title(self):
+    def test_search_quiz_by_title_suceeds(self):
         """Searching for a quiz by title should return the correct quiz"""
         search_term = "Algebra"
         results = Quiz.objects.filter(title__icontains=search_term)
         self.assertIn(self.quiz1, results)
         self.assertEqual(len(results), 1)
     
-    def test_search_quiz_no_results(self):
+    def test_search_nonexisting_quiz_fails(self):
         """Searching for a non-existing quiz should return no results"""
         search_term = "NonExistingQuiz"
         results = Quiz.objects.filter(title__icontains=search_term)
@@ -89,32 +292,3 @@ class TestSearchbar(TestCase):
         results = Quiz.objects.filter(title__icontains=search_term)
         self.assertIn(self.quiz1, results)
         self.assertEqual(len(results), 1)
-
-    def test_search_lernset_by_title(self):
-        """Searching for a lernset by title should return the correct lernset"""
-        search_term = "Lernset"
-        results = Lernset.objects.filter(title__icontains=search_term)
-        self.assertIn(self.lernset, results)
-        self.assertEqual(len(results), 1)
-    
-    def test_search_lernset_no_results(self):
-        """Searching for a non-existing lernset should return no results"""
-        search_term = "NonExistingLernset"
-        results = Lernset.objects.filter(title__icontains=search_term)
-        self.assertEqual(len(results), 0)
-class Testserializers(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(username="testuser", password="testpass")
-        self.modul = Modul.objects.create(name="Test Modul", credits=5)
-        self.lernset = Lernset.objects.create(title="Test Lernset", modul=self.modul, created_by=self.user)
-        self.quiz = Quiz.objects.create(title="Sample Quiz", description="A sample quiz for testing", lernset=self.lernset, created_by=self.user)
-
-    def test_quiz_serializer(self):
-        """QuizSerializer should serialize quiz data correctly"""
-        serializer = QuizSerializer(instance=self.quiz)
-        data = serializer.data
-
-        self.assertEqual(data['title'], "Sample Quiz")
-        self.assertEqual(data['description'], "A sample quiz for testing")
-        self.assertEqual(data['lernset'], self.lernset.id)
-        self.assertEqual(data['created_by'], self.user.username)
