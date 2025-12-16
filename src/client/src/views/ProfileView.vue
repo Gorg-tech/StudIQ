@@ -207,6 +207,15 @@ const friends = ref([])
 const friendRequests = ref([])
 const friendToDelete = ref(null)
 
+const recentQuizzes = ref([
+  { title: 'Analysis', date: '2025-02-20', score: 8, total: 10 },
+  { title: 'Programmierung', date: '2025-02-18', score: 7, total: 10 },
+  { title: 'BWL Grundlagen', date: '2025-02-16', score: 9, total: 10 },
+])
+
+/**
+ * Lädt die Freundesliste des Benutzers aus der API in die `friends`-Variable.
+ */
 function loadFriends() {
   getFriends().then(fetchedFriends => {
     friends.value = fetchedFriends
@@ -215,6 +224,9 @@ function loadFriends() {
   })
 }
 
+/**
+ * Lädt die Freundschaftsanfragen des Benutzers aus der API in die `friendRequests`-Variable.
+ */
 function loadFriendRequests() {
   getFriendRequests().then(requests => {
     friendRequests.value = requests
@@ -223,16 +235,26 @@ function loadFriendRequests() {
   })
 }
 
+/**
+ * Schließt den Dialog für das Hinzufügen eines Freundes.
+ */
 function closeAddFriend() {
   showAddFriend.value = false
   addFriendUsername.value = ''
   addFriendError.value = ''
 }
 
+/**
+ * Schließt den Dialog für das Löschen eines Freundes.
+ */
 function closeDeleteFriend() {
   friendToDelete.value = null
 }
 
+/**
+ * Sendet eine Anfrage zum Entfernen eines Freundes und aktualisiert die Freundesliste.
+ * @param {dict} friend - Das Dictionary des Freundes, der entfernt werden soll.
+ */
 function deleteFriend(friend) {
   removeFriend(friend.username).then(() => {
     loadFriends()
@@ -243,6 +265,10 @@ function deleteFriend(friend) {
   })
 }
 
+/**
+ * Akzeptiert eine Freundschaftsanfrage und aktualisiert die Freundesliste und Anfragen.
+ * @param {string} username - Der Benutzername des Absenders der Freundschaftsanfrage.
+ */
 async function acceptFriendRequestAction(username) {
   try {
     await sendOrAcceptFriendRequest(username)
@@ -253,6 +279,10 @@ async function acceptFriendRequestAction(username) {
   }
 }
 
+/**
+ * Lehnt eine Freundschaftsanfrage ab und aktualisiert die Anfragenliste.
+ * @param {string} username - Der Benutzername des Absenders der Freundschaftsanfrage.
+ */
 async function declineFriendRequestAction(username) {
   try {
     await declineFriendRequest(username)
@@ -262,6 +292,11 @@ async function declineFriendRequestAction(username) {
   }
 }
 
+/**
+ * Sendet eine Freundschaftsanfrage an den angegebenen Benutzernamen in `addFriendUsername`.
+ * Wenn erfolgreich, wird der Dialog geschlossen und die Freundesliste aktualisiert.
+ * Bei Fehlern wird die Fehlermeldung in `addFriendError` gesetzt.
+ */
 async function submitAddFriend() {
   addFriendError.value = ''
   addFriendLoading.value = true
@@ -288,12 +323,6 @@ async function submitAddFriend() {
     addFriendLoading.value = false
   }
 }
-
-const recentQuizzes = ref([
-  { title: 'Analysis', date: '2025-02-20', score: 8, total: 10 },
-  { title: 'Programmierung', date: '2025-02-18', score: 7, total: 10 },
-  { title: 'BWL Grundlagen', date: '2025-02-16', score: 9, total: 10 },
-])
 
 onMounted(async () => {
   try {
