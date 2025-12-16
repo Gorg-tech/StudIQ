@@ -149,20 +149,24 @@
 
       <!-- Month calendar popup -->
       <div class="friends-popup-backdrop" v-if="showMonthCalendar" @click.self="closeMonthCalendar">
-        <div class="month-calendar-popup">
+        <div class="month-calendar-popup compact">
           <header class="month-header">
             <h3>{{ monthLabel }}</h3>
-            <button class="close-btn small" @click="closeMonthCalendar">Schließen</button>
           </header>
-          <div class="month-grid">
+          <div class="month-grid compact">
             <div class="weekday" v-for="wd in weekDays" :key="wd">{{ wd }}</div>
-            <div v-for="(cell, idx) in monthGrid" :key="idx" class="month-cell">
+            <div v-for="(cell, idx) in monthGrid" :key="idx" class="month-cell compact">
               <div v-if="cell === null" class="empty-cell"></div>
-              <div v-else class="cell-content">
-                <div class="cell-day">{{ cell.day }}</div>
-                <IconFlame :class="cell.learned ? 'learned' : 'not-learned'" />
+              <div v-else class="cell-content compact">
+                <span class="flame-wrapper">
+                  <IconFlame :class="cell.learned ? '' : 'inactive'" />
+                  <span class="cell-day-inside">{{ cell.day }}</span>
+                </span>
               </div>
             </div>
+          </div>
+          <div class="calendar-close-row">
+            <button class="close-btn small" @click="closeMonthCalendar">Schließen</button>
           </div>
         </div>
       </div>
@@ -227,48 +231,21 @@ const friends = ref([])
 const friendRequests = ref([])
 const friendToDelete = ref(null)
 
-// month calendar state
+
+// month calendar state (precomputed in onMounted)
 const showMonthCalendar = ref(false)
 const monthGrid = ref([])
 const monthLabel = ref('')
-const weekDays = ['So','Mo','Di','Mi','Do','Fr','Sa']
+const weekDays = ['Mo','Di','Mi','Do','Fr','Sa', 'So']
+const streakDays = ref([]) // all learned days as ISO strings
 
 function closeMonthCalendar() {
   showMonthCalendar.value = false
-  monthGrid.value = []
 }
 
-async function openMonthCalendar() {
-  // fetch streak days (ISO strings) and build month grid for current month
-  try {
-    const data = await getSelfUserStreaks()
-    const days = data.days || []
-    const learned = new Set(days)
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth() // 0-based
-    const first = new Date(year, month, 1)
-    const startWeekday = first.getDay() // 0 Sun
-    const daysInMonth = new Date(year, month + 1, 0).getDate()
-
-    const cells = []
-    // leading empty cells
-    for (let i = 0; i < startWeekday; i++) cells.push(null)
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const iso = new Date(year, month, d).toISOString().split('T')[0]
-      cells.push({ day: d, learned: learned.has(iso) })
-    }
-
-    // pad to complete last week
-    while (cells.length % 7 !== 0) cells.push(null)
-
-    monthGrid.value = cells
-    monthLabel.value = first.toLocaleString(undefined, { month: 'long', year: 'numeric' })
-    showMonthCalendar.value = true
-  } catch (e) {
-    console.error('Failed to load month streaks', e)
-  }
+function openMonthCalendar() {
+  // Only show modal, use precomputed monthGrid/monthLabel
+  showMonthCalendar.value = true
 }
 
 const recentQuizzes = ref([
@@ -399,21 +376,42 @@ onMounted(async () => {
     streakCount.value = streaks.streak
     longestStreak.value = streaks.longest_streak
 
-    const days = streaks.days || []
-    const today = new Date()
-    const weekDays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+    // Save all learned days as ISO strings (YYYY-MM-DD)
+    streakDays.value = (streaks.days || []).map(d => d.slice(0, 10))
 
+    // Compute current week streak
+    const today = new Date()
+    const weekDaysLocal = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
     const currentWeek = []
     for (let i = 0; i < 7; i++) {
       const day = new Date(today)
       day.setDate(today.getDate() - (6 - i))
       const iso = day.toISOString().split('T')[0]
       currentWeek.push({
-        label: weekDays[day.getDay()],
-        learned: days.includes(iso),
+        label: weekDaysLocal[day.getDay()],
+        learned: streakDays.value.includes(iso),
       })
     }
     currentWeekStreak.value = currentWeek
+
+    // Precompute month calendar grid for current month
+    const year = today.getFullYear()
+    const month = today.getMonth() // 0-based
+    const first = new Date(year, month, 1)
+    const startWeekday = (first.getDay() + 6) % 7 // 0=Mon
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    console.log('Days in month:', daysInMonth)
+
+    const cells = []
+    for (let i = 0; i < startWeekday; i++) cells.push(null)
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dt = new Date(year, month, d+1)
+      const iso = dt.toISOString().slice(0, 10)
+      cells.push({ day: d, learned: streakDays.value.includes(iso) })
+    }
+    while (cells.length % 7 !== 0) cells.push(null)
+    monthGrid.value = cells
+    monthLabel.value = first.toLocaleString(undefined, { month: 'long', year: 'numeric' })
   } catch (err) {
     error.value = `Fehler beim Laden des Profils: ${err.message}`
   } finally {
@@ -852,46 +850,83 @@ onMounted(async () => {
 }
 
 /* Month calendar styles */
-.month-calendar-popup {
+
+.month-calendar-popup.compact {
   background: var(--color-bg);
-  padding: 16px;
+  padding: 12px 8px 8px 8px;
   border-radius: 12px;
-  width: 520px;
-  max-width: 94%;
+  width: 340px;
+  max-width: 98vw;
+  box-sizing: border-box;
 }
 .month-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
-.month-grid {
+.month-grid.compact {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 2px;
 }
 .weekday {
   text-align: center;
   font-weight: 700;
   color: var(--color-muted);
+  font-size: 0.95rem;
+  padding-bottom: 2px;
 }
-.month-cell {
-  min-height: 56px;
+.month-cell.compact {
+  min-height: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.cell-content {
+.cell-content.compact {
+  position: relative;
+  width: 28px;
+  height: 28px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
 }
-.cell-day { font-size: 0.9rem; color: var(--color-text); }
-.month-cell .learned svg { color: var(--color-accent); }
-.month-cell .not-learned svg { opacity: 0.25; filter: grayscale(1); }
+.flame-wrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cell-day-inside {
+  position: absolute;
+  left: 0; right: 0; top: 6px; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+.month-cell .learned svg { color: var(--color-accent); width: 24px; height: 24px; }
+.month-cell .not-learned svg { opacity: 0.25; filter: grayscale(1); width: 24px; height: 24px; }
 .empty-cell { opacity: 0.0; }
 .clickable-flame { cursor: pointer; }
+.calendar-close-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.close-btn.small {
+  width: 120px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 8px 0;
+  font-size: 1rem;
+}
 
 </style>
