@@ -86,7 +86,7 @@ const startQuiz = (quizId) => {
       <section class="stats-section">
         <div class="stats-row desktop-row">
           <!-- Streak -->
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/profile')">
             <span class="stat-icon flame">
               <IconFlame />
             </span>
@@ -103,15 +103,6 @@ const startQuiz = (quizId) => {
             <div class="stat-value-big leaderboard-rank">
               <span class="rank-number">{{ userStats.rank || '-' }}</span>
             </div>
-          </div>
-          
-          <!-- Weekly Goal -->
-          <div class="stat-square">
-            <span class="stat-icon goal">
-              <IconTimer color="#ff9800" />
-            </span>
-            <div class="stat-label-big">Weekly Goal</div>
-            <div class="stat-value-big">4/7</div>
           </div>
           
           <!-- Penguin -->
