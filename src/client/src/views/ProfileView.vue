@@ -171,7 +171,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
-import { getFriends, sendOrAcceptFriendRequest, declineFriendRequest, getFriendRequests} from '@/services/friends.js'
+import { getFriends, sendOrAcceptFriendRequest, declineFriendRequest, getFriendRequests, removeFriend} from '@/services/friends.js'
 import { store } from '@/stores/app.js'
 
 import LogoStudIQ from '@/components/LogoStudIQ.vue'
@@ -234,8 +234,13 @@ function closeDeleteFriend() {
 }
 
 function deleteFriend(friend) {
-  alert(`Freund ${friend.username} entfernen (Backend noch nicht implementiert)`);
-  closeDeleteFriend()
+  removeFriend(friend.username).then(() => {
+    loadFriends()
+  }).catch(e => {
+    alert(`Fehler beim Entfernen von ${friend.username}: ${e.data.error || 'Unbekannter Fehler.'}`)
+  }).finally(() => {
+    closeDeleteFriend()
+  })
 }
 
 async function acceptFriendRequestAction(username) {
@@ -244,7 +249,7 @@ async function acceptFriendRequestAction(username) {
     loadFriends()
     loadFriendRequests()
   } catch (e) {
-    alert(`Fehler beim Akzeptieren der Freundschaftsanfrage: ${e.message || 'Unbekannter Fehler.'}`)
+    alert(`Fehler beim Akzeptieren der Freundschaftsanfrage: ${e.data.error || 'Unbekannter Fehler.'}`)
   }
 }
 
@@ -253,7 +258,7 @@ async function declineFriendRequestAction(username) {
     await declineFriendRequest(username)
     loadFriendRequests()
   } catch (e) {
-    alert(`Fehler beim Ablehnen der Freundschaftsanfrage: ${e.message || 'Unbekannter Fehler.'}`)
+    alert(`Fehler beim Ablehnen der Freundschaftsanfrage: ${e.data.error || 'Unbekannter Fehler.'}`)
   }
 }
 
