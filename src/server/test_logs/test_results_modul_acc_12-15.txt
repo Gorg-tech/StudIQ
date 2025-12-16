@@ -1,0 +1,8 @@
+[
+  {
+    "test": "test_integration_acc (unittest.loader._FailedTest.test_integration_acc)",
+    "status": "ERROR",
+    "error": "ImportError: Failed to import test module: test_integration_acc\nTraceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/loader.py\", line 137, in loadTestsFromName\n    module = __import__(module_name)\n             ^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named 'tests.modul.test_integration_acc'\n\n",
+    "time": "2025-12-15 17:13:59.015217"
+  }
+]

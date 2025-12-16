@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { onMounted } from 'vue'
 import { getQuiz, createQuiz, updateQuiz } from '@/services/quizzes'
 import { useQuizEditStore, QUESTION_TYPES, getLabelFromApi } from '@/stores/editQuiz'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
@@ -22,6 +21,8 @@ const showBackModal = ref(false)
 const isNewQuiz = ref(!route.params.quizId)
 
 const errorMessage = ref('')
+
+const visibleQuestions = computed(() => quizEdit.questions.filter(q => q._status !== 'deleted'))
 
 /**
  * Loads Quiz-Data from Server
@@ -139,18 +140,19 @@ function quiz_has_correct_values(){
     return false
   }
 
-  if (quizEdit.questions.length === 0) {
-    errorMessage.value = 'Mindestens eine Frage ist erforderlich.'
+  // Require at least 3 questions
+  if (visibleQuestions.value.length < 3) {
+    errorMessage.value = 'Bitte füge mindestens 3 Fragen hinzu, bevor du das Quiz speicherst.'
     return false
   }
 
-  for (const q of quizEdit.questions) {
-    if (q._status === 'deleted') continue
-    if (!q.options || q.options.length < 2) {
+  for (const q of visibleQuestions.value) {
+    const activeOptions = (q.options || []).filter(o => o._status !== 'deleted')
+    if (activeOptions.length < 2) {
       errorMessage.value = 'Jede Frage muss mindestens zwei Antwortoptionen haben.'
       return false
     }
-    for (const opt of q.options) {
+    for (const opt of activeOptions) {
       if (!opt.text || opt.text.trim() === '') {
         errorMessage.value = 'Alle Antwortoptionen müssen einen Text haben.'
         return false
@@ -197,8 +199,6 @@ async function send_edit_request() {
         return false
       })
   }
-
-  console.log('saveQuiz -> quizData being sent:', JSON.stringify(quizData, null, 2))
 
   try {
     let newQuizId = quizId.value
@@ -340,7 +340,7 @@ onMounted(async () => {
           </button>
         </div>
         <div
-          v-for="(question, idx) in quizEdit.questions"
+          v-for="(question, idx) in visibleQuestions"
           :key="question.id"
           class="question-field question-interactive"
           @click="goToQuestion(question.id)"

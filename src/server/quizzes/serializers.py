@@ -48,6 +48,8 @@ class QuizSerializer(serializers.ModelSerializer):
     Adds extra fields for frontend display, such as lernset title and creator.
     """
     lernset_title = serializers.CharField(source='lernset.title', read_only=True)
+    modul_name = serializers.CharField(source='lernset.modul.name', read_only=True)
+    modul_id = serializers.CharField(source='lernset.modul.modulId', read_only=True)
     questions = QuestionSerializer(many=True)
     created_by = serializers.CharField(source='created_by.username', read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
@@ -59,7 +61,7 @@ class QuizSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = [
             'id', 'title', 'description', 'created_at', 'created_by', 'avg_time_spent', 
-            'is_public', 'lernset', 'lernset_title', 'questions'
+            'is_public', 'lernset', 'lernset_title', 'modul_name', 'modul_id', 'questions'
         ]
 
     def create(self, validated_data):
@@ -67,6 +69,11 @@ class QuizSerializer(serializers.ModelSerializer):
         create Quiz with nested Questions and AnswerOptions
         """
         questions_data = validated_data.pop('questions', [])
+        # Require at least 3 questions to create a quiz
+        if len(questions_data) < 3:
+            raise serializers.ValidationError({
+                'questions': 'Ein Quiz muss mindestens 3 Fragen enthalten.'
+            })
 
         quiz = Quiz.objects.create(**validated_data)
 
@@ -276,6 +283,8 @@ class ModulSerializer(serializers.ModelSerializer):
     Serializes Modul objects, representing modules within a field of study.
     Includes all model fields.
     """
+    lernset_count = serializers.IntegerField(source='lernsets.count', read_only=True)
+
     class Meta:
         """
         Meta class defining the model and fields to be serialized.

@@ -1,0 +1,64 @@
+[                                   Stmts     miss cover
+-------------------------------------------------------
+quizzes/__init__.py                      0      0   100%
+quizzes/admin.py                        42      0   100%
+quizzes/apps.py                          4      0   100%
+quizzes/migrations/0001_initial.py       8      8     0%
+quizzes/migrations/__init__.py           0      0   100%
+quizzes/models.py                       93      9    90%
+quizzes/serializers.py                 140     27    81%
+quizzes/urls.py                         18     18     0%
+quizzes/views.py                       321    321     0%
+--------------------------------------------------------
+TOTAL                                  626    383    39%
+
+  {
+    "test": "test_correct_answer_changeable_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_correct_answer_changeable_succeeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 263, in test_correct_answer_changeable_succeeds\n    self.assertFalse(updated_answer1.is_correct)\nAssertionError: True is not false\n",
+    "time": "2025-12-15 15:53:08.553973"
+  },
+  {
+    "test": "test_create_new_question_in_existing_quiz_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_new_question_in_existing_quiz_succeeds)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 15:53:09.456708"
+  },
+  {
+    "test": "test_create_quiz_with_valid_data_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_quiz_with_valid_data_succeeds)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/utils.py\", line 105, in _execute\n    return self.cursor.execute(sql, params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/mysql/base.py\", line 76, in execute\n    return self.cursor.execute(query, args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/cursors.py\", line 153, in execute\n    result = self._query(query)\n             ^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/cursors.py\", line 322, in _query\n    conn.query(q)\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 575, in query\n    self._affected_rows = self._read_query_result(unbuffered=unbuffered)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 826, in _read_query_result\n    result.read()\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 1203, in read\n    first_packet = self.connection._read_packet()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 782, in _read_packet\n    packet.raise_for_error()\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/protocol.py\", line 219, in raise_for_error\n    err.raise_mysql_exception(self._data)\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/err.py\", line 150, in raise_mysql_exception\n    raise errorclass(errno, errval)\npymysql.err.IntegrityError: (1048, \"Column 'created_by_id' cannot be null\")\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 188, in test_create_quiz_with_valid_data_succeeds\n    quiz = serializer.save()\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/rest_framework/serializers.py\", line 210, in save\n    self.instance = self.create(validated_data)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/Uni/StudIQ/src/server/quizzes/serializers.py\", line 71, in create\n    quiz = Quiz.objects.create(**validated_data)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 663, in create\n    obj.save(force_insert=True, using=self.db)\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 902, in save\n    self.save_base(\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 1008, in save_base\n    updated = self._save_table(\n              ^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 1169, in _save_table\n    results = self._do_insert(\n              ^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/base.py\", line 1210, in _do_insert\n    return manager._insert(\n           ^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/manager.py\", line 87, in manager_method\n    return getattr(self.get_queryset(), name)(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/query.py\", line 1868, in _insert\n    return query.get_compiler(using=using).execute_sql(returning_fields)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/models/sql/compiler.py\", line 1882, in execute_sql\n    cursor.execute(sql, params)\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/utils.py\", line 122, in execute\n    return super().execute(sql, params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/utils.py\", line 79, in execute\n    return self._execute_with_wrappers(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/utils.py\", line 92, in _execute_with_wrappers\n    return executor(sql, params, many, context)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/utils.py\", line 100, in _execute\n    with self.db.wrap_database_errors:\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/utils.py\", line 91, in __exit__\n    raise dj_exc_value.with_traceback(traceback) from exc_value\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/utils.py\", line 105, in _execute\n    return self.cursor.execute(sql, params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/django/db/backends/mysql/base.py\", line 76, in execute\n    return self.cursor.execute(query, args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/cursors.py\", line 153, in execute\n    result = self._query(query)\n             ^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/cursors.py\", line 322, in _query\n    conn.query(q)\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 575, in query\n    self._affected_rows = self._read_query_result(unbuffered=unbuffered)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 826, in _read_query_result\n    result.read()\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 1203, in read\n    first_packet = self.connection._read_packet()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/connections.py\", line 782, in _read_packet\n    packet.raise_for_error()\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/protocol.py\", line 219, in raise_for_error\n    err.raise_mysql_exception(self._data)\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/pymysql/err.py\", line 150, in raise_mysql_exception\n    raise errorclass(errno, errval)\ndjango.db.utils.IntegrityError: (1048, \"Column 'created_by_id' cannot be null\")\n",
+    "time": "2025-12-15 15:53:10.155706"
+  },
+  {
+    "test": "test_delete_question_removes_answer_options (tests.modul.test_modul_quiz.TestCaseQuiz.test_delete_question_removes_answer_options)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 15:53:11.166483"
+  },
+  {
+    "test": "test_edit_answer_options_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_edit_answer_options_succeeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 113, in test_edit_answer_options_succeeds\n    self.assertEqual(self.answer1.text, \"Updated Answer 1\")\nAssertionError: 'Answer 1' != 'Updated Answer 1'\n- Answer 1\n+ Updated Answer 1\n\n",
+    "time": "2025-12-15 15:53:12.102994"
+  },
+  {
+    "test": "test_quiz_with_no_questions_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_quiz_with_no_questions_fails)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 72, in test_quiz_with_no_questions_fails\n    self.assertFalse(serializer.is_valid())\nAssertionError: True is not false\n",
+    "time": "2025-12-15 15:53:12.753171"
+  },
+  {
+    "test": "test_search_nonexisting_quiz_fails (tests.modul.test_modul_quiz.TestSearchbar.test_search_nonexisting_quiz_fails)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 15:53:13.758249"
+  },
+  {
+    "test": "test_search_quiz_by_title_suceeds (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_by_title_suceeds)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 15:53:14.250687"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 15:53:14.757480"
+  }
+]

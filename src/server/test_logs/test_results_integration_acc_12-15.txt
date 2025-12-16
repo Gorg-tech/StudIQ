@@ -1,0 +1,43 @@
+[
+  {
+    "test": "test_create_and_get_quiz (tests.integration.test_integration_acc.TestIntegrationAccounts.test_create_and_get_quiz)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:03.271034"
+  },
+  {
+    "test": "test_login_invalid_credentials_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_login_invalid_credentials_fails)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:05.038797"
+  },
+  {
+    "test": "test_me_view_authenticated (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_authenticated)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:07.707404"
+  },
+  {
+    "test": "test_me_view_requires_authentication (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_requires_authentication)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:09.055373"
+  },
+  {
+    "test": "test_register_user_invalid_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_invalid_fails)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:10.433301"
+  },
+  {
+    "test": "test_register_user_success (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_success)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 39, in test_register_user_success\n    self.assertEqual(response.status_code, 201)\nAssertionError: 400 != 201\n",
+    "time": "2025-12-15 17:49:11.829405"
+  },
+  {
+    "test": "test_valid_login_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_login_succeeds)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:14.025277"
+  },
+  {
+    "test": "test_valid_logout_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_logout_succeeds)",
+    "status": "SUCCESS",
+    "time": "2025-12-15 17:49:16.846823"
+  }
+]
