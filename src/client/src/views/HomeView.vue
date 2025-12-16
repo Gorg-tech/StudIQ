@@ -105,15 +105,6 @@ const startQuiz = (quizId) => {
             </div>
           </div>
           
-          <!-- Weekly Goal -->
-          <div class="stat-square">
-            <span class="stat-icon goal">
-              <IconTimer color="#ff9800" />
-            </span>
-            <div class="stat-label-big">Weekly Goal</div>
-            <div class="stat-value-big">4/7</div>
-          </div>
-          
           <!-- Penguin -->
           <div class="penguin-bubble">
             <div class="bubble">
