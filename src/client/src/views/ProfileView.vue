@@ -135,15 +135,35 @@
       <!-- Streak Calendar -->
       <div class="streak-card full-width">
         <div class="week-row">
-          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
-            <IconFlame v-if="day.learned" />
-            <IconFlame v-else class="inactive" />
+          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index" @click="openMonthCalendar">
+            <IconFlame v-if="day.learned" class="clickable-flame" />
+            <IconFlame v-else class="inactive clickable-flame" />
             <div class="day-label">{{ day.label }}</div>
           </div>
         </div>
         <div class="streak-count">
           Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br />
           Beste Serie: <strong>{{ longestStreak }} Tage</strong>
+        </div>
+      </div>
+
+      <!-- Month calendar popup -->
+      <div class="friends-popup-backdrop" v-if="showMonthCalendar" @click.self="closeMonthCalendar">
+        <div class="month-calendar-popup">
+          <header class="month-header">
+            <h3>{{ monthLabel }}</h3>
+            <button class="close-btn small" @click="closeMonthCalendar">Schließen</button>
+          </header>
+          <div class="month-grid">
+            <div class="weekday" v-for="wd in weekDays" :key="wd">{{ wd }}</div>
+            <div v-for="(cell, idx) in monthGrid" :key="idx" class="month-cell">
+              <div v-if="cell === null" class="empty-cell"></div>
+              <div v-else class="cell-content">
+                <div class="cell-day">{{ cell.day }}</div>
+                <IconFlame :class="cell.learned ? 'learned' : 'not-learned'" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -206,6 +226,50 @@ const addFriendLoading = ref(false)
 const friends = ref([])
 const friendRequests = ref([])
 const friendToDelete = ref(null)
+
+// month calendar state
+const showMonthCalendar = ref(false)
+const monthGrid = ref([])
+const monthLabel = ref('')
+const weekDays = ['So','Mo','Di','Mi','Do','Fr','Sa']
+
+function closeMonthCalendar() {
+  showMonthCalendar.value = false
+  monthGrid.value = []
+}
+
+async function openMonthCalendar() {
+  // fetch streak days (ISO strings) and build month grid for current month
+  try {
+    const data = await getSelfUserStreaks()
+    const days = data.days || []
+    const learned = new Set(days)
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = today.getMonth() // 0-based
+    const first = new Date(year, month, 1)
+    const startWeekday = first.getDay() // 0 Sun
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+    const cells = []
+    // leading empty cells
+    for (let i = 0; i < startWeekday; i++) cells.push(null)
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const iso = new Date(year, month, d).toISOString().split('T')[0]
+      cells.push({ day: d, learned: learned.has(iso) })
+    }
+
+    // pad to complete last week
+    while (cells.length % 7 !== 0) cells.push(null)
+
+    monthGrid.value = cells
+    monthLabel.value = first.toLocaleString(undefined, { month: 'long', year: 'numeric' })
+    showMonthCalendar.value = true
+  } catch (e) {
+    console.error('Failed to load month streaks', e)
+  }
+}
 
 const recentQuizzes = ref([
   { title: 'Analysis', date: '2025-02-20', score: 8, total: 10 },
@@ -786,4 +850,48 @@ onMounted(async () => {
   font-size: 0.8rem;
   color: var(--color-muted);
 }
+
+/* Month calendar styles */
+.month-calendar-popup {
+  background: var(--color-bg);
+  padding: 16px;
+  border-radius: 12px;
+  width: 520px;
+  max-width: 94%;
+}
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.weekday {
+  text-align: center;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+.month-cell {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cell-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.cell-day { font-size: 0.9rem; color: var(--color-text); }
+.month-cell .learned svg { color: var(--color-accent); }
+.month-cell .not-learned svg { opacity: 0.25; filter: grayscale(1); }
+.empty-cell { opacity: 0.0; }
+.clickable-flame { cursor: pointer; }
+
 </style>
