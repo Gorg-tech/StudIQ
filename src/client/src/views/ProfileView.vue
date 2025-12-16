@@ -135,15 +135,43 @@
       <!-- Streak Calendar -->
       <div class="streak-card full-width">
         <div class="week-row">
-          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
-            <IconFlame v-if="day.learned" />
-            <IconFlame v-else class="inactive" />
+          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index" @click="openMonthCalendar">
+            <IconFlame v-if="day.learned" class="clickable-flame" />
+            <IconFlame v-else class="inactive clickable-flame" />
             <div class="day-label">{{ day.label }}</div>
           </div>
         </div>
         <div class="streak-count">
           Aktuelle Serie: <strong>{{ streakCount }} Tage</strong><br />
           Beste Serie: <strong>{{ longestStreak }} Tage</strong>
+        </div>
+      </div>
+
+      <!-- Month calendar popup -->
+      <div class="friends-popup-backdrop" v-if="showMonthCalendar" @click.self="closeMonthCalendar">
+        <div class="month-calendar-popup compact">
+          <div class="month-header-wrapper">
+            <button class="month-nav-btn month-nav-prev" @click="navigateMonth(-1)" aria-label="Vorheriger Monat">&lt;</button>
+            <header class="month-header">
+              <h3>{{ monthLabel }}</h3>
+            </header>
+            <button class="month-nav-btn month-nav-next" @click="navigateMonth(1)" aria-label="Nächster Monat">&gt;</button>
+          </div>
+          <div class="month-grid compact">
+            <div class="weekday" v-for="wd in weekDays" :key="wd">{{ wd }}</div>
+            <div v-for="(cell, idx) in monthGrid" :key="idx" class="month-cell compact">
+              <div v-if="cell === null" class="empty-cell"></div>
+              <div v-else class="cell-content compact">
+                <span class="flame-wrapper">
+                  <IconFlame :class="cell.learned ? '' : 'inactive'" />
+                  <span class="cell-day-inside">{{ cell.day }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="calendar-close-row">
+            <button class="close-btn small" @click="closeMonthCalendar">Schließen</button>
+          </div>
         </div>
       </div>
 
@@ -206,6 +234,31 @@ const addFriendLoading = ref(false)
 const friends = ref([])
 const friendRequests = ref([])
 const friendToDelete = ref(null)
+
+
+// month calendar state (precomputed in onMounted)
+const showMonthCalendar = ref(false)
+const monthGrid = ref([])
+const monthLabel = ref('')
+const weekDays = ['Mo','Di','Mi','Do','Fr','Sa', 'So']
+const streakDays = ref([]) // all learned days as ISO strings
+const currentMonth = ref(new Date()) // Track the currently displayed month
+
+/**
+ * Schließt den Monatskalender.
+ */
+function closeMonthCalendar() {
+  showMonthCalendar.value = false
+}
+
+/**
+ * Öffnet den Monatskalender und berechnet das Raster.
+ */
+function openMonthCalendar() {
+  currentMonth.value = new Date() // Reset to current month
+  calculateMonthGrid()
+  showMonthCalendar.value = true
+}
 
 const recentQuizzes = ref([
   { title: 'Analysis', date: '2025-02-20', score: 8, total: 10 },
@@ -324,6 +377,39 @@ async function submitAddFriend() {
   }
 }
 
+/**
+ * Berechnet das Raster für den Monatskalender basierend auf dem aktuellen Monat
+ * und den in `streakDays` gespeicherten Lerntagen.
+ */
+function calculateMonthGrid() {
+  const year = currentMonth.value.getFullYear()
+  const month = currentMonth.value.getMonth() // 0-based
+  const first = new Date(year, month, 1)
+  const startWeekday = (first.getDay() + 6) % 7 // 0=Mon
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  console.log('Days in month:', daysInMonth)
+
+  const cells = []
+  for (let i = 0; i < startWeekday; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(year, month, d+1)
+    const iso = dt.toISOString().slice(0, 10)
+    cells.push({ day: d, learned: streakDays.value.includes(iso) })
+  }
+  while (cells.length % 7 !== 0) cells.push(null)
+  monthGrid.value = cells
+  monthLabel.value = first.toLocaleString(undefined, { month: 'long', year: 'numeric' })
+}
+
+/**
+ * Navigates the month calendar by the specified direction.
+ * @param {number} direction - The direction to navigate (-1 for previous month, 1 for next month).
+ */
+function navigateMonth(direction) {
+  currentMonth.value.setMonth(currentMonth.value.getMonth() + direction)
+  calculateMonthGrid()
+}
+
 onMounted(async () => {
   try {
     loadFriends()
@@ -335,18 +421,20 @@ onMounted(async () => {
     streakCount.value = streaks.streak
     longestStreak.value = streaks.longest_streak
 
-    const days = streaks.days || []
-    const today = new Date()
-    const weekDays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+    // Save all learned days as ISO strings (YYYY-MM-DD)
+    streakDays.value = (streaks.days || []).map(d => d.slice(0, 10))
 
+    // Compute current week streak
+    const today = new Date()
+    const weekDaysLocal = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
     const currentWeek = []
     for (let i = 0; i < 7; i++) {
       const day = new Date(today)
       day.setDate(today.getDate() - (6 - i))
       const iso = day.toISOString().split('T')[0]
       currentWeek.push({
-        label: weekDays[day.getDay()],
-        learned: days.includes(iso),
+        label: weekDaysLocal[day.getDay()],
+        learned: streakDays.value.includes(iso),
       })
     }
     currentWeekStreak.value = currentWeek
@@ -786,4 +874,122 @@ onMounted(async () => {
   font-size: 0.8rem;
   color: var(--color-muted);
 }
+
+/* Month calendar styles */
+
+.month-calendar-popup.compact {
+  background: var(--color-bg);
+  padding: 12px 8px 8px 8px;
+  border-radius: 12px;
+  width: 340px;
+  max-width: 98vw;
+  box-sizing: border-box;
+}
+.month-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+.month-header {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.month-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.month-nav-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.month-nav-btn:hover {
+  background-color: color-mix(in oklab, var(--color-primary) 15%, transparent);
+  color: var(--color-accent);
+}
+.month-nav-btn:active {
+  transform: scale(0.95);
+}
+.month-grid.compact {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.weekday {
+  text-align: center;
+  font-weight: 700;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  padding-bottom: 2px;
+}
+.month-cell.compact {
+  min-height: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cell-content.compact {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flame-wrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cell-day-inside {
+  position: absolute;
+  left: 0; right: 0; top: 6px; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+.month-cell .learned svg { color: var(--color-accent); width: 24px; height: 24px; }
+.month-cell .not-learned svg { opacity: 0.25; filter: grayscale(1); width: 24px; height: 24px; }
+.empty-cell { opacity: 0.0; }
+.clickable-flame { cursor: pointer; }
+.calendar-close-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.close-btn.small {
+  width: 120px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 8px 0;
+  font-size: 1rem;
+  z-index: 500;
+}
+
 </style>
