@@ -280,15 +280,18 @@ class FriendRequestsView(APIView):
         Send a friend request to another user or accept a friend request if they sent it first.
 
         Args:
-            request (Request): The HTTP request containing 'to_user' username.
+            request (Request): The HTTP request containing 'username'.
 
         Returns:
             Response: Success message or error.
         """
         from_user = request.user
-        to_username = request.data.get('to_user')
+        to_username = request.data.get('username')
         try:
             to_user = get_user_model().objects.get(username=to_username)
+            if from_user == to_user:
+                return Response({'error': 'Cannot send friend request to yourself.'},
+                                status=status.HTTP_400_BAD_REQUEST)
             if PendingFriendRequest.objects.filter(from_user=from_user, to_user=to_user).exists():
                 return Response({'error': 'Friend request already sent.'},
                                 status=status.HTTP_400_BAD_REQUEST)
@@ -310,12 +313,12 @@ class FriendRequestsView(APIView):
         Decline a friend request from another user.
 
         Args:
-            request (Request): The HTTP request containing 'from_user' username.
+            request (Request): The HTTP request containing 'username'.
         Returns:
             Response: Success message or error.
         """
         to_user = request.user
-        from_username = request.data.get('from_user')
+        from_username = request.data.get('username')
         try:
             from_user = get_user_model().objects.get(username=from_username)
             req = PendingFriendRequest.objects.filter(from_user=from_user, to_user=to_user)
@@ -339,7 +342,29 @@ class FriendsListView(APIView):
         Args:
             request (Request): The HTTP request.
         Returns:
-            Response: List of friends.
+            Response: List of users.
         """
         friends = request.user.friends.all()
-        return Response([{"username": f.username} for f in friends])
+        return Response([{"username": f.username, "iq_score": f.iq_score,
+                          "streak": f.streak} for f in friends])
+    
+    def delete(self, request):
+        """
+        Remove a friend from the user's friends list.
+
+        Args:
+            request (Request): The HTTP request containing 'username'.
+
+        Returns:
+            Response: Success message or error.
+        """
+        user = request.user
+        friend_username = request.data.get('username')
+        try:
+            friend = get_user_model().objects.get(username=friend_username)
+            if user.friends.filter(id=friend.id).exists():
+                user.friends.remove(friend)
+                return Response({'detail': 'Friend removed.'}, status=status.HTTP_200_OK)
+            return Response({'error': 'User is not your friend.'}, status=status.HTTP_400_BAD_REQUEST)
+        except get_user_model().DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)

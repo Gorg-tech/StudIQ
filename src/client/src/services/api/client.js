@@ -145,8 +145,8 @@ export class ApiClient {
     return this.request(endpoint, 'PATCH', data);
   }
 
-  delete(endpoint) {
-    return this.request(endpoint, 'DELETE');
+  delete(endpoint, data) {
+    return this.request(endpoint, 'DELETE', data);
   }
 }
 
