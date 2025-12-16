@@ -86,7 +86,7 @@ const startQuiz = (quizId) => {
       <section class="stats-section">
         <div class="stats-row desktop-row">
           <!-- Streak -->
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/profile')">
             <span class="stat-icon flame">
               <IconFlame />
             </span>
