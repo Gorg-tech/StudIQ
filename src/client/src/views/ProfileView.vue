@@ -150,9 +150,13 @@
       <!-- Month calendar popup -->
       <div class="friends-popup-backdrop" v-if="showMonthCalendar" @click.self="closeMonthCalendar">
         <div class="month-calendar-popup compact">
-          <header class="month-header">
-            <h3>{{ monthLabel }}</h3>
-          </header>
+          <div class="month-header-wrapper">
+            <button class="month-nav-btn month-nav-prev" @click="navigateMonth(-1)" aria-label="Vorheriger Monat">&lt;</button>
+            <header class="month-header">
+              <h3>{{ monthLabel }}</h3>
+            </header>
+            <button class="month-nav-btn month-nav-next" @click="navigateMonth(1)" aria-label="Nächster Monat">&gt;</button>
+          </div>
           <div class="month-grid compact">
             <div class="weekday" v-for="wd in weekDays" :key="wd">{{ wd }}</div>
             <div v-for="(cell, idx) in monthGrid" :key="idx" class="month-cell compact">
@@ -238,13 +242,21 @@ const monthGrid = ref([])
 const monthLabel = ref('')
 const weekDays = ['Mo','Di','Mi','Do','Fr','Sa', 'So']
 const streakDays = ref([]) // all learned days as ISO strings
+const currentMonth = ref(new Date()) // Track the currently displayed month
 
+/**
+ * Schließt den Monatskalender.
+ */
 function closeMonthCalendar() {
   showMonthCalendar.value = false
 }
 
+/**
+ * Öffnet den Monatskalender und berechnet das Raster.
+ */
 function openMonthCalendar() {
-  // Only show modal, use precomputed monthGrid/monthLabel
+  currentMonth.value = new Date() // Reset to current month
+  calculateMonthGrid()
   showMonthCalendar.value = true
 }
 
@@ -365,6 +377,39 @@ async function submitAddFriend() {
   }
 }
 
+/**
+ * Berechnet das Raster für den Monatskalender basierend auf dem aktuellen Monat
+ * und den in `streakDays` gespeicherten Lerntagen.
+ */
+function calculateMonthGrid() {
+  const year = currentMonth.value.getFullYear()
+  const month = currentMonth.value.getMonth() // 0-based
+  const first = new Date(year, month, 1)
+  const startWeekday = (first.getDay() + 6) % 7 // 0=Mon
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  console.log('Days in month:', daysInMonth)
+
+  const cells = []
+  for (let i = 0; i < startWeekday; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(year, month, d+1)
+    const iso = dt.toISOString().slice(0, 10)
+    cells.push({ day: d, learned: streakDays.value.includes(iso) })
+  }
+  while (cells.length % 7 !== 0) cells.push(null)
+  monthGrid.value = cells
+  monthLabel.value = first.toLocaleString(undefined, { month: 'long', year: 'numeric' })
+}
+
+/**
+ * Navigates the month calendar by the specified direction.
+ * @param {number} direction - The direction to navigate (-1 for previous month, 1 for next month).
+ */
+function navigateMonth(direction) {
+  currentMonth.value.setMonth(currentMonth.value.getMonth() + direction)
+  calculateMonthGrid()
+}
+
 onMounted(async () => {
   try {
     loadFriends()
@@ -393,25 +438,6 @@ onMounted(async () => {
       })
     }
     currentWeekStreak.value = currentWeek
-
-    // Precompute month calendar grid for current month
-    const year = today.getFullYear()
-    const month = today.getMonth() // 0-based
-    const first = new Date(year, month, 1)
-    const startWeekday = (first.getDay() + 6) % 7 // 0=Mon
-    const daysInMonth = new Date(year, month + 1, 0).getDate()
-    console.log('Days in month:', daysInMonth)
-
-    const cells = []
-    for (let i = 0; i < startWeekday; i++) cells.push(null)
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dt = new Date(year, month, d+1)
-      const iso = dt.toISOString().slice(0, 10)
-      cells.push({ day: d, learned: streakDays.value.includes(iso) })
-    }
-    while (cells.length % 7 !== 0) cells.push(null)
-    monthGrid.value = cells
-    monthLabel.value = first.toLocaleString(undefined, { month: 'long', year: 'numeric' })
   } catch (err) {
     error.value = `Fehler beim Laden des Profils: ${err.message}`
   } finally {
@@ -859,11 +885,47 @@ onMounted(async () => {
   max-width: 98vw;
   box-sizing: border-box;
 }
+.month-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
 .month-header {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
+}
+.month-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.month-nav-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.month-nav-btn:hover {
+  background-color: color-mix(in oklab, var(--color-primary) 15%, transparent);
+  color: var(--color-accent);
+}
+.month-nav-btn:active {
+  transform: scale(0.95);
 }
 .month-grid.compact {
   display: grid;
@@ -908,7 +970,7 @@ onMounted(async () => {
   justify-content: center;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text);
   pointer-events: none;
   text-shadow: 0 1px 2px rgba(0,0,0,0.18);
 }
@@ -927,6 +989,7 @@ onMounted(async () => {
   margin-bottom: 10px;
   padding: 8px 0;
   font-size: 1rem;
+  z-index: 500;
 }
 
 </style>
