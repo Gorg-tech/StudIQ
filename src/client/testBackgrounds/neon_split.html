@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Crazy Background – Neon Split</title>
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+
+  background:
+    linear-gradient(135deg, #ff7a18 0%, #ff7a18 45%, #0ea5e9 45%, #0ea5e9 100%);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255,255,255,0.06),
+      rgba(255,255,255,0.06) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  pointer-events: none;
+}
+
+.container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 80px 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+</style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<div class="container">
+  <div class="card">
+    <h2>🔥 StudIQ</h2>
+    <p>Neon Split Background</p>
+  </div>
+</div>
+
+</body>
+</html>
