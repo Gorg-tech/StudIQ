@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Layout Glass+</title>
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  height: 100vh;
+  background: linear-gradient(270deg, #cce7ff, #fff1e6, #ffd6b3);
+  background-size: 600% 600%;
+  animation: gradientMove 12s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.glass {
+  width: 360px;
+  padding: 28px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 24px;
+  box-shadow: 0 35px 70px rgba(0,0,0,0.2);
+}
+
+.badges {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.badge {
+  background: linear-gradient(135deg, #ff8c42, #ff6a00);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.choice {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.85);
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.choice:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.choice.correct {
+  background: rgba(46, 204, 113, 0.25);
+}
+
+.choice.wrong {
+  background: rgba(231, 76, 60, 0.25);
+}
+</style>
+</head>
+<body>
+
+<div class="glass">
+  <div class="badges">
+    <div class="badge">🔥 Streak 4</div>
+    <div class="badge">⭐ 120 XP</div>
+  </div>
+
+  <h2>Mathe-Quiz</h2>
+  <p>Was ist 9 × 7?</p>
+
+  <div class="choice">56</div>
+  <div class="choice correct">63 ✓</div>
+  <div class="choice wrong">72 ✕</div>
+  <div class="choice">49</div>
+</div>
+
+</body>
+</html>
