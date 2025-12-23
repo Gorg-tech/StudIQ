@@ -163,7 +163,7 @@ class QuizSession(models.Model):
     Represents a temporary session while the user is solving a quiz.
 
     Attributes:
-        user, quiz, start_time, end_time, score, mode
+        user, quiz, start_time, end_time, score
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name='quiz_sessions')
