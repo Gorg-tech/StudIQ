@@ -108,8 +108,8 @@
           </div>
 
           <button class="friends-btn" @click="showFriends = true">
-            👥
-            <span v-if="friendRequests.length" class="friend-requests-badge">{{ friendRequests.length }}</span>
+            👥 Freunde
+            <span v-if="friendRequests.length" class="friend-requests-badge">+{{ friendRequests.length }}</span>
           </button>
 
           <!-- Level Bar -->
