@@ -7,15 +7,6 @@ achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz c
 """
 
 import re
-"""
-View classes for quiz-related API endpoints.
-
-This file contains all Django REST Framework viewsets and API views for the quiz app.
-It provides endpoints for CRUD operations on quizzes, questions, answer options, lernsets, modules,
-achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz completion logic.
-"""
-
-import re
 from itertools import chain
 from math import exp, floor
 from datetime import datetime
@@ -62,10 +53,6 @@ class AnswerOptionViewSet(viewsets.ModelViewSet):
     API endpoint for managing AnswerOption objects.
     Supports CRUD operations for answer options of quiz questions.
     """
-    """
-    API endpoint for managing AnswerOption objects.
-    Supports CRUD operations for answer options of quiz questions.
-    """
     queryset = AnswerOption.objects.all()
     serializer_class = AnswerOptionSerializer
     permission_classes = [IsAuthenticated]
@@ -80,11 +67,6 @@ class AnswerOptionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class QuizViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing Quiz objects.
-    Handles creation, update, and deletion of quizzes,
-    with permission checks for creators and moderators.
-    """
     """
     API endpoint for managing Quiz objects.
     Handles creation, update, and deletion of quizzes,
@@ -107,8 +89,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to edit this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to edit this quiz."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -116,15 +96,9 @@ class QuizViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to delete this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to delete this quiz."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
 class QuestionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing Question objects.
-    Supports CRUD operations for quiz questions.
-    """
     """
     API endpoint for managing Question objects.
     Supports CRUD operations for quiz questions.
@@ -140,18 +114,11 @@ class LernsetViewSet(viewsets.ModelViewSet):
     Handles creation, update, and deletion of lernsets, with permission checks
     for creators and moderators.
     """
-    """
-    API endpoint for managing Lernset objects.
-    Handles creation, update, and deletion of lernsets, with permission checks
-    for creators and moderators.
-    """
     queryset = Lernset.objects.all()
     serializer_class = LernsetSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        # Automatically set the created_by to the current user
-        serializer.save(created_by=self.request.user)
         # Automatically set the created_by to the current user
         serializer.save(created_by=self.request.user)
 
@@ -163,8 +130,6 @@ class LernsetViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to edit this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to edit this lernset."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -172,15 +137,9 @@ class LernsetViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to delete this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to delete this lernset."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
 class QuizAttemptViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing QuizAttempt objects.
-    Allows users to view and update their quiz attempt statistics.
-    """
     """
     API endpoint for managing QuizAttempt objects.
     Allows users to view and update their quiz attempt statistics.
@@ -195,10 +154,6 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class QuizSessionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing QuizSession objects.
-    Allows users to track their quiz solving sessions.
-    """
     """
     API endpoint for managing QuizSession objects.
     Allows users to track their quiz solving sessions.
@@ -218,10 +173,6 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     API endpoint for managing Feedback objects.
     Allows users to submit and view feedback for quizzes.
     """
-    """
-    API endpoint for managing Feedback objects.
-    Allows users to submit and view feedback for quizzes.
-    """
     serializer_class = FeedbackSerializer
     permission_classes = [IsAuthenticated]
 
@@ -237,21 +188,12 @@ class StudiengangViewSet(viewsets.ModelViewSet):
     API endpoint for managing Studiengang (field of study) objects.
     Allows listing, creating, updating, and deleting study programs.
     """
-    """
-    API endpoint for managing Studiengang (field of study) objects.
-    Allows listing, creating, updating, and deleting study programs.
-    """
     queryset = Studiengang.objects.all()
     serializer_class = StudiengangSerializer
     permission_classes = [AllowAny]
 
 
 class ModulViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing Modul (module) objects.
-    Allows listing, creating, updating, and deleting modules.
-    Uses a detailed serializer for retrieve actions.
-    """
     """
     API endpoint for managing Modul (module) objects.
     Allows listing, creating, updating, and deleting modules.
@@ -274,9 +216,6 @@ class ModulViewSet(viewsets.ModelViewSet):
 
 
 class QuizzesByLernsetView(ListAPIView):
-    """
-    API endpoint for listing all quizzes belonging to a specific Lernset.
-    """
     """
     API endpoint for listing all quizzes belonging to a specific Lernset.
     """
@@ -394,30 +333,9 @@ class SearchView(APIView):
     API endpoint for searching lernsets, quizzes, modules, and study programs.
     Supports filtering and relevance-based result ordering.
     """
-    """
-    API endpoint for searching lernsets, quizzes, modules, and study programs.
-    Supports filtering and relevance-based result ordering.
-    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        """
-        Gets all lernsets, quizzes, modules and studiengaenge
-        that match the filter word given in the query param "q".
-        The returned types can be limited by the "filter" query param,
-        the amount of returned objects can be limited by the "limit" query param.
-
-        Args:
-            request (Request): The API GET Request including query params
-        
-        Returns:
-            dict: {
-                "lernsets": [...],
-                "quizzes": [...],
-                "modules": [...],
-                "studiengaenge": [...]
-            }
-        """
         """
         Gets all lernsets, quizzes, modules and studiengaenge
         that match the filter word given in the query param "q".
@@ -578,10 +496,6 @@ class SuggestedQuizzesView(ListAPIView):
     API endpoint for suggesting quizzes to the user based on their field of study.
     Returns recent quizzes from modules in the user's study program.
     """
-    """
-    API endpoint for suggesting quizzes to the user based on their field of study.
-    Returns recent quizzes from modules in the user's study program.
-    """
     serializer_class = QuizForLernsetSerializer
     permission_classes = [IsAuthenticated]
 
@@ -611,10 +525,6 @@ class QuizCompletionView(APIView):
     Calculates and awards IQ points, updates user and quiz progress,
     and returns a breakdown of earned points.
     Also provides quiz progress details via GET.
-    API endpoint for handling quiz completion.
-    Calculates and awards IQ points, updates user and quiz progress,
-    and returns a breakdown of earned points.
-    Also provides quiz progress details via GET.
     """
     permission_classes = [IsAuthenticated]
 
@@ -622,16 +532,12 @@ class QuizCompletionView(APIView):
         """
         Calculates the points the user receives, updates the user and returns results.
 
-        Calculates the points the user receives, updates the user and returns results.
-
         Expected (in request):
-        dict: {
         dict: {
             "correct": int
         }
 
         Returns (in response):
-        dict: {
         dict: {
             "base_points": int,
             "attempt_bonus_points": int,
@@ -651,8 +557,6 @@ class QuizCompletionView(APIView):
 
         # formulas
         attempt_bonus = 0.5 * exp(-0.5 * (quiz_attempt.attempts))
-        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
-                        if accuracy == 1.0 else 0
         perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
                         if accuracy == 1.0 else 0
         streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
