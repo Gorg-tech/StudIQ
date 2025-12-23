@@ -134,10 +134,10 @@
 
       <!-- Streak Calendar -->
       <div class="streak-card full-width">
-        <div class="week-row">
-          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index" @click="openMonthCalendar">
-            <IconFlame v-if="day.learned" class="clickable-flame" />
-            <IconFlame v-else class="inactive clickable-flame" />
+        <div class="week-row" @click="openMonthCalendar" title="Klicke, um den Monatskalender zu öffnen">
+          <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
+            <IconFlame v-if="day.learned" />
+            <IconFlame v-else class="inactive" />
             <div class="day-label">{{ day.label }}</div>
           </div>
         </div>
@@ -784,10 +784,13 @@ onMounted(async () => {
 
 .week-row {
   display: flex;
+  padding-left: 100px;
+  padding-right: 100px;
   gap: 8px;
   justify-content: center;
   margin-top: 8px;
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
 .day-box {
@@ -977,7 +980,6 @@ onMounted(async () => {
 .month-cell .learned svg { color: var(--color-accent); width: 24px; height: 24px; }
 .month-cell .not-learned svg { opacity: 0.25; filter: grayscale(1); width: 24px; height: 24px; }
 .empty-cell { opacity: 0.0; }
-.clickable-flame { cursor: pointer; }
 .calendar-close-row {
   display: flex;
   justify-content: center;
