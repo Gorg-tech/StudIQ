@@ -65,10 +65,6 @@ const handleLogout = async () => {
             <span class="slider"></span>
           </label>
         </div>
-        <div class="setting-item">
-          <p>Sprache: <b>{{ language }}</b></p>
-          <button class="edit-btn" @click="changeLanguage">✏️</button>
-        </div>
       </section>
 
       <!-- Allgemein -->
@@ -84,9 +80,6 @@ const handleLogout = async () => {
           <p>Passwort:
             <b>{{ showPassword ? password : '••••••••' }}</b>
           </p>
-          <button class="small-btn" @click="togglePasswordVisibility">
-            {{ showPassword ? 'Verbergen' : 'Anzeigen' }}
-          </button>
         </div>
       </section>
 
