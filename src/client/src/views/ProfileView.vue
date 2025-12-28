@@ -133,8 +133,8 @@
       </div>
 
       <!-- Streak Calendar -->
-      <div class="streak-card full-width">
-        <div class="week-row" @click="openMonthCalendar" title="Klicke, um den Monatskalender zu öffnen">
+      <div class="streak-card full-width" @click="openMonthCalendar" title="Klicke, um den Monatskalender zu öffnen">
+        <div class="week-row">
           <div class="day-box" v-for="(day, index) in currentWeekStreak" :key="index">
             <IconFlame v-if="day.learned" />
             <IconFlame v-else class="inactive" />
@@ -776,6 +776,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 }
 
 .streak-card.full-width {
@@ -790,7 +791,6 @@ onMounted(async () => {
   justify-content: center;
   margin-top: 8px;
   margin-bottom: 8px;
-  cursor: pointer;
 }
 
 .day-box {
