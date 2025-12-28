@@ -88,7 +88,7 @@
         <h3>Freund entfernen</h3>
         <p>Möchtest du <strong>{{ friendToDelete?.username }}</strong> wirklich aus deiner Freundesliste entfernen?</p>
         <div class="add-friend-btn-row">
-          <button class="add-friend-send-btn" @click="deleteFriend(friendToDelete)">Entfernen</button>
+          <button class="add-friend-send-btn" @click="deleteFriend(friendToDelete?.username)">Entfernen</button>
           <button class="add-friend-cancel-btn" @click="closeDeleteFriend">Abbrechen</button>
         </div>
       </div>
@@ -245,14 +245,14 @@ const streakDays = ref([]) // all learned days as ISO strings
 const currentMonth = ref(new Date()) // Track the currently displayed month
 
 /**
- * Schließt den Monatskalender.
+ * Closes the month calendar.
  */
 function closeMonthCalendar() {
   showMonthCalendar.value = false
 }
 
 /**
- * Öffnet den Monatskalender und berechnet das Raster.
+ * Opens the month calendar and initializes it to the current month.
  */
 function openMonthCalendar() {
   currentMonth.value = new Date() // Reset to current month
@@ -267,7 +267,7 @@ const recentQuizzes = ref([
 ])
 
 /**
- * Lädt die Freundesliste des Benutzers aus der API in die `friends`-Variable.
+ * Loads the friends from the API into the `friends` variable.
  */
 function loadFriends() {
   getFriends().then(fetchedFriends => {
@@ -278,7 +278,7 @@ function loadFriends() {
 }
 
 /**
- * Lädt die Freundschaftsanfragen des Benutzers aus der API in die `friendRequests`-Variable.
+ * Loads the friend requests from the API into the `friendRequests` variable.
  */
 function loadFriendRequests() {
   getFriendRequests().then(requests => {
@@ -289,7 +289,7 @@ function loadFriendRequests() {
 }
 
 /**
- * Schließt den Dialog für das Hinzufügen eines Freundes.
+ * Closes the add friend dialog and resets related state.
  */
 function closeAddFriend() {
   showAddFriend.value = false
@@ -298,29 +298,29 @@ function closeAddFriend() {
 }
 
 /**
- * Schließt den Dialog für das Löschen eines Freundes.
+ * Closes the delete friend confirmation dialog.
  */
 function closeDeleteFriend() {
   friendToDelete.value = null
 }
 
 /**
- * Sendet eine Anfrage zum Entfernen eines Freundes und aktualisiert die Freundesliste.
- * @param {dict} friend - Das Dictionary des Freundes, der entfernt werden soll.
+ * Sends a request to remove a friend and refreshes the friends list.
+ * @param {string} username - The username of the friend to be removed.
  */
-function deleteFriend(friend) {
-  removeFriend(friend.username).then(() => {
+function deleteFriend(username) {
+  removeFriend(username).then(() => {
     loadFriends()
   }).catch(e => {
-    alert(`Fehler beim Entfernen von ${friend.username}: ${e.data.error || 'Unbekannter Fehler.'}`)
+    alert(`Fehler beim Entfernen von ${username}: ${e.data.error || 'Unbekannter Fehler.'}`)
   }).finally(() => {
     closeDeleteFriend()
   })
 }
 
 /**
- * Akzeptiert eine Freundschaftsanfrage und aktualisiert die Freundesliste und Anfragen.
- * @param {string} username - Der Benutzername des Absenders der Freundschaftsanfrage.
+ * Accepts a friend request and refreshes the friends and requests lists.
+ * @param {string} username - The username of the user who sent the friend request.
  */
 async function acceptFriendRequestAction(username) {
   try {
@@ -333,8 +333,8 @@ async function acceptFriendRequestAction(username) {
 }
 
 /**
- * Lehnt eine Freundschaftsanfrage ab und aktualisiert die Anfragenliste.
- * @param {string} username - Der Benutzername des Absenders der Freundschaftsanfrage.
+ * Denies a friend request and refreshes the requests list.
+ * @param {string} username - The username of the user who sent the friend request.
  */
 async function declineFriendRequestAction(username) {
   try {
@@ -346,9 +346,9 @@ async function declineFriendRequestAction(username) {
 }
 
 /**
- * Sendet eine Freundschaftsanfrage an den angegebenen Benutzernamen in `addFriendUsername`.
- * Wenn erfolgreich, wird der Dialog geschlossen und die Freundesliste aktualisiert.
- * Bei Fehlern wird die Fehlermeldung in `addFriendError` gesetzt.
+ * Sends a friend request to the username specified in `addFriendUsername`.
+ * If successful, closes the dialog and refreshes the friends list.
+ * On errors, sets the error message in `addFriendError`.
  */
 async function submitAddFriend() {
   addFriendError.value = ''
@@ -378,8 +378,8 @@ async function submitAddFriend() {
 }
 
 /**
- * Berechnet das Raster für den Monatskalender basierend auf dem aktuellen Monat
- * und den in `streakDays` gespeicherten Lerntagen.
+ * Calculates the grid for the month calendar based on the current month
+ * and the learning days stored in `streakDays`.
  */
 function calculateMonthGrid() {
   const year = currentMonth.value.getFullYear()
