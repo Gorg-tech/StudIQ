@@ -268,16 +268,37 @@ class QuizViewSet(viewsets.ModelViewSet):
         quiz_session.total_answers += 1
         if is_correct:
             quiz_session.correct_answers += 1
-        try:
-            quiz_session.save()
-        except IntegrityError:
-            return Response({"detail": "Error updating quiz session."},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        quiz_session.save()
 
-        return Response({
+        # Build response
+        response_data = {
             "is_correct": is_correct,
-            "correct_answers": list(correct_option_ids)
-        })
+            "correct_answers": list(correct_option_ids),
+            "question_index": current_question_index,
+            "total_questions": len(questions)
+        }
+
+        is_last = current_question_index == len(questions) - 1
+        response_data["is_last"] = is_last
+
+        if not is_last:
+            # Prepare next question data
+            next_question = questions[current_question_index + 1]
+            response_data["next_question"] = {
+                "id": next_question.id,
+                "text": next_question.text,
+                "type": next_question.type,
+                "answer_options": [
+                    {
+                        "id": option.id,
+                        "text": option.text
+                    } for option in next_question.answer_options.all()
+                ]
+            }
+        else:
+            response_data["next_question"] = None
+
+        return Response(response_data)
 
     @action(detail=True, methods=['get'])
     def sessions(self, request, quiz_id=None):
