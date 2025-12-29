@@ -103,36 +103,62 @@ class QuizViewSet(viewsets.ModelViewSet):
         """
         Creates a new QuizSession for the user and quiz.
 
-        Returns (in response): Code 201 CREATED on success,
-        205 RESET CONTENT if session already exists.
+        Returns (in response):
+        dict: {
+            "session_id": uuid,
+            "first_question": {
+                "id": uuid,
+                "text": str,
+                "type": str,
+                "answer_options": [
+                    {
+                        "id": uuid,
+                        "text": str
+                    }, ...
+                ]
+            },
+            "total_questions": int,
+            "is_last": bool
+        }
         """
         user = request.user
         quiz = self.get_object()
-        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=True)
+        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=True).first()
 
-        # If an active session already exists, reset it
-        if quiz_sessions.exists():
-            quiz_session = quiz_sessions.first()
-            if quiz_session is not None:
+        # If an active session already exists, reset it, else create a new one
+        if quiz_session is not None:
                 quiz_session.start_time = datetime.now()
                 quiz_session.total_answers = 0
                 quiz_session.correct_answers = 0
                 quiz_session.save()
-                return Response(status=status.HTTP_205_RESET_CONTENT,
-                                data={"detail": "Quiz session restarted."})
-
-        # Create a new QuizSession
-        try:
-            QuizSession.objects.create(
-                user=user,
-                quiz=quiz,
-                start_time=datetime.now()
-            )
-        except IntegrityError:
-            return Response({"detail": "An active quiz session already exists."},
-                            status=status.HTTP_409_CONFLICT)
-
-        return Response(status=status.HTTP_201_CREATED, data={"detail": "Quiz session created."})
+        else:
+            try:
+                QuizSession.objects.create(
+                    user=user,
+                    quiz=quiz,
+                    start_time=datetime.now()
+                )
+            except IntegrityError:
+                return Response({"detail": "An active quiz session already exists."},
+                                status=status.HTTP_409_CONFLICT)
+        
+        # Get first question
+        questions = list(quiz.questions.all().order_by('id'))
+        if not questions:
+            return Response({"detail": "No questions in quiz."}, status=400)
+        
+        first_question = questions[0]
+        return Response({
+        "session_id": str(session.id),
+        "first_question": {
+            "id": str(first_question.id),
+            "text": first_question.text,
+            "type": first_question.type,
+            "answer_options": [{"id": str(o.id), "text": o.text} for o in first_question.answer_options.all()]
+        },
+        "total_questions": len(questions),
+        "is_last": len(questions) == 1
+    }, status=201)
 
     @action(detail=True, methods=['get'])
     def next_question(self, request, quiz_id=None):
