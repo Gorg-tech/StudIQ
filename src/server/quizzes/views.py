@@ -176,7 +176,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                     "text": str
                 }, ...
             ],
-            "is_last_question": bool
+            "is_last": bool
         }
         """
         user = request.user
@@ -208,7 +208,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                     "text": option.text
                 } for option in next_question.answer_options.all()
             ],
-            "is_last_question": next_question_index == len(questions) - 1
+            "is_last": next_question_index == len(questions) - 1
         })
 
     @action(detail=True, methods=['post'])
