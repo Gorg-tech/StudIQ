@@ -203,7 +203,7 @@ class QuizViewSet(viewsets.ModelViewSet):
 
         # Validate selected options
         valid_option_ids = set(question.answer_options.values_list('id', flat=True))
-        if not all(option_id in valid_option_ids for option_id in selected_option_ids):
+        if not all(int(option_id) in valid_option_ids for option_id in selected_option_ids):
             return Response({"detail": "Invalid answer option IDs."},
                             status=status.HTTP_400_BAD_REQUEST)
 
