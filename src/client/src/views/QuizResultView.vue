@@ -153,7 +153,7 @@ onMounted(async () => {
   
   // Notify server of quiz completion
   if (quizId.value) {
-    const iq_calc = await completeQuiz(quizId.value, correctAnswers.value)
+    const iq_calc = await completeQuiz(quizId.value)
     iq_base.value = iq_calc.base_points || 0
     iq_perfect.value = iq_calc.perfect_bonus_points || 0
     iq_streak.value = iq_calc.streak_bonus_points || 0
