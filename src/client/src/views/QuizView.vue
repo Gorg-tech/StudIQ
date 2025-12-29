@@ -32,7 +32,7 @@
           <p class="question-type" v-if="currentQuestion.type === 'SINGLE_CHOICE'">Wähle eine Antwort aus.</p>
           <p class="question-type" v-else>Wähle eine oder mehrere Antworten aus.</p>
           <div
-            v-for="(option, index) in currentQuestion.answer_options"
+            v-for="option in currentQuestion.answer_options"
             :key="option.id"
             class="answer-row"
             :class="{
@@ -42,7 +42,7 @@
               hoverable: !answered && !selectedAnswerIds.includes(option.id)
             }"
             :role="currentQuestion.type === 'SINGLE_CHOICE' ? 'radio' : 'checkbox'"
-            :aria-checked="currentQuestion.type === 'SINGLE_CHOICE' ? (selectedSingleId === option.id).toString() : selectedAnswerIds.includes(option.id).toString()"
+            :aria-checked="selectedAnswerIds.includes(option.id).toString()"
             tabindex="0"
             @click="selectAnswer(option.id)"
             @keydown.enter="selectAnswer(option.id)"
@@ -76,7 +76,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { startQuiz, submitAnswer, completeQuiz } from '@/services/quizzes'
+import { startQuiz, submitAnswer } from '@/services/quizzes'
 import Penguin from '@/components/Penguin.vue'
 
 const router = useRouter()
@@ -89,7 +89,6 @@ const currentIndex = ref(0)
 const sessionId = ref(null)
 const currentQuestion = ref(null)
 const selectedAnswerIds = ref([])
-const selectedSingleId = ref(null)
 const answered = ref(false)
 const lastIsCorrect = ref(null)
 const lastCorrectAnswerIds = ref([])
@@ -157,7 +156,6 @@ async function nextQuestion() {
     // Quiz beenden
     submitting.value = true
     try {
-      const results = await completeQuiz(quizId.value)
       router.push({
         name: 'quiz-result',
         query: {
@@ -174,7 +172,6 @@ async function nextQuestion() {
     // Nächste Frage laden
     currentIndex.value++
     selectedAnswerIds.value = []
-    selectedSingleId.value = null
     answered.value = false
     lastIsCorrect.value = null
     lastCorrectAnswerIds.value = []
@@ -184,7 +181,6 @@ async function nextQuestion() {
 function selectAnswer(answerId) {
   if (!answered.value) {
     if (currentQuestion.value.type === 'SINGLE_CHOICE') {
-      selectedSingleId.value = answerId
       selectedAnswerIds.value = [answerId]
     } else {
       const index = selectedAnswerIds.value.indexOf(answerId)
