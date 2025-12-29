@@ -10,11 +10,13 @@ import re
 from itertools import chain
 from math import exp, floor
 from datetime import datetime
+from pymysql import IntegrityError
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
@@ -26,7 +28,6 @@ from .models import (
     Quiz,
     Question,
     Lernset,
-    QuizAttempt,
     QuizSession,
     Feedback,
     Studiengang,
@@ -35,14 +36,12 @@ from .models import (
 )
 from .serializers import (
     QuizSerializer,
+    QuizSessionSerializer,
     QuestionSerializer,
     LernsetSerializer,
-    QuizAttemptSerializer,
-    QuizSessionSerializer,
     FeedbackSerializer,
     StudiengangSerializer,
     ModulSerializer,
-    ModulDetailSerializer,
     ModulDetailSerializer,
     AnswerOptionSerializer,
     QuizForLernsetSerializer
@@ -74,6 +73,7 @@ class QuizViewSet(viewsets.ModelViewSet):
     """
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    lookup_url_kwarg = 'quiz_id'
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
@@ -97,6 +97,261 @@ class QuizViewSet(viewsets.ModelViewSet):
             return Response({"detail": "You do not have permission to delete this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
+    
+    @action(detail=True, methods=['post'])
+    def start(self, request, quiz_id=None):
+        """
+        Creates a new QuizSession for the user and quiz.
+
+        Returns (in response): Code 201 CREATED on success,
+        205 RESET CONTENT if session already exists.
+        """
+        user = request.user
+        quiz = self.get_object()
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=True)
+
+        # If an active session already exists, reset it
+        if quiz_sessions.exists():
+            quiz_session = quiz_sessions.first()
+            if quiz_session is not None:
+                quiz_session.start_time = datetime.now()
+                quiz_session.total_answers = 0
+                quiz_session.correct_answers = 0
+                quiz_session.save()
+                return Response(status=status.HTTP_205_RESET_CONTENT,
+                                data={"detail": "Quiz session restarted."})
+
+        # Create a new QuizSession
+        try:
+            QuizSession.objects.create(
+                user=user,
+                quiz=quiz,
+                started_at=datetime.now()
+            )
+        except IntegrityError:
+            return Response({"detail": "An active quiz session already exists."},
+                            status=status.HTTP_409_CONFLICT)
+
+        return Response(status=status.HTTP_201_CREATED, data={"detail": "Quiz session created."})
+
+    @action(detail=True, methods=['get'])
+    def next_question(self, request, quiz_id=None):
+        """
+        Retrieves the next question in the active QuizSession.
+
+        Returns (in response):
+        dict: {
+            "id": uuid,
+            "text": str,
+            "type": str,
+            "answer_options": [
+                {
+                    "id": uuid,
+                    "text": str
+                }, ...
+            ],
+            "is_last_question": bool
+        }
+        """
+        user = request.user
+        quiz = self.get_object()
+        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz,
+                                                  end_time__isnull=True).first()
+        if not quiz_session:
+            return Response({"detail": "No active quiz session found."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        # Get all questions for the quiz
+        questions = list(quiz.questions.all().order_by('id'))
+
+        # Determine the next question based on total_answers
+        next_question_index = quiz_session.total_answers
+        if next_question_index >= len(questions):
+            return Response({"detail": "No more questions available."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        next_question = questions[next_question_index]
+
+        return Response({
+            "id": next_question.id,
+            "text": next_question.text,
+            "type": next_question.type,
+            "answer_options": [
+                {
+                    "id": option.id,
+                    "text": option.text
+                } for option in next_question.answer_options.all()
+            ],
+            "is_last_question": next_question_index == len(questions) - 1
+        })
+
+    @action(detail=True, methods=['post'])
+    def answer(self, request, quiz_id=None):
+        """
+        Submits an answer for the current question in the active QuizSession.
+
+        Expects (in request data):
+        dict: {
+            "question_id": uuid,
+            "selected_option_ids": [uuid, ...]
+        }
+
+        Returns (in response):
+        dict: {
+            "is_correct": bool,
+            "correct_answers": [uuid, ...]  # list of correct answer option IDs
+        }
+        """
+        user = request.user
+        quiz = self.get_object()
+        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz,
+                                                  end_time__isnull=True).first()
+        if not quiz_session:
+            return Response({"detail": "No active quiz session found."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        question_id = request.data.get("question_id")
+        selected_option_ids = request.data.get("selected_option_ids", [])
+
+        # Get all questions for the quiz
+        questions = list(quiz.questions.all().order_by('id'))
+        current_question_index = quiz_session.total_answers
+
+        # Validate question
+        if current_question_index >= len(questions):
+            return Response({"detail": "No more questions available."},
+                            status=status.HTTP_404_NOT_FOUND)
+        question = questions[current_question_index]
+        if str(question.id) != str(question_id):
+            return Response({"detail": "Question ID does not match the current question."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate selected options
+        valid_option_ids = set(question.answer_options.values_list('id', flat=True))
+        if not all(option_id in valid_option_ids for option_id in selected_option_ids):
+            return Response({"detail": "Invalid answer option IDs."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Check correctness
+        correct_option_ids = set(
+            question.answer_options.filter(is_correct=True).values_list('id', flat=True)
+        )
+        is_correct = set(selected_option_ids) == correct_option_ids
+
+        # Update quiz session stats
+        quiz_session.total_answers += 1
+        if is_correct:
+            quiz_session.correct_answers += 1
+        try:
+            quiz_session.save()
+        except IntegrityError:
+            return Response({"detail": "Error updating quiz session."},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({
+            "is_correct": is_correct,
+            "correct_answers": list(correct_option_ids)
+        })
+
+    @action(detail=True, methods=['get'])
+    def sessions(self, request, quiz_id=None):
+        """
+        Retrieves the user's QuizSessions for the specified quiz.
+
+        Returns (in response):
+        list: [
+            dict: {
+                "start_time": datetime,
+                "end_time": datetime or null,
+                "correct_answers": int,
+                "total_answers": int
+            }, ...
+        ]
+        """
+        user = request.user
+        quiz = self.get_object()
+
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz).order_by('-started_at')
+        if not quiz_sessions.exists():
+            return Response({"detail": "No quiz session found."}, status=status.HTTP_404_NOT_FOUND)
+
+        dict_list = []
+        for quiz_session in quiz_sessions:
+            dict_list.append({
+                "start_time": quiz_session.start_time,
+                "end_time": quiz_session.end_time,
+                "correct_answers": quiz_session.correct_answers,
+                "total_answers": quiz_session.total_answers
+            })
+
+        return Response(dict_list)
+
+    @action(detail=True, methods=['post'])
+    def complete(self, request, quiz_id=None):
+        """
+        Calculates the points the user receives, updates the user and returns results.
+
+        Returns (in response):
+        dict: {
+            "base_points": int,
+            "attempt_bonus_points": int,
+            "perfect_bonus_points": int,
+            "streak_bonus_points": int,
+            "total_points": int,
+            "prev_iq": int,
+            "new_iq": int
+        }
+        """
+        user = request.user
+        quiz = self.get_object()
+        attempts = QuizSession.objects.filter(user=user, quiz=quiz).count()
+        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz,
+                                                  end_time__isnull=True).first()
+        if not quiz_session:
+            return Response({"detail": "No active quiz session found."},
+                            status=status.HTTP_404_NOT_FOUND)
+        total = quiz_session.total_answers
+        streak = calculate_streak(user)
+        accuracy = quiz_session.correct_answers / total if total > 0 else 0
+
+        # formulas
+        attempt_bonus = 0.5 * exp(-0.5 * (attempts-1))
+        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
+                        if accuracy == 1.0 else 0
+        streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
+
+        base_points = floor(0.5 * total ** (accuracy))
+        attempt_bonus_points = floor(base_points * attempt_bonus)
+        perfect_bonus_points = floor(base_points * perfect_bonus)
+        streak_bonus_points = floor(base_points * streak_bonus)
+
+        total_points = floor(
+            base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
+        )
+
+        # update user and quiz progress
+        prev_iq = user.iq_score
+        new_iq = prev_iq + total_points
+        user.iq_score = new_iq
+        user.solved_quizzes += 1
+        user.save()
+
+        quiz_session.end_time = datetime.now()
+        quiz_session.save()
+
+        register_study_activity(user)
+
+        return Response({
+            "attempts": attempts,
+            "streak": streak,
+            "base_points": base_points,
+            "attempt_bonus_points": attempt_bonus_points,
+            "perfect_bonus_points": perfect_bonus_points,
+            "streak_bonus_points": streak_bonus_points,
+            "total_points": total_points,
+            "prev_iq": prev_iq,
+            "new_iq": new_iq
+        })
 
 class QuestionViewSet(viewsets.ModelViewSet):
     """
@@ -138,35 +393,6 @@ class LernsetViewSet(viewsets.ModelViewSet):
             return Response({"detail": "You do not have permission to delete this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
-
-class QuizAttemptViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing QuizAttempt objects.
-    Allows users to view and update their quiz attempt statistics.
-    """
-    serializer_class = QuizAttemptSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return QuizAttempt.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-class QuizSessionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing QuizSession objects.
-    Allows users to track their quiz solving sessions.
-    """
-    serializer_class = QuizSessionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return QuizSession.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
 
 class FeedbackViewSet(viewsets.ModelViewSet):
     """
@@ -518,106 +744,3 @@ class SuggestedQuizzesView(ListAPIView):
 
 
         return quizzes
-
-class QuizCompletionView(APIView):
-    """
-    API endpoint for handling quiz completion.
-    Calculates and awards IQ points, updates user and quiz progress,
-    and returns a breakdown of earned points.
-    Also provides quiz progress details via GET.
-    """
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, quiz_id):
-        """
-        Calculates the points the user receives, updates the user and returns results.
-
-        Expected (in request):
-        dict: {
-            "correct": int
-        }
-
-        Returns (in response):
-        dict: {
-            "base_points": int,
-            "attempt_bonus_points": int,
-            "perfect_bonus_points": int,
-            "streak_bonus_points": int,
-            "total_points": int,
-            "prev_iq": int,
-            "new_iq": int
-        }
-        """
-        user = request.user
-        quiz = get_object_or_404(Quiz, id=quiz_id)
-        quiz_attempt, _ = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
-        total = quiz.questions.count()
-        streak = calculate_streak(user)
-        accuracy = int(request.data.get("correct", 0)) / total if total > 0 else 0
-
-        # formulas
-        attempt_bonus = 0.5 * exp(-0.5 * (quiz_attempt.attempts))
-        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
-                        if accuracy == 1.0 else 0
-        streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
-
-        base_points = floor(0.5 * total ** (accuracy))
-        attempt_bonus_points = floor(base_points * attempt_bonus)
-        perfect_bonus_points = floor(base_points * perfect_bonus)
-        streak_bonus_points = floor(base_points * streak_bonus)
-
-        total_points = floor(
-            base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
-        )
-
-        # update user and quiz progress
-        prev_iq = user.iq_score
-        new_iq = prev_iq + total_points
-        user.iq_score = new_iq
-        user.solved_quizzes += 1
-        user.correct_answers += int(request.data.get("correct", 0))
-        user.wrong_answers += total - int(request.data.get("correct", 0))
-        user.save()
-
-        quiz_attempt.attempts += 1
-        quiz_attempt.correct_answers += int(request.data.get("correct", 0))
-        quiz_attempt.wrong_answers += total - int(request.data.get("correct", 0))
-        quiz_attempt.last_reviewed = datetime.now()
-        quiz_attempt.save()
-
-        register_study_activity(user)
-
-        return Response({
-            "attempts": quiz_attempt.attempts,
-            "streak": streak,
-            "base_points": base_points,
-            "attempt_bonus_points": attempt_bonus_points,
-            "perfect_bonus_points": perfect_bonus_points,
-            "streak_bonus_points": streak_bonus_points,
-            "total_points": total_points,
-            "prev_iq": prev_iq,
-            "new_iq": new_iq
-        })
-
-
-    def get(self, request, quiz_id):
-        """
-        Get the number of attempts for the user on the specified quiz.
-        Returns: {
-            correct_answers: int,
-            wrong_answers = int,
-            last_reviewed = DateTime,
-            strength_score = float,
-            attempts = int
-        }
-        """
-        user = request.user
-        quiz = get_object_or_404(Quiz, id=quiz_id)
-        quiz_attempt, _ = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
-
-        return Response({
-            "correct_answers": quiz_attempt.correct_answers,
-            "wrong_answers": quiz_attempt.wrong_answers,
-            "last_reviewed": quiz_attempt.last_reviewed,
-            "attempts": quiz_attempt.attempts
-            })
