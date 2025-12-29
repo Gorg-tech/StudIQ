@@ -96,6 +96,8 @@ const quizTitle = ref('')
 const quizDescription = ref('')
 const totalQuestions = ref(0)
 
+const newQuestion = ref(null)
+
 const progress = computed(() => {
   if (!totalQuestions.value) return 0
   return ((currentIndex.value + 1) / totalQuestions.value) * 100
@@ -142,6 +144,8 @@ async function checkAnswer() {
 
     lastIsCorrect.value = response.is_correct
     lastCorrectAnswerIds.value = response.correct_answers
+    newQuestion.value = response.next_question || null
+    totalQuestions.value = response.total_questions || totalQuestions.value
     answered.value = true
   } catch (err) {
     console.error('Error submitting answer:', err)
@@ -170,6 +174,7 @@ async function nextQuestion() {
     }
   } else {
     // Nächste Frage laden
+    currentQuestion.value = newQuestion.value
     currentIndex.value++
     selectedAnswerIds.value = []
     answered.value = false
