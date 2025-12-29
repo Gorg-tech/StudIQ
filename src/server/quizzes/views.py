@@ -309,7 +309,9 @@ class QuizViewSet(viewsets.ModelViewSet):
             "streak_bonus_points": int,
             "total_points": int,
             "prev_iq": int,
-            "new_iq": int
+            "new_iq": int,
+            "total_answers": int,
+            "correct_answers": int
         }
         """
         user = request.user
@@ -360,7 +362,9 @@ class QuizViewSet(viewsets.ModelViewSet):
             "streak_bonus_points": streak_bonus_points,
             "total_points": total_points,
             "prev_iq": prev_iq,
-            "new_iq": new_iq
+            "new_iq": new_iq,
+            "total_answers": quiz_session.total_answers,
+            "correct_answers": quiz_session.correct_answers
         })
 
 class QuestionViewSet(viewsets.ModelViewSet):
