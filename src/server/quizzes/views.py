@@ -256,7 +256,7 @@ class QuizViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def sessions(self, request, quiz_id=None):
         """
-        Retrieves the user's QuizSessions for the specified quiz.
+        Retrieves the user's completed QuizSessions for the specified quiz.
 
         Returns (in response):
         list: [
@@ -271,7 +271,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         user = request.user
         quiz = self.get_object()
 
-        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz).order_by('-start_time')
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=False).order_by('-start_time')
 
         dict_list = []
         for quiz_session in quiz_sessions:
