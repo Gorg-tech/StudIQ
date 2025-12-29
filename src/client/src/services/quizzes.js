@@ -46,10 +46,6 @@ export async function submitAnswer(quizId, answerData) {
   return apiClient.post(API_ENDPOINTS.QUIZZES.SUBMIT_ANSWER(quizId), answerData);
 }
 
-export async function getNextQuestion(quizId) {
-  return apiClient.get(API_ENDPOINTS.QUIZZES.NEXT_QUESTION(quizId));
-}
-
 /* Usage Example:
 
 import { getQuizzes } from '@/services/auth';

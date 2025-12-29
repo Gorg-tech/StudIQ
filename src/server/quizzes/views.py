@@ -160,57 +160,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         "is_last": len(questions) == 1
     }, status=201)
 
-    @action(detail=True, methods=['get'])
-    def next_question(self, request, quiz_id=None):
-        """
-        Retrieves the next question in the active QuizSession.
-
-        Returns (in response):
-        dict: {
-            "id": uuid,
-            "text": str,
-            "type": str,
-            "answer_options": [
-                {
-                    "id": uuid,
-                    "text": str
-                }, ...
-            ],
-            "is_last": bool
-        }
-        """
-        user = request.user
-        quiz = self.get_object()
-        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz,
-                                                  end_time__isnull=True).first()
-        if not quiz_session:
-            return Response({"detail": "No active quiz session found."},
-                            status=status.HTTP_404_NOT_FOUND)
-
-        # Get all questions for the quiz
-        questions = list(quiz.questions.all().order_by('id'))
-
-        # Determine the next question based on total_answers
-        next_question_index = quiz_session.total_answers
-        if next_question_index >= len(questions):
-            return Response({"detail": "No more questions available."},
-                            status=status.HTTP_404_NOT_FOUND)
-
-        next_question = questions[next_question_index]
-
-        return Response({
-            "id": next_question.id,
-            "text": next_question.text,
-            "type": next_question.type,
-            "answer_options": [
-                {
-                    "id": option.id,
-                    "text": option.text
-                } for option in next_question.answer_options.all()
-            ],
-            "is_last": next_question_index == len(questions) - 1
-        })
-
     @action(detail=True, methods=['post'])
     def answer(self, request, quiz_id=None):
         """

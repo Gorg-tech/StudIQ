@@ -46,7 +46,6 @@ export const API_ENDPOINTS = {
     QUESTION_DETAIL: (quizId, questionId) => `api/quizzes/${quizId}/questions/${questionId}/`,
     SUGGESTED_QUIZZES: 'api/suggested-quizzes/',
     START: (quizId) => `api/quizzes/${quizId}/start/`,
-    NEXT_QUESTION: (quizId) => `api/quizzes/${quizId}/next-question/`,
     SUBMIT_ANSWER: (quizId) => `api/quizzes/${quizId}/answer/`,
     SESSIONS: (quizId) => `api/quizzes/${quizId}/sessions/`,
     COMPLETE: (quizId) => `api/quizzes/${quizId}/complete/`,
