@@ -126,7 +126,7 @@ class QuizViewSet(viewsets.ModelViewSet):
             QuizSession.objects.create(
                 user=user,
                 quiz=quiz,
-                started_at=datetime.now()
+                start_time=datetime.now()
             )
         except IntegrityError:
             return Response({"detail": "An active quiz session already exists."},
@@ -271,7 +271,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         user = request.user
         quiz = self.get_object()
 
-        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz).order_by('-started_at')
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz).order_by('-start_time')
         if not quiz_sessions.exists():
             return Response({"detail": "No quiz session found."}, status=status.HTTP_404_NOT_FOUND)
 
