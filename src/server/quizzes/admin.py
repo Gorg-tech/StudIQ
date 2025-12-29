@@ -8,7 +8,7 @@ customizes their display, search, and filter options for superusers.
 from django.contrib import admin
 from .models import (
     Studiengang, Modul, Lernset, Quiz, Question, AnswerOption,
-    QuizAttempt, QuizSession, Feedback
+    QuizSession, Feedback
 )
 
 @admin.register(Studiengang)
@@ -70,23 +70,13 @@ class AnswerOptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'text', 'is_correct', 'question')
     list_filter = ('is_correct', 'question')
 
-@admin.register(QuizAttempt)
-class QuizAttemptAdmin(admin.ModelAdmin):
-    """
-    Admin interface for QuizAttempt model.
-    Displays user progress on quizzes, including correct/wrong answers and review date.
-    """
-    list_display = ('id', 'user', 'quiz', 'correct_answers', 'wrong_answers',
-                    'last_reviewed', 'attempts')
-    list_filter = ('user', 'quiz')
-
 @admin.register(QuizSession)
 class QuizSessionAdmin(admin.ModelAdmin):
     """
     Admin interface for QuizSession model.
     Shows quiz session details, user, score, and mode.
     """
-    list_display = ('id', 'user', 'quiz', 'start_time', 'end_time')
+    list_display = ('id', 'user', 'quiz', 'start_time', 'end_time', 'correct_answers', 'total_answers')
     list_filter = ('user', 'quiz')
 
 @admin.register(Feedback)
