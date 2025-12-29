@@ -63,11 +63,6 @@ export const API_ENDPOINTS = {
     BASE: 'api/answer-options/',
     DETAIL: (optionId) => `api/answer-options/${optionId}/`
   },
-
-  SESSIONS: {
-    BASE: 'api/sessions/',
-    COMPLETE: (sessionId) => `api/sessions/${sessionId}/complete/`,
-  },
   
   LEADERBOARD: {
     BASE: (limit = 3, around = 1, category = 'all') => `api/leaderboard?limit=${limit}&around=${around}&category=${encodeURIComponent(category)}`,

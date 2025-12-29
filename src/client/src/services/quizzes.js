@@ -30,18 +30,25 @@ export async function getSuggestedQuizzes() {
   return apiClient.get(API_ENDPOINTS.QUIZZES.SUGGESTED_QUIZZES);
 }
 
-// add this helper to notify backend of completed run
-export async function completeQuiz(quizId, sessionData) {
-  // POST to /api/quizzes/{id}/complete/
-  // Uses API_ENDPOINTS.QUIZZES.DETAIL(quizId) which ends with `/api/quizzes/{id}/`
-  // so append `complete/` to form `/api/quizzes/{id}/complete/`
-  return apiClient.post(`${API_ENDPOINTS.QUIZZES.DETAIL(quizId)}complete/`, sessionData)
+// quiz session management
+export async function startQuiz(quizId) {
+  return apiClient.post(API_ENDPOINTS.QUIZZES.START(quizId));
 }
 
-// Add this helper to fetch quiz sessions/attempts from the backend
+export async function completeQuiz(quizId, sessionData) {
+  return apiClient.post(API_ENDPOINTS.QUIZZES.COMPLETE(quizId), sessionData)
+}
+
 export async function getQuizSessions(quizId) {
-  // server exposes /api/sessions/?quiz=<quizId> via QuizSessionViewSet
-  return apiClient.get(`${API_ENDPOINTS.SESSIONS.BASE}?quiz=${quizId}`)
+  return apiClient.get(API_ENDPOINTS.QUIZZES.SESSIONS(quizId));
+}
+
+export async function submitAnswer(quizId, answerData) {
+  return apiClient.post(API_ENDPOINTS.QUIZZES.SUBMIT_ANSWER(quizId), answerData);
+}
+
+export async function getNextQuestion(quizId) {
+  return apiClient.get(API_ENDPOINTS.QUIZZES.NEXT_QUESTION(quizId));
 }
 
 /* Usage Example:
