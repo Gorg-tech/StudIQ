@@ -272,8 +272,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         quiz = self.get_object()
 
         quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz).order_by('-start_time')
-        if not quiz_sessions.exists():
-            return Response({"detail": "No quiz session found."}, status=status.HTTP_404_NOT_FOUND)
 
         dict_list = []
         for quiz_session in quiz_sessions:
