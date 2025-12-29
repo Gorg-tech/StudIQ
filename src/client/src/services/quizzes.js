@@ -34,8 +34,8 @@ export async function startQuiz(quizId) {
   return apiClient.post(API_ENDPOINTS.QUIZZES.START(quizId));
 }
 
-export async function completeQuiz(quizId, sessionData) {
-  return apiClient.post(API_ENDPOINTS.QUIZZES.COMPLETE(quizId), sessionData)
+export async function completeQuiz(quizId) {
+  return apiClient.post(API_ENDPOINTS.QUIZZES.COMPLETE(quizId))
 }
 
 export async function getQuizSessions(quizId) {

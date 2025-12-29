@@ -68,7 +68,7 @@ const showStreakLabel = ref(false)
 const showAttemptLabel = ref(false)
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { completeQuiz } from '@/services/quiz_results'
+import { completeQuiz } from '@/services/quizzes'
 
 const router = useRouter()
 const route = useRoute()
