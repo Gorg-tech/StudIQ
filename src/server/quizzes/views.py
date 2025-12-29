@@ -172,7 +172,21 @@ class QuizViewSet(viewsets.ModelViewSet):
         Returns (in response):
         dict: {
             "is_correct": bool,
-            "correct_answers": [uuid, ...]  # list of correct answer option IDs
+            "correct_answers": [uuid, ...],
+            "question_index": int,
+            "total_questions": int,
+            "is_last": bool,
+            "next_question": {
+                "id": uuid,
+                "text": str,
+                "type": str,
+                "answer_options": [
+                    {
+                        "id": uuid,
+                        "text": str
+                    }, ...
+                ]
+            }
         }
         """
         user = request.user
