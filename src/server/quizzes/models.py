@@ -134,46 +134,23 @@ class AnswerOption(models.Model):
     def __str__(self):
         return f"{self.text[:30]} ({'Correct' if self.is_correct else 'Incorrect'})"
 
-class QuizAttempt(models.Model):
-    """
-    Represents the statistics of a user on a quiz (including ALL attempts)
-
-    Attributes:
-        user, quiz, correct_answers, wrong_answers, last_reviewed, attempts
-    """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                             related_name='quiz_attempts')
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='attempts')
-    correct_answers = models.IntegerField(default=0)
-    wrong_answers = models.IntegerField(default=0)
-    last_reviewed = models.DateTimeField(auto_now=True)
-    attempts = models.IntegerField(default=0)
-
-    class Meta:
-        """
-        Defines primary key behaviour for tuple user,quiz.
-        """
-        unique_together = ('user', 'quiz')
-
-    def __str__(self):
-        return f"{self.user.username}'s progress on {self.quiz.title}"
-
 class QuizSession(models.Model):
     """
-    Represents a temporary session while the user is solving a quiz.
+    Represents a single attempt/session of a user on a quiz.
 
     Attributes:
-        user, quiz, start_time, end_time
+        user, quiz, start_time, end_time, correct_answers, total_answers
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name='quiz_sessions')
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='sessions')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='user_sessions')
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
+    correct_answers = models.IntegerField(default=0)
+    total_answers = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user.username} - {self.quiz.title} - \
-            {self.start_time.strftime('%Y-%m-%d %H:%M')}"
+        return f"{self.id}"
 
 class Feedback(models.Model):
     """
