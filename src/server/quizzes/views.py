@@ -104,6 +104,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         Returns (in response):
         dict: {
             "session_id": uuid,
+            "title": str,
+            "description": str,
             "first_question": {
                 "id": uuid,
                 "text": str,
@@ -148,6 +150,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         first_question = questions[0]
         return Response({
         "session_id": str(quiz_session.id),
+        "title": quiz.title,
+        "description": quiz.description,
         "first_question": {
             "id": str(first_question.id),
             "text": first_question.text,

@@ -110,8 +110,8 @@ onMounted(async () => {
     const data = await startQuiz(quizId.value)
     
     sessionId.value = data.session_id
-    quizTitle.value = data.first_question.quiz_title || ''
-    quizDescription.value = data.first_question.quiz_description || ''
+    quizTitle.value = data.title || ''
+    quizDescription.value = data.description || ''
     totalQuestions.value = data.total_questions
     currentQuestion.value = data.first_question
   } catch (err) {
