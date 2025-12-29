@@ -9,7 +9,6 @@ achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz c
 import re
 from itertools import chain
 from math import exp, floor
-from datetime import datetime
 from pymysql import IntegrityError
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -18,7 +17,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
 from accounts.views import get_user_rank
@@ -36,7 +35,6 @@ from .models import (
 )
 from .serializers import (
     QuizSerializer,
-    QuizSessionSerializer,
     QuestionSerializer,
     LernsetSerializer,
     FeedbackSerializer,
@@ -127,7 +125,7 @@ class QuizViewSet(viewsets.ModelViewSet):
 
         # If an active session already exists, reset it, else create a new one
         if quiz_session is not None:
-                quiz_session.start_time = datetime.now()
+                quiz_session.start_time = timezone.now()
                 quiz_session.total_answers = 0
                 quiz_session.correct_answers = 0
                 quiz_session.save()
@@ -136,7 +134,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                 quiz_session = QuizSession.objects.create(
                     user=user,
                     quiz=quiz,
-                    start_time=datetime.now()
+                    start_time=timezone.now()
                 )
             except IntegrityError:
                 return Response({"detail": "An active quiz session already exists."},
@@ -330,7 +328,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         user.solved_quizzes += 1
         user.save()
 
-        quiz_session.end_time = datetime.now()
+        quiz_session.end_time = timezone.now()
         quiz_session.save()
 
         register_study_activity(user)
