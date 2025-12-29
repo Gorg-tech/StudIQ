@@ -149,6 +149,18 @@ class QuizSession(models.Model):
     correct_answers = models.IntegerField(default=0)
     total_answers = models.IntegerField(default=0)
 
+    class Meta:
+        """
+        Defines unique active session (end_time=NULL) constraint per (user,quiz).
+        """
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'quiz'],
+                condition=models.Q(end_time__isnull=True),
+                name='unique_active_session_per_user_quiz'
+            )
+        ]
+
     def __str__(self):
         return f"{self.id}"
 
