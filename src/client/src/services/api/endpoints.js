@@ -45,6 +45,10 @@ export const API_ENDPOINTS = {
     QUESTIONS: (quizId) => `api/quizzes/${quizId}/questions/`,
     QUESTION_DETAIL: (quizId, questionId) => `api/quizzes/${quizId}/questions/${questionId}/`,
     SUGGESTED_QUIZZES: 'api/suggested-quizzes/',
+    START: (quizId) => `api/quizzes/${quizId}/start/`,
+    NEXT_QUESTION: (quizId) => `api/quizzes/${quizId}/next-question/`,
+    SUBMIT_ANSWER: (quizId) => `api/quizzes/${quizId}/answer/`,
+    SESSIONS: (quizId) => `api/quizzes/${quizId}/sessions/`,
     COMPLETE: (quizId) => `api/quizzes/${quizId}/complete/`,
   },
 
@@ -58,14 +62,6 @@ export const API_ENDPOINTS = {
   ANSWER_OPTIONS: {
     BASE: 'api/answer-options/',
     DETAIL: (optionId) => `api/answer-options/${optionId}/`
-  },
-
-  /*
-    Not used anywhere currently
-  */
-  ATTEMPTS: {
-    BASE: 'api/attempts/',
-    DETAIL: (attemptId) => `api/attempts/${attemptId}/`,
   },
 
   SESSIONS: {
