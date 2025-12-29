@@ -133,7 +133,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                 quiz_session.save()
         else:
             try:
-                QuizSession.objects.create(
+                quiz_session = QuizSession.objects.create(
                     user=user,
                     quiz=quiz,
                     start_time=datetime.now()
@@ -149,7 +149,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         
         first_question = questions[0]
         return Response({
-        "session_id": str(session.id),
+        "session_id": str(quiz_session.id),
         "first_question": {
             "id": str(first_question.id),
             "text": first_question.text,
