@@ -218,14 +218,16 @@ class QuizViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Validate selected options
-        valid_option_ids = set(question.answer_options.values_list('id', flat=True))
-        if not all(int(option_id) in valid_option_ids for option_id in selected_option_ids):
+        valid_option_ids = set(
+            str(option.id) for option in question.answer_options.all()
+        )
+        if not all(option_id in valid_option_ids for option_id in selected_option_ids):
             return Response({"detail": "Invalid answer option IDs."},
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Check correctness
         correct_option_ids = set(
-            question.answer_options.filter(is_correct=True).values_list('id', flat=True)
+            str(option.id) for option in question.answer_options.filter(is_correct=True)
         )
         is_correct = set(selected_option_ids) == correct_option_ids
 
