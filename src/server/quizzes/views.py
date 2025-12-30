@@ -175,7 +175,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         dict: {
             "is_correct": bool,
             "correct_answers": [uuid, ...],
-            "question_index": int,
             "total_questions": int,
             "next_question": {
                 "id": uuid,
@@ -238,7 +237,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         response_data = {
             "is_correct": is_correct,
             "correct_answers": list(correct_option_ids),
-            "question_index": current_question_index,
             "total_questions": len(questions)
         }
 
