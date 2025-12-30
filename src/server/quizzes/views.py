@@ -252,12 +252,12 @@ class QuizViewSet(viewsets.ModelViewSet):
             # Prepare next question data
             next_question = questions[current_question_index + 1]
             response_data["next_question"] = {
-                "id": next_question.id,
+                "id": str(next_question.id),
                 "text": next_question.text,
                 "type": next_question.type,
                 "answer_options": [
                     {
-                        "id": option.id,
+                        "id": str(option.id),
                         "text": option.text
                     } for option in next_question.answer_options.all()
                 ]
