@@ -386,7 +386,7 @@ function selectAnswer(answerId) {
 
 .error-message {
   font-size: 1.2rem;
-  color: #f44336;
+  color: var(--color-red);
   text-align: center;
   padding: 24px 0;
 }
