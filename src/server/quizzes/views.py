@@ -117,8 +117,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                     }, ...
                 ]
             },
-            "total_questions": int,
-            "is_last": bool
+            "total_questions": int
         }
         """
         user = request.user
@@ -158,8 +157,7 @@ class QuizViewSet(viewsets.ModelViewSet):
             "type": first_question.type,
             "answer_options": [{"id": str(o.id), "text": o.text} for o in first_question.answer_options.all()]
         },
-        "total_questions": len(questions),
-        "is_last": len(questions) == 1
+        "total_questions": len(questions)
     }, status=201)
 
     @action(detail=True, methods=['post'])
@@ -179,7 +177,6 @@ class QuizViewSet(viewsets.ModelViewSet):
             "correct_answers": [uuid, ...],
             "question_index": int,
             "total_questions": int,
-            "is_last": bool,
             "next_question": {
                 "id": uuid,
                 "text": str,
@@ -245,11 +242,8 @@ class QuizViewSet(viewsets.ModelViewSet):
             "total_questions": len(questions)
         }
 
-        is_last = current_question_index == len(questions) - 1
-        response_data["is_last"] = is_last
-
-        if not is_last:
-            # Prepare next question data
+        # Determine next question
+        if current_question_index != len(questions) - 1:
             next_question = questions[current_question_index + 1]
             response_data["next_question"] = {
                 "id": str(next_question.id),
