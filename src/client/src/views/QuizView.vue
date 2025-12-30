@@ -157,7 +157,7 @@ async function checkAnswer() {
 
 async function nextQuestion() {
   if (isLastQuestion.value) {
-    // Quiz beenden
+    // End quiz and navigate to results
     submitting.value = true
     try {
       router.push({
@@ -173,7 +173,7 @@ async function nextQuestion() {
       submitting.value = false
     }
   } else {
-    // Nächste Frage laden
+    // Load next question
     currentQuestion.value = newQuestion.value
     currentIndex.value++
     selectedAnswerIds.value = []
