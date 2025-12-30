@@ -109,6 +109,9 @@ const iqBaseWidth = ref(0)
 const iqPerfectWidth = ref(0)
 const iqStreakWidth = ref(0)
 
+/**
+ * Animates the IQ bar segments sequentially.
+ */
 function animateBar() {
 
   iqOldWidth.value = 0
@@ -120,11 +123,11 @@ function animateBar() {
   showPerfectLabel.value = false
   showStreakLabel.value = false
 
-  // Berechne Prozentwerte
+  // Calculate widths
   const oldW = iq_prev.value
   const baseW = iq_base.value
   const perfectW = iq_perfect.value
-  const streakW =iq_streak.value
+  const streakW = iq_streak.value
 
   setTimeout(() => {
     iqOldWidth.value = oldW
@@ -144,6 +147,9 @@ function animateBar() {
   }, 400)
 }
 
+/**
+ * Loads quiz results from local storage and notifies the server of quiz completion.
+ */
 onMounted(async () => {
   const stored = localStorage.getItem('quizResults')
   if (stored) {
@@ -177,7 +183,9 @@ onMounted(async () => {
 })
 
 
-
+/**
+ * Restarts the quiz by clearing stored results and navigating to the quiz view.
+ */
 function restartQuiz() {
   localStorage.removeItem('quizResults')
   router.push({
@@ -186,6 +194,9 @@ function restartQuiz() {
   })
 }
 
+/**
+ * Navigates to the quiz overview page or home if no quiz ID is available.
+ */
 function goToOverview() {
   if (!quizId.value) {
     console.error('No quiz ID available')
