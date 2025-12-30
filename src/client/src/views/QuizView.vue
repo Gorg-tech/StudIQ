@@ -107,6 +107,9 @@ const isLastQuestion = computed(() => {
   return currentIndex.value === totalQuestions.value - 1
 })
 
+/**
+ * Sends a start request to the server and loads the quiz and the first question 
+ */
 onMounted(async () => {
   try {
     const data = await startQuiz(quizId.value)
@@ -124,6 +127,9 @@ onMounted(async () => {
   }
 })
 
+/**
+ * Returns the text of the correct answers for the current question.
+ */
 function getCorrectAnswerTexts() {
   if (!currentQuestion.value) return ''
   return currentQuestion.value.answer_options
@@ -132,6 +138,9 @@ function getCorrectAnswerTexts() {
     .join(', ')
 }
 
+/**
+ * Submits the selected answers to the server and processes the response.
+ */
 async function checkAnswer() {
   if (!currentQuestion.value || submitting.value) return
   
@@ -155,6 +164,9 @@ async function checkAnswer() {
   }
 }
 
+/**
+ * Loads the next question or navigates to the results page if it was the last question.
+ */
 async function nextQuestion() {
   if (isLastQuestion.value) {
     // End quiz and navigate to results
@@ -183,6 +195,10 @@ async function nextQuestion() {
   }
 }
 
+/**
+ * Selects an answer for the current question.
+ * @param answerId The id of the answer to select
+ */
 function selectAnswer(answerId) {
   if (!answered.value) {
     if (currentQuestion.value.type === 'SINGLE_CHOICE') {
