@@ -79,8 +79,8 @@ const error = ref(null)
 const results = ref([])
 const quizId = ref(route.query.quizId)
 
-const correctAnswers = computed(() => results.value.filter(r => r.isCorrect).length)
-const totalQuestions = computed(() => results.value.length)
+const correctAnswers = ref(0)
+const totalQuestions = ref(0)
 const percentage = computed(() =>
   totalQuestions.value > 0
     ? Math.round((correctAnswers.value / totalQuestions.value) * 100)
@@ -164,6 +164,8 @@ onMounted(async () => {
     iq_score.value = Math.floor(iq_calc.new_iq / 100)
     attempts.value = iq_calc.attempts || 1
     streak.value = iq_calc.streak || 0
+    correctAnswers.value = iq_calc.correct_answers || 0
+    totalQuestions.value = iq_calc.total_answers || 0
     animateBar()
   } else {
     error.value = new Error('Keine Quiz-ID angegeben')
@@ -176,7 +178,7 @@ onMounted(async () => {
 
 function restartQuiz() {
   localStorage.removeItem('quizResults')
-  router.push({ 
+  router.push({
     name: 'quiz',
     params: { quizId: quizId.value }
   })
