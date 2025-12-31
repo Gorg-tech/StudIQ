@@ -277,7 +277,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         user = request.user
         quiz = self.get_object()
 
-        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=False).order_by('-start_time')
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=False).order_by('start_time')
 
         dict_list = []
         for quiz_session in quiz_sessions:
