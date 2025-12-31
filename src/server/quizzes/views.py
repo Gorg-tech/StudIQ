@@ -126,10 +126,10 @@ class QuizViewSet(viewsets.ModelViewSet):
 
         # If an active session already exists, reset it, else create a new one
         if quiz_session is not None:
-                quiz_session.start_time = timezone.now()
-                quiz_session.total_answers = 0
-                quiz_session.correct_answers = 0
-                quiz_session.save()
+            quiz_session.start_time = timezone.now()
+            quiz_session.total_answers = 0
+            quiz_session.correct_answers = 0
+            quiz_session.save()
         else:
             try:
                 quiz_session = QuizSession.objects.create(
