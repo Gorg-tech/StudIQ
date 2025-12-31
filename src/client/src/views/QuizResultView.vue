@@ -7,10 +7,11 @@
       <div class="iq-bar-container">
         <div class="iq-level-label">
           <span>IQ-Level</span>
+          <span class="level-info">({{ level_info }})</span>
           <div class="iq-level-values">
             <span class="iq-prev">{{ iq_prev }}</span>
             <span class="iq-arrow">→</span>
-            <span class="iq-new">{{ iq_new }}</span>
+            <span class="iq-new">{{ getIQPoints(iq_new) + (iq_new > getMaxPerPointsLevel() ? getMaxPerPointsLevel() : 0)}}</span>
           </div>
         </div>
         <div class="iq-attempt-info">
@@ -29,7 +30,7 @@
         </div>
         <div class="iq-bar-scale">
           <span>0</span>
-          <span>100</span>
+          <span>{{ getMaxPerPointsLevel() }}</span>
         </div>
         <div class="iq-bar-labels">
           <transition name="fade"><div v-if="showOldLabel" class="iq-label iq-old-label"> {{ iq_prev }} Punkte vor dem Quiz</div></transition>
@@ -75,6 +76,7 @@ const showStreakLabel = ref(false)
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { completeQuiz } from '@/services/quizzes'
+import { getMaxPerPointsLevel, getIQLevel, getIQPoints } from '@/services/iq'
 
 const router = useRouter()
 const route = useRoute()
@@ -101,6 +103,13 @@ const iq_streak = ref(0)
 const iq_total = ref(0)
 const iq_prev = ref(0)
 const iq_new = ref(0)
+const level_info = computed(() => {
+  var str = "Level " + getIQLevel(iq_prev.value);
+  if(iq_new.value > getMaxPerPointsLevel()) {
+    str += " +1"
+  }
+  return str
+})
 
 const attempts = ref(1)
 const streak = ref(0)
@@ -129,17 +138,19 @@ function animateBar() {
   const perfectW = iq_perfect.value
   const streakW = iq_streak.value
 
+  const toPercent = 100 / getMaxPerPointsLevel()
+
   setTimeout(() => {
-    iqOldWidth.value = oldW
+    iqOldWidth.value = oldW * toPercent
     showOldLabel.value = true
     setTimeout(() => {
-      iqBaseWidth.value = baseW
+      iqBaseWidth.value = baseW * toPercent
       showBaseLabel.value = true
       setTimeout(() => {
-        iqStreakWidth.value = streakW
+        iqStreakWidth.value = streakW * toPercent
         showStreakLabel.value = true
         setTimeout(() => {
-          iqPerfectWidth.value = perfectW
+          iqPerfectWidth.value = perfectW * toPercent
           showPerfectLabel.value = true
         }, 400)
       }, 400)
@@ -164,7 +175,7 @@ onMounted(async () => {
       iq_perfect.value = iq_calc.perfect_bonus_points || 0
       iq_streak.value = iq_calc.streak_bonus_points || 0
       iq_total.value = iq_base.value + iq_perfect.value + iq_streak.value
-      iq_prev.value = iq_calc.prev_iq || 0
+      iq_prev.value = getIQPoints(iq_calc.prev_iq || 0)
       iq_new.value = iq_prev.value + iq_total.value
       iq_score.value = Math.floor(iq_new.value / 100)
       attempts.value = iq_calc.attempts || 1
@@ -432,6 +443,11 @@ function goToOverview() {
   gap: 16px;
   justify-content: center;
   margin-top: 24px;
+}
+
+.level-info {
+  font-size: 0.8rem;
+  color: var(--color-muted)
 }
 
 .error {
