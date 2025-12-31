@@ -20,3 +20,8 @@ export function getIQPoints(score) {
   // normalize to positive remainder for negative inputs as well
   return ((Math.floor(n) % 100) + 100) % 100;
 }
+
+export function getIQPercent(score) {
+    const n = Number(score) || 0;
+    return (n % 100) / 100;
+}
