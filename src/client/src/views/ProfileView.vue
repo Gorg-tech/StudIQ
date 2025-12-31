@@ -196,9 +196,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
+import '@/services/iq.js'
 import { getFriends, sendOrAcceptFriendRequest, declineFriendRequest, getFriendRequests, removeFriend} from '@/services/friends.js'
 import { store } from '@/stores/app.js'
 
@@ -208,6 +209,7 @@ import IconFlame from '@/components/icons/IconFlame.vue'
 import IconSettings from '@/components/icons/IconSettings.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
+import { getIQLevel, getIQPoints } from '@/services/iq.js'
 
 const router = useRouter()
 
@@ -218,8 +220,12 @@ const error = ref(null)
 const leaderboardPosition = ref(12)
 const penguinSpeech = ref('Super gemacht! Weiter so 🐧')
 
-const userLevel = ref(3)
-const levelProgress = ref(60)
+const userLevel = computed(() => {
+  return getIQLevel(user.value.iq_score.value)
+})
+const levelProgress = computed(() => {
+  return getIQPoints(user.value.iq_score)
+})
 
 const currentWeekStreak = ref([])
 const streakCount = ref(0)
