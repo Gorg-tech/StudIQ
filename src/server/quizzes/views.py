@@ -327,8 +327,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         attempt_multiplier = exp((-0.5 if had_perfect_before else -0.2) * (attempts - 1))
         # based on accuracy and the amount of questions answered
         base_points = quiz_session.total_answers ** (accuracy) * (0.2 if had_perfect_before else 1)
-        # adds 25% of the base points when reaching perfect score
-        perfect_bonus = 0.25 if not had_perfect_before and accuracy == 1.0 else 0
+        # adds 50% of the base points when reaching perfect score
+        perfect_bonus = 0.5 if not had_perfect_before and accuracy == 1.0 else 0
         # adds up to 25% of the base points with a higher streak
         streak_bonus = 0.25 * (1 - exp(-0.33 * streak)) if not had_perfect_before else 0
 
