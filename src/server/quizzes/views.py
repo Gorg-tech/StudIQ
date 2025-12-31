@@ -16,7 +16,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import Q
+from django.db.models import Q, F
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
@@ -298,47 +298,47 @@ class QuizViewSet(viewsets.ModelViewSet):
         Returns (in response):
         dict: {
             "base_points": int,
-            "attempt_bonus_points": int,
             "perfect_bonus_points": int,
             "streak_bonus_points": int,
-            "total_points": int,
             "prev_iq": int,
-            "new_iq": int,
             "total_answers": int,
             "correct_answers": int
         }
         """
         user = request.user
         quiz = self.get_object()
-        attempts = QuizSession.objects.filter(user=user, quiz=quiz).count()
-        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz,
-                                                  end_time__isnull=True).first()
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz)
+        attempts = quiz_sessions.count()
+        quiz_session = quiz_sessions.filter(end_time__isnull=True).first()
         if not quiz_session:
             return Response({"detail": "No active quiz session found."},
                             status=status.HTTP_404_NOT_FOUND)
-        total = quiz_session.total_answers
         streak = calculate_streak(user)
-        accuracy = quiz_session.correct_answers / total if total > 0 else 0
+        accuracy = quiz_session.correct_answers / quiz_session.total_answers\
+            if quiz_session.total_answers > 0 else 0
+        had_perfect_before = False
+
+        # calculate if this is the first perfect
+        had_perfect_before = quiz_sessions.filter(end_time__isnull=False)\
+        .filter(correct_answers=F('total_answers')).exclude(total_answers=0).exists()
 
         # formulas
-        attempt_bonus = 0.5 * exp(-0.5 * (attempts-1))
-        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
-                        if accuracy == 1.0 else 0
-        streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
+        # score becomes less with more attempts
+        attempt_multiplier = exp((-0.5 if had_perfect_before else -0.2) * (attempts - 1))
+        # based on accuracy and the amount of questions answered
+        base_points = quiz_session.total_answers ** (accuracy) * (0.2 if had_perfect_before else 1)
+        # adds 25% of the base points when reaching perfect score
+        perfect_bonus = 0.25 if not had_perfect_before and accuracy == 1.0 else 0
+        # adds up to 25% of the base points with a higher streak
+        streak_bonus = 0.25 * (1 - exp(-0.33 * streak)) if not had_perfect_before else 0
 
-        base_points = floor(0.5 * total ** (accuracy))
-        attempt_bonus_points = floor(base_points * attempt_bonus)
+        base_points = floor(base_points * attempt_multiplier)
         perfect_bonus_points = floor(base_points * perfect_bonus)
         streak_bonus_points = floor(base_points * streak_bonus)
 
-        total_points = floor(
-            base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
-        )
-
         # update user and quiz progress
         prev_iq = user.iq_score
-        new_iq = prev_iq + total_points
-        user.iq_score = new_iq
+        user.iq_score = prev_iq + floor(base_points + perfect_bonus_points + streak_bonus_points)
         user.solved_quizzes += 1
         user.save()
 
@@ -351,12 +351,9 @@ class QuizViewSet(viewsets.ModelViewSet):
             "attempts": attempts,
             "streak": streak,
             "base_points": base_points,
-            "attempt_bonus_points": attempt_bonus_points,
             "perfect_bonus_points": perfect_bonus_points,
             "streak_bonus_points": streak_bonus_points,
-            "total_points": total_points,
             "prev_iq": prev_iq,
-            "new_iq": new_iq,
             "total_answers": quiz_session.total_answers,
             "correct_answers": quiz_session.correct_answers
         })
