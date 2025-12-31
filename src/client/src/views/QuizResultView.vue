@@ -103,13 +103,7 @@ const iq_streak = ref(0)
 const iq_total = ref(0)
 const iq_prev = ref(0)
 const iq_new = ref(0)
-const level_info = computed(() => {
-  var str = "Level " + getIQLevel(iq_prev.value);
-  if(iq_new.value > getMaxPerPointsLevel()) {
-    str += " +1"
-  }
-  return str
-})
+const level_info = ref(null)
 
 const attempts = ref(1)
 const streak = ref(0)
@@ -182,6 +176,12 @@ onMounted(async () => {
       streak.value = iq_calc.streak || 0
       correctAnswers.value = iq_calc.correct_answers || 0
       totalQuestions.value = iq_calc.total_answers || 0
+
+      level_info.value = "Level " + getIQLevel(iq_calc.prev_iq || 0);
+        if(iq_new.value > getMaxPerPointsLevel()) {
+          level_info.value += " +1"
+      }
+
       animateBar()
     } catch (err) {
       error.value = err
