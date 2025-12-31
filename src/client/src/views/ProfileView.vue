@@ -199,7 +199,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
-import { getIQLevel, getIQPoints, getMaxPerPointsLevel} from '@/services/iq.js'
+import { getIQLevel, getIQPoints, getMaxPointsPerLevel} from '@/services/iq.js'
 import { getFriends, sendOrAcceptFriendRequest, declineFriendRequest, getFriendRequests, removeFriend} from '@/services/friends.js'
 import { store } from '@/stores/app.js'
 
@@ -223,7 +223,7 @@ const userLevel = computed(() => {
   return getIQLevel(user.value.iq_score)
 })
 const levelProgress = computed(() => {
-  return getIQPoints(user.value.iq_score) / getMaxPerPointsLevel() * 100
+  return getIQPoints(user.value.iq_score) / getMaxPointsPerLevel() * 100
 })
 
 const currentWeekStreak = ref([])

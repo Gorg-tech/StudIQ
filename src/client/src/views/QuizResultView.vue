@@ -11,7 +11,7 @@
           <div class="iq-level-values">
             <span class="iq-prev">{{ iq_prev }}</span>
             <span class="iq-arrow">→</span>
-            <span class="iq-new">{{ getIQPoints(iq_new) + (iq_new > getMaxPerPointsLevel() ? getMaxPerPointsLevel() : 0)}}</span>
+            <span class="iq-new">{{ getIQPoints(iq_new) + (iq_new > getMaxPointsPerLevel() ? getMaxPointsPerLevel() : 0)}}</span>
           </div>
         </div>
         <div class="iq-attempt-info">
@@ -30,7 +30,7 @@
         </div>
         <div class="iq-bar-scale">
           <span>0</span>
-          <span>{{ getMaxPerPointsLevel() }}</span>
+          <span>{{ getMaxPointsPerLevel() }}</span>
         </div>
         <div class="iq-bar-labels">
           <transition name="fade"><div v-if="showOldLabel" class="iq-label iq-old-label"> {{ iq_prev }} Punkte vor dem Quiz</div></transition>
@@ -76,7 +76,7 @@ const showStreakLabel = ref(false)
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { completeQuiz } from '@/services/quizzes'
-import { getMaxPerPointsLevel, getIQLevel, getIQPoints } from '@/services/iq'
+import { getMaxPointsPerLevel, getIQLevel, getIQPoints } from '@/services/iq'
 
 const router = useRouter()
 const route = useRoute()
@@ -132,7 +132,7 @@ function animateBar() {
   const perfectW = iq_perfect.value
   const streakW = iq_streak.value
 
-  const toPercent = 100 / getMaxPerPointsLevel()
+  const toPercent = 100 / getMaxPointsPerLevel()
 
   setTimeout(() => {
     iqOldWidth.value = oldW * toPercent
@@ -178,7 +178,7 @@ onMounted(async () => {
       totalQuestions.value = iq_calc.total_answers || 0
 
       level_info.value = "Level " + getIQLevel(iq_calc.prev_iq || 0);
-        if(iq_new.value > getMaxPerPointsLevel()) {
+        if(iq_new.value > getMaxPointsPerLevel()) {
           level_info.value += " +1"
       }
 

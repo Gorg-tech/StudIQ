@@ -6,7 +6,7 @@
  */
 export function getIQLevel(score) {
   const n = Number(score) || 0;
-  return Math.floor(n / getMaxPerPointsLevel());
+  return Math.floor(n / getMaxPointsPerLevel());
 }
 
 /**
@@ -18,13 +18,13 @@ export function getIQLevel(score) {
 export function getIQPoints(score) {
   const n = Number(score) || 0;
   // normalize to positive remainder for negative inputs as well
-  return ((Math.floor(n) % getMaxPerPointsLevel()) + getMaxPerPointsLevel()) % getMaxPerPointsLevel();
+  return ((Math.floor(n) % getMaxPointsPerLevel()) + getMaxPointsPerLevel()) % getMaxPointsPerLevel();
 }
 
 /**
  * Returns the amount of points per level
  * @returns {number}
  */
-export function getMaxPerPointsLevel() {
+export function getMaxPointsPerLevel() {
     return 100;
 }
