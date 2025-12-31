@@ -199,7 +199,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSelfUserStreaks, getSelfUserStats } from '@/services/user.js'
-import '@/services/iq.js'
+import { getIQLevel, getIQPoints} from '@/services/iq.js'
 import { getFriends, sendOrAcceptFriendRequest, declineFriendRequest, getFriendRequests, removeFriend} from '@/services/friends.js'
 import { store } from '@/stores/app.js'
 
@@ -209,7 +209,6 @@ import IconFlame from '@/components/icons/IconFlame.vue'
 import IconSettings from '@/components/icons/IconSettings.vue'
 import IconCode from '@/components/icons/IconCode.vue'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
-import { getIQLevel, getIQPoints } from '@/services/iq.js'
 
 const router = useRouter()
 
