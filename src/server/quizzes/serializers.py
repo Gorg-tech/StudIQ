@@ -7,7 +7,7 @@ support nested structures for more complex objects, such as quizzes containing q
 """
 
 from rest_framework import serializers
-from .models import Quiz, Question, AnswerOption, Lernset, QuizAttempt,\
+from .models import Quiz, Question, AnswerOption, Lernset,\
                     QuizSession, Feedback, Studiengang, Modul
 
 class AnswerOptionSerializer(serializers.ModelSerializer):
@@ -229,18 +229,6 @@ class LernsetSerializer(serializers.ModelSerializer):
         validated_data['modul'] = modul
         return super().create(validated_data)
 
-class QuizAttemptSerializer(serializers.ModelSerializer):
-    """
-    Serializes QuizAttempt objects, representing a user's statistics for a quiz.
-    """
-    class Meta:
-        """
-        Meta class defining the model and fields to be serialized.
-        """
-        model = QuizAttempt
-        fields = ['id', 'quiz', 'correct_answers', 'wrong_answers',
-                 'last_reviewed', 'attempts']
-
 class QuizSessionSerializer(serializers.ModelSerializer):
     """
     Serializes QuizSession objects, representing a user's session while solving a quiz.
@@ -251,7 +239,7 @@ class QuizSessionSerializer(serializers.ModelSerializer):
         Meta class defining the model and fields to be serialized.
         """
         model = QuizSession
-        fields = ['id', 'quiz', 'start_time', 'end_time']
+        fields = ['id', 'quiz', 'start_time', 'end_time', 'correct_answers', 'total_answers']
 
 class FeedbackSerializer(serializers.ModelSerializer):
     """

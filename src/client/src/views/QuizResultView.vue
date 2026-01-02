@@ -1,39 +1,46 @@
 <template>
   <div v-if="loading">Lädt...</div>
-  <div v-else-if="error">Fehler: {{ error.message }}</div>
-  <div v-if="!loading">
+  <div v-else-if="error" class="error">Fehler: {{ error.message }}</div>
+  <div v-if="!loading && !error">
     <div class="result-card card">
       <h2>Dein Ergebnis</h2>
       <div class="iq-bar-container">
         <div class="iq-level-label">
           <span>IQ-Level</span>
-          <div class="iq-level-value">{{ iq_score }}</div>
+          <span class="level-info">({{ level_info }})</span>
+          <div class="iq-level-values">
+            <span class="iq-prev">{{ iq_prev }}</span>
+            <span class="iq-arrow">→</span>
+            <span class="iq-new">{{ getIQPoints(iq_new) + (iq_new > getMaxPointsPerLevel() ? getMaxPointsPerLevel() : 0)}}</span>
+          </div>
+        </div>
+        <div class="iq-attempt-info">
+          <span class="iq-attempt-text">(Das ist dein {{ attempts }}. Versuch)</span>
         </div>
         <div class="iq-bar">
-          <div class="iq-segment iq-old" :style="{ width: iqOldWidth + '%', left: '0%' }" title="Bisheriger IQ-Level"></div>
-          <div class="iq-segment iq-base" :style="{ width: iqBaseWidth + '%', left: iqOldWidth + '%' }" title="Punkte für das Quiz"></div>
-          <div class="iq-segment iq-perfect" :style="{ width: iqPerfectWidth + '%', left: (iqOldWidth + iqBaseWidth) + '%' }" title="Perfect-Score-Bonus"></div>
-          <div class="iq-segment iq-streak" :style="{ width: iqStreakWidth + '%', left: (iqOldWidth + iqBaseWidth + iqPerfectWidth) + '%' }" title="Streak-Bonus"></div>
-          <div class="iq-segment iq-attempt" :style="{ width: iqAttemptWidth + '%', left: (iqOldWidth + iqBaseWidth + iqPerfectWidth + iqStreakWidth) + '%' }" title="Versuch-Bonus"></div>
+          <div class="iq-segment iq-old" :style="{ width: iqOldWidth + '%'}" title="Bisheriger IQ-Score"></div>
+          <div class="iq-segment iq-base" :style="{ width: iqBaseWidth + iqOldWidth + '%'}" title="Punkte für das Quiz"></div>
+          <div
+            v-if="iq_perfect > 0"
+            class="iq-segment iq-perfect"
+            :style="{ width: iqOldWidth + iqBaseWidth + iqPerfectWidth + '%'}"
+            title="Perfect-Score-Bonus"
+          ></div>
+          <div class="iq-segment iq-streak" :style="{ width: iqOldWidth + iqBaseWidth + iqPerfectWidth + iqStreakWidth + '%'}" title="Streak-Bonus"></div>
         </div>
         <div class="iq-bar-scale">
           <span>0</span>
-          <span>100</span>
+          <span>{{ getMaxPointsPerLevel() }}</span>
         </div>
         <div class="iq-bar-labels">
-          <transition name="fade"><div v-if="showBaseLabel" class="iq-label iq-base-label">+{{ iq_base }} Punkte für das Quiz</div></transition>
-          <transition name="fade"><div v-if="showPerfectLabel" class="iq-label iq-perfect-label">+{{ iq_perfect }} Perfect-Score-Bonus</div></transition>
-          <transition name="fade"><div v-if="showStreakLabel" class="iq-label iq-streak-label">+{{ iq_streak }} Streak-Bonus (du hast eine {{ streak }}er Streak)</div></transition>
-          <transition name="fade"><div v-if="showAttemptLabel" class="iq-label iq-attempt-label">+{{ iq_attampt }} Versuch-Bonus (das ist dein {{ attempts }}. Versuch)</div></transition>
+          <transition name="fade"><div v-if="showOldLabel" class="iq-label iq-old-label"> {{ iq_prev }} Punkte vor dem Quiz</div></transition>
+          <transition name="fade"><div v-if="showBaseLabel" class="iq-label iq-base-label">+ {{ iq_base }} Punkte - Lösen des Quizzes</div></transition>
+          <transition name="fade"><div v-if="showStreakLabel" class="iq-label iq-streak-label">+ {{ iq_streak }} Punkte - {{ streak }}er Streak-Bonus</div></transition>
+          <transition name="fade"><div v-if="showPerfectLabel && iq_perfect > 0" class="iq-label iq-perfect-label">+ {{ iq_perfect }} Punkte - Perfekt-Bonus</div></transition>
         </div>
       </div>
       <div class="iq-total">
-        Gesamt: <span class="iq-total-value">+{{ iq_total }}</span>
-      </div>
-      <div class="iq-prev-next">
-        <span class="iq-prev">{{ iq_prev }}</span>
-        <span class="iq-arrow">→</span>
-        <span class="iq-new">{{ iq_new }}</span>
+        Gesamt: <span class="iq-total-value">+{{ iq_total }} Punkte</span>
       </div>
       <div class="result-summary">
         <div class="result-score">{{ correctAnswers }} / {{ totalQuestions }} richtig</div>
@@ -62,13 +69,14 @@
 
 <script setup>
 const iqOldWidth = ref(0)
+const showOldLabel = ref(false)
 const showBaseLabel = ref(false)
 const showPerfectLabel = ref(false)
 const showStreakLabel = ref(false)
-const showAttemptLabel = ref(false)
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { completeQuiz } from '@/services/quiz_results'
+import { completeQuiz } from '@/services/quizzes'
+import { getMaxPointsPerLevel, getIQLevel, getIQPoints } from '@/services/iq'
 
 const router = useRouter()
 const route = useRoute()
@@ -79,8 +87,8 @@ const error = ref(null)
 const results = ref([])
 const quizId = ref(route.query.quizId)
 
-const correctAnswers = computed(() => results.value.filter(r => r.isCorrect).length)
-const totalQuestions = computed(() => results.value.length)
+const correctAnswers = ref(0)
+const totalQuestions = ref(0)
 const percentage = computed(() =>
   totalQuestions.value > 0
     ? Math.round((correctAnswers.value / totalQuestions.value) * 100)
@@ -92,10 +100,10 @@ const iq_score = ref(0)
 const iq_base = ref(0)
 const iq_perfect = ref(0)
 const iq_streak = ref(0)
-const iq_attampt = ref(0)
 const iq_total = ref(0)
 const iq_prev = ref(0)
 const iq_new = ref(0)
+const level_info = ref(null)
 
 const attempts = ref(1)
 const streak = ref(0)
@@ -103,48 +111,50 @@ const streak = ref(0)
 const iqBaseWidth = ref(0)
 const iqPerfectWidth = ref(0)
 const iqStreakWidth = ref(0)
-const iqAttemptWidth = ref(0)
 
+/**
+ * Animates the IQ bar segments sequentially.
+ */
 function animateBar() {
 
   iqOldWidth.value = 0
   iqBaseWidth.value = 0
   iqPerfectWidth.value = 0
   iqStreakWidth.value = 0
-  iqAttemptWidth.value = 0
+  showOldLabel.value = false
   showBaseLabel.value = false
   showPerfectLabel.value = false
   showStreakLabel.value = false
-  showAttemptLabel.value = false
 
-  // Berechne Prozentwerte
+  // Calculate widths
   const oldW = iq_prev.value
   const baseW = iq_base.value
   const perfectW = iq_perfect.value
-  const streakW =iq_streak.value
-  const attemptW = iq_attampt.value
+  const streakW = iq_streak.value
+
+  const toPercent = 100 / getMaxPointsPerLevel()
 
   setTimeout(() => {
-    iqOldWidth.value = oldW
+    iqOldWidth.value = oldW * toPercent
+    showOldLabel.value = true
     setTimeout(() => {
-      iqBaseWidth.value = baseW
+      iqBaseWidth.value = baseW * toPercent
       showBaseLabel.value = true
       setTimeout(() => {
-        iqPerfectWidth.value = perfectW
-        showPerfectLabel.value = true
+        iqStreakWidth.value = streakW * toPercent
+        showStreakLabel.value = true
         setTimeout(() => {
-          iqStreakWidth.value = streakW
-          showStreakLabel.value = true
-          setTimeout(() => {
-            iqAttemptWidth.value = attemptW
-            showAttemptLabel.value = true
-          }, 400)
+          iqPerfectWidth.value = perfectW * toPercent
+          showPerfectLabel.value = true
         }, 400)
       }, 400)
     }, 400)
   }, 400)
 }
 
+/**
+ * Loads quiz results from local storage and notifies the server of quiz completion.
+ */
 onMounted(async () => {
   const stored = localStorage.getItem('quizResults')
   if (stored) {
@@ -153,18 +163,29 @@ onMounted(async () => {
   
   // Notify server of quiz completion
   if (quizId.value) {
-    const iq_calc = await completeQuiz(quizId.value, correctAnswers.value)
-    iq_base.value = iq_calc.base_points || 0
-    iq_perfect.value = iq_calc.perfect_bonus_points || 0
-    iq_streak.value = iq_calc.streak_bonus_points || 0
-    iq_attampt.value = iq_calc.attempt_bonus_points || 0
-    iq_total.value = iq_calc.total_points || 0
-    iq_prev.value = iq_calc.prev_iq || 0
-    iq_new.value = iq_calc.new_iq || 0
-    iq_score.value = Math.floor(iq_calc.new_iq / 100)
-    attempts.value = iq_calc.attempts || 1
-    streak.value = iq_calc.streak || 0
-    animateBar()
+    try {
+      const iq_calc = await completeQuiz(quizId.value)
+      iq_base.value = iq_calc.base_points || 0
+      iq_perfect.value = iq_calc.perfect_bonus_points || 0
+      iq_streak.value = iq_calc.streak_bonus_points || 0
+      iq_total.value = iq_base.value + iq_perfect.value + iq_streak.value
+      iq_prev.value = getIQPoints(iq_calc.prev_iq || 0)
+      iq_new.value = iq_prev.value + iq_total.value
+      iq_score.value = Math.floor(iq_new.value / 100)
+      attempts.value = iq_calc.attempts || 1
+      streak.value = iq_calc.streak || 0
+      correctAnswers.value = iq_calc.correct_answers || 0
+      totalQuestions.value = iq_calc.total_answers || 0
+
+      level_info.value = "Level " + getIQLevel(iq_calc.prev_iq || 0);
+        if(iq_new.value > getMaxPointsPerLevel()) {
+          level_info.value += " +1"
+      }
+
+      animateBar()
+    } catch (err) {
+      error.value = err
+    }
   } else {
     error.value = new Error('Keine Quiz-ID angegeben')
   }
@@ -173,15 +194,20 @@ onMounted(async () => {
 })
 
 
-
+/**
+ * Restarts the quiz by clearing stored results and navigating to the quiz view.
+ */
 function restartQuiz() {
   localStorage.removeItem('quizResults')
-  router.push({ 
+  router.push({
     name: 'quiz',
     params: { quizId: quizId.value }
   })
 }
 
+/**
+ * Navigates to the quiz overview page or home if no quiz ID is available.
+ */
 function goToOverview() {
   if (!quizId.value) {
     console.error('No quiz ID available')
@@ -219,16 +245,17 @@ function goToOverview() {
   width: 420px;
   height: 38px;
   background: var(--color-bg-light);
+  border: var(--color-border) 2px solid;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 1px 6px rgba(34,34,34,0.08);
   position: relative;
   border: 2px solid var(--color-bg-light);
 }
-.iq-segment.iq-old {
-  background: var(--color-primary);
-  z-index: 1;
+.iq-segment {
+  border-radius: 18px;
 }
+
 .iq-bar-labels {
   display: flex;
   flex-direction: column;
@@ -240,15 +267,21 @@ function goToOverview() {
 .iq-label {
   font-size: 1.08rem;
   font-weight: 600;
-  padding: 2px 10px;
+  padding: 0px 10px;
   border-radius: 8px;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
   animation: popIn 0.5s;
 }
+.iq-attempt-text {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--color-muted);
+  margin-bottom: 8px;
+}
+.iq-old-label { color: var(--color-primary); background: var(--color-bg-light); }
 .iq-base-label { color: var(--color-secondary); background: var(--color-bg-light); }
-.iq-perfect-label { color: color-mix(in oklab, var(--color-secondary) 90%, #ffffff 20%); background: var(--color-bg-light); }
-.iq-streak-label { color: color-mix(in oklab, var(--color-secondary) 90%, #ffffff 40%); background: var(--color-bg-light); }
-.iq-attempt-label { color: color-mix(in oklab, var(--color-secondary) 90%, #ffffff 60%); background: var(--color-bg-light); }
+.iq-streak-label { color: color-mix(in oklab, var(--color-secondary) 66%, #ffffff 33%); background: var(--color-bg-light); }
+.iq-perfect-label { color: color-mix(in oklab, var(--color-secondary) 33%, #ffffff 66%); background: var(--color-bg-light); }
 @keyframes popIn {
   0% { opacity: 0; transform: translateY(10px) scale(0.95); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -270,19 +303,22 @@ function goToOverview() {
 }
 .iq-segment:hover {
   filter: brightness(1.2);
-  z-index: 2;
+}
+.iq-old {
+  background: var(--color-primary);
+  z-index: 4;
 }
 .iq-base {
   background: var(--color-secondary);
-}
-.iq-perfect {
-  background: color-mix(in oklab, var(--color-secondary) 90%, #ffffff 20%);
+  z-index: 3;
 }
 .iq-streak {
-  background: color-mix(in oklab, var(--color-secondary) 90%, #ffffff 40%);
+  background: color-mix(in oklab, var(--color-secondary) 66%, #ffffff 33%);
+  z-index: 2;
 }
-.iq-attempt {
-  background: color-mix(in oklab, var(--color-secondary) 90%, #ffffff 60%);
+.iq-perfect {
+  background: color-mix(in oklab, var(--color-secondary) 33%, #ffffff 66%);
+  z-index: 1;
 }
 .iq-segment-label {
   font-size: 1.1rem;
@@ -327,6 +363,7 @@ function goToOverview() {
 .iq-arrow {
   font-size: 1.3rem;
   color: var(--color-muted);
+  padding: 0 10px;
 }
 .result-card {
   background-color: var(--card-bg);
@@ -406,5 +443,18 @@ function goToOverview() {
   gap: 16px;
   justify-content: center;
   margin-top: 24px;
+}
+
+.level-info {
+  font-size: 0.8rem;
+  color: var(--color-muted)
+}
+
+.error {
+  color: var(--color-red);
+  font-weight: 600;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 20px;
 }
 </style>

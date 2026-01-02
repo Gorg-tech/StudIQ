@@ -4,12 +4,12 @@
       <div class="quiz-header">
         <div>
           <h2>
-            {{ quiz.title }}
+            {{ quizTitle }}
             <span class="quiz-progress">
-              (Frage {{ currentIndex + 1 }} von {{ quiz.questions.length }})
+              (Frage {{ currentIndex + 1 }} von {{ totalQuestions }})
             </span>
           </h2>
-          <p class="quiz-description">{{ quiz.description }}</p>
+          <p class="quiz-description">{{ quizDescription }}</p>
         </div>
         <div class="quiz-card-penguin">
           <Penguin style="width: 80px; height: 80px;" />
@@ -28,43 +28,43 @@
           </div>
         </div>
         <div v-else class="question-block">
-          <h3>{{ currentQuestion.question }}</h3>
+          <h3>{{ currentQuestion.text }}</h3>
           <p class="question-type" v-if="currentQuestion.type === 'SINGLE_CHOICE'">Wähle eine Antwort aus.</p>
           <p class="question-type" v-else>Wähle eine oder mehrere Antworten aus.</p>
           <div
-            v-for="(answer, index) in currentQuestion.answers"
-            :key="index"
+            v-for="option in currentQuestion.answer_options"
+            :key="option.id"
             class="answer-row"
             :class="{
-              selected: selectedAnswer.includes(answer),
-              correct: answered && currentQuestion.correctAnswers.includes(answer),
-              incorrect: answered && selectedAnswer.includes(answer) && !currentQuestion.correctAnswers.includes(answer),
-              hoverable: !answered && !selectedAnswer.includes(answer)
+              selected: selectedAnswerIds.includes(option.id),
+              correct: answered && lastCorrectAnswerIds.includes(option.id),
+              incorrect: answered && selectedAnswerIds.includes(option.id) && !lastCorrectAnswerIds.includes(option.id),
+              hoverable: !answered && !selectedAnswerIds.includes(option.id)
             }"
             :role="currentQuestion.type === 'SINGLE_CHOICE' ? 'radio' : 'checkbox'"
-            :aria-checked="currentQuestion.type === 'SINGLE_CHOICE' ? (selectedSingle === answer).toString() : selectedAnswer.includes(answer).toString()"
+            :aria-checked="selectedAnswerIds.includes(option.id).toString()"
             tabindex="0"
-            @click="selectAnswer(answer)"
-            @keydown.enter="selectAnswer(answer)"
+            @click="selectAnswer(option.id)"
+            @keydown.enter="selectAnswer(option.id)"
           >
-            <span class="answer-text">{{ answer }}</span>
-            <div class="checkmark" v-if="selectedAnswer.includes(answer)">✓</div>
+            <span class="answer-text">{{ option.text }}</span>
+            <div class="checkmark" v-if="selectedAnswerIds.includes(option.id)">✓</div>
           </div>
           <div class="button-row">
-            <button class="btn btn-primary" v-if="!answered" @click="checkAnswer" :disabled="selectedAnswer.length === 0">
-              Antwort abgeben
+            <button class="btn btn-primary" v-if="!answered" @click="checkAnswer" :disabled="selectedAnswerIds.length === 0 || submitting">
+              {{ submitting ? 'Wird verarbeitet...' : 'Antwort abgeben' }}
             </button>
-            <button class="btn btn-secondary" v-if="answered" @click="nextQuestion">
-              Weiter
+            <button class="btn btn-secondary" v-if="answered" @click="nextQuestion" :disabled="submitting">
+              {{ isLastQuestion ? 'Beenden' : 'Weiter' }}
             </button>
           </div>
           <div v-if="answered" class="result-message">
-            <span v-if="result" class="user-answer correct">Richtig!</span>
-            <span v-else-if="selectedAnswer.some(ans => currentQuestion.correctAnswers.includes(ans))" class="user-answer partial">
-              Fast richtig! Die richtigen Antworten sind: {{ currentQuestion.correctAnswers.join(', ') }}
+            <span v-if="lastIsCorrect" class="user-answer correct">Richtig!</span>
+            <span v-else-if="selectedAnswerIds.some(id => lastCorrectAnswerIds.includes(id))" class="user-answer partial">
+              Fast richtig! Die richtigen Antworten sind: {{ getCorrectAnswerTexts() }}
             </span>
             <span v-else class="user-answer incorrect">
-              Leider falsch. Die richtigen Antworten sind: {{ currentQuestion.correctAnswers.join(', ') }}
+              Leider falsch. Die richtigen Antworten sind: {{ getCorrectAnswerTexts() }}
             </span>
           </div>
         </div>
@@ -76,51 +76,49 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { getQuiz, completeQuiz } from '@/services/quizzes'
+import { startQuiz, submitAnswer } from '@/services/quizzes'
 import Penguin from '@/components/Penguin.vue'
 
 const router = useRouter()
 const route = useRoute()
 const quizId = ref(route.params.quizId)
 
-const quiz = ref({
-  title: '',
-  description: '',
-  questions: []
-})
 const loading = ref(true)
+const submitting = ref(false)
 const currentIndex = ref(0)
-const selectedAnswer = ref([])
-const selectedSingle = ref(null)
+const sessionId = ref(null)
+const currentQuestion = ref(null)
+const selectedAnswerIds = ref([])
 const answered = ref(false)
-const result = ref(null)
-const correctCount = ref(0)
-const userAnswers = ref([])
+const lastIsCorrect = ref(null)
+const lastCorrectAnswerIds = ref([])
+const quizTitle = ref('')
+const quizDescription = ref('')
+const totalQuestions = ref(0)
 
-// session start timestamp for duration reporting
-const sessionStartTs = ref(null)
-
-const currentQuestion = computed(() => {
-  if (!quiz.value.questions.length || currentIndex.value >= quiz.value.questions.length) return null
-  const question = quiz.value.questions[currentIndex.value]
-  return {
-    question: question.text,
-    type: question.type,
-    answers: question.answer_options.map(opt => opt.text),
-    correctAnswers: question.answer_options.filter(opt => opt.is_correct).map(opt => opt.text)
-  }
-})
+const newQuestion = ref(null)
 
 const progress = computed(() => {
-  if (!quiz.value.questions.length) return 0
-  return ((currentIndex.value + 1) / quiz.value.questions.length) * 100
+  if (!totalQuestions.value) return 0
+  return ((currentIndex.value + 1) / totalQuestions.value) * 100
 })
 
+const isLastQuestion = computed(() => {
+  return currentIndex.value === totalQuestions.value - 1
+})
+
+/**
+ * Sends a start request to the server and loads the quiz and the first question 
+ */
 onMounted(async () => {
   try {
-    sessionStartTs.value = Date.now() // mark start time
-    const data = await getQuiz(quizId.value)
-    quiz.value = data
+    const data = await startQuiz(quizId.value)
+    
+    sessionId.value = data.session_id
+    quizTitle.value = data.title || ''
+    quizDescription.value = data.description || ''
+    totalQuestions.value = data.total_questions
+    currentQuestion.value = data.first_question
   } catch (err) {
     console.error('Error loading quiz:', err)
     router.push('/')
@@ -129,96 +127,88 @@ onMounted(async () => {
   }
 })
 
-function checkAnswer() {
-  if (!currentQuestion.value) return
-  
-  const selected = selectedAnswer.value
-  const correct = currentQuestion.value.correctAnswers
-  const isCorrect = selected.length === correct.length && selected.every(ans => correct.includes(ans))
-  result.value = isCorrect
-  if (isCorrect) correctCount.value++
-
-  userAnswers.value[currentIndex.value] = {
-    question: currentQuestion.value.question,
-    selected: [...selected],
-    correct: [...correct],
-    isCorrect
-  }
-  answered.value = true
+/**
+ * Returns the text of the correct answers for the current question.
+ */
+function getCorrectAnswerTexts() {
+  if (!currentQuestion.value) return ''
+  return currentQuestion.value.answer_options
+    .filter(opt => lastCorrectAnswerIds.value.includes(opt.id))
+    .map(opt => opt.text)
+    .join(', ')
 }
 
-function nextQuestion() {
-  currentIndex.value++
-  selectedAnswer.value = []
-  selectedSingle.value = null
-  answered.value = false
+/**
+ * Submits the selected answers to the server and processes the response.
+ */
+async function checkAnswer() {
+  if (!currentQuestion.value || submitting.value) return
   
-  if (currentIndex.value >= quiz.value.questions.length) {
-    // build run object
-    const total = quiz.value.questions.length
-    const correct = correctCount.value
-    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0
-    const run = {
-      timestamp: new Date().toISOString(),
-      results: userAnswers.value || [],
-      correctAnswers: correct,
-      totalQuestions: total,
-      percentage,
-      duration_seconds: sessionStartTs.value ? Math.round((Date.now() - sessionStartTs.value) / 1000) : null
-    }
-
-    // Persist locally under per-quiz key so overview can read it
-    const historyKey = `quizHistory_${quizId.value}`
-    try {
-      const existing = JSON.parse(localStorage.getItem(historyKey) || '[]')
-      existing.push(run)
-      localStorage.setItem(historyKey, JSON.stringify(existing))
-    } catch (e) {
-      console.error('Error saving quiz history to localStorage', e)
-    }
-
-    // Also keep compatibility with QuizResultView (single-run payload)
-    try {
-      localStorage.setItem('quizResults', JSON.stringify(userAnswers.value))
-    } catch (e) { /* ignore */ }
-
-    // Fire-and-forget: attempt to persist run on server
-    (async () => {
-      try {
-        await completeQuiz(quizId.value, {
-          score: correct,
-          total: total,
-          duration_seconds: run.duration_seconds,
-          results: userAnswers.value
-        })
-      } catch (err) {
-        // non-fatal: log and continue
-        console.warn('Failed to send completed run to server', err)
-      }
-    })()
-
-    router.push({
-      name: 'quiz-result',
-      query: {
-        quizId: quizId.value,
-        correct: correctCount.value,
-        total
-      }
+  submitting.value = true
+  try {
+    const response = await submitAnswer(quizId.value, {
+      question_id: currentQuestion.value.id,
+      selected_option_ids: selectedAnswerIds.value
     })
+
+    lastIsCorrect.value = response.is_correct
+    lastCorrectAnswerIds.value = response.correct_answers
+    newQuestion.value = response.next_question || null
+    totalQuestions.value = response.total_questions || totalQuestions.value
+    answered.value = true
+  } catch (err) {
+    console.error('Error submitting answer:', err)
+    alert('Fehler beim Absenden der Antwort')
+  } finally {
+    submitting.value = false
   }
 }
 
-function selectAnswer(answer) {
+/**
+ * Loads the next question or navigates to the results page if it was the last question.
+ */
+async function nextQuestion() {
+  if (isLastQuestion.value) {
+    // End quiz and navigate to results
+    submitting.value = true
+    try {
+      router.push({
+        name: 'quiz-result',
+        query: {
+          quizId: quizId.value
+        }
+      })
+    } catch (err) {
+      console.error('Error completing quiz:', err)
+      alert('Fehler beim Beenden des Quiz')
+    } finally {
+      submitting.value = false
+    }
+  } else {
+    // Load next question
+    currentQuestion.value = newQuestion.value
+    currentIndex.value++
+    selectedAnswerIds.value = []
+    answered.value = false
+    lastIsCorrect.value = null
+    lastCorrectAnswerIds.value = []
+  }
+}
+
+/**
+ * Selects an answer for the current question.
+ * @param answerId The id of the answer to select
+ */
+function selectAnswer(answerId) {
   if (!answered.value) {
     if (currentQuestion.value.type === 'SINGLE_CHOICE') {
-      selectedSingle.value = answer
-      selectedAnswer.value = [answer]
+      selectedAnswerIds.value = [answerId]
     } else {
-      const index = selectedAnswer.value.indexOf(answer)
+      const index = selectedAnswerIds.value.indexOf(answerId)
       if (index > -1) {
-        selectedAnswer.value.splice(index, 1)
+        selectedAnswerIds.value.splice(index, 1)
       } else {
-        selectedAnswer.value.push(answer)
+        selectedAnswerIds.value.push(answerId)
       }
     }
   }
@@ -396,7 +386,7 @@ function selectAnswer(answer) {
 
 .error-message {
   font-size: 1.2rem;
-  color: #f44336;
+  color: var(--color-red);
   text-align: center;
   padding: 24px 0;
 }

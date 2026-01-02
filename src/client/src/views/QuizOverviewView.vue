@@ -182,18 +182,14 @@ async function loadHistoryFromStorage() {
   // Try server sessions first
   try {
     const sessions = await getQuizSessions(qid)
-    // apiClient.get may return response body directly (service helpers in this project return parsed body)
-    const runs = Array.isArray(sessions) ? sessions : (sessions?.results || sessions?.data || [])
-    if (Array.isArray(runs) && runs.length > 0) {
+    if (Array.isArray(sessions) && sessions.length > 0) {
       // normalize server session shape to expected run shape used in the UI
-      quizHistory.value = runs.map(s => {
-        const results = Array.isArray(s.results) ? s.results : (s.answers || [])
-        const correctAnswers = typeof s.score === 'number' ? s.score : results.filter(r => r.isCorrect).length
-        const totalQuestions = typeof s.total === 'number' ? s.total : results.length
-        const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : (s.percentage || 0)
+      quizHistory.value = sessions.map(s => {
+        const correctAnswers = s.correct_answers || 0
+        const totalQuestions = s.total_answers || 0
+        const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0
         return {
-          timestamp: s.end_time || s.created_at || s.start_time || s.timestamp || null,
-          results: results,
+          timestamp: s.end_time,
           correctAnswers,
           totalQuestions,
           percentage

@@ -177,6 +177,8 @@ def calculate_streak(user):
     last_day = date.today()
 
     for d in days:
+        if d > last_day:
+            continue  # Ignore future dates
         if last_day - d in [timedelta(days=0), timedelta(days=1)]:
             streak += 1
             last_day = d

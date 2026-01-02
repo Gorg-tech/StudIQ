@@ -7,25 +7,17 @@ achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz c
 """
 
 import re
-"""
-View classes for quiz-related API endpoints.
-
-This file contains all Django REST Framework viewsets and API views for the quiz app.
-It provides endpoints for CRUD operations on quizzes, questions, answer options, lernsets, modules,
-achievements, quiz progress, sessions, feedback, leaderboard, search, and quiz completion logic.
-"""
-
-import re
 from itertools import chain
 from math import exp, floor
-from datetime import datetime
+from pymysql import IntegrityError
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
+from django.db.models import Q, F
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from accounts.views import calculate_streak
 from accounts.views import get_user_rank
@@ -35,7 +27,6 @@ from .models import (
     Quiz,
     Question,
     Lernset,
-    QuizAttempt,
     QuizSession,
     Feedback,
     Studiengang,
@@ -46,22 +37,15 @@ from .serializers import (
     QuizSerializer,
     QuestionSerializer,
     LernsetSerializer,
-    QuizAttemptSerializer,
-    QuizSessionSerializer,
     FeedbackSerializer,
     StudiengangSerializer,
     ModulSerializer,
-    ModulDetailSerializer,
     ModulDetailSerializer,
     AnswerOptionSerializer,
     QuizForLernsetSerializer
 )
 
 class AnswerOptionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing AnswerOption objects.
-    Supports CRUD operations for answer options of quiz questions.
-    """
     """
     API endpoint for managing AnswerOption objects.
     Supports CRUD operations for answer options of quiz questions.
@@ -85,13 +69,9 @@ class QuizViewSet(viewsets.ModelViewSet):
     Handles creation, update, and deletion of quizzes,
     with permission checks for creators and moderators.
     """
-    """
-    API endpoint for managing Quiz objects.
-    Handles creation, update, and deletion of quizzes,
-    with permission checks for creators and moderators.
-    """
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    lookup_url_kwarg = 'quiz_id'
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
@@ -107,8 +87,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to edit this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to edit this quiz."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -116,15 +94,271 @@ class QuizViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to delete this quiz."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to delete this quiz."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
+    
+    @action(detail=True, methods=['post'])
+    def start(self, request, quiz_id=None):
+        """
+        Creates a new QuizSession for the user and quiz.
+
+        Returns (in response):
+        dict: {
+            "session_id": uuid,
+            "title": str,
+            "description": str,
+            "first_question": {
+                "id": uuid,
+                "text": str,
+                "type": str,
+                "answer_options": [
+                    {
+                        "id": uuid,
+                        "text": str
+                    }, ...
+                ]
+            },
+            "total_questions": int
+        }
+        """
+        user = request.user
+        quiz = self.get_object()
+        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=True).first()
+
+        # If an active session already exists, reset it, else create a new one
+        if quiz_session is not None:
+            quiz_session.start_time = timezone.now()
+            quiz_session.total_answers = 0
+            quiz_session.correct_answers = 0
+            quiz_session.save()
+        else:
+            try:
+                quiz_session = QuizSession.objects.create(
+                    user=user,
+                    quiz=quiz,
+                    start_time=timezone.now()
+                )
+            except IntegrityError:
+                return Response({"detail": "An active quiz session already exists."},
+                                status=status.HTTP_409_CONFLICT)
+        
+        # Get first question
+        questions = list(quiz.questions.all().order_by('id'))
+        if not questions:
+            return Response({"detail": "No questions in quiz."}, status=400)
+        
+        first_question = questions[0]
+        return Response({
+        "session_id": str(quiz_session.id),
+        "title": quiz.title,
+        "description": quiz.description,
+        "first_question": {
+            "id": str(first_question.id),
+            "text": first_question.text,
+            "type": first_question.type,
+            "answer_options": [{"id": str(o.id), "text": o.text} for o in first_question.answer_options.all()]
+        },
+        "total_questions": len(questions)
+    }, status=201)
+
+    @action(detail=True, methods=['post'])
+    def answer(self, request, quiz_id=None):
+        """
+        Submits an answer for the current question in the active QuizSession.
+
+        Expects (in request data):
+        dict: {
+            "question_id": uuid,
+            "selected_option_ids": [uuid, ...]
+        }
+
+        Returns (in response):
+        dict: {
+            "is_correct": bool,
+            "correct_answers": [uuid, ...],
+            "total_questions": int,
+            "next_question": {
+                "id": uuid,
+                "text": str,
+                "type": str,
+                "answer_options": [
+                    {
+                        "id": uuid,
+                        "text": str
+                    }, ...
+                ]
+            }
+        }
+        """
+        user = request.user
+        quiz = self.get_object()
+        quiz_session = QuizSession.objects.filter(user=user, quiz=quiz,
+                                                  end_time__isnull=True).first()
+        if not quiz_session:
+            return Response({"detail": "No active quiz session found."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        question_id = request.data.get("question_id")
+        selected_option_ids = request.data.get("selected_option_ids", [])
+
+        # Get all questions for the quiz
+        questions = list(quiz.questions.all().order_by('id'))
+        current_question_index = quiz_session.total_answers
+
+        # Validate question
+        if current_question_index >= len(questions):
+            return Response({"detail": "No more questions available."},
+                            status=status.HTTP_404_NOT_FOUND)
+        question = questions[current_question_index]
+        if str(question.id) != str(question_id):
+            return Response({"detail": "Question ID does not match the current question."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate selected options
+        valid_option_ids = set(
+            str(option.id) for option in question.answer_options.all()
+        )
+        if not all(option_id in valid_option_ids for option_id in selected_option_ids):
+            return Response({"detail": "Invalid answer option IDs."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Check correctness
+        correct_option_ids = set(
+            str(option.id) for option in question.answer_options.filter(is_correct=True)
+        )
+        is_correct = set(selected_option_ids) == correct_option_ids
+
+        # Update quiz session stats
+        quiz_session.total_answers += 1
+        if is_correct:
+            quiz_session.correct_answers += 1
+        quiz_session.save()
+
+        # Build response
+        response_data = {
+            "is_correct": is_correct,
+            "correct_answers": list(correct_option_ids),
+            "total_questions": len(questions)
+        }
+
+        # Determine next question
+        if current_question_index != len(questions) - 1:
+            next_question = questions[current_question_index + 1]
+            response_data["next_question"] = {
+                "id": str(next_question.id),
+                "text": next_question.text,
+                "type": next_question.type,
+                "answer_options": [
+                    {
+                        "id": str(option.id),
+                        "text": option.text
+                    } for option in next_question.answer_options.all()
+                ]
+            }
+        else:
+            response_data["next_question"] = None
+
+        return Response(response_data)
+
+    @action(detail=True, methods=['get'])
+    def sessions(self, request, quiz_id=None):
+        """
+        Retrieves the user's completed QuizSessions for the specified quiz.
+
+        Returns (in response):
+        list: [
+            dict: {
+                "start_time": datetime,
+                "end_time": datetime or null,
+                "correct_answers": int,
+                "total_answers": int
+            }, ...
+        ]
+        """
+        user = request.user
+        quiz = self.get_object()
+
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz, end_time__isnull=False).order_by('start_time')
+
+        dict_list = []
+        for quiz_session in quiz_sessions:
+            dict_list.append({
+                "start_time": quiz_session.start_time,
+                "end_time": quiz_session.end_time,
+                "correct_answers": quiz_session.correct_answers,
+                "total_answers": quiz_session.total_answers
+            })
+
+        return Response(dict_list)
+
+    @action(detail=True, methods=['post'])
+    def complete(self, request, quiz_id=None):
+        """
+        Calculates the points the user receives, updates the user and returns results.
+
+        Returns (in response):
+        dict: {
+            "base_points": int,
+            "perfect_bonus_points": int,
+            "streak_bonus_points": int,
+            "prev_iq": int,
+            "total_answers": int,
+            "correct_answers": int
+        }
+        """
+        user = request.user
+        quiz = self.get_object()
+        quiz_sessions = QuizSession.objects.filter(user=user, quiz=quiz)
+        attempts = quiz_sessions.count()
+        quiz_session = quiz_sessions.filter(end_time__isnull=True).first()
+        if not quiz_session:
+            return Response({"detail": "No active quiz session found."},
+                            status=status.HTTP_404_NOT_FOUND)
+        streak = calculate_streak(user)
+        accuracy = quiz_session.correct_answers / quiz_session.total_answers\
+            if quiz_session.total_answers > 0 else 0
+        had_perfect_before = False
+
+        # calculate if this is the first perfect
+        had_perfect_before = quiz_sessions.filter(end_time__isnull=False)\
+        .filter(correct_answers=F('total_answers')).exclude(total_answers=0).exists()
+
+        # formulas
+        # score becomes less with more attempts
+        attempt_multiplier = exp((-0.5 if had_perfect_before else -0.2) * (attempts - 1))
+        # based on accuracy and the amount of questions answered
+        base_points = quiz_session.total_answers ** (accuracy) * (0.2 if had_perfect_before else 1)
+        # adds 50% of the base points when reaching perfect score
+        perfect_bonus = 0.5 if not had_perfect_before and accuracy == 1.0 else 0
+        # adds up to 25% of the base points with a higher streak
+        streak_bonus = 0.25 * (1 - exp(-0.33 * streak)) if not had_perfect_before else 0
+
+        base_points = floor(base_points * attempt_multiplier)
+        perfect_bonus_points = floor(base_points * perfect_bonus)
+        streak_bonus_points = floor(base_points * streak_bonus)
+
+        # update user and quiz progress
+        prev_iq = user.iq_score
+        user.iq_score = prev_iq + floor(base_points + perfect_bonus_points + streak_bonus_points)
+        user.solved_quizzes += 1
+        user.save()
+
+        quiz_session.end_time = timezone.now()
+        quiz_session.save()
+
+        register_study_activity(user)
+
+        return Response({
+            "attempts": attempts,
+            "streak": streak,
+            "base_points": base_points,
+            "perfect_bonus_points": perfect_bonus_points,
+            "streak_bonus_points": streak_bonus_points,
+            "prev_iq": prev_iq,
+            "total_answers": quiz_session.total_answers,
+            "correct_answers": quiz_session.correct_answers
+        })
 
 class QuestionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing Question objects.
-    Supports CRUD operations for quiz questions.
-    """
     """
     API endpoint for managing Question objects.
     Supports CRUD operations for quiz questions.
@@ -140,18 +374,11 @@ class LernsetViewSet(viewsets.ModelViewSet):
     Handles creation, update, and deletion of lernsets, with permission checks
     for creators and moderators.
     """
-    """
-    API endpoint for managing Lernset objects.
-    Handles creation, update, and deletion of lernsets, with permission checks
-    for creators and moderators.
-    """
     queryset = Lernset.objects.all()
     serializer_class = LernsetSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        # Automatically set the created_by to the current user
-        serializer.save(created_by=self.request.user)
         # Automatically set the created_by to the current user
         serializer.save(created_by=self.request.user)
 
@@ -163,8 +390,6 @@ class LernsetViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to edit this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to edit this lernset."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -172,52 +397,9 @@ class LernsetViewSet(viewsets.ModelViewSet):
         if request.user != instance.created_by and request.user.role != 'MODERATOR':
             return Response({"detail": "You do not have permission to delete this lernset."},
                             status=status.HTTP_403_FORBIDDEN)
-            return Response({"detail": "You do not have permission to delete this lernset."},
-                            status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
-class QuizAttemptViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing QuizAttempt objects.
-    Allows users to view and update their quiz attempt statistics.
-    """
-    """
-    API endpoint for managing QuizAttempt objects.
-    Allows users to view and update their quiz attempt statistics.
-    """
-    serializer_class = QuizAttemptSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return QuizAttempt.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-class QuizSessionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing QuizSession objects.
-    Allows users to track their quiz solving sessions.
-    """
-    """
-    API endpoint for managing QuizSession objects.
-    Allows users to track their quiz solving sessions.
-    """
-    serializer_class = QuizSessionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return QuizSession.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
 class FeedbackViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing Feedback objects.
-    Allows users to submit and view feedback for quizzes.
-    """
     """
     API endpoint for managing Feedback objects.
     Allows users to submit and view feedback for quizzes.
@@ -237,21 +419,12 @@ class StudiengangViewSet(viewsets.ModelViewSet):
     API endpoint for managing Studiengang (field of study) objects.
     Allows listing, creating, updating, and deleting study programs.
     """
-    """
-    API endpoint for managing Studiengang (field of study) objects.
-    Allows listing, creating, updating, and deleting study programs.
-    """
     queryset = Studiengang.objects.all()
     serializer_class = StudiengangSerializer
     permission_classes = [AllowAny]
 
 
 class ModulViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint for managing Modul (module) objects.
-    Allows listing, creating, updating, and deleting modules.
-    Uses a detailed serializer for retrieve actions.
-    """
     """
     API endpoint for managing Modul (module) objects.
     Allows listing, creating, updating, and deleting modules.
@@ -274,9 +447,6 @@ class ModulViewSet(viewsets.ModelViewSet):
 
 
 class QuizzesByLernsetView(ListAPIView):
-    """
-    API endpoint for listing all quizzes belonging to a specific Lernset.
-    """
     """
     API endpoint for listing all quizzes belonging to a specific Lernset.
     """
@@ -394,30 +564,9 @@ class SearchView(APIView):
     API endpoint for searching lernsets, quizzes, modules, and study programs.
     Supports filtering and relevance-based result ordering.
     """
-    """
-    API endpoint for searching lernsets, quizzes, modules, and study programs.
-    Supports filtering and relevance-based result ordering.
-    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        """
-        Gets all lernsets, quizzes, modules and studiengaenge
-        that match the filter word given in the query param "q".
-        The returned types can be limited by the "filter" query param,
-        the amount of returned objects can be limited by the "limit" query param.
-
-        Args:
-            request (Request): The API GET Request including query params
-        
-        Returns:
-            dict: {
-                "lernsets": [...],
-                "quizzes": [...],
-                "modules": [...],
-                "studiengaenge": [...]
-            }
-        """
         """
         Gets all lernsets, quizzes, modules and studiengaenge
         that match the filter word given in the query param "q".
@@ -578,10 +727,6 @@ class SuggestedQuizzesView(ListAPIView):
     API endpoint for suggesting quizzes to the user based on their field of study.
     Returns recent quizzes from modules in the user's study program.
     """
-    """
-    API endpoint for suggesting quizzes to the user based on their field of study.
-    Returns recent quizzes from modules in the user's study program.
-    """
     serializer_class = QuizForLernsetSerializer
     permission_classes = [IsAuthenticated]
 
@@ -604,116 +749,3 @@ class SuggestedQuizzesView(ListAPIView):
 
 
         return quizzes
-
-class QuizCompletionView(APIView):
-    """
-    API endpoint for handling quiz completion.
-    Calculates and awards IQ points, updates user and quiz progress,
-    and returns a breakdown of earned points.
-    Also provides quiz progress details via GET.
-    API endpoint for handling quiz completion.
-    Calculates and awards IQ points, updates user and quiz progress,
-    and returns a breakdown of earned points.
-    Also provides quiz progress details via GET.
-    """
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, quiz_id):
-        """
-        Calculates the points the user receives, updates the user and returns results.
-
-        Calculates the points the user receives, updates the user and returns results.
-
-        Expected (in request):
-        dict: {
-        dict: {
-            "correct": int
-        }
-
-        Returns (in response):
-        dict: {
-        dict: {
-            "base_points": int,
-            "attempt_bonus_points": int,
-            "perfect_bonus_points": int,
-            "streak_bonus_points": int,
-            "total_points": int,
-            "prev_iq": int,
-            "new_iq": int
-        }
-        """
-        user = request.user
-        quiz = get_object_or_404(Quiz, id=quiz_id)
-        quiz_attempt, _ = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
-        total = quiz.questions.count()
-        streak = calculate_streak(user)
-        accuracy = int(request.data.get("correct", 0)) / total if total > 0 else 0
-
-        # formulas
-        attempt_bonus = 0.5 * exp(-0.5 * (quiz_attempt.attempts))
-        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
-                        if accuracy == 1.0 else 0
-        perfect_bonus = 0.7 * (1 / (1 + exp(-0.5 * total - 5)) + 0.1 * pow(total, 0.25))\
-                        if accuracy == 1.0 else 0
-        streak_bonus = 0.25 * (1 - exp(-0.1 * streak))
-
-        base_points = floor(0.5 * total ** (accuracy))
-        attempt_bonus_points = floor(base_points * attempt_bonus)
-        perfect_bonus_points = floor(base_points * perfect_bonus)
-        streak_bonus_points = floor(base_points * streak_bonus)
-
-        total_points = floor(
-            base_points + attempt_bonus_points + perfect_bonus_points + streak_bonus_points
-        )
-
-        # update user and quiz progress
-        prev_iq = user.iq_score
-        new_iq = prev_iq + total_points
-        user.iq_score = new_iq
-        user.solved_quizzes += 1
-        user.correct_answers += int(request.data.get("correct", 0))
-        user.wrong_answers += total - int(request.data.get("correct", 0))
-        user.save()
-
-        quiz_attempt.attempts += 1
-        quiz_attempt.correct_answers += int(request.data.get("correct", 0))
-        quiz_attempt.wrong_answers += total - int(request.data.get("correct", 0))
-        quiz_attempt.last_reviewed = datetime.now()
-        quiz_attempt.save()
-
-        register_study_activity(user)
-
-        return Response({
-            "attempts": quiz_attempt.attempts,
-            "streak": streak,
-            "base_points": base_points,
-            "attempt_bonus_points": attempt_bonus_points,
-            "perfect_bonus_points": perfect_bonus_points,
-            "streak_bonus_points": streak_bonus_points,
-            "total_points": total_points,
-            "prev_iq": prev_iq,
-            "new_iq": new_iq
-        })
-
-
-    def get(self, request, quiz_id):
-        """
-        Get the number of attempts for the user on the specified quiz.
-        Returns: {
-            correct_answers: int,
-            wrong_answers = int,
-            last_reviewed = DateTime,
-            strength_score = float,
-            attempts = int
-        }
-        """
-        user = request.user
-        quiz = get_object_or_404(Quiz, id=quiz_id)
-        quiz_attempt, _ = QuizAttempt.objects.get_or_create(user=user, quiz=quiz)
-
-        return Response({
-            "correct_answers": quiz_attempt.correct_answers,
-            "wrong_answers": quiz_attempt.wrong_answers,
-            "last_reviewed": quiz_attempt.last_reviewed,
-            "attempts": quiz_attempt.attempts
-            })
