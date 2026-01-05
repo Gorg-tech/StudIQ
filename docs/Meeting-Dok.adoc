@@ -336,7 +336,18 @@ Plattform-Findung wichtig
 
 === 3. Meeting 06.01.
 
-  Fragen für Marlene: 
+  Fragen für Marlene (hauptsächlich zu Files und Ordnern des /docs-Ordners): 
+
+    * Was gehört in deployment-Ordner?
+    * Was gehört in environment-Ordner?
     * Domänenmodell und Verzeichnis der Datenstrukturen:
-      - Implementierte Strukturen sind englisch benannt, Anke meinte aber Dom-Modell auf deutsch? Ist Domänenmodell nicht Abbild der implementierten Strukturen? Wie sollen Strukturen demnach benannt werden?
       - Was bei "Format" hinschreiben?
+      - Implementierte Strukturen sind englisch benannt, Anke meinte aber Dom-Modell auf deutsch? 
+      - Ist Domänenmodell nicht Abbild der implementierten Strukturen? 
+      - Wie sollen Strukturen demnach benannt werden?
+    * Was muss aus docs-Ordner aus SE1 abgegeben werden? Nur pdf von vision.adoc (und selbst erstellte Dokumentationen) oder noch mehr?
+
+    * In PDF für Softwareprodukt müssen nur genau die Punkte aus den Hinweisen zur Belegeinreichung? Das wären:
+      - Name des System
+      - URL zur laufenden Instanz oder URL zu Docker-Image
+      - "ggf." Demo-Login (Brauchen wir eins?)
