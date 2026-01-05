@@ -338,6 +338,7 @@ Plattform-Findung wichtig
 
   Fragen für Marlene (hauptsächlich zu Files und Ordnern des /docs-Ordners): 
 
+    * Ist vision.adoc so abgabefertig?
     * Was gehört in deployment-Ordner?
     * Was gehört in environment-Ordner?
     * Domänenmodell und Verzeichnis der Datenstrukturen:
