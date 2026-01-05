@@ -34,6 +34,12 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |Streaks | Anzahl der Tage, die der Nutzer die App kontinuierlich nutzt | -
 |Studiengang | Studienrichtung an der HTW bestehend aus Modulen | Studienfach
 |Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
+|Frage | Frage eines Quizzes,kann gelöst werden, enthält Antwortmöglichkeiten | Quizfrage
+|Antwortmöglichkeit | Antwort-Option (zB bei Multiple Choice) einer Quizfrage | Answer, Antwort-Option
+|IQ-Punkte | Punkte, die der User durch Lösen von Quizzes erhält | Punkte
+|IQ-Score | Anzahl an IQ-Punkten, die der User durch Lösen von Quizzes erhält, wird zum vergleichen der User auf dem Leaderboard verwendet | IQScore, Punktzahl
+|IQ-Level | Anzahl an Leveln, die der User hat. Ab einer bestimmten Anzahl von erhaltenen IQ-Punkten steigt das IQ-Level eines Users |
+
 |===
 
 

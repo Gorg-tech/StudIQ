@@ -22,7 +22,7 @@ class Modul {
 }
 
 class Lernset {
-  +titel: Strin  +modulId: String
+  +titel: String
 }
 
 class Quiz {
