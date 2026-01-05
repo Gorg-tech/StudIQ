@@ -56,52 +56,65 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
 
-| Anmeldedaten
-| Zusammensetzung von Benutzername und Passwort.
-| String
+| Benutzer
+| Daten zu einem registrierten Nutzer (Name, Email, Rolle)
+| Objekt
 | Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
-| Login
+| Login, Anmeldedaten, User
 
 | Studiengang
 | Informationen zu einem Studiengang der HTW RDesden
-|
+| Objekt
 |
 |
 
 
 | Modul
 | Information zu einem Modul der HTW aus Modulux
-|
+| Objekt
 |
 |
 
 | Lernset
 | Struktur aus Karteikarten zu einem Thema
-| JSON-Array
+| Objekt
 | Muss mindestens eine Karte enthalten
 | Kartenstapel
 
 | Quiz
 | Sammlung von Fragen mit Bewertung, Thema, Autor und Sichtbarkeit
-| JSON-Objekt
-| Titel nicht leer; Fragenanzahl ≥ 1
+| Objekt
+| Titel nicht leer; Fragenanzahl ≥ 3
 | Test, Abfrage
 
-| User
-| Daten zu einem registrierten Nutzer (Name, Email, Rolle)
-| JSON-Objekt
-| Eindeutige E-Mail mit „@“ und „.“, Rolle ∈ {user, admin}
-| Account
-
-| QuizProgress
+| Quiz-Sitzung
 | Statistikdaten eines Quizzes pro Nutzer
-| JSON
+| Objekt
 | Muss Benutzer-ID und Lernset-ID enthalten
-| Progress
+| Quizprogress, Quiz Session
+
+| Frage
+| Frage eines Quizzes
+| Objekt
+| Inhalt nicht leer; Bei Ankreuzaufgaben: Antwortmöglichkeitenanzahl ≥ 2 
+| Question, Quizfrage
+
+| Fragetyp
+| Typ der Frage (Mutliple/Single Choice,...)
+| enum 
+| 
+|
+
+| Antwort-Möglichkeit
+| Antwort-Möglichkeit für eine Quiz-Frage
+| Objekt
+| Inhalt nicht leer
+| AntwortOptions, Answer
+
 
 |===
 
 == Domänenmodell
 // Fügen Sie hier eine Abbildung mit ihrem Domänenmodell ein
 
-plantuml::images/dommodell.puml[format="svg", alt="Domänenmodell StudIQ"]
+plantuml::./images/dommodell.puml[format="svg", alt="Domänenmodell StudIQ"]

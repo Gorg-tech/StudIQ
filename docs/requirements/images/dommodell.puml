@@ -30,12 +30,17 @@ class Quiz {
   +beschreibung: String
 }
 
+class Quiz-Sitzung {
+  +Gelöste Fragen: int
+  +Korrekt gelöste Fragen: int
+}
+
 class Frage {
   +text: String
   +typ: Fragetyp
 }
 
-class AntwortOption {
+class Antwort-Möglichkeit {
   +text: String
   +istKorrekt: Boolean
 }
@@ -44,21 +49,13 @@ class Benutzer {
   +name: String
   +email: String
   +passwortHash: String
-  +rolle: Benutzerrolle
-  +iqLevel: int
+  +iqScore: int
 }
 
 enum Fragetyp {
   MULTIPLE_CHOICE
-  ZUORDNUNG
+  SINGLE_CHOICE
 }
-
-enum Benutzerrolle {
-  STUDENT
-  ADMIN
-  DOZENT
-}
-
 
 ' Beziehungen / Multiplikationen (Empfohlen: Komposition dort, wo Besitz besteht)
 Studiengang "1" o-- "0..*" Modul
@@ -66,18 +63,18 @@ Modul "1..*" o-- "1" Lernset
 Lernset "1" o-- "0..*" Quiz
 
 ' Quiz als Aggregat: starke Besitzbeziehung
+Quiz "1" *-- "0..*" Quizprogress : verändert bei Lösen 
 Quiz "1" *-- "1..*" Frage : besteht aus
 Frage "1" *-- "1..*" AntwortOption : hat
 
 ' Benutzer-Beziehungen
-Benutzer "*" -- "*" Modul : belegt    
+Benutzer "*" *-- "*" Modul : belegt
+Benutzer "1" -- "*" Quizprogress : entwickelt beim Quizlösen    
 Benutzer "1" o-- "0..*" Quiz : erstellt
 Benutzer "1" o-- "0..*" Lernset : erstellt
 
 ' Enums sichtbar machen
 Fragetyp ..> Frage : typ
-Benutzerrolle ..> Benutzer : rolle
-
 ' ----- Layout-Hinweise: versteckte Kanten zum Erzwingen von Spalten -----
 ' Ziel: linke Spalte (Studiengang/Modul/Lernset), Mitte (Quiz/Frage/Antwort), rechts (Benutzer/enums)
 Studiengang -[hidden]-> Modul
