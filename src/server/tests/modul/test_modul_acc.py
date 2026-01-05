@@ -14,7 +14,7 @@ class TestAccounts(TestCase):
         data={
             "username": "newuser",
             "password": "StrongPassword123!#",
-            "studiengang" : "Informatik"
+            "studiengang" : "I41"
         }
 
         serializer=RegisterSerializer(data=data)

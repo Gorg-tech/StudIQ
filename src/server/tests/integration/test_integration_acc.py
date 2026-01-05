@@ -2,10 +2,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
-from quizzes.models import Studiengang
-from quizzes.models import Quiz
-from quizzes.models import Lernset
-from quizzes.models import Modul
+from quizzes.models import Studiengang, Quiz, Lernset, Modul
 from django.conf import settings
 settings.ALLOWED_HOSTS = ['testserver']  # Ensure testserver is allowed
 User = get_user_model()
