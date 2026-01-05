@@ -150,21 +150,21 @@
 
           <div class="card-footer">
             <div v-if="item.type === 'Quiz'" class="hierarchy-info">
-              <span v-if="item.modul_name" class="hierarchy-item" title="Modul">
+              <span v-if="item.modul_name" class="hierarchy-item" :title="item.modul_name">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                {{ item.modul_name }}
+                <span class="hierarchy-text">{{ item.modul_name }}</span>
               </span>
               <span v-if="item.modul_name && item.lernset_title" class="hierarchy-separator">›</span>
-              <span v-if="item.lernset_title" class="hierarchy-item" title="Lernset">
+              <span v-if="item.lernset_title" class="hierarchy-item" :title="item.lernset_title">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                {{ item.lernset_title }}
+                <span class="hierarchy-text">{{ item.lernset_title }}</span>
               </span>
             </div>
             
             <div v-else-if="item.type === 'Lernset' && item.modul" class="hierarchy-info">
-              <span class="hierarchy-item" title="Modul">
+              <span class="hierarchy-item" :title="item.modul.name">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                {{ item.modul.name }}
+                <span class="hierarchy-text">{{ item.modul.name }}</span>
               </span>
             </div>
 
@@ -518,7 +518,7 @@ onMounted(() => {
 
 .quiz-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 16px;
   width: 100%;
 }
@@ -619,17 +619,6 @@ onMounted(() => {
   to { transform: rotate(360deg); }
 }
 
-@media (max-width: 900px) {
-  .quiz-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  .quiz-list {
-    grid-template-columns: 1fr;
-  }
-}
-
 .quiz-lernset {
   font-size: 0.85rem;
   color: var(--color-muted);
@@ -653,11 +642,13 @@ onMounted(() => {
 .hierarchy-info {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 6px;
   font-size: 0.85rem;
   color: var(--color-muted);
   justify-content: flex-end;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .hierarchy-item {
@@ -667,6 +658,32 @@ onMounted(() => {
   background-color: var(--color-bg-light);
   padding: 2px 8px;
   border-radius: 4px;
+  max-width: 100%; /* Allow using full available width */
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.hierarchy-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Allow shrinking below content size */
+  max-width: 250px; /* Prevent extremely long text */
+}
+
+@media (max-width: 600px) {
+  .card-footer {
+    justify-content: flex-start;
+  }
+  
+  .hierarchy-info {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  
+  .hierarchy-text {
+    max-width: 100%;
+  }
 }
 
 .hierarchy-separator {
@@ -700,6 +717,7 @@ onMounted(() => {
 
 .icon {
   opacity: 0.7;
+  flex-shrink: 0;
 }
 
 .quiz-stats strong {
