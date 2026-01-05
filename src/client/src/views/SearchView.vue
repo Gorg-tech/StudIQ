@@ -261,16 +261,15 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSearch } from '@/services/quizzes';
 import { getModul } from '@/services/modules';
+import { useSearchStore } from '@/stores/search';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const searchQuery = ref('');
-const activeFilter = ref('alle');
-const results = ref({});
+const searchStore = useSearchStore();
+const { searchQuery, activeFilter, results } = storeToRefs(searchStore);
+
 const loading = ref(false);
 const error = ref(null);
-
-// Cache for search results to avoid redundant network requests
-const searchCache = new Map();
 
 // Dialog State
 const showDialog = ref(false);
@@ -306,12 +305,13 @@ async function fetchFilteredQuizzes() {
   const currentQuery = searchQuery.value.trim();
   const cacheKey = `${currentFilter}:${currentQuery}`;
 
-  if (searchCache.has(cacheKey)) {
-    results.value = searchCache.get(cacheKey);
-    return;
+  const hasCache = searchStore.hasCache(cacheKey);
+  if (hasCache) {
+    results.value = searchStore.getCachedResults(cacheKey);
+  } else {
+    loading.value = true;
   }
 
-  loading.value = true;
   error.value = null;
   
   try {
@@ -321,11 +321,17 @@ async function fetchFilteredQuizzes() {
       filter
     });
     
-    // Update cache and results
-    searchCache.set(cacheKey, data);
-    results.value = data;
+    // Update cache in store
+    searchStore.saveToCache(cacheKey, data);
+    
+    // Only update results if this is still the current search
+    if (cacheKey === `${activeFilter.value}:${searchQuery.value.trim()}`) {
+      results.value = data;
+    }
   } catch (err) {
-    error.value = 'Fehler beim Abrufen der Suchergebnisse.';
+    if (!hasCache) {
+      error.value = 'Fehler beim Abrufen der Suchergebnisse.';
+    }
     console.error(err);
   } finally {
     loading.value = false;
