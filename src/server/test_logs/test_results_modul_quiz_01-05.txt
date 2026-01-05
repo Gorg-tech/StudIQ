@@ -1,0 +1,47 @@
+[
+  {
+    "test": "test_correct_answer_changeable_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_correct_answer_changeable_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:50.253353"
+  },
+  {
+    "test": "test_create_new_question_in_existing_quiz_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_new_question_in_existing_quiz_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:50.684760"
+  },
+  {
+    "test": "test_create_quiz_with_valid_data_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_quiz_with_valid_data_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:51.134097"
+  },
+  {
+    "test": "test_delete_question_removes_answer_options (tests.modul.test_modul_quiz.TestCaseQuiz.test_delete_question_removes_answer_options)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:51.581768"
+  },
+  {
+    "test": "test_edit_answer_options_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_edit_answer_options_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:52.085045"
+  },
+  {
+    "test": "test_quiz_with_no_questions_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_quiz_with_no_questions_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:52.331120"
+  },
+  {
+    "test": "test_search_nonexisting_quiz_fails (tests.modul.test_modul_quiz.TestSearchbar.test_search_nonexisting_quiz_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:52.744240"
+  },
+  {
+    "test": "test_search_quiz_by_title_suceeds (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_by_title_suceeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:52.940597"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:19:53.154384"
+  }
+]
