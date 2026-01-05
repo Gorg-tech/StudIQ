@@ -1,4 +1,4 @@
-= Vision: {project-name}
+= Vision: StudIQ
 
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -19,7 +19,7 @@ Siehe <<#glossary, Glossar>>.
 //Siehe <<./glossary.adoc#glossary, Glossar>>.
 
 === Referenzen
-Modul Software Engeneering 1, Fakultät Informatik, Hochschule für Technik und Wirtschaft Dresden, 2025
+Modul Software Engineering 1&2, Fakultät Informatik, Hochschule für Technik und Wirtschaft Dresden, 2025
 
 
 == Positionierung
@@ -99,7 +99,7 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
 | Minimalismus | hoch | Templates, Algorithmik zur Fragenbestimmung | 1.0
 | Individualisierbarkeit | mittel | Bewertungssystem, Erstellung eigener Fragen | 1.1
-| Gameifizierung | mittel | Leaderboard | 1.1
+| Gamifizierung | mittel | Leaderboard | 1.1
 |===
 
 
@@ -117,7 +117,7 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 | Backend läuft auf Server mit Python und Django | hoch | 1.0
 | Speicherung personenbezogener Daten gemäß DSGVO | hoch | 1.1
 | Passwortsicherheit (Hashing, keine Klartext-Speicherung) | hoch | 1.0
-| Benutzerhandbuch und Online-Hilfe | niedrig | 1.2
-| Abhängigkiet von HTW-Systemen (z.B. Modulux) | mittel | 1.1
+| Benutzerhandbuch und Online-Hilfe | mittel | 1.2
+| Abhängigkeit von HTW-Systemen (z.B. Modulux) | mittel | 1.1
 |===
 
