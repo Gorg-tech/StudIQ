@@ -331,3 +331,12 @@ Festhalten der Kritik in Miro
 
 Weekly wöchentlich extra als DC-Meeting
 Plattform-Findung wichtig
+
+== 6. Iteration
+
+=== 3. Meeting 06.01.
+
+  Fragen für Marlene: 
+    * Domänenmodell und Verzeichnis der Datenstrukturen:
+      - Implementierte Strukturen sind englisch benannt, Anke meinte aber Dom-Modell auf deutsch? Ist Domänenmodell nicht Abbild der implementierten Strukturen? Wie sollen Strukturen demnach benannt werden?
+      - Was bei "Format" hinschreiben?
