@@ -16,7 +16,7 @@ Beschreibt die Arbeitsweise des Projektteams und die Hinderniss dieser Arbeitswe
 - Eric Wolf - Dev, Architekturverantwortlicher
 - Vincent Karmanoczki - Dev
 - Gabriel Wulkow Moreira da Silva -  Dev
-- Carmina Langer - Dev
+- Carmina Langer - Testverantwortliche
 - (inaktiv) Radmir Mullagaliev - Dev
 
 == Praktiken und Bewertung
@@ -118,3 +118,17 @@ Raum S128 manchmal belegt, dann etwas nervend spontan einen neuen Raum zu finden
 
 * Unzufriedenheit mit Bewertung auf SE1
     -> Dozierende mehr um Feedback fragen
+
+=== 5. Iteration
+
+* Hindernisse
+    - Online-zuschaltung schwierig
+
+* Viele Erkenntnisse durch Fachaustausch
+    - Ungute Strukturierung von Scrum für Scrum-Master
+    - Probleme bei Software-Entwicklung wurden nicht immer an Hans weitergeleitet
+    - Funktionsweise der Meetings muss geändert werden
+    -> 15-30 Minuten Review
+    -> ggf Extra Meetings für Retro, Stakeholder-Treff,...
+    - Einführen von Refinement wichtig
+    - zu wenig Dokumentation im Code
