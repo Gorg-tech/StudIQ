@@ -534,6 +534,13 @@ onMounted(() => {
   flex-direction: column;
   height: 100%;
   margin-top: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.quiz-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--type-border, var(--color-primary));
 }
 
 .quiz-header {
