@@ -82,12 +82,12 @@
           @click="navigateToItem(item)"
           style="cursor: pointer;"
         >
+          <span class="item-type">{{ item.type }}</span>
           <div class="quiz-header">
             <h3>
               <!-- Emojis entfernt -->
               {{ item.title }}
             </h3>
-            <span class="item-type">{{ item.type }}</span>
           </div>
 
           <div v-if="item.type === 'Quiz'" class="quiz-details">
@@ -524,6 +524,7 @@ onMounted(() => {
 }
 
 .quiz-item {
+  position: relative;
   padding: 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -532,6 +533,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  margin-top: 8px;
 }
 
 .quiz-header {
@@ -539,16 +541,23 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  margin-top: 4px;
 }
 
 .item-type {
-  padding: 4px 10px;
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  padding: 2px 10px;
   border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
   background-color: var(--type-bg);
   color: var(--type-color);
   border: 1px solid var(--type-border);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 2;
 }
 
 .type-quiz {
