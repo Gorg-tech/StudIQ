@@ -104,13 +104,11 @@
         <div class="profile-left">
           <div class="profile-info">
             <h2>{{ user.username }}</h2>
+            <button class="friends-btn" @click="showFriends = true">Freunde<span v-if="friendRequests.length" class="friend-requests-badge">+{{ friendRequests.length }}</span></button>
             <p>Platz #{{ leaderboardPosition }}</p>
           </div>
 
-          <button class="friends-btn" @click="showFriends = true">
-            👥 Freunde
-            <span v-if="friendRequests.length" class="friend-requests-badge">+{{ friendRequests.length }}</span>
-          </button>
+          
 
           <!-- Level Bar -->
           <div class="level-bar-container">
@@ -462,13 +460,38 @@ onMounted(async () => {
 }
 
 .friends-btn {
-  margin-right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  background: var(--card-bg);
   color: var(--color-text);
-  background: color-mix(in oklab, var(--color-bg) 70%, #888888 30%);
-  border: none;
-  padding: 6px 10px;
-  border-radius: 8px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 8px 14px;
+
+  font-weight: 600;
+  font-size: 0.95rem;
+
   cursor: pointer;
+
+  box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.friends-btn:hover {
+  background-color: var(--color-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.friends-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .friends-popup-backdrop {
@@ -525,6 +548,19 @@ onMounted(async () => {
   align-items: center;
   gap: 10px;
   padding: 6px 0;
+}
+.friend-requests-badge {
+  background: var(--color-primary);
+  color: #fff;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  padding: 2px 6px;
+  border-radius: 999px;
+
+  min-width: 20px;
+  text-align: center;
 }
 
 .friend-accept-btn, .friend-decline-btn {
