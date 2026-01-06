@@ -165,27 +165,63 @@ class TestCaseQuiz(TestCase):
             "description": "A new quiz",
             "created_by_id": self.user.id,
             "lernset": self.lernset.id,
-            "questions": [{
-                "text": "New Question 1",
-                "type": "SINGLE_CHOICE",
-                "_status": "new",
-                "answer_options": [
-                    {
-                        "text": "New Answer 1",
-                        "is_correct": True,
-                        "_status": "new"
-                    },
-                    {
-                        "text": "New Answer 2",     
-                        "is_correct": False,
-                        "_status": "new"
-                    }
-                ]
-            }]
+            "questions": [
+                {
+                    "text": "New Question 1",
+                    "type": "SINGLE_CHOICE",
+                    "_status": "new",
+                    "answer_options": [
+                        {
+                            "text": "New Answer 1",
+                            "is_correct": True,
+                            "_status": "new"
+                        },
+                        {
+                            "text": "New Answer 2",     
+                            "is_correct": False,
+                            "_status": "new"
+                        }
+                    ]
+                },
+                {
+                    "text": "New Question 2",
+                    "type": "SINGLE_CHOICE",
+                    "_status": "new",
+                    "answer_options": [
+                        {
+                            "text": "New Answer 1",
+                            "is_correct": True,
+                            "_status": "new"
+                        },
+                        {
+                            "text": "New Answer 2",     
+                            "is_correct": False,
+                            "_status": "new"
+                        }
+                    ]
+                },
+                {
+                    "text": "New Question 3",
+                    "type": "SINGLE_CHOICE",
+                    "_status": "new",
+                    "answer_options": [
+                        {
+                            "text": "New Answer 1",
+                            "is_correct": True,
+                            "_status": "new"
+                        },
+                        {
+                            "text": "New Answer 2",     
+                            "is_correct": False,
+                            "_status": "new"
+                        }
+                    ]
+                }
+            ]
         }
         serializer = QuizSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
-        quiz = serializer.save()
+        quiz = serializer.save(created_by=self.user)
         self.assertEqual(quiz.title, "New Quiz")
         self.assertEqual(quiz.description, "A new quiz")
         self.assertEqual(quiz.lernset, self.lernset)

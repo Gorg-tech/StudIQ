@@ -1,0 +1,7 @@
+[
+  {
+    "test": "test_delete_question_removes_answer_options (tests.modul.test_modul_quiz.TestCaseQuiz.test_delete_question_removes_answer_options)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 20:18:37.059145"
+  }
+]

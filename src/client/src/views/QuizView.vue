@@ -28,9 +28,18 @@
           </div>
         </div>
         <div v-else class="question-block">
-          <h3>{{ currentQuestion.text }}</h3>
-          <p class="question-type" v-if="currentQuestion.type === 'SINGLE_CHOICE'">Wähle eine Antwort aus.</p>
-          <p class="question-type" v-else>Wähle eine oder mehrere Antworten aus.</p>
+          <div class="question-header-info">
+            <span class="instruction-text">
+              {{ currentQuestion.type === 'SINGLE_CHOICE' ? 'Wähle die richtige Antwort.' : 'Wähle alle richtigen Antworten.' }}
+            </span>
+            <span class="type-badge" :class="currentQuestion.type === 'SINGLE_CHOICE' ? 'badge-single' : 'badge-multiple'">
+              <span v-if="currentQuestion.type === 'SINGLE_CHOICE'" class="badge-icon">◉</span>
+              <span v-else class="badge-icon">☑</span>
+              {{ currentQuestion.type === 'SINGLE_CHOICE' ? 'Single Choice' : 'Multiple Choice' }}
+            </span>
+          </div>
+
+          <h3 class="question-title">{{ currentQuestion.text }}</h3>
           <div
             v-for="option in currentQuestion.answer_options"
             :key="option.id"
@@ -297,7 +306,58 @@ function selectAnswer(answerId) {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+}
+
+.question-header-info {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.type-badge {
+  grid-column: 3;
+  justify-self: end;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.instruction-text {
+  grid-column: 2;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .question-header-info {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .type-badge {
+    align-self: flex-end;
+  }
+}
+
+.question-title {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  color: var(--color-text);
 }
 
 .question-type {

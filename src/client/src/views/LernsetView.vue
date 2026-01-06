@@ -61,7 +61,6 @@ const fetchLernsetData = async () => {
         id: quiz.id,
         title: quiz.title || 'Unbenanntes Quiz',
         questionCount: quiz.question_count || 0,
-        rating: calculateRating(quiz.rating_score, quiz.rating_count),
         creator: quiz.creator_username || 'Unbekannt'
       }))
       
@@ -73,11 +72,6 @@ const fetchLernsetData = async () => {
   }
 }
 
-// Calculate rating from score and count
-const calculateRating = (score, count) => {
-  return count > 0 ? score / count : 0
-}
-
 const goToQuizOverview = (quizId) => {
   router.push({ name: 'quiz-overview', params: { quizId } })
 }
@@ -87,17 +81,6 @@ const goToEditQuiz = () => {
   router.push({ name: 'edit-quiz', params: { lernsetId } } )
 }
 
-// Hilfsfunktion für Sterne
-const getStars = (rating) => {
-  const fullStars = Math.floor(rating)
-  const hasHalfStar = rating - fullStars >= 0.5
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-  return {
-    full: fullStars,
-    half: hasHalfStar,
-    empty: emptyStars
-  }
-}
 
 // Fetch data when component is mounted
 onMounted(fetchLernsetData)
@@ -172,11 +155,6 @@ onMounted(fetchLernsetData)
             </div>
             
             <div class="quiz-rating-row">
-              <div class="quiz-stars">
-                <div v-for="n in getStars(quiz.rating).full" :key="'full-' + quiz.id + '-' + n">★</div>
-                <div v-if="getStars(quiz.rating).half">★</div>
-                <div v-for="n in getStars(quiz.rating).empty" :key="'empty-' + quiz.id + '-' + n">☆</div>
-              </div>
               <div class="quiz-creator">von {{ quiz.creator }}</div>
             </div>
           </button>
@@ -406,18 +384,12 @@ onMounted(fetchLernsetData)
 .quiz-rating-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-.quiz-stars {
-  display: flex;
-  align-items: center;
-  gap: 2px;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
 .quiz-creator {
   font-size: 0.94rem;
   color: var(--color-muted);
-  margin-left: 16px;
   white-space: nowrap;
 }
 </style>
