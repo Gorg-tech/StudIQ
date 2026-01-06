@@ -27,6 +27,20 @@
   --color-question-hover: #f2f8fd;
   --color-question-border: #e3f2fd;
   --color-modal-backdrop: rgba(0,0,0,0.18);
+   --bg-gradient:
+    linear-gradient(120deg,
+      rgba(255,140,66,0.25) 0%,
+      rgba(255,255,255,0) 35%,
+      rgba(0,180,255,0.25) 65%,
+      rgba(255,255,255,0) 100%
+    ),
+    radial-gradient(
+      500px 400px at 80% 85%,
+      rgba(255,200,140,0.35),
+      transparent 65%
+    );
+
+  --bg-base: #ffffff;
 }
 
 .dark {
@@ -55,12 +69,30 @@
   --color-question-hover: #333344;
   --color-question-border: #444;
   --color-modal-backdrop: rgba(0,0,0,0.4);
+  --bg-gradient:
+    radial-gradient(
+      600px 400px at 80% 85%,
+      rgba(252, 121, 96, 0.12),
+      transparent 65%
+    );
+
+  --bg-base: #1e1e2e;
+
 }
 
-html, body, #app {
-  background-color: var(--bg-color);
+html, body {
+  min-height: 100%;
+}
+
+body {
+  background:
+    var(--bg-gradient),
+    var(--bg-base);
+
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.4s ease,
+    color 0.3s ease;
 }
 
 #app {
@@ -68,6 +100,7 @@ html, body, #app {
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  background: transparent;
 }
 
 a,
