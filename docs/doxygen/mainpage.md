@@ -1,5 +1,6 @@
-# StudiQ – Quiz-Plattform für Studierende
 
+\Mainpage StudIQ – Quiz-Plattform für Studierende
+# StudIQ
 ## Einleitung
 
 StudiQ ist eine Webanwendung, mit der Studierende ihren Lernfortschritt

@@ -23,7 +23,8 @@ STRIP_FROM_PATH        = ../../
 #   Backend:  ../../src/server
 #   Frontend: ../../src/client
 INPUT                  = ../../src/server \
-                         ../../src/client
+                         ../../src/client \
+                         ./mainpage.md
 
 RECURSIVE              = YES
 
