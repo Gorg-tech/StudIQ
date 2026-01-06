@@ -1,0 +1,70 @@
+[
+  {
+    "test": "test_create_and_get_quiz (tests.integration.test_integration_acc.TestIntegrationAccounts.test_create_and_get_quiz)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 91, in test_create_and_get_quiz\n    self.assertEqual(response.status_code, 201)\nAssertionError: 400 != 201\n",
+    "time": "2026-01-06 11:07:08.628905"
+  },
+  {
+    "test": "test_login_invalid_credentials_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_login_invalid_credentials_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:10.162859"
+  },
+  {
+    "test": "test_me_view_authenticated (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_authenticated)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:11.728193"
+  },
+  {
+    "test": "test_me_view_requires_authentication (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_requires_authentication)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:12.638972"
+  },
+  {
+    "test": "test_register_user_invalid_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_invalid_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:13.737618"
+  },
+  {
+    "test": "test_register_user_success (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_success)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 36, in test_register_user_success\n    self.assertEqual(response.status_code, 201)\nAssertionError: 400 != 201\n",
+    "time": "2026-01-06 11:07:14.666311"
+  },
+  {
+    "test": "test_valid_login_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_login_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:16.061053"
+  },
+  {
+    "test": "test_valid_logout_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_logout_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:17.591949"
+  },
+  {
+    "test": "test_create_new_session_succeeds (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_create_new_session_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:19.377704"
+  },
+  {
+    "test": "test_only_creator_can_delete_quiz (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_only_creator_can_delete_quiz)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:21.068009"
+  },
+  {
+    "test": "test_quiz_create_sets_created_by_automatically (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_quiz_create_sets_created_by_automatically)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_quiz.py\", line 75, in test_quiz_create_sets_created_by_automatically\n    self.assertEqual(response.status_code, status.HTTP_201_CREATED)\nAssertionError: 400 != 201\n",
+    "time": "2026-01-06 11:07:22.427519"
+  },
+  {
+    "test": "test_update_quiz_unauthenticated_user_forbidden (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_update_quiz_unauthenticated_user_forbidden)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:23.681489"
+  },
+  {
+    "test": "test_search_filters_by_quizzes (tests.integration.test_integration_quiz.TestSearchView.test_search_filters_by_quizzes)",
+    "status": "SUCCESS",
+    "time": "2026-01-06 11:07:24.704951"
+  }
+]
