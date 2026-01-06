@@ -339,16 +339,24 @@ Plattform-Findung wichtig
   Fragen für Marlene (hauptsächlich zu Files und Ordnern des /docs-Ordners): 
 
     * Ist vision.adoc so abgabefertig?
+      -> Manche Sachen von Eigenschaften müssen in Verantwortlichkeiten
+      -> Bedarfe/Features müssen überarbeitet werden
+      -> Prüfungsvorberitung in Feature
     * Was gehört in deployment-Ordner?
+     -> nix
     * Was gehört in environment-Ordner?
+     -> nix
     * Domänenmodell und Verzeichnis der Datenstrukturen:
       - Was bei "Format" hinschreiben?
       - Implementierte Strukturen sind englisch benannt, Anke meinte aber Dom-Modell auf deutsch? 
       - Ist Domänenmodell nicht Abbild der implementierten Strukturen? 
       - Wie sollen Strukturen demnach benannt werden?
+      -> Zu jedem Objekt schreiben, aus welchen Attributen und Typen es besteht (zB in Strukur)
     * Was muss aus docs-Ordner aus SE1 abgegeben werden? Nur pdf von vision.adoc (und selbst erstellte Dokumentationen) oder noch mehr?
+     -> glossary muss noch verfügbar sein
 
     * In PDF für Softwareprodukt müssen nur genau die Punkte aus den Hinweisen zur Belegeinreichung? Das wären:
       - Name des System
       - URL zur laufenden Instanz oder URL zu Docker-Image
       - "ggf." Demo-Login (Brauchen wir eins?)
+      -> ja
