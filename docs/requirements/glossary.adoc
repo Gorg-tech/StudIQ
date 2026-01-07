@@ -63,62 +63,65 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
 
 | Benutzer (User)
-| Daten zu einem registrierten Nutzer (Name, Email, Rolle)
-| Objekt
-| Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
+| Daten zu einem registrierten Nutzer (username, email, iq_score, streak, solved_quizzes, studiengang_id)
+| Objekt (string, string, int, int, int, string)
+| Emailadresse muss `@`-Zeichen und `.` Punkt enthalten, studiengang_id muss auf existierenden Studiengang verweisen
 | Login, Anmeldedaten, User
 
 | Studiengang (Studiengang)
-| Informationen zu einem Studiengang der HTW RDesden
-| Objekt
+| Informationen zu einem Studiengang der HTW Dresden (Id, Name, Description, modulux_url)
+| Objekt (string, string, string, string)
+| Muss in Modulux als Studiengang auffindbar sein
 |
-|
-
 
 | Modul (Modul)
-| Information zu einem Modul der HTW aus Modulux
-| Objekt
-|
+| Information zu einem Modul der HTW aus Modulux (id, name, examinations, dozent_name, modulux_url)
+| Objekt (string, string, string, string, string)
+| Muss in Modulux als Modul auffindbar sein
 |
 
-| Lernset
-| Struktur aus Karteikarten zu einem Thema
-| Objekt
-| Muss mindestens eine Karte enthalten
+| Lernset (Lernset)
+| Struktur aus Karteikarten zu einem Thema (title, description, modul_id)
+| Objekt (string, string, string)
+| Muss mindestens eine Karte enthalten, modul_id muss auf existierendes modul verweisen
 | Kartenstapel
 
-| Quiz
-| Sammlung von Fragen mit Bewertung, Thema, Autor und Sichtbarkeit
-| Objekt
-| Titel nicht leer; Fragenanzahl ≥ 3
+| Quiz (Quiz)
+| Struktur aus Infos zum Quiz und der Sammlung von Quizfragen (title, total_attempts, completion_rate, avg_score, avg_time_spent, lernset_id)
+| Objekt (string, int, float, float, time, string)
+| Titel nicht leer; Fragenanzahl ≥ 3, lernset_id muss auf existierendes Lernset verweisen
 | Test, Abfrage
 
-| Quiz-Sitzung
-| Statistikdaten eines Quizzes pro Nutzer
-| Objekt
-| Muss Benutzer-ID und Lernset-ID enthalten
+| Quiz-Sitzung (QuizSession)
+| Statistikdaten eines Quizzes pro Nutzer (user_id, end_time, correct_answers, total_answers, quiz_id)
+| Objekt (int, time, int, int, string)
+| user_id bzw. quiz_id müssen auf existierende Benutzer bzw. Quizzes verweisen
 | Quizprogress, Quiz Session
 
-| Frage
-| Frage eines Quizzes
-| Objekt
-| Inhalt nicht leer; Bei Ankreuzaufgaben: Antwortmöglichkeitenanzahl ≥ 2 
+| Frage (Question)
+| Frage eines Quizzes (text, question_type, quiz_id)
+| Objekt (string, enum(QuestionType), string)
+| Inhalt nicht leer; Bei Ankreuzaufgaben: Antwortmöglichkeitenanzahl ≥ 2, quiz_id muss auf existierendes Quiz verweisen 
 | Question, Quizfrage
 
-| Fragetyp
-| Typ der Frage (Mutliple/Single Choice,...)
+| Fragetyp (QuestionType)
+| Typ der Frage (Mutliple Choice, Single Choice)
 | enum 
 | 
 |
 
-| Antwort-Möglichkeit
-| Antwort-Möglichkeit für eine Quiz-Frage
-| Objekt
-| Inhalt nicht leer
+| Antwort-Möglichkeit (AnswerOption)
+| Antwort-Möglichkeit für eine Quiz-Frage (text, is_correct, question_id)
+| Objekt (string, bool, string)
+| Inhalt nicht leer, question_id muss auf existierende Quizfrage verweisen
 | AntwortOptions, Answer
 
 
 |===
+
+Die Bezeichnung in Klammern (z.B. '(AnswerOption)') beschreibt, wie das Objekt im Code benannt wird. 
+Die Definition in Klammern beschreibt, welche Attribute das Objekt hat, der Name wurde aus dem Quellcode im Server übernommen.
+Das Format in Klammern beschreibt, welche Datentypen die entsprechenden Attribute haben.
 
 == Domänenmodell
 // Fügen Sie hier eine Abbildung mit ihrem Domänenmodell ein
