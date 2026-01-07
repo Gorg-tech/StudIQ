@@ -39,6 +39,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |IQ-Punkte | Punkte, die der User durch Lösen von Quizzes erhält | Punkte
 |IQ-Score | Anzahl an IQ-Punkten, die der User durch Lösen von Quizzes erhält, wird zum vergleichen der User auf dem Leaderboard verwendet | IQScore, Punktzahl
 |IQ-Level | Anzahl an Leveln, die der User hat. Ab einer bestimmten Anzahl von erhaltenen IQ-Punkten steigt das IQ-Level eines Users |
+|aktiv sein | Ein User ist (an einem Tag) aktiv, wenn er an diesem ein Quiz bearbeitet hat
 
 |===
 
@@ -63,10 +64,19 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
 
 | Benutzer (User)
-| Daten zu einem registrierten Nutzer (username, email, iq_score, streak, solved_quizzes, studiengang_id)
-| Objekt (string, string, int, int, int, string)
+| Daten zu einem registrierten Nutzer, inklusive Quizbearbeitungsdaten, zugehörigem Studiengang und Freunden (username, email, iq_score, streak, solved_quizzes, studiengang_id, friend_id[])
+| Objekt (string, string, int, int, int, string,string[])
 | Emailadresse muss `@`-Zeichen und `.` Punkt enthalten, studiengang_id muss auf existierenden Studiengang verweisen
-| Login, Anmeldedaten, User
+| Login, Anmeldedaten, User, Nutzer
+
+| Aktiver Tag(StudyDay)
+| Beschreibt den Tag, an dem der User zuletzt in der App aktiv war (user_id, date)
+| Objekte (string, date)
+
+| Freundesanfragen (FriendRequests)
+| Verweis auf Sender und Empfänger der Freundesanfrage(sender_id,receiver_id).
+| Objekt(string,string)
+| Objekt Freundesanfrage darf nur existieren, falls sie noch nicht beantwortet wurde; sender_id und receiver_id müssen Verweise auf existierende Nutzer sein
 
 | Studiengang (Studiengang)
 | Informationen zu einem Studiengang der HTW Dresden (Id, Name, Description, modulux_url)

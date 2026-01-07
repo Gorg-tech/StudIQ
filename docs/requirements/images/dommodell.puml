@@ -1,4 +1,4 @@
-@startuml
+
 ' Layout / Stil
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
@@ -6,17 +6,17 @@ skinparam nodesep 20
 skinparam ranksep 60
 left to right direction
 
+@startuml
+
 ' Klassen (Deutsch)
 class Studiengang {
   +id: String
-
   +name: String
 }
 
 class Modul {
   +modulId: String
   +name: String
-  +studiengang: int
 
   +moduluxUrl: String
 }
@@ -30,17 +30,17 @@ class Quiz {
   +beschreibung: String
 }
 
-class Quiz-Sitzung {
+class QuizSitzung {
   +Gelöste Fragen: int
   +Korrekt gelöste Fragen: int
+  +Beendigungszeit: time
 }
 
 class Frage {
   +text: String
-  +typ: Fragetyp
 }
 
-class Antwort-Möglichkeit {
+class AntwortMöglichkeit {
   +text: String
   +istKorrekt: Boolean
 }
@@ -50,6 +50,14 @@ class Benutzer {
   +email: String
   +passwortHash: String
   +iqScore: int
+  +freunde : Benutzer[]
+}
+
+class FreundesAnfrage {
+}
+
+class AktiverTag {
+  +Zuletzt Aktiv: date
 }
 
 enum Fragetyp {
@@ -63,15 +71,25 @@ Modul "1..*" o-- "1" Lernset
 Lernset "1" o-- "0..*" Quiz
 
 ' Quiz als Aggregat: starke Besitzbeziehung
-Quiz "1" *-- "0..*" Quizprogress : verändert bei Lösen 
+Quiz "1" *-- "0..*" QuizSitzung : verändert bei Lösen 
 Quiz "1" *-- "1..*" Frage : besteht aus
-Frage "1" *-- "1..*" AntwortOption : hat
+Frage "1" *-- "1..*" AntwortMöglichkeit : hat
+Frage -- Fragetyp : beschrieben durch
 
 ' Benutzer-Beziehungen
-Benutzer "*" *-- "*" Modul : belegt
-Benutzer "1" -- "*" Quizprogress : entwickelt beim Quizlösen    
+Benutzer "0..*" --o "1" Studiengang : gehört zu
+Benutzer "1" *-- "0..*" QuizSitzung : entwickelt beim Quizlösen    
 Benutzer "1" o-- "0..*" Quiz : erstellt
 Benutzer "1" o-- "0..*" Lernset : erstellt
+Benutzer "0..*" -- "0..*" Benutzer : befreundet mit
+Benutzer "0..1" *-- "1" AktiverTag : zuletzt aktiv am
+
+' Freundesanfragen
+Benutzer "1" *-- "0..*" FreundesAnfrage : versendet
+FreundesAnfrage "0..*" --* "1" Benutzer : an Empfänger
+
+
+@enduml
 
 ' Enums sichtbar machen
 Fragetyp ..> Frage : typ
@@ -89,4 +107,4 @@ Quiz -[hidden]-> Benutzer
 Studiengang -[hidden]-> Quiz
 Frage -[hidden]-> Benutzer
 
-@enduml
+
