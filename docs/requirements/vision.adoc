@@ -98,6 +98,8 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 |===
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
 
+| Implementierung eines Quizsystems | hoch | Quizsystem mit Quizzes in unterschiedlichen Kategorien, die sich beantworten und lösen lassen | 1.0
+
 | Orientierung an Studienstruktur
 | hoch
 | Strukturierung der Inhalte nach Studiengang, Modul und Lernset
