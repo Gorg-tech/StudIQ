@@ -62,20 +62,20 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
 
-| Benutzer
+| Benutzer (User)
 | Daten zu einem registrierten Nutzer (Name, Email, Rolle)
 | Objekt
 | Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
 | Login, Anmeldedaten, User
 
-| Studiengang
+| Studiengang (Studiengang)
 | Informationen zu einem Studiengang der HTW RDesden
 | Objekt
 |
 |
 
 
-| Modul
+| Modul (Modul)
 | Information zu einem Modul der HTW aus Modulux
 | Objekt
 |
