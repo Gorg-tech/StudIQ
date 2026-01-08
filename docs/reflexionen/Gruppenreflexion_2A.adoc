@@ -1,0 +1,13 @@
+= Gruppenreflexion Team 2.A
+
+== Top 3 Erfolge
+
+=== 1. Aufrechterhalten einer harmonischen Arbeitsatmosphäre
+
+=== 2. Änderung des Arbeitsprozesses hin zu mehr scrum-artigen Methoden
+
+=== 3. Developer finden sich leicht in entwickelten Quellcode andere Developer hinein
+
+== Top 3 Misserfolge
+
+=== Anfangs schlechtes Einfinden in Quellcode des Backends durch fehlende Kommunikation 
