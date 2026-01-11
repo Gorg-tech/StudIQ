@@ -65,16 +65,13 @@
         <h3>Verlauf</h3>
         <div v-if="quizHistory.length === 0" class="no-history">Keine bisherigen Durchläufe</div>
         <ul v-else class="history-list">
-          <li v-for="(h, i) in quizHistory.slice().reverse()" :key="i" class="history-item" @click="showRun(quizHistory.length - 1 - i); showStats = true">
+          <li v-for="(h, i) in quizHistory.slice().reverse()" :key="i" class="history-item">
             <div class="history-left">
               <div class="history-percent">{{ h.percentage ?? '-' }}%</div>
               <div class="history-info">
                 <div class="muted">{{ formatDate(h.timestamp) }}</div>
                 <div>{{ h.correctAnswers ?? 0 }} / {{ h.totalQuestions ?? 0 }} richtig</div>
               </div>
-            </div>
-            <div class="history-right">
-              <button class="btn btn-sm" @click.stop="showRun(quizHistory.length - 1 - i); showStats = true">Anzeigen</button>
             </div>
           </li>
         </ul>
@@ -313,11 +310,6 @@ function goToEditQuiz() {
     quizEdit.setLernset(lernsetId)
   }
   router.push({ name: 'edit-quiz', params: { quizId: quiz.value.id, lernsetId } })
-}
-
-function showRun(idx) {
-  const clamped = Math.min(Math.max(idx, 0), Math.max(quizHistory.value.length - 1, 0))
-  currentRunIndex.value = clamped
 }
 
 function formatDate(ts) {
