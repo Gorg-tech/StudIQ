@@ -146,7 +146,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getQuiz, getQuizSessions } from '@/services/quizzes'    // <-- added getQuizSessions
 import IconSettings from '@/components/icons/IconSettings.vue'
@@ -199,21 +199,7 @@ async function loadHistoryFromStorage() {
       return
     }
   } catch (err) {
-    // server call failed -> fallback to localStorage silently
-    console.warn('Failed to fetch quiz sessions from server, falling back to localStorage', err)
-  }
-
-  // Fallback: localStorage key
-  const key = `quizHistory_${qid}`
-  try {
-    const raw = localStorage.getItem(key)
-    const parsed = raw ? JSON.parse(raw) : []
-    quizHistory.value = Array.isArray(parsed) ? parsed : []
-    currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
-  } catch (err) {
-    console.error('Error loading quizHistory from localStorage', err)
-    quizHistory.value = []
-    currentRunIndex.value = 0
+    console.warn('Failed to fetch quiz sessions from server', err)
   }
 }
 
@@ -256,15 +242,6 @@ watch(() => route.fullPath, () => {
   loadHistoryFromStorage()
 })
 
-// also listen to storage events (other tabs) to keep UI in sync
-function onStorageEvent(e) {
-  const qid = route.params.quizId
-  if (!qid) return
-  if (e.key === `quizHistory_${qid}`) loadHistoryFromStorage()
-}
-window.addEventListener('storage', onStorageEvent)
-onBeforeUnmount(() => window.removeEventListener('storage', onStorageEvent))
-
 const current = computed(() => {
   if (!Array.isArray(quizHistory.value) || quizHistory.value.length === 0) {
     return {
@@ -306,12 +283,6 @@ const aggregate = computed(() => {
   const avgPercentage = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0
   return { attempts: runs.length, correctAnswers: totalCorrect, totalQuestions: totalQ, avgPercentage, runs }
 })
-
-const errorRate = computed(() =>
-  current.value.totalQuestions > 0
-    ? 100 - Math.round((current.value.correctAnswers / current.value.totalQuestions) * 100)
-    : 0
-)
 
 function startQuiz() {
   if (!quiz.value || !quiz.value.id) {
