@@ -4,10 +4,40 @@
 
 === 1. Aufrechterhalten einer harmonischen Arbeitsatmosphäre
 
-=== 2. Änderung des Arbeitsprozesses hin zu mehr scrum-artigen Methoden
+Vermutlich das wichtigste für eine erfolgreiche Entwicklung eines Produkts ist, dass sich alle beteiligten Entwickler gut verstehen und miteinander arbeiten können. 
+In unserer Gruppe hat ein außerordentlich gutes Arbeitsklima geherrscht, was sich auch in unserer Menge an Features zeigt, die wir trotz des kurzen Zeitraums geschafft haben, zu implementieren.
 
-=== 3. Developer finden sich leicht in entwickelten Quellcode andere Developer hinein
+Begünstigt wurde unter anderem, dass bereits von Beginn an die wöchentlichen Meetings in Präsenz in der HTW stattgefunden haben. 
+So wurden wir, anders als zum Beispiel über Discord, dazu gedrängt, mehr miteinander zu reden und uns so gut kennenzulernen, aber auch dazu, dass jeder zur aktiven Mitarbeit gebracht wurde, damit man nicht als einziger im Team tatenlos dabeisitzt. 
+
+Ebenfalls (und vielleicht auch durch die analogen Meetings) war jeder motiviert am Entwickeln unsere Quiz-App beteiligt sein, und hat sich mit eigenen Ideen eingebracht. 
+Dadurch konnten wir uns schnell auf einen groben Rahmen einigen, wie die App funktionieren soll und auf welchen architektonischen Strukturen sie gebaut wird.
+Dies hat besonders im Bezug auf die Software-Anforderungen anfangs zu einem schnellen Fortschritt in der Entwicklung geführt.
+
+Die breite Motivation zeigt sich auch dadurch, dass gar nicht zugewiesene Aufgaben, welche miest noch nicht einmal ausformuliert oder angesprochen wurden, von Teammitgliedern freiwillig mit erledigt wurden, da sie 'grade dabei waren'.  
+Durch die freiwillige Arbeit wurden wieder andere Teammitglieder dazu motiviert, selbst mehr zu machen, als sie sollten.
+Dies hat sowohl den Fortschritt der Produkt-Entwicklung stark vorangebracht, als auch, die Arbeit für den Product Owner leichter gemacht.
+So hatte dieser weniger Tasks zu verteilen, und zusätzlich konnte dieser ein gut ausgearbeitetes Produkt den Stakeholdern vorweisen.
+
+Das übernehmen nicht zugewiesener Tasks hat jedoch auch zu Problemen geführt. 
+So wurden Implementier-Tasks auch von anderen Developern übernommen, so dass dann zwei Personen am selben Feature geschrieben hatten, aber unterschiedliche Codes. 
+So wurde doch wertvolle Arbeitszeit verschwendet und zusätzlich kam es zu Merge-Conflicts beim ausführen der Pull Requests. 
+Diesem Problem haben wir nun vorgebeugt, indem wir einen Textkanal erschaffen haben, indem man sich melden soll, falls man eine unzugewiesene Aufgabe erledigt, welche sich mit dem Code-Gebiet eines anderen Developers überschneiden könnte.
+Ebenfalls sollten auf Github 'Bug'-Issues erstellt werden, falls man einen Bug findet, und sich diesen zuweisen, falls man diesen bearbeitet, damit keine zweite Person ebenfalls denselben Bug auf seine Weise behebt.
+
+Die positive Atmosphäre hat ebenfalls bei den Retrospektiven geholfen. 
+Diese haben wir regelmäßig am Ende jeder Iteration durchgeführt. 
+Hier konnte jeder offen Kritik aussprechen, woraufhin wir konstruktiv darüber reden konnten, wie das entsprechende Problem gelöst werden kann.
+
+
+=== 2. Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden
+
+=== 3. Schnelle und frühe Organisation eines funktionierenden Code-Test-Systems
 
 == Top 3 Misserfolge
 
-=== Anfangs schlechtes Einfinden in Quellcode des Backends durch fehlende Kommunikation 
+=== Anfangs schlechtes Einfinden in Teile des Quellcodes durch fehlende Kommunikation 
+
+=== Zu spät YAGNI-Prinzip beachtet
+
+=== Stakeholder-Wünsche im Review zu wenig angefochten
