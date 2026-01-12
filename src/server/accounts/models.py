@@ -7,7 +7,9 @@ This file defines account-related entites, their attribute fields and their rela
 import uuid
 from datetime import timedelta, date
 from django.db import models
+from django.db.models.signals import post_save, post_delete
 from django.contrib.auth.models import AbstractUser
+from django.dispatch import receiver
 from quizzes.models import Studiengang
 class UserRole(models.TextChoices):
     """
@@ -125,3 +127,29 @@ class PendingFriendRequest(models.Model):
 
     def __str__(self):
         return f"Friend request from {self.from_user.username} to {self.to_user.username}"
+
+
+# Signal handlers for streak cache invalidation
+@receiver(post_save, sender=StudyDay)
+def invalidate_streak_on_study_day_created(sender, instance, created, **kwargs):
+    """
+    Invalidate the cached streak for the specific user when a StudyDay is created.
+    Only invalidates the streak for the user in this StudyDay, not all users.
+    """
+    if created:
+        # Only invalidate the streak for the user in this StudyDay
+        instance.user.streak_last_updated = None
+        # Access streak property to trigger recalculation
+        _ = instance.user.streak
+
+
+@receiver(post_delete, sender=StudyDay)
+def invalidate_streak_on_study_day_deleted(sender, instance, **kwargs):
+    """
+    Invalidate the cached streak for the specific user when a StudyDay is deleted.
+    Only invalidates the streak for the user in this StudyDay, not all users.
+    """
+    # Only invalidate the streak for the user in this StudyDay
+    instance.user.streak_last_updated = None
+    # Access streak property to trigger recalculation
+    _ = instance.user.streak
