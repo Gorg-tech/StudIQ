@@ -29,7 +29,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('id', 'username', 'email', 'role', 'iq_score', 'streak')
     fieldsets = UserAdmin.fieldsets + (
         ('StudIQ Profile', {'fields': ('role', 'iq_score', 'correct_answers', 
-                                      'streak', 'wrong_answers', 'solved_quizzes',
+                                      'streak_last_updated', 'wrong_answers', 'solved_quizzes',
                                       'studiengang', 'friends')}),
     )
 
