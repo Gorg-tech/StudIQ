@@ -66,6 +66,28 @@ class User(AbstractUser):
     def streak(self, value):
         """Allow setting streak directly if needed (e.g., during migration or reset)."""
         self._streak = value
+    
+    def update_streak(self):
+        """
+        Calculate and save the current streak for the user.
+        """
+        today = date.today()
+
+        days = list(self.study_days.values_list('date', flat=True).order_by('-date'))
+        streak = 0
+        last_day = today
+
+        for d in days:
+            if d > last_day:
+                continue
+            if last_day - d in [timedelta(days=0), timedelta(days=1)]:
+                streak += 1
+                last_day = d
+            else:
+                break
+        self._streak = streak
+        self.streak_last_updated = date.today()
+        self.save()
 
     def __str__(self):
         return self.username
@@ -111,46 +133,6 @@ class PendingFriendRequest(models.Model):
     def __str__(self):
         return f"Friend request from {self.from_user.username} to {self.to_user.username}"
 
-
-# Streak Calculation Logic
-def calculate_streak(user):
-    """
-    Calculate the current study streak for a user based on their StudyDay entries.
-
-    Args:
-        user (User): The user whose streak is to be calculated.
-
-    Returns:
-        int: The calculated streak count.
-    """
-    today = date.today()
-
-    days = list(user.study_days.values_list('date', flat=True).order_by('-date'))
-    streak = 0
-    last_day = today
-
-    for d in days:
-        if d > last_day:
-            continue
-        if last_day - d in [timedelta(days=0), timedelta(days=1)]:
-            streak += 1
-            last_day = d
-        else:
-            break
-
-    return streak
-
-def save_and_calculate_streak(user):
-    """
-    Calculate and save the current streak for a user.
-
-    Args:
-        user (User): The user whose streak is to be calculated and saved.
-    """
-    user.streak = calculate_streak(user)
-    user.streak_last_updated = date.today()
-    user.save()
-
 # Signal handlers for streak cache updates
 @receiver(post_save, sender=StudyDay)
 def recalculate_streak_on_study_day_created(sender, instance, created, **kwargs):
@@ -158,11 +140,11 @@ def recalculate_streak_on_study_day_created(sender, instance, created, **kwargs)
     Recalculate the cached streak for the specific user when a StudyDay is created.
     Checks if study day is created for today or yesterday to decide on recalculation.
     """
-    save_and_calculate_streak(instance.user)
+    instance.user.update_streak()
 
 @receiver(post_delete, sender=StudyDay)
 def recalculate_streak_on_study_day_deleted(sender, instance, **kwargs):
     """
     Recalculate the cached streak for the specific user when a StudyDay is deleted.
     """
-    save_and_calculate_streak(instance.user)
+    instance.user.update_streak()
