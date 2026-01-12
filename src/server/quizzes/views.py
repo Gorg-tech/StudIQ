@@ -522,8 +522,8 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
             user_model = user_model.filter(studiengang=request.user.studiengang)
 
         # Sort user_model by iq_score, fetch the first users and the users around current user
-        user_model = user_model.only('id', 'username', 'iq_score', 'streak', 'solved_quizzes')\
-                                .order_by('-iq_score', 'id')
+        # Note: Cannot use .only() with '_streak' since we need the @property to calculate it
+        user_model = user_model.order_by('-iq_score', 'id')
         top_users = list(user_model[:top_count])
         around_users = self.get_users_around(request.user.id, user_model,
                                             before=around, after=around)
