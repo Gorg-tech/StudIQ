@@ -58,21 +58,7 @@ class User(AbstractUser):
         
         # Only recalculate if not done today or yesterday
         if self.streak_last_updated not in [today, today - timedelta(days=1)]:
-            days = list(self.study_days.values_list('date', flat=True).order_by('-date'))
-            streak = 0
-            last_day = today
-
-            for d in days:
-                if d > last_day:
-                    continue
-                if last_day - d in [timedelta(days=0), timedelta(days=1)]:
-                    streak += 1
-                    last_day = d
-                else:
-                    break
-
-            # Return the recalculated streak without saving
-            return streak
+            return 0
 
         return self._streak
 
