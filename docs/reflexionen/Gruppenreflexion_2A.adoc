@@ -82,7 +82,9 @@ Nach dem Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den zu bearbei
 
 In einem zusätzlich festgelegten Meeting über Discord, 2 Tage nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. Dieses Treffen sollte nicht länger als 15 Minuten dauern.
 
-Das Weekly StandUp verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. Falls ein Problem besteht wird dies sehr kurz besprochen, oder es wird im Team eine Ansprechperson für die Problemlösung gefunden, an welche sich die Person wenden kann. Das einzige, was noch neu vergeben wird, ist die Bearbeitung von Bugs, falls Sie eines dringenden Fixes bedürfen.
+Das Weekly StandUp verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. Falls ein Problem besteht wird dies sehr kurz besprochen, oder es wird im Team eine Ansprechperson für die Problemlösung gefunden, an welche sich die Person wenden kann. 
+Falls es neue Pull Requests gibt, weil eine Task fertig bearbeitet wurde, wurden diese bereits von einem anderen Developer im CodeReview auf Richtigkeit kontrolliert. So müssen diese Pull Requests nur nochmal grob angeschaut werden und können ohne viel Diskussion gemergt werden.
+Das einzige, was nun noch neu vergeben wird, ist die Bearbeitung von Bugs, falls Sie eines dringenden Fixes bedürfen.
 
 So konnten wir die Dauer der Meetings auf 15-30 Minuten einkürzen, womit wir sehr zufrieden sind. Auch sonst hat die Veränderung keine Probleme verursacht, sondern ist auf sehr positives Feedback im Team gestoßen, auch, da klar definiert ist, was jeder bis zum Ende der Iterationzu tun hat.
 
@@ -96,7 +98,7 @@ So hat ein Teammitglied sich bereits nach dem ersten Praktikum, in welchem Tests
 Da wir wussten, dass Software-Testing ein elementarer Bestandteil des Software Engineering ist, waren alle dafür, damit möglichst früh anzufangen. So hatten wir eine neue Rolle im Team: den Test-Verantwortlichen. Während andere Developer in unserem Team damit beschäftigt sind, Features zu implementieren, sorgt die Test-Verantwortliche dafür, dass der entwickelte Code in Tests auch wie gewünscht performt. 
 Wenn der Test Fehler ausgibt, hält die Test-Verantwortliche Rücksprache mit den Entwicklern des Codes, ob der Fehler auf der Seite der Tests oder doch im Quellcode liegt. 
 Falls ein Fehler im Quellcode entdeckt wurde, wird dafür ein Bug-Issue auf Github erstellt.
-Die Testverantwortliche sorgt hauptsächlich für die Implementation von Unit-Tests und Integrationstests
+Die Testverantwortliche sorgt hauptsächlich für die Implementation von Unit-Tests und Integrationstests. Systemtests werden von allen Teammitgliedern beiläufig beim Durchklicken der Software, zum Beispiel durch Ansehen und Schnelltesten neuer Features, durchgeführt.
 
 
 
