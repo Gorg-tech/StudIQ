@@ -189,7 +189,7 @@ def calculate_longest_streak(user):
     longest_streak = max(longest_streak, current_streak)
     return longest_streak
 
-# Upon quiz completion, the streak is automatically calculated via the User.streak property:
+# Upon quiz completion, the streak is updated via the StudyDay model signals
 def register_study_activity(user):
     """
     Register today's study activity for the user.
@@ -200,7 +200,6 @@ def register_study_activity(user):
     """
     today = date.today()
     StudyDay.objects.get_or_create(user=user, date=today)
-    # Accessing user.streak triggers the @property which updates the cached value
 
 class StudyCalendarView(APIView):
     """
