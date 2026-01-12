@@ -112,27 +112,57 @@ class PendingFriendRequest(models.Model):
         return f"Friend request from {self.from_user.username} to {self.to_user.username}"
 
 
-# Signal handlers for streak cache invalidation
-@receiver(post_save, sender=StudyDay)
-def invalidate_streak_on_study_day_created(sender, instance, created, **kwargs):
+# Streak Calculation Logic
+def calculate_streak(user):
     """
-    Invalidate the cached streak for the specific user when a StudyDay is created.
-    Only invalidates the streak for the user in this StudyDay, not all users.
-    """
-    if created:
-        # Only invalidate the streak for the user in this StudyDay
-        instance.user.streak_last_updated = None
-        # Access streak property to trigger recalculation
-        _ = instance.user.streak
+    Calculate the current study streak for a user based on their StudyDay entries.
 
+    Args:
+        user (User): The user whose streak is to be calculated.
+
+    Returns:
+        int: The calculated streak count.
+    """
+    today = date.today()
+
+    days = list(user.study_days.values_list('date', flat=True).order_by('-date'))
+    streak = 0
+    last_day = today
+
+    for d in days:
+        if d > last_day:
+            continue
+        if last_day - d in [timedelta(days=0), timedelta(days=1)]:
+            streak += 1
+            last_day = d
+        else:
+            break
+
+    return streak
+
+def save_and_calculate_streak(user):
+    """
+    Calculate and save the current streak for a user.
+
+    Args:
+        user (User): The user whose streak is to be calculated and saved.
+    """
+    user.streak = calculate_streak(user)
+    user.streak_last_updated = date.today()
+    user.save()
+
+# Signal handlers for streak cache updates
+@receiver(post_save, sender=StudyDay)
+def recalculate_streak_on_study_day_created(sender, instance, created, **kwargs):
+    """
+    Recalculate the cached streak for the specific user when a StudyDay is created.
+    Checks if study day is created for today or yesterday to decide on recalculation.
+    """
+    save_and_calculate_streak(instance.user)
 
 @receiver(post_delete, sender=StudyDay)
-def invalidate_streak_on_study_day_deleted(sender, instance, **kwargs):
+def recalculate_streak_on_study_day_deleted(sender, instance, **kwargs):
     """
-    Invalidate the cached streak for the specific user when a StudyDay is deleted.
-    Only invalidates the streak for the user in this StudyDay, not all users.
+    Recalculate the cached streak for the specific user when a StudyDay is deleted.
     """
-    # Only invalidate the streak for the user in this StudyDay
-    instance.user.streak_last_updated = None
-    # Access streak property to trigger recalculation
-    _ = instance.user.streak
+    save_and_calculate_streak(instance.user)
