@@ -193,7 +193,7 @@ def calculate_longest_streak(user):
 def register_study_activity(user):
     """
     Register today's study activity for the user.
-    The streak is automatically calculated and cached via the User.streak property.
+    The streak is automatically updated via model signals.
 
     Args:
         user (User): The user instance.
