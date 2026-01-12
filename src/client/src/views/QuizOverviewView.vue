@@ -368,7 +368,7 @@ const canEdit = computed(() => {
 /* History */
 .history-section { margin-top:1.25rem; }
 .history-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.6rem; }
-.history-item { display:flex; justify-content:space-between; align-items:center; padding:.75rem; border-radius:10px; background:#fff; border:1px solid rgba(15,23,42,0.03); transition:transform .12s, box-shadow .12s; cursor:pointer; }
+.history-item { display:flex; justify-content:space-between; align-items:center; padding:.75rem; border-radius:10px; background:#fff; border:1px solid rgba(15,23,42,0.03); transition:transform .12s, box-shadow .12s;}
 .history-item:hover { transform:translateY(-4px); box-shadow: 0 12px 30px rgba(16,24,40,0.06); }
 .history-left { display:flex; gap:.75rem; align-items:center; }
 .history-percent { font-weight:700; color:#ff6a00; font-size:1.05rem; margin-right:.6rem; }
