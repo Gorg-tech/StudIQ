@@ -360,3 +360,11 @@ Plattform-Findung wichtig
       - URL zur laufenden Instanz oder URL zu Docker-Image
       - "ggf." Demo-Login (Brauchen wir eins?)
       -> ja
+
+=== 4. Meeting
+
+- Konsultation noch wichtig
+  * Dokumentation kontrollieren lassen
+  * fragen zu App-Tauglichkeit hinsichtlich Gesetzen (z.B Datenschutz)
+  * Reflexion
+  * Präsentation 
