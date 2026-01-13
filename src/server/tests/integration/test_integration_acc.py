@@ -28,7 +28,7 @@ class TestIntegrationAccounts(TestCase):
 
     def test_register_user_success(self):
         """Register a new user successfully if all required fields are provided"""
-        data = {"username": "newuser", "password": "Newpass1234#", "studiengang": self.studiengang.id}
+        data = {"username": "newuser", "password": "Newpass1234#", "studiengang": self.studiengang}
 
         response = self.client.post("/api/auth/register/", data, format="json")
         print(response.data)
@@ -77,13 +77,55 @@ class TestIntegrationAccounts(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["username"], "user1")
 
-    def test_create_and_get_quiz(self):
+    def test_create_and_get_quiz_succeeds(self):
         """Create a quiz and fetch it"""
         self.client.login(username="user1", password="pass1")
         quiz_data = {
             "title": "Sample Quiz",
             "description": "A simple quiz",
-            "questions": [],
+            "questions": [{
+                "text": "New Question 1",
+                "type": "SINGLE_CHOICE",
+                "_status": "new",
+                "answer_options": [
+                    {
+                        "text": "New Answer 1",
+                        "is_correct": True,
+                        "_status": "new"
+                    },
+                    {
+                        "text": "New Answer 2",     
+                        "is_correct": False,
+                        "_status": "new"
+                    }],
+            }],"text": "New Question 2",
+                "type": "SINGLE_CHOICE",
+                "_status": "new",
+                "answer_options": [
+                    {
+                        "text": "New Answer 1",
+                        "is_correct": True,
+                        "_status": "new"
+                    },
+                    {
+                        "text": "New Answer 2",     
+                        "is_correct": False,
+                        "_status": "new"
+                    }],
+                    "text": "New Question 3",
+                "type": "SINGLE_CHOICE",
+                "_status": "new",
+                "answer_options": [
+                    {
+                        "text": "New Answer 1",
+                        "is_correct": True,
+                        "_status": "new"
+                    },
+                    {
+                        "text": "New Answer 2",     
+                        "is_correct": False,
+                        "_status": "new"
+                    }],
             "lernset": self.lernset.id
         }
         response = self.client.post("/api/quizzes/", quiz_data, format="json")
