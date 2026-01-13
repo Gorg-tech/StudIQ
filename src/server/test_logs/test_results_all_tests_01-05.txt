@@ -1,0 +1,124 @@
+[
+  {
+    "test": "test_create_and_get_quiz (tests.integration.test_integration_acc.TestIntegrationAccounts.test_create_and_get_quiz)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 94, in test_create_and_get_quiz\n    self.assertEqual(response.status_code, 201)\nAssertionError: 400 != 201\n",
+    "time": "2026-01-05 08:33:16.115307"
+  },
+  {
+    "test": "test_login_invalid_credentials_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_login_invalid_credentials_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:17.440767"
+  },
+  {
+    "test": "test_me_view_authenticated (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_authenticated)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:18.966458"
+  },
+  {
+    "test": "test_me_view_requires_authentication (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_requires_authentication)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:19.944688"
+  },
+  {
+    "test": "test_register_user_invalid_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_invalid_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:20.805156"
+  },
+  {
+    "test": "test_register_user_success (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_success)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_acc.py\", line 39, in test_register_user_success\n    self.assertEqual(response.status_code, 201)\nAssertionError: 400 != 201\n",
+    "time": "2026-01-05 08:33:21.866895"
+  },
+  {
+    "test": "test_valid_login_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_login_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:23.322287"
+  },
+  {
+    "test": "test_valid_logout_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_logout_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:24.966577"
+  },
+  {
+    "test": "test_creating_new_valid_user_suceeds (tests.modul.test_modul_acc.TestAccounts.test_creating_new_valid_user_suceeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_acc.py\", line 21, in test_creating_new_valid_user_suceeds\n    self.assertTrue(serializer.is_valid(), serializer.errors)\nAssertionError: False is not true : {'studiengang': [ErrorDetail(string='Ung\u00fcltiger Studiengang.', code='does_not_exist')]}\n",
+    "time": "2026-01-05 08:33:25.227126"
+  },
+  {
+    "test": "test_creating_user_with_existing_username_fails (tests.modul.test_modul_acc.TestAccounts.test_creating_user_with_existing_username_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:25.314082"
+  },
+  {
+    "test": "test_login_with_invalid_credentials_fails (tests.modul.test_modul_acc.TestAccounts.test_login_with_invalid_credentials_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:25.818063"
+  },
+  {
+    "test": "test_login_with_valid_credentials_succeeds (tests.modul.test_modul_acc.TestAccounts.test_login_with_valid_credentials_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:25.875334"
+  },
+  {
+    "test": "test_missing_stdiengang_fails (tests.modul.test_modul_acc.TestAccounts.test_missing_stdiengang_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:25.961560"
+  },
+  {
+    "test": "test_warning_on_weak_password (tests.modul.test_modul_acc.TestAccounts.test_warning_on_weak_password)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:26.080125"
+  },
+  {
+    "test": "test_correct_answer_changeable_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_correct_answer_changeable_succeeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 261, in test_correct_answer_changeable_succeeds\n    self.assertFalse(updated_answer1.is_correct)\nAssertionError: True is not false\n",
+    "time": "2026-01-05 08:33:26.561129"
+  },
+  {
+    "test": "test_create_new_question_in_existing_quiz_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_new_question_in_existing_quiz_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:26.913022"
+  },
+  {
+    "test": "test_create_quiz_with_valid_data_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_quiz_with_valid_data_succeeds)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 188, in test_create_quiz_with_valid_data_succeeds\n    quiz = serializer.save()\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/venvs/venv-Studiq/lib/python3.12/site-packages/rest_framework/serializers.py\", line 210, in save\n    self.instance = self.create(validated_data)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/minadroid/Uni/StudIQ/src/server/quizzes/serializers.py\", line 74, in create\n    raise serializers.ValidationError({\nrest_framework.exceptions.ValidationError: {'questions': ErrorDetail(string='Ein Quiz muss mindestens 3 Fragen enthalten.', code='invalid')}\n",
+    "time": "2026-01-05 08:33:27.108171"
+  },
+  {
+    "test": "test_delete_question_removes_answer_options (tests.modul.test_modul_quiz.TestCaseQuiz.test_delete_question_removes_answer_options)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:27.668328"
+  },
+  {
+    "test": "test_edit_answer_options_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_edit_answer_options_succeeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 113, in test_edit_answer_options_succeeds\n    self.assertEqual(self.answer1.text, \"Updated Answer 1\")\nAssertionError: 'Answer 1' != 'Updated Answer 1'\n- Answer 1\n+ Updated Answer 1\n\n",
+    "time": "2026-01-05 08:33:27.951136"
+  },
+  {
+    "test": "test_quiz_with_no_questions_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_quiz_with_no_questions_fails)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 72, in test_quiz_with_no_questions_fails\n    self.assertFalse(serializer.is_valid())\nAssertionError: True is not false\n",
+    "time": "2026-01-05 08:33:28.159785"
+  },
+  {
+    "test": "test_search_nonexisting_quiz_fails (tests.modul.test_modul_quiz.TestSearchbar.test_search_nonexisting_quiz_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:28.448746"
+  },
+  {
+    "test": "test_search_quiz_by_title_suceeds (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_by_title_suceeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:28.589380"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 08:33:28.740712"
+  }
+]

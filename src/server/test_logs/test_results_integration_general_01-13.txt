@@ -1,0 +1,67 @@
+[
+  {
+    "test": "test_create_and_get_quiz_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_create_and_get_quiz_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:21.222821"
+  },
+  {
+    "test": "test_login_invalid_credentials_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_login_invalid_credentials_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:22.547040"
+  },
+  {
+    "test": "test_me_view_authenticated (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_authenticated)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:24.098453"
+  },
+  {
+    "test": "test_me_view_requires_authentication (tests.integration.test_integration_acc.TestIntegrationAccounts.test_me_view_requires_authentication)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:24.983619"
+  },
+  {
+    "test": "test_register_user_invalid_fails (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_invalid_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:25.964155"
+  },
+  {
+    "test": "test_register_user_success (tests.integration.test_integration_acc.TestIntegrationAccounts.test_register_user_success)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:27.532870"
+  },
+  {
+    "test": "test_valid_login_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_login_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:28.920426"
+  },
+  {
+    "test": "test_valid_logout_succeeds (tests.integration.test_integration_acc.TestIntegrationAccounts.test_valid_logout_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:30.642080"
+  },
+  {
+    "test": "test_create_new_session_succeeds (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_create_new_session_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:32.321542"
+  },
+  {
+    "test": "test_only_creator_can_delete_quiz (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_only_creator_can_delete_quiz)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:33.563478"
+  },
+  {
+    "test": "test_quiz_create_sets_created_by_automatically (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_quiz_create_sets_created_by_automatically)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:35.085506"
+  },
+  {
+    "test": "test_update_quiz_unauthenticated_user_forbidden (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_update_quiz_unauthenticated_user_forbidden)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:36.296400"
+  },
+  {
+    "test": "test_search_filters_by_quizzes (tests.integration.test_integration_quiz.TestSearchView.test_search_filters_by_quizzes)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:34:37.147022"
+  }
+]
