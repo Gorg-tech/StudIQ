@@ -16,6 +16,7 @@ class AnswerOptionSerializer(serializers.ModelSerializer):
     Handles creation, update, and validation of answer options, including correctness flag.
     """
     _status = serializers.CharField(write_only=True, required=False)
+    id = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         """
@@ -64,17 +65,21 @@ class QuizSerializer(serializers.ModelSerializer):
             'is_public', 'lernset', 'lernset_title', 'modul_name', 'modul_id', 'questions'
         ]
 
+    def validate(self, data):
+        if self.instance is None:
+            questions = data.get('questions', [])
+            if len(questions) < 3:
+                raise serializers.ValidationError({
+                    'questions': 'Ein Quiz muss mindestens 3 Fragen enthalten.'
+                })
+        return data
+
     def create(self, validated_data):
         """
         create Quiz with nested Questions and AnswerOptions
         """
         questions_data = validated_data.pop('questions', [])
-        # Require at least 3 questions to create a quiz
-        if len(questions_data) < 3:
-            raise serializers.ValidationError({
-                'questions': 'Ein Quiz muss mindestens 3 Fragen enthalten.'
-            })
-
+        
         quiz = Quiz.objects.create(**validated_data)
 
         for question_data in questions_data:

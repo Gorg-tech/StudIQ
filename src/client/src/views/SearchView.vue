@@ -82,12 +82,12 @@
           @click="navigateToItem(item)"
           style="cursor: pointer;"
         >
+          <span class="item-type">{{ item.type }}</span>
           <div class="quiz-header">
             <h3>
               <!-- Emojis entfernt -->
               {{ item.title }}
             </h3>
-            <span class="item-type">{{ item.type }}</span>
           </div>
 
           <div v-if="item.type === 'Quiz'" class="quiz-details">
@@ -150,21 +150,21 @@
 
           <div class="card-footer">
             <div v-if="item.type === 'Quiz'" class="hierarchy-info">
-              <span v-if="item.modul_name" class="hierarchy-item" title="Modul">
+              <span v-if="item.modul_name" class="hierarchy-item" :title="item.modul_name">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                {{ item.modul_name }}
+                <span class="hierarchy-text">{{ item.modul_name }}</span>
               </span>
               <span v-if="item.modul_name && item.lernset_title" class="hierarchy-separator">›</span>
-              <span v-if="item.lernset_title" class="hierarchy-item" title="Lernset">
+              <span v-if="item.lernset_title" class="hierarchy-item" :title="item.lernset_title">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                {{ item.lernset_title }}
+                <span class="hierarchy-text">{{ item.lernset_title }}</span>
               </span>
             </div>
             
             <div v-else-if="item.type === 'Lernset' && item.modul" class="hierarchy-info">
-              <span class="hierarchy-item" title="Modul">
+              <span class="hierarchy-item" :title="item.modul.name">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                {{ item.modul.name }}
+                <span class="hierarchy-text">{{ item.modul.name }}</span>
               </span>
             </div>
 
@@ -261,16 +261,15 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSearch } from '@/services/quizzes';
 import { getModul } from '@/services/modules';
+import { useSearchStore } from '@/stores/search';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const searchQuery = ref('');
-const activeFilter = ref('alle');
-const results = ref({});
+const searchStore = useSearchStore();
+const { searchQuery, activeFilter, results } = storeToRefs(searchStore);
+
 const loading = ref(false);
 const error = ref(null);
-
-// Cache for search results to avoid redundant network requests
-const searchCache = new Map();
 
 // Dialog State
 const showDialog = ref(false);
@@ -306,12 +305,13 @@ async function fetchFilteredQuizzes() {
   const currentQuery = searchQuery.value.trim();
   const cacheKey = `${currentFilter}:${currentQuery}`;
 
-  if (searchCache.has(cacheKey)) {
-    results.value = searchCache.get(cacheKey);
-    return;
+  const hasCache = searchStore.hasCache(cacheKey);
+  if (hasCache) {
+    results.value = searchStore.getCachedResults(cacheKey);
+  } else {
+    loading.value = true;
   }
 
-  loading.value = true;
   error.value = null;
   
   try {
@@ -321,11 +321,17 @@ async function fetchFilteredQuizzes() {
       filter
     });
     
-    // Update cache and results
-    searchCache.set(cacheKey, data);
-    results.value = data;
+    // Update cache in store
+    searchStore.saveToCache(cacheKey, data);
+    
+    // Only update results if this is still the current search
+    if (cacheKey === `${activeFilter.value}:${searchQuery.value.trim()}`) {
+      results.value = data;
+    }
   } catch (err) {
-    error.value = 'Fehler beim Abrufen der Suchergebnisse.';
+    if (!hasCache) {
+      error.value = 'Fehler beim Abrufen der Suchergebnisse.';
+    }
     console.error(err);
   } finally {
     loading.value = false;
@@ -512,12 +518,13 @@ onMounted(() => {
 
 .quiz-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 16px;
   width: 100%;
 }
 
 .quiz-item {
+  position: relative;
   padding: 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -526,6 +533,14 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  margin-top: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.quiz-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--type-border, var(--color-primary));
 }
 
 .quiz-header {
@@ -533,16 +548,23 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  margin-top: 4px;
 }
 
 .item-type {
-  padding: 4px 10px;
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  padding: 2px 10px;
   border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
   background-color: var(--type-bg);
   color: var(--type-color);
   border: 1px solid var(--type-border);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 2;
 }
 
 .type-quiz {
@@ -604,17 +626,6 @@ onMounted(() => {
   to { transform: rotate(360deg); }
 }
 
-@media (max-width: 900px) {
-  .quiz-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  .quiz-list {
-    grid-template-columns: 1fr;
-  }
-}
-
 .quiz-lernset {
   font-size: 0.85rem;
   color: var(--color-muted);
@@ -638,11 +649,13 @@ onMounted(() => {
 .hierarchy-info {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 6px;
   font-size: 0.85rem;
   color: var(--color-muted);
   justify-content: flex-end;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .hierarchy-item {
@@ -652,6 +665,32 @@ onMounted(() => {
   background-color: var(--color-bg-light);
   padding: 2px 8px;
   border-radius: 4px;
+  max-width: 100%; /* Allow using full available width */
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.hierarchy-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Allow shrinking below content size */
+  max-width: 250px; /* Prevent extremely long text */
+}
+
+@media (max-width: 600px) {
+  .card-footer {
+    justify-content: flex-start;
+  }
+  
+  .hierarchy-info {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  
+  .hierarchy-text {
+    max-width: 100%;
+  }
 }
 
 .hierarchy-separator {
@@ -685,6 +724,7 @@ onMounted(() => {
 
 .icon {
   opacity: 0.7;
+  flex-shrink: 0;
 }
 
 .quiz-stats strong {

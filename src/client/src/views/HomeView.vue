@@ -372,6 +372,15 @@ const startQuiz = (quizId) => {
   justify-content: center;
   text-align: center;
   cursor: pointer; 
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+.stat-square:hover {
+  background-color: var(--color-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .stat-icon {
