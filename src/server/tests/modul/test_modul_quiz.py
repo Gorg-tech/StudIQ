@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
-from server.accounts import serializers
+from accounts import serializers
 
 User = get_user_model()
 
@@ -184,8 +184,7 @@ class TestCaseQuiz(TestCase):
             }]
         }
         serializer = QuizSerializer(data=data)
-        with self.assertRaises(serializers.ValidationError):
-            serializer.save()
+        self.assertTrue(serializer.is_valid(), serializer.errors)
 
     def test_create_new_question_in_existing_quiz_succeeds(self):
         data = {

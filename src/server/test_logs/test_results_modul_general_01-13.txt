@@ -1,0 +1,44 @@
+[
+  {
+    "test": "tests.modul.test_modul_quiz (unittest.loader._FailedTest.tests.modul.test_modul_quiz)",
+    "status": "ERROR",
+    "error": "ImportError: Failed to import test module: tests.modul.test_modul_quiz\nTraceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/loader.py\", line 394, in _find_test_path\n    module = self._get_module_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/loader.py\", line 337, in _get_module_from_name\n    __import__(name)\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 8, in <module>\n    from server.accounts import serializers\nModuleNotFoundError: No module named 'server'\n\n",
+    "time": "2026-01-13 09:59:01.945935"
+  },
+  {
+    "test": "test_creating_new_valid_user_suceeds (tests.modul.test_modul_acc.TestAccounts.test_creating_new_valid_user_suceeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 09:59:02.697746"
+  },
+  {
+    "test": "test_creating_user_with_existing_username_fails (tests.modul.test_modul_acc.TestAccounts.test_creating_user_with_existing_username_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 09:59:02.802448"
+  },
+  {
+    "test": "test_friendrequest_to_unknown_user_fails (tests.modul.test_modul_acc.TestAccounts.test_friendrequest_to_unknown_user_fails)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_acc.py\", line 80, in test_friendrequest_to_unknown_user_fails\n    self.assertFalse(serializer.is_valid(), serializer.errors)\nAssertionError: True is not false : {}\n",
+    "time": "2026-01-13 09:59:02.856089"
+  },
+  {
+    "test": "test_login_with_invalid_credentials_fails (tests.modul.test_modul_acc.TestAccounts.test_login_with_invalid_credentials_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 09:59:03.295013"
+  },
+  {
+    "test": "test_login_with_valid_credentials_succeeds (tests.modul.test_modul_acc.TestAccounts.test_login_with_valid_credentials_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 09:59:03.348443"
+  },
+  {
+    "test": "test_missing_stdiengang_fails (tests.modul.test_modul_acc.TestAccounts.test_missing_stdiengang_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 09:59:03.417870"
+  },
+  {
+    "test": "test_warning_on_weak_password (tests.modul.test_modul_acc.TestAccounts.test_warning_on_weak_password)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 09:59:03.506698"
+  }
+]
