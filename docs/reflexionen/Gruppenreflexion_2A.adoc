@@ -118,7 +118,7 @@ Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests p
 === Fehlende Architektur-Dokumentation
 - Fehlende Dokumentation über Backend
 - Entwickler haben sich nicht getraut, Backend zu bearbeiten
-- Wenig BEachrung YAGNI-Prinzip
+- Wenig Beachtung YAGNI-Prinzip
 
 === Schlechte Organisation der Weekly Meetings
 
