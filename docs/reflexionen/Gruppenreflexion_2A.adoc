@@ -76,17 +76,26 @@ Im Fachaustausch mit anderen Teams ist uns dann aufgefallen, dass ein bei andere
 So haben wir dann herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
 
 Dadurch haben wir dann in der darauf folgenden Iteration unseren Ablauf verändert:
-Nachdem unser Team neuen Input von den Stakeholdern in Form von User Stories erhalten hat , welche von einer Person während des Treffens protokolliert wurden, wurde unser Backlog, inklusive der neuen User Stories, refinet. Dabei wurde die Komplexität der Items im Product Backlog geschätzt, sowie deren Priorität (stark beeinflusst durch den PO) festgelegt. So werden die User Stories und PBIs evaluiert, die in der gesamten kommenden Iteration bearbeitet und fertig gestellt werden.
+Nachdem unser Team neuen Input von den Stakeholdern in Form von User Stories erhalten hat, welche von einer Person während des Treffens protokolliert wurden, wurde unser Backlog, inklusive der neuen User Stories, refinet.
+Dabei wurde die Komplexität der Items im Product Backlog geschätzt, sowie deren Priorität (stark beeinflusst durch den PO) festgelegt. 
+So werden die User Stories und PBIs evaluiert, die in der gesamten kommenden Iteration bearbeitet und fertig gestellt werden.
 
-Nach dem Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den zu bearbeitenden Items aus dem Backlog sowie aus anderweitigen Anforderungen(z.B. Anwender-Dokumentation erstellen). So enstehen abhängig vom Umfang der Tasks ca. 3-5 Tasks pro Person pro Iteration.
+Nach dem Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den zu bearbeitenden Items aus dem Backlog sowie aus anderweitigen Anforderungen(z.B. Anwender-Dokumentation erstellen). 
+So enstehen abhängig vom Umfang der Tasks ca. 3-5 Tasks pro Person pro Iteration.
 
-In einem zusätzlich festgelegten Meeting über Discord, 2 Tage nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. Dieses Treffen sollte nicht länger als 15 Minuten dauern.
+In einem zusätzlich festgelegten Meeting über Discord, 2 Tage nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. 
+Dieses Treffen sollte nicht länger als 15 Minuten dauern.
 
-Das Weekly StandUp verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. Falls ein Problem besteht wird dies sehr kurz besprochen, oder es wird im Team eine Ansprechperson für die Problemlösung gefunden, an welche sich die Person wenden kann. 
-Falls es neue Pull Requests gibt, weil eine Task fertig bearbeitet wurde, wurden diese bereits von einem anderen Developer im CodeReview auf Richtigkeit kontrolliert. So müssen diese Pull Requests nur nochmal grob angeschaut werden und können ohne viel Diskussion gemergt werden.
+Das Weekly StandUp verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. 
+Falls ein Problem besteht wird dies sehr kurz besprochen, oder es wird im Team eine Ansprechperson für die Problemlösung gefunden, an welche sich die Person wenden kann. 
+Falls es neue Pull Requests gibt, weil eine Task fertig bearbeitet wurde, wurden diese bereits von einem anderen Developer im CodeReview auf Richtigkeit kontrolliert. 
+So müssen diese Pull Requests nur nochmal grob angeschaut werden und können ohne viel Diskussion gemergt werden.
 Das einzige, was nun noch neu vergeben wird, ist die Bearbeitung von Bugs, falls Sie eines dringenden Fixes bedürfen.
 
 So konnten wir die Dauer der Meetings auf 15-30 Minuten einkürzen, womit wir sehr zufrieden sind. Auch sonst hat die Veränderung keine Probleme verursacht, sondern ist auf sehr positives Feedback im Team gestoßen, auch, da klar definiert ist, was jeder bis zum Ende der Iterationzu tun hat.
+
+Wir finden, wir können Stolz mit uns sein, dass wir nach so vielen Wochen gemeinsamem arbeiten eingesehen haben, dass unsere bisherige Organisation nicht richtig funktioniert, und den Mut gefunden haben, diese komplett umzukrempeln. 
+Ebenfalls, dass jeder im Team diesen Schritt mitgegangen ist und diese neue Meeting-Struktur mit einem zusätzlichen Meeting pro Iteration unterstützt hat, ist sehr lobenswert.
 
 Am Ende bleibt nur das Problem, das wir mit dieser neuen Ordnung erst in unserer letzten Iteration anfangen konnten. So hätten wir vermutlich noch deutlich mehr schaffen können, wenn wir eher damit angefangen hätten.
 
@@ -109,7 +118,7 @@ Somit werden ebenfalls die Entwickler dazu gedrängt, ihren Code gut zu dokument
 
 Das wichtigste ist jedoch, dass nun sichergestellt wird, dass ein immer größerer Teil des Quellcodes korrekt funktioniert, wodurch sich die Entwickler mehr auf neue Produkt-Features konzentrieren können. Ebenfalls lässt sich beim Entwickeln von neuem Code nun schnell testen, dass der alte Code noch funktioniert, und nicht durch die neuen Eingaben Fehler auswirft.
 
-Derzeit liegt die Testabdeckung bereits bei über 50% im Backend, womit wie sehr zufrieden sein können.
+Derzeit liegt die Testabdeckung bereits bei über 40% im Backend, womit wie sehr zufrieden sein können.
 
 Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests per Github Actions zu automatisieren, sodass beim Erstellen eines Pull Requests automatisch der Backend-Code getestet wird. So wird den Entwicklern noch mehr Arbeit abgenommen, die sie stattdessen in die Entwicklung von neuem Code stecken können.
 
@@ -123,3 +132,10 @@ Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests p
 === Schlechte Organisation der Weekly Meetings
 
 === Stakeholder-Wünsche im Review zu wenig angefochten
+
+Wir haben regelmäßig, am Ende jeder Iteration, ein Review mit den Stakeholdern durchgeführt. 
+Dieses Treffen gab uns jedes Mal sehr konstruktiven und hilfreichen Input für die Entwicklung unseres Software-Produkts. 
+Jedoch gab es oft, vor allem am Anfang, sehr viel Input. 
+So haben wir nach dem Meeting meist darüber diskutiert, dass doch viel zu viel Entwicklungarbeit für manche Wunsch-Features zu investieren nötig ist, sie also praktisch in unserem kleinen Team nicht umsetzen ist.
+
+So haben wir viele User Stories gehabt, welche wohl kaum umgesetzt werden im gesamten Entwicklungsprozess.
