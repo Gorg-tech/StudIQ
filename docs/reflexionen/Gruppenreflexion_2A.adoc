@@ -115,8 +115,11 @@ Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests p
 
 == Top 3 Misserfolge
 
-=== Anfangs schlechtes Einfinden in Teile des Quellcodes durch fehlende Kommunikation 
+=== Fehlende Architektur-Dokumentation
+- Fehlende Dokumentation über Backend
+- Entwickler haben sich nicht getraut, Backend zu bearbeiten
+- Wenig BEachrung YAGNI-Prinzip
 
-=== Zu spät YAGNI-Prinzip beachtet
+=== Schlechte Organisation der Weekly Meetings
 
 === Stakeholder-Wünsche im Review zu wenig angefochten
