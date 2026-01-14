@@ -44,36 +44,12 @@ Um den freundschaftlichen Umgang weiter zu fördern, hat unser Scrum Master auch
 
 === 2. Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden
 
-Wie haben von Beginn an versucht, uns an das Scrum-Prinzip zuhalten bei der Software-Entwicklung, mit regelmäßigen Treffen für Sprint Review, Retrospektive, Weekly Standup etc. und einer klaren Aufgabenstruktur und Aufteilung PO - SM - Dev.
+Wir haben von Beginn an versucht, uns an das Scrum-Prinzip zuhalten bei der Software-Entwicklung, mit regelmäßigen Treffen für Sprint Review, Retrospektive, Weekly Standup etc. und einer klaren Aufgabenstruktur und Aufteilung PO - SM - Dev.
 
-So haben wir uns auch zwar wöchentlich getroffen, um über unseren Fortschritt zu reden, ähnlich zum Ablauf eines Weekly Standups. Am Ende jeder Iteration gab es ein Sprint Review und anschließend eine Retrospektive immer mit dem gesamten Team. 
+So haben wir uns auch wöchentlich getroffen, um über unseren Fortschritt zu reden, ähnlich zum Ablauf eines Weekly Standups. Am Ende jeder Iteration gab es ein Sprint Review und anschließend eine Retrospektive immer mit dem gesamten Team. 
 
-Ein Problem, was bereits früh aufgetreten ist und bis zu unserem Kurswechsel durchgängig existent gewesen ist, war, dass die Stand Ups fast jedes Mal 60 - 90 Minuten in Anspruch genommen haben (wenn kein Sprint Review/Retrospektive oder ähnliches stattgefunden hat). 
-Da wir uns gut verstanden haben, wurde dies in der Gruppe nicht als großes Problem angesehen, da die Zeit im regen Austausch schnell vergangen ist. 
-Jedoch konnte man schon erkennen, dass etwas nicht ganz richtig lief, wenn das Meeting 4-6 Mal mehr Zeit in Anspruch genommen hat, als die ursprünglich in der Vorlesung empfohlene Menge von 15 Minuten. 
-So könnte doch bei Durchführen eines optimierten StandUp allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen.
-
-Der Grund für die Länge des Meetings lag daran, dass wir den Weekly StandUp nicht so durchgeführt haben, wie es eigentlich gemacht werden soll. 
-So lief es wie folgt ab:
-
-    - Vor jedem Weekly: PO begutachtet die User Stories im Github-Repo und testet die Software auf der Suche nach Bugs und Verbesserungsmöglichkeiten, um anstehende Tasks für die Woche zu sammeln.
-
-    - Im Weekly: Fortschritt der Tasks der Teammitglieder werden begutachtet, meist kam es dort zu ausführlichen Gesprächen zwischen 2-3 Mitgliedern über den dortigen Code, während das restliche Team zugehört hat und mehr oder weniger etwas mit dem Inhalt anfangen konnte.
-
-    - Falls Tasks beendigt wurden, wurden den jeweiligen Mitgliedern neue Task zugewiesen von denen,die der PO vorher gesammelt hat
-
-    - Es kann vorkommen, dass begonnen wird, neue User Stories zu bearbeiten, falls es keine sonstigen Tasks gibt. In dem Falle wird mit dem Team diskutiert, ob die vom PO herausgesuchte User Story vom Umfang her umsetzbar ist in der Task, bzw. welcher Developer dafür mitarbeiten müsste. Dies kann ebenfalls etwas Zeit beansprchen
-
-    - Neue Tasks werden dann im Meeting fertig ausformuliert und zugewiesen
-
-    - Wenn alle vergebenen Tasks begutachtet wurden, wurde Meeting beendet
-
-Ein geordnetes Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität wurde im StandUp kurz vor Start der Bearbeitung der User Story besprochen. Dies hat auch für eine unklare Struktur gesorgt, welche User Stories wie in der Iteration schaffen wollen, und wie viele wir zwischen den Sprint Reviews für die Stakeholder verwirklichen können
-
-Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns dies ebenfalls nicht als wichtiges Problem aufzufallen.
-
-Im Fachaustausch mit anderen Teams ist uns dann aufgefallen, dass ein bei anderen Teams sehr wichtiges Bestandteil der Iteration; das Backlog Refinement; bei uns gar nicht existiert. Ebenfalls schienen die Weekly StandUps anderer Teams deutlich kürzer abzulaufen als bei uns. 
-So haben wir dann herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
+Jedoch haben unsere Stand-Ups jede Woche 60-90 Minuten in Anspruch genommen, was überhaupt nicht mit der in der Vorlesung empfohlenen Menge von 15 Minuten übereinstimmt
+Dies hatte mehrere Gründe, daher ist dies auch als Misserfolg (siehe <<Schlechte Organisation der Weekly Meetings>>) gelistet und ausführlich beschrieben, da uns dies in der Entwicklung sehr eingeschränkt hat.
 
 Dadurch haben wir dann in der darauf folgenden Iteration unseren Ablauf verändert:
 Nachdem unser Team neuen Input von den Stakeholdern in Form von User Stories erhalten hat, welche von einer Person während des Treffens protokolliert wurden, wurde unser Backlog, inklusive der neuen User Stories, refinet.
@@ -131,6 +107,43 @@ Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests p
 
 === Schlechte Organisation der Weekly Meetings
 
+Ein Problem, was bereits früh aufgetreten ist und bis zur Veränderung unserer Meeting-Struktur durchgängig existent gewesen ist, war, dass die Stand Ups fast jedes Mal 60 - 90 Minuten in Anspruch genommen haben (wenn kein Sprint Review/Retrospektive oder ähnliches stattgefunden hat). 
+Da wir uns gut verstanden haben, wurde dies in der Gruppe nicht als großes Problem angesehen, da die Zeit im regen Austausch schnell vergangen ist. 
+Jedoch konnte man schon erkennen, dass etwas nicht ganz richtig lief, wenn das Meeting 4-6 Mal mehr Zeit in Anspruch genommen hat, als die ursprünglich in der Vorlesung empfohlene Menge von 15 Minuten. 
+So könnte doch bei Durchführen eines optimierten StandUp allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen.
+
+Der Grund für die Länge des Meetings lag daran, dass wir den Weekly StandUp nicht so durchgeführt haben, wie es eigentlich gemacht werden soll. 
+So lief es wie folgt ab:
+
+    - Vor jedem Weekly: PO begutachtet die User Stories im Github-Repo und testet die Software auf der Suche nach Bugs und Verbesserungsmöglichkeiten, um anstehende Tasks für die Woche zu sammeln.
+
+    - Im Weekly: Fortschritt der Tasks der Teammitglieder werden begutachtet, meist kam es dort zu ausführlichen Gesprächen zwischen 2-3 Mitgliedern über den dortigen Code, während das restliche Team zugehört hat und mehr oder weniger etwas mit dem Inhalt anfangen konnte.
+
+    - Falls Tasks beendigt wurden, wurden den jeweiligen Mitgliedern neue Task zugewiesen von denen,die der PO vorher gesammelt hat
+
+    - Es kann vorkommen, dass begonnen wird, neue User Stories zu bearbeiten, falls es keine sonstigen Tasks gibt. In dem Falle wird mit dem Team diskutiert, ob die vom PO herausgesuchte User Story vom Umfang her umsetzbar ist in der Task, bzw. welcher Developer dafür mitarbeiten müsste. Dies kann ebenfalls etwas Zeit beansprchen
+
+    - Neue Tasks werden dann im Meeting fertig ausformuliert und zugewiesen
+
+    - Wenn alle vergebenen Tasks begutachtet wurden, wurde Meeting beendet
+
+Ein geordnetes Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität wurde im StandUp kurz vor Start der Bearbeitung der User Story besprochen. Dies hat auch für eine unklare Struktur gesorgt, welche User Stories wie in der Iteration schaffen wollen, und wie viele wir zwischen den Sprint Reviews für die Stakeholder verwirklichen können
+
+Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns dies ebenfalls nicht als wichtiges Problem aufzufallen.
+
+Im Fachaustausch mit anderen Teams ist uns dann aufgefallen, dass ein bei anderen Teams sehr wichtiges Bestandteil der Iteration; das Backlog Refinement; bei uns gar nicht existiert. Ebenfalls schienen die Weekly StandUps anderer Teams deutlich kürzer abzulaufen als bei uns. 
+So haben wir dann herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
+
+So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass die Aufgaben jede Iteration bereits an dessen Anfang verteilt werden, wobei der PO diese vorbereiten muss.
+Dies hat unser StandUp - Zeit deutlich verbessert auf nur noch ca. 20-30 Minuten pro Meeting.
+
+Diese Erkenntnis, das etwas falsch läuft, und die Einarbeitung in die neu organisierte Struktur empfanden wir aufgrund der guten Funktonsweise als großen Erfolg unseres Arbeitsprozesses. Daher ist diese in <<Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden>> noch einmal detaillierter aufgeführt.
+
+Leider konnten wir diese neue Organisation erst in unserer letzten Iteration durchsetzen, und so hatten wir nicht viel Zeit, um von dem verbesserten Ablauf profitieren zu können.
+
+Ebenfalls besteht hier, auch im Sinne der kontinuierlichen Prozessverbessung, immernoch Verbesserungsbedarf, um auf die empfohlenen 15 Minuten zu kommen. 
+Daran müsste unser Scrum Master noch arbeiten, wenn noch mehr Zeit für die Produktentwicklung wäre.
+
 === Stakeholder-Wünsche im Review zu wenig angefochten
 
 Wir haben regelmäßig, am Ende jeder Iteration, ein Review mit den Stakeholdern durchgeführt. 
@@ -138,4 +151,26 @@ Dieses Treffen gab uns jedes Mal sehr konstruktiven und hilfreichen Input für d
 Jedoch gab es oft, vor allem am Anfang, sehr viel Input. 
 So haben wir nach dem Meeting meist darüber diskutiert, dass doch viel zu viel Entwicklungarbeit für manche Wunsch-Features zu investieren nötig ist, sie also praktisch in unserem kleinen Team nicht umsetzen ist.
 
-So haben wir viele User Stories gehabt, welche wohl kaum umgesetzt werden im gesamten Entwicklungsprozess.
+So haben wir viele User Stories gehabt, welche wohl nur teilweise umgesetzt werden im gesamten überiterativen Entwicklungsprozess.
+
+Zum Einen lag unser Problem darin, dass wir uns vor der Entwicklung nicht viele Gedanken darüber gemacht haben, welche Anforderungen unsere App NICHT erfüllen soll, also 'out of Scope' sind. 
+Daher konnten wir uns in den Reviews nicht einig sein, ob einige Wünsche der Stakeholder wirklich nötig sind, umzusetzen, oder ob sie zu sehr von den Hauptanforderungen an das Produkt abschweifen.
+
+Dieses Problem ist allen im Team aufgefallen, sodass wir uns einig waren, dass dort Verbesserungsbedarf besteht, und so haben wir uns bemüht, unsere Produktanforderungen besser zu beschreiben, damit alle dasselbe Entwicklungsziel für die Software haben.
+So wurde das Problem gelöst, dass die Wünsche der Stakeholder zu weit über die Hauptanforderungen hinaus gingen.
+
+Nun hatten wir weniger User Stories, welche nur mit viel Aufwand umzusetzen waren, und ebenfalls eine geringe Priorität hatten aufgrund der inhaltlichen Entfernung zu unseren Hauptandforderungen.
+Aber dafür haben die Stakeholder munter weiter Wünsche veräußert, welche innerhalb der Anforderungen waren. 
+Und so kamen weiter jedes Sprint Review sehr viel Input an neuen User Stories, welche unmöglich alle umzusetzen waren bis zum nächsten Review. 
+
+Hier wäre es Aufgabe des Product Owners gewesen, die Stakeholder-Wünsche einzugrenzen und auch mal 'Nein' zu den Stakeholderwünschen zu sagen.
+Das wäre wichtig gewesen,um die zukünftigen Aufgaben des Teams schonmal vorab einzugrenzen, und es vor Überlastung zu schützen.
+Jedoch war der PO dafür zu zögerlich, da die Stakeholder meist sehr überzeugt von ihren Wünschen waren. 
+So konnte der PO auch nicht dabei helfen, das Product Backlog gering zu halten.
+
+Nach Absprache mit anderen Teams in SE ist uns dann aufgefallen, dass wir auch die Stakeholder stoppen können und sollten, wenn sie zu viele Feature-Wünsche haben. Dies konnten wir dann in den letzten beiden Iterationen noch umsetzen, sodass der PO deutlich sagt, falls es genug Input ist, bzw. die Developer zu Wort kommen, falls sie erkennen, dass ein Feature zu viel Zeit in Anspruch nehmen wird.
+
+So konnten wir unser User-Story-Backlog in den letzten Iteration verkleinern, was auch für das Refinement wichtig geworden ist.
+So war es dort zum einen leichter zu entscheiden war, welche Priorität die User Storys haben, aber auch, wie sie zu schätzen sind, da dies mit weniger User Storys auch weniger Zeit in Anspruch nimmt.
+
+Dennoch wäre es gut gewesen, die Stakeholder schon viel früher Einzugrenzen, um weniger Zeit für die Diskussion über die Auswahl der User Stories zu investieren, damit das Team dann mehr Zeit hat, die wichtigen Features sorgfältig zu entwickeln
