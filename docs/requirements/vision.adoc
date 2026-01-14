@@ -1,4 +1,4 @@
-= Vision: {project-name}
+= Vision: StudIQ
 
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -19,7 +19,7 @@ Siehe <<#glossary, Glossar>>.
 //Siehe <<./glossary.adoc#glossary, Glossar>>.
 
 === Referenzen
-Modul Software Engeneering 1, Fakultät Informatik, Hochschule für Technik und Wirtschaft Dresden, 2025
+Modul Software Engineering 1&2, Fakultät Informatik, Hochschule für Technik und Wirtschaft Dresden, 2025
 
 
 == Positionierung
@@ -65,12 +65,12 @@ Die Vorbereitung auf Prüfungen stellt für viele Studenten eine große Herausfo
 |===
 | Name | Beschreibung | Verantwortlichkeiten
 | HTW-Student
-| Primäre Nutzergruppe des Lernsystems; ihre aktive Teilnahme ist entscheidend für den Erfolg der Plattform. 
-| Hauptnutzer der Plattform. Mitverantwortlich für Erstellung von Quizfragen/Antworten (interaktives Lernen). Geben Feedback zur Verbesserung der Plattform und der Lerninhalte.
+| Primäre Nutzergruppe des Lernsystems
+| Hauptnutzer der Plattform. Mitverantwortlich für Erstellung von Quizfragen/Antworten (interaktives Lernen). Geben Feedback zur Verbesserung der Plattform und der Lerninhalte. Ihre aktive Teilnahme ist entscheidend für den Erfolg der Plattform. 
 
 | HTW-Dozent
-| Lehrende der HTW, die Qualität und Aktualität der Lerninhalte sicherstellen. 
-| Verantwortlich für Qualität und Aktualität der Lerninhalte. Erstellung von Quizfragen/Antworten. Sicherstellung des didaktischen Mehrwerts. Potentielle Integration der App in Lehrveranstaltungen und Empfehlung an Studierende.
+| Lehrende der HTW
+| Verantwortlich für Qualität und Aktualität der Lerninhalte. Erstellung von Quizfragen/Antworten. Sicherstellung des didaktischen Mehrwerts. Potentielle Integration der App in Lehrveranstaltungen und Empfehlung an Studierende. Stellen die Qualität und Aktualität der Lerninhalte sicher. 
 
 | Gruppe-2A
 | Projektteam. 
@@ -97,9 +97,19 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 [%header, cols="4,1,4,1"]
 |===
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
-| Minimalismus | hoch | Templates, Algorithmik zur Fragenbestimmung | 1.0
-| Individualisierbarkeit | mittel | Bewertungssystem, Erstellung eigener Fragen | 1.1
-| Gameifizierung | mittel | Leaderboard | 1.1
+
+| Implementierung eines Quizsystems | hoch | Quizsystem mit Quizzes in unterschiedlichen Kategorien, die sich beantworten und lösen lassen | 1.0
+
+| Orientierung an Studienstruktur
+| hoch
+| Strukturierung der Inhalte nach Studiengang, Modul und Lernset
+| 1.0
+
+| Transparenz des Lernfortschritts
+| hoch
+| Anzeige von Statistiken (richtige/falsche Antworten, Erfolgsquote, Bewerungssystem) | 1.1
+
+| Förderung von Kollaborativem Lernen | mittel | Bewertungssystem auch innerhalb bestimmter Personengruppen, Erstellung eigener Fragen | 1.2
 |===
 
 
@@ -110,14 +120,15 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 [%header, cols="4,1,1"]
 |===
 | Anforderung | Priorität | Geplantes Release
-| Unterstützung aktueller Browser | hoch | 1.0
+| Unterstützung aktueller Browser: Firefox, Chrome, Chromium, Opera, Edge, Safari, Brave | hoch | 1.0
+| Minimalismus | hoch | Templates, Algorithmik zur Fragenbestimmung | 1.0
 
 | Responsive Design für mobile Endgeräte | mittel | 1.1
 | Antwortzeit im UI < 1 Sekunde | hoch | 1.0
 | Backend läuft auf Server mit Python und Django | hoch | 1.0
 | Speicherung personenbezogener Daten gemäß DSGVO | hoch | 1.1
 | Passwortsicherheit (Hashing, keine Klartext-Speicherung) | hoch | 1.0
-| Benutzerhandbuch und Online-Hilfe | niedrig | 1.2
-| Abhängigkiet von HTW-Systemen (z.B. Modulux) | mittel | 1.1
+| Benutzerhandbuch und Online-Hilfe | mittel | 1.2
+| Abhängigkeit von HTW-Systemen (z.B. Modulux) | mittel | 1.1
 |===
 

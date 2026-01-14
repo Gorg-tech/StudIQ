@@ -1,5 +1,5 @@
 = Design: {project-name}
-Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Gabriel Wulkow Moreira da Silva <gabriel.wulkowmoreiradasilva@stud.htw-dresden.de>
+Georg Richter <georg.richter@stud.htw-dresden.de>; Vincent Karmanoczki <vincent.karmanoczki@stud.htw-dresden.de>; Eric Wolf <eric.wolf@stud.htw-dresden.de>; Carmina Langer <carmina.langer@stud.htw-dresden.de>; Gabriel Wulkow <gabriel.wulkowmoreiradasilva@stud.htw-dresden.de>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
@@ -11,6 +11,7 @@ Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komp
 == Ausgewählte Sichten
 //Entwurfsklassendiagramme, Sequenzdiagramme
 
+Beschrieben in link:../doxygen[Doxygen]
 
 == Schnittstellen
 //Dokumentation oder Verweise auf Schnittstellen, z.B. REST-APIs

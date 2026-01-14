@@ -34,6 +34,13 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |Streaks | Anzahl der Tage, die der Nutzer die App kontinuierlich nutzt | -
 |Studiengang | Studienrichtung an der HTW bestehend aus Modulen | Studienfach
 |Templates | Vorlagen für die Erstellung von Lernsets | Vorlagen, Muster
+|Frage | Frage eines Quizzes,kann gelöst werden, enthält Antwortmöglichkeiten | Quizfrage
+|Antwortmöglichkeit | Antwort-Option (zB bei Multiple Choice) einer Quizfrage | Answer, Antwort-Option
+|IQ-Punkte | Punkte, die der User durch Lösen von Quizzes erhält | Punkte
+|IQ-Score | Anzahl an IQ-Punkten, die der User durch Lösen von Quizzes erhält, wird zum vergleichen der User auf dem Leaderboard verwendet | IQScore, Punktzahl
+|IQ-Level | Anzahl an Leveln, die der User hat. Ab einer bestimmten Anzahl von erhaltenen IQ-Punkten steigt das IQ-Level eines Users |
+|aktiv sein | Ein User ist (an einem Tag) aktiv, wenn er an diesem ein Quiz bearbeitet hat
+
 |===
 
 
@@ -56,52 +63,77 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
 
-| Anmeldedaten
-| Zusammensetzung von Benutzername und Passwort.
-| String
-| Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
-| Login
+| Benutzer (User)
+| Daten zu einem registrierten Nutzer, inklusive Quizbearbeitungsdaten, zugehörigem Studiengang und Freunden (username, email, iq_score, streak, solved_quizzes, studiengang_id, friend_id[])
+| Objekt (string, string, int, int, int, string,string[])
+| Emailadresse muss `@`-Zeichen und `.` Punkt enthalten, studiengang_id muss auf existierenden Studiengang verweisen
+| Login, Anmeldedaten, User, Nutzer
 
-| Studiengang
-| Informationen zu einem Studiengang der HTW RDesden
-|
-|
+| Aktiver Tag(StudyDay)
+| Beschreibt den Tag, an dem der User zuletzt in der App aktiv war (user_id, date)
+| Objekte (string, date)
+
+| Freundesanfragen (FriendRequests)
+| Verweis auf Sender und Empfänger der Freundesanfrage(sender_id,receiver_id).
+| Objekt(string,string)
+| Objekt Freundesanfrage darf nur existieren, falls sie noch nicht beantwortet wurde; sender_id und receiver_id müssen Verweise auf existierende Nutzer sein
+
+| Studiengang (Studiengang)
+| Informationen zu einem Studiengang der HTW Dresden (Id, Name, Description, modulux_url)
+| Objekt (string, string, string, string)
+| Muss in Modulux als Studiengang auffindbar sein
 |
 
+| Modul (Modul)
+| Information zu einem Modul der HTW aus Modulux (id, name, examinations, dozent_name, modulux_url)
+| Objekt (string, string, string, string, string)
+| Muss in Modulux als Modul auffindbar sein
+|
 
-| Modul
-| Information zu einem Modul der HTW aus Modulux
-|
-|
-|
-
-| Lernset
-| Struktur aus Karteikarten zu einem Thema
-| JSON-Array
-| Muss mindestens eine Karte enthalten
+| Lernset (Lernset)
+| Struktur aus Karteikarten zu einem Thema (title, description, modul_id)
+| Objekt (string, string, string)
+| Muss mindestens eine Karte enthalten, modul_id muss auf existierendes modul verweisen
 | Kartenstapel
 
-| Quiz
-| Sammlung von Fragen mit Bewertung, Thema, Autor und Sichtbarkeit
-| JSON-Objekt
-| Titel nicht leer; Fragenanzahl ≥ 1
+| Quiz (Quiz)
+| Struktur aus Infos zum Quiz und der Sammlung von Quizfragen (title, total_attempts, completion_rate, avg_score, avg_time_spent, lernset_id)
+| Objekt (string, int, float, float, time, string)
+| Titel nicht leer; Fragenanzahl ≥ 3, lernset_id muss auf existierendes Lernset verweisen
 | Test, Abfrage
 
-| User
-| Daten zu einem registrierten Nutzer (Name, Email, Rolle)
-| JSON-Objekt
-| Eindeutige E-Mail mit „@“ und „.“, Rolle ∈ {user, admin}
-| Account
+| Quiz-Sitzung (QuizSession)
+| Statistikdaten eines Quizzes pro Nutzer (user_id, end_time, correct_answers, total_answers, quiz_id)
+| Objekt (int, time, int, int, string)
+| user_id bzw. quiz_id müssen auf existierende Benutzer bzw. Quizzes verweisen
+| Quizprogress, Quiz Session
 
-| QuizProgress
-| Statistikdaten eines Quizzes pro Nutzer
-| JSON
-| Muss Benutzer-ID und Lernset-ID enthalten
-| Progress
+| Frage (Question)
+| Frage eines Quizzes (text, question_type, quiz_id)
+| Objekt (string, enum(QuestionType), string)
+| Inhalt nicht leer; Bei Ankreuzaufgaben: Antwortmöglichkeitenanzahl ≥ 2, quiz_id muss auf existierendes Quiz verweisen 
+| Question, Quizfrage
+
+| Fragetyp (QuestionType)
+| Typ der Frage (Mutliple Choice, Single Choice)
+| enum 
+| 
+|
+
+| Antwort-Möglichkeit (AnswerOption)
+| Antwort-Möglichkeit für eine Quiz-Frage (text, is_correct, question_id)
+| Objekt (string, bool, string)
+| Inhalt nicht leer, question_id muss auf existierende Quizfrage verweisen
+| AntwortOptions, Answer
+
 
 |===
+
+Die Bezeichnung in Klammern (z.B. '(AnswerOption)') beschreibt, wie das Objekt im Code benannt wird. 
+Die Definition in Klammern beschreibt, welche Attribute das Objekt hat, der Name wurde aus dem Quellcode im Server übernommen.
+Das Format in Klammern beschreibt, welche Datentypen die entsprechenden Attribute haben.
 
 == Domänenmodell
 // Fügen Sie hier eine Abbildung mit ihrem Domänenmodell ein
 
-plantuml::images/dommodell.puml[format="svg", alt="Domänenmodell StudIQ"]
+plantuml::./images/dommodell.puml[format="svg", alt="Domänenmodell StudIQ"]
