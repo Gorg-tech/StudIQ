@@ -1,0 +1,28 @@
+[
+  {
+    "test": "test_create_new_session_succeeds (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_create_new_session_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 09:52:55.706619"
+  },
+  {
+    "test": "test_only_creator_can_delete_quiz (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_only_creator_can_delete_quiz)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 09:52:56.939303"
+  },
+  {
+    "test": "test_quiz_create_sets_created_by_automatically (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_quiz_create_sets_created_by_automatically)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/integration/test_integration_quiz.py\", line 75, in test_quiz_create_sets_created_by_automatically\n    self.assertEqual(response.status_code, status.HTTP_201_CREATED)\nAssertionError: 400 != 201\n",
+    "time": "2026-01-05 09:52:58.185388"
+  },
+  {
+    "test": "test_update_quiz_unauthenticated_user_forbidden (tests.integration.test_integration_quiz.TestIntegrationQuiz.test_update_quiz_unauthenticated_user_forbidden)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 09:52:59.365116"
+  },
+  {
+    "test": "test_search_filters_by_quizzes (tests.integration.test_integration_quiz.TestSearchView.test_search_filters_by_quizzes)",
+    "status": "SUCCESS",
+    "time": "2026-01-05 09:53:00.174374"
+  }
+]

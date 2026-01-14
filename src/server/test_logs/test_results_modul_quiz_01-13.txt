@@ -1,0 +1,61 @@
+[
+  {
+    "test": "test_correct_answer_changeable_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_correct_answer_changeable_succeeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 269, in test_correct_answer_changeable_succeeds\n    self.assertFalse(self.answer1.is_correct)\nAssertionError: True is not false\n",
+    "time": "2026-01-13 10:06:53.166985"
+  },
+  {
+    "test": "test_create_new_question_in_existing_quiz_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_new_question_in_existing_quiz_succeeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:53.410487"
+  },
+  {
+    "test": "test_create_question_without_answer_options_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_question_without_answer_options_fails)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 305, in test_create_question_without_answer_options_fails\n    self.assertFalse(serializer.is_valid())\nAssertionError: True is not false\n",
+    "time": "2026-01-13 10:06:53.585565"
+  },
+  {
+    "test": "test_create_quiz_with_less_than_3_questions_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_create_quiz_with_less_than_3_questions_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:53.777911"
+  },
+  {
+    "test": "test_delete_question_removes_answer_options (tests.modul.test_modul_quiz.TestCaseQuiz.test_delete_question_removes_answer_options)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:54.087454"
+  },
+  {
+    "test": "test_edit_answer_options_succeeds (tests.modul.test_modul_quiz.TestCaseQuiz.test_edit_answer_options_succeeds)",
+    "status": "FAILURE",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 117, in test_edit_answer_options_succeeds\n    self.assertEqual(self.answer1.text, \"Updated Answer 1\")\nAssertionError: 'Answer 1' != 'Updated Answer 1'\n- Answer 1\n+ Updated Answer 1\n\n",
+    "time": "2026-01-13 10:06:54.363306"
+  },
+  {
+    "test": "test_quiz_with_no_questions_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_quiz_with_no_questions_fails)",
+    "status": "ERROR",
+    "error": "Traceback (most recent call last):\n  File \"/home/minadroid/Uni/StudIQ/src/server/tests/modul/test_modul_quiz.py\", line 76, in test_quiz_with_no_questions_fails\n    with self.assertRaises(serializers.ValidationError):\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: module 'accounts.serializers' has no attribute 'ValidationError'\n",
+    "time": "2026-01-13 10:06:54.617481"
+  },
+  {
+    "test": "test_update_quiz_with_all_questions_deleted_fails (tests.modul.test_modul_quiz.TestCaseQuiz.test_update_quiz_with_all_questions_deleted_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:55.254046"
+  },
+  {
+    "test": "test_search_nonexisting_quiz_fails (tests.modul.test_modul_quiz.TestSearchbar.test_search_nonexisting_quiz_fails)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:55.616882"
+  },
+  {
+    "test": "test_search_quiz_by_title_suceeds (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_by_title_suceeds)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:55.797106"
+  },
+  {
+    "test": "test_search_quiz_case_insensitive (tests.modul.test_modul_quiz.TestSearchbar.test_search_quiz_case_insensitive)",
+    "status": "SUCCESS",
+    "time": "2026-01-13 10:06:55.956893"
+  }
+]

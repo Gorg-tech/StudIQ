@@ -1,0 +1,416 @@
+// Betriebsdokumentation für StudIQ
+include::../_includes/default-attributes.inc.adoc[]
+:doctype: book
+:sectnums:
+:toc: left
+:toclevels: 3
+
+= Betriebsdokumentation: {project-name}
+
+== Einleitung
+
+Diese Dokumentation richtet sich an Administratoren und unterstützt bei der Einrichtung, Konfiguration und Betreuung des {project-name}-Systems.
+
+{project-name} ist eine webbasierte Lernplattform zur Prüfungsvorbereitung für HTW-Studierende. Das System besteht aus:
+
+* **Frontend**: Vue.js 3 Single-Page-Application
+* **Backend**: Django 5.2 REST-API
+* **Datenbank**: MySQL/MariaDB
+
+== Systemvoraussetzungen
+
+=== Hardware-Mindestanforderungen
+
+[cols="1,2,2"]
+|===
+|Komponente |Minimum |Empfohlen
+
+|CPU
+|2 Kerne
+|4 Kerne
+
+|RAM
+|2 GB
+|4 GB
+
+|Festplatte
+|10 GB
+|20 GB SSD
+
+|Netzwerk
+|100 Mbit/s
+|1 Gbit/s
+|===
+
+=== Softwareanforderungen
+
+==== Server
+
+[cols="1,2,2"]
+|===
+|Software |Version |Hinweise
+
+|Betriebssystem
+|Linux (Ubuntu 22.04+, Debian 11+) oder Windows Server 2019+
+|Linux empfohlen
+
+|Python
+|3.10+
+|https://www.python.org/downloads/[Python Downloads]
+
+|Node.js
+|18.x LTS oder 20.x LTS
+|https://nodejs.org/[Node.js Downloads]
+
+|MySQL/MariaDB
+|MySQL 8.0+ / MariaDB 10.6+
+|https://dev.mysql.com/doc/[MySQL Dokumentation]
+
+|===
+
+==== Client (Browser)
+
+[cols="1,2"]
+|===
+|Browser |Mindestversion
+
+|Google Chrome
+|100+
+
+|Mozilla Firefox
+|100+
+
+|Microsoft Edge
+|100+
+
+|Safari
+|15+
+|===
+
+NOTE: JavaScript muss aktiviert sein. Cookies müssen für die Authentifizierung erlaubt sein.
+
+== Systemeinrichtung
+
+=== Quellcode beziehen
+
+Das Repository klonen:
+
+[source,bash]
+----
+git clone https://github.com/Gorg-tech/StudIQ studiq
+cd studiq
+----
+
+=== Backend-Einrichtung
+
+==== Python-Umgebung erstellen
+
+[source,bash]
+----
+cd src/server
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# oder: venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+----
+
+==== Umgebungsvariablen konfigurieren
+
+Erstellen Sie eine `.env`-Datei im Verzeichnis `src/server/`:
+
+[source,bash]
+----
+cp .env.sample .env
+----
+
+Bearbeiten Sie die `.env`-Datei mit den korrekten Werten:
+
+[source,env]
+----
+# Datenbank-Konfiguration
+DB_ENGINE=django.db.backends.mysql
+DB_NAME=studiq_db
+DB_USER=studiq_user
+DB_PASSWORD=<IHR_SICHERES_PASSWORT>
+DB_HOST=<DATENBANK_HOST>
+DB_PORT=3306
+
+# Django-Konfiguration (für Produktion setzen!)
+DJANGO_SECRET_KEY=<ZUFÄLLIGER_SICHERER_SCHLÜSSEL>
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=ihre-domain.de,www.ihre-domain.de
+----
+
+IMPORTANT: Für Produktion unbedingt einen neuen `DJANGO_SECRET_KEY` generieren und `DJANGO_DEBUG=False` setzen!
+
+.Umgebungsvariablen im Detail
+[cols="1,2,2"]
+|===
+|Variable |Beschreibung |Standardwert
+
+|`DB_ENGINE`
+|Datenbank-Engine
+|`django.db.backends.mysql`
+
+|`DB_NAME`
+|Name der Datenbank
+|`studiq_db`
+
+|`DB_USER`
+|Datenbank-Benutzer
+|`studiq_user`
+
+|`DB_PASSWORD`
+|Datenbank-Passwort
+|_Muss gesetzt werden_
+
+|`DB_HOST`
+|IP/Hostname des Datenbankservers (bei DB auf gleichem Server: `localhost` oder `127.0.0.1`)
+|_Muss gesetzt werden_
+
+|`DB_PORT`
+|Port des Datenbankservers
+|`3306`
+
+|`DJANGO_SECRET_KEY`
+|Geheimer Schlüssel für Django
+|_Entwicklungs-Default_
+
+|`DJANGO_DEBUG`
+|Debug-Modus aktivieren (für Produktion: `False`)
+|`True`
+
+|`DJANGO_ALLOWED_HOSTS`
+|Erlaubte Hosts (kommagetrennt)
+|_leer_
+|===
+
+==== Datenbank initialisieren
+
+[source,bash]
+----
+# Datenbank-Migrationen ausführen
+python manage.py migrate
+
+# Initiale Daten laden (Studiengänge, Module etc. aus bereitgestellten JSON-Dateien)
+python scraper/populate_db.py
+
+# Admin-Benutzer erstellen
+python manage.py createsuperuser
+----
+
+NOTE: Die initialen Daten sind bereits als JSON-Dateien im Repository enthalten. Um aktuelle Daten von Modulux zu laden, muss zuerst `modulux_scraper.py` ausgeführt werden, danach `populate_db.py` um die Datenbank zu aktualisieren.
+
+==== Backend starten
+
+Entwicklungsserver:
+[source,bash]
+----
+python manage.py runserver 0.0.0.0:8000
+----
+
+Für Produktion wird ein WSGI-Server wie Gunicorn empfohlen:
+[source,bash]
+----
+pip install gunicorn
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
+----
+
+=== Frontend-Einrichtung
+
+==== Abhängigkeiten installieren
+
+[source,bash]
+----
+cd src/client
+npm install
+----
+
+==== Entwicklungsserver starten
+
+[source,bash]
+----
+npm run dev
+----
+
+Das Frontend ist dann erreichbar unter: http://localhost:5173
+
+==== Produktions-Build erstellen
+
+[source,bash]
+----
+npm run build
+----
+
+Die kompilierten Dateien befinden sich in `src/client/dist/` und können von einem Webserver (z.B. Nginx) ausgeliefert werden.
+
+=== CORS-Konfiguration
+
+Für den Produktionsbetrieb müssen die CORS-Einstellungen in `src/server/config/settings.py` angepasst werden:
+
+[source,python]
+----
+# Ersetzen Sie CORS_ALLOW_ALL_ORIGINS = True durch:
+CORS_ALLOWED_ORIGINS = [
+    "https://ihre-domain.de",
+    "https://www.ihre-domain.de",
+]
+
+# Aktualisieren Sie CSRF_TRUSTED_ORIGINS:
+CSRF_TRUSTED_ORIGINS = [
+    "https://ihre-domain.de",
+    "https://www.ihre-domain.de",
+]
+----
+
+=== Browser-Einstellungen
+
+Für die korrekte Nutzung von {project-name} müssen folgende Browser-Einstellungen aktiv sein:
+
+* **JavaScript**: Aktiviert
+* **Cookies**: Erlaubt für die Domain des Systems
+* **Third-Party-Cookies**: Bei Cross-Domain-Setups ggf. erlauben
+
+== Systembetreuung
+
+=== Admin-Panel
+
+Das Django Admin-Panel ist erreichbar unter:
+
+* Entwicklung: http://127.0.0.1:8000/admin/
+* Produktion: https://ihre-domain.de/admin/
+
+Hier können verwaltet werden:
+
+* Benutzerkonten
+* Quizze und Lernsets
+* Studiengänge und Module
+* Freundschaftsanfragen
+
+=== FAQ für Benutzersupport
+
+[qanda]
+Benutzer kann sich nicht anmelden::
+  * Prüfen Sie, ob Cookies im Browser aktiviert sind
+  * Prüfen Sie, ob der Benutzer existiert (Admin-Panel)
+  * Passwort zurücksetzen lassen
+
+Quiz wird nicht geladen::
+  * Browser-Cache leeren
+  * JavaScript-Konsole auf Fehler prüfen
+  * Backend-Logs auf Fehlermeldungen prüfen
+
+Daten werden nicht synchronisiert::
+  * Netzwerkverbindung prüfen
+  * CORS-Einstellungen überprüfen
+  * Browser-Entwicklertools → Netzwerk-Tab prüfen
+
+=== Fehlerdiagnose
+
+==== Log-Dateien
+
+Django-Logs werden standardmäßig auf der Konsole ausgegeben. Für Produktion empfiehlt sich die Konfiguration einer Log-Datei:
+
+[source,python]
+----
+# In settings.py hinzufügen:
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/studiq/django.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
+----
+
+==== Test-Logs
+
+Testausführungen werden protokolliert in: `src/server/test_logs/`
+
+Format: `test_results_<typ>_<modul>_<datum>.txt`
+
+==== Typische Fehlermeldungen
+
+[cols="2,3"]
+|===
+|Fehler |Lösung
+
+|`OperationalError: (2003, "Can't connect to MySQL server")`
+|Datenbank-Verbindung prüfen (Host, Port, Firewall)
+
+|`DisallowedHost`
+|`DJANGO_ALLOWED_HOSTS` in `.env` konfigurieren
+
+|`CSRF verification failed`
+|`CSRF_TRUSTED_ORIGINS` in `settings.py` aktualisieren
+
+|`ModuleNotFoundError`
+|`pip install -r requirements.txt` ausführen
+|===
+
+=== Datensicherung
+
+==== Datenbank-Backup
+
+MySQL/MariaDB:
+[source,bash]
+----
+mysqldump -u studiq_user -p studiq_db > backup_$(date +%Y%m%d).sql
+----
+
+==== Datenbank-Wiederherstellung
+
+[source,bash]
+----
+mysql -u studiq_user -p studiq_db < backup_YYYYMMDD.sql
+----
+
+==== Automatisierte Backups
+
+Beispiel Cron-Job für tägliche Backups (Linux):
+
+[source,bash]
+----
+# crontab -e
+0 2 * * * mysqldump -u studiq_user -p'PASSWORT' studiq_db > /backup/studiq_$(date +\%Y\%m\%d).sql
+----
+
+IMPORTANT: Bewahren Sie Backups an einem sicheren, vom Server getrennten Ort auf.
+
+=== Wartungsarbeiten
+
+==== Datenbank-Migrationen nach Updates
+
+Nach einem Update des Quellcodes:
+
+[source,bash]
+----
+cd src/server
+source venv/bin/activate
+python manage.py migrate
+----
+
+==== Statische Dateien sammeln (Produktion)
+
+[source,bash]
+----
+python manage.py collectstatic
+----
+
+== Weiterführende Dokumentation
+
+* https://docs.djangoproject.com/en/5.2/[Django Dokumentation]
+* https://vuejs.org/guide/introduction.html[Vue.js Dokumentation]
+* https://dev.mysql.com/doc/refman/8.0/en/[MySQL Dokumentation]
+* https://docs.gunicorn.org/en/stable/[Gunicorn Dokumentation]

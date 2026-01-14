@@ -19,7 +19,6 @@ from rest_framework.decorators import action
 from django.db.models import Q, F
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from accounts.views import calculate_streak
 from accounts.views import get_user_rank
 from accounts.serializers import LeaderboardUserSerializer
 from accounts.views import register_study_activity
@@ -313,7 +312,8 @@ class QuizViewSet(viewsets.ModelViewSet):
         if not quiz_session:
             return Response({"detail": "No active quiz session found."},
                             status=status.HTTP_404_NOT_FOUND)
-        streak = calculate_streak(user)
+        register_study_activity(user)
+        streak = user.streak
         accuracy = quiz_session.correct_answers / quiz_session.total_answers\
             if quiz_session.total_answers > 0 else 0
         had_perfect_before = False
@@ -344,8 +344,6 @@ class QuizViewSet(viewsets.ModelViewSet):
 
         quiz_session.end_time = timezone.now()
         quiz_session.save()
-
-        register_study_activity(user)
 
         return Response({
             "attempts": attempts,
@@ -524,8 +522,8 @@ class LeaderboardViewSet(viewsets.ReadOnlyModelViewSet):
             user_model = user_model.filter(studiengang=request.user.studiengang)
 
         # Sort user_model by iq_score, fetch the first users and the users around current user
-        user_model = user_model.only('id', 'username', 'iq_score', 'streak', 'solved_quizzes')\
-                                .order_by('-iq_score', 'id')
+        # Note: Cannot use .only() with '_streak' since we need the @property to calculate it
+        user_model = user_model.order_by('-iq_score', 'id')
         top_users = list(user_model[:top_count])
         around_users = self.get_users_around(request.user.id, user_model,
                                             before=around, after=around)

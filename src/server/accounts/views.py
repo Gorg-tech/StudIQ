@@ -162,33 +162,6 @@ class UserStatsView(APIView):
         data['rank'] = get_user_rank(request.user.id, get_user_model().objects.all())
         return Response(data)
 
-def calculate_streak(user):
-    """
-    Calculate the current study streak for a user and update the user's streak field.
-
-    Args:
-        user (User): The user instance.
-
-    Returns:
-        int: The current streak count.
-    """
-    days = StudyDay.objects.filter(user=user).values_list('date', flat=True).order_by('-date')
-    streak = 0
-    last_day = date.today()
-
-    for d in days:
-        if d > last_day:
-            continue  # Ignore future dates
-        if last_day - d in [timedelta(days=0), timedelta(days=1)]:
-            streak += 1
-            last_day = d
-        else:
-            break
-
-    user.streak = streak
-    user.save(update_fields=['streak'])
-    return streak
-
 def calculate_longest_streak(user):
     """
     Calculate the longest consecutive study streak for a user.
@@ -216,17 +189,17 @@ def calculate_longest_streak(user):
     longest_streak = max(longest_streak, current_streak)
     return longest_streak
 
-# Upon quiz completion, update streak by calling the following:
+# Upon quiz completion, the streak is updated via the StudyDay model signals
 def register_study_activity(user):
     """
-    Register today's study activity for the user and update their streak.
+    Register today's study activity for the user.
+    The streak is automatically updated via model signals.
 
     Args:
         user (User): The user instance.
     """
     today = date.today()
     StudyDay.objects.get_or_create(user=user, date=today)
-    calculate_streak(user)
 
 class StudyCalendarView(APIView):
     """
@@ -248,7 +221,7 @@ class StudyCalendarView(APIView):
         user = request.user
         days = StudyDay.objects.filter(user=user)
         data = {
-            "streak": calculate_streak(user),
+            "streak": user.streak,
             "longest_streak": calculate_longest_streak(user),
             "days": [d.date.isoformat() for d in days]
         }

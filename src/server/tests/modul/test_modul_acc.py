@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
-from accounts.serializers import RegisterSerializer, LoginSerializer
+from accounts.serializers import RegisterSerializer, LoginSerializer, PendingFriendRequestSerializer
+from accounts.models import PendingFriendRequest
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -14,7 +15,7 @@ class TestAccounts(TestCase):
         data={
             "username": "newuser",
             "password": "StrongPassword123!#",
-            "studiengang" : "Informatik"
+            "studiengang" : "I41"
         }
 
         serializer=RegisterSerializer(data=data)
@@ -67,3 +68,15 @@ class TestAccounts(TestCase):
 
         serializer = RegisterSerializer(data=data)
         self.assertFalse(serializer.is_valid(), serializer.errors)
+
+
+    def test_friendrequest_to_unknown_user_fails(self):
+        data={
+            "from_user": self.user.username,
+            "to_user": "unknownuser"
+        }
+
+        serializer=PendingFriendRequestSerializer(data=data)
+        self.assertFalse(serializer.is_valid(), serializer.errors)
+
+  
