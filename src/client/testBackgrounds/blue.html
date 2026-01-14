@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Layout 1+</title>
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: radial-gradient(circle at top, #e6f2ff, #f7f9fc);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background: white;
+  width: 360px;
+  padding: 26px;
+  border-radius: 22px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+h1 {
+  margin-top: 0;
+  color: #1f3a5f;
+}
+
+.progress {
+  height: 8px;
+  background: #dde6f0;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, #ff8c42, #ff6a00);
+}
+
+.answer {
+  background: #f4f8fb;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.answer:hover {
+  border-color: #ff8c42;
+  background: white;
+  transform: scale(1.02);
+}
+
+.answer.correct {
+  background: #e6f9ef;
+  border-color: #2ecc71;
+}
+
+.answer.wrong {
+  background: #fdeaea;
+  border-color: #e74c3c;
+}
+
+button {
+  width: 100%;
+  margin-top: 16px;
+  background: linear-gradient(135deg, #ff8c42, #ff6a00);
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  color: white;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(255,140,66,0.4);
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Frage 3 von 6</h1>
+
+  <div class="progress">
+    <span></span>
+  </div>
+
+  <p><strong>Was ist die Hauptstadt von Spanien?</strong></p>
+
+  <div class="answer correct">Madrid ✓</div>
+  <div class="answer">Barcelona</div>
+  <div class="answer wrong">Valencia ✕</div>
+  <div class="answer">Sevilla</div>
+
+  <button>Weiter</button>
+</div>
+
+</body>
+</html>
+
