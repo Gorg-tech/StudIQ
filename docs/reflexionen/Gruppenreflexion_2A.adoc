@@ -7,29 +7,25 @@
 Vermutlich das wichtigste für eine erfolgreiche Entwicklung eines Produkts ist, dass sich alle beteiligten Entwickler gut verstehen und miteinander arbeiten können. 
 In unserer Gruppe hat ein außerordentlich gutes Arbeitsklima geherrscht, was sich auch in unserer Menge an Features zeigt, die wir trotz des kurzen Zeitraums geschafft haben, zu implementieren.
 
-Begünstigt wurde unter anderem, dass bereits von Beginn an die wöchentlichen Meetings in Präsenz in der HTW stattgefunden haben. 
+Begünstigt wurde unter anderem dadurch, dass wir uns dazu entschieden haben, unsere wöchentlichen Meetings bereits von Beginn an in Präsenz in der HTW stattfinden zu lassen. 
 So wurden wir, anders als zum Beispiel über Discord, dazu gedrängt, mehr miteinander zu reden und uns so gut kennenzulernen, aber auch dazu, dass jeder zur aktiven Mitarbeit gebracht wurde, damit man nicht als einziger im Team tatenlos dabeisitzt. 
 
-Ebenfalls (und vielleicht auch durch die analogen Meetings) war jeder motiviert am Entwickeln unsere Quiz-App beteiligt sein, und hat sich mit eigenen Ideen eingebracht. 
+Ebenfalls (und vielleicht auch durch die analogen Meetings) war jeder motiviert, an der Entwicklung unserer Quiz-App beteiligt sein, und hat sich mit eigenen Ideen eingebracht. 
 Dadurch konnten wir uns schnell auf einen groben Rahmen einigen, wie die App funktionieren soll und auf welchen architektonischen Strukturen sie gebaut wird.
-Dies hat besonders im Bezug auf die Software-Anforderungen anfangs zu einem schnellen Fortschritt in der Entwicklung geführt.
+Dies hat besonders im Bezug auf die Realisierung von den ersten User Stories und -Tasks anfangs zu einem schnellen Fortschritt in der Entwicklung geführt.
 
-Die breite Motivation zeigt sich auch dadurch, dass gar nicht zugewiesene Aufgaben, welche miest noch nicht einmal ausformuliert oder angesprochen wurden, von Teammitgliedern freiwillig mit erledigt wurden, da sie 'grade dabei waren'.  
+Die breite Motivation zeigt sich auch dadurch, dass gar nicht zugewiesene Aufgaben, welche meist noch nicht einmal ausformuliert oder angesprochen wurden, von Teammitgliedern freiwillig mit erledigt wurden, da sie 'grade dabei waren'.  
 Durch die freiwillige Arbeit wurden wieder andere Teammitglieder dazu motiviert, selbst mehr zu machen, als sie sollten.
 Dies hat sowohl den Fortschritt der Produkt-Entwicklung stark vorangebracht, als auch, die Arbeit für den Product Owner leichter gemacht.
-So hatte dieser weniger Tasks zu verteilen, und zusätzlich konnte dieser ein gut ausgearbeitetes Produkt den Stakeholdern vorweisen.
+So hatte dieser weniger Tasks zu verteilen (da weniger zur Verfügung standen), und zusätzlich konnte dieser ein gut ausgearbeitetes Produkt den Stakeholdern vorweisen.
 
+(
 Das übernehmen nicht zugewiesener Tasks hat jedoch auch zu Problemen geführt. 
-So wurden Implementier-Tasks auch von anderen Developern übernommen, so dass dann zwei Personen am selben Feature geschrieben hatten, aber unterschiedliche Codes. 
+So wurden Implementier-Tasks auch von anderen (über-)motivierten Developern übernommen, so dass dann zwei Personen am selben Feature geschrieben hatten, aber unterschiedliche Codes. 
 So wurde doch wertvolle Arbeitszeit verschwendet und zusätzlich kam es zu Merge-Conflicts beim ausführen der Pull Requests. 
 Diesem Problem haben wir nun vorgebeugt, indem wir einen Textkanal erschaffen haben, indem man sich melden soll, falls man eine unzugewiesene Aufgabe erledigt, welche sich mit dem Code-Gebiet eines anderen Developers überschneiden könnte.
 Ebenfalls sollten auf Github 'Bug'-Issues erstellt werden, falls man einen Bug findet, und sich diesen zuweisen, falls man diesen bearbeitet, damit keine zweite Person ebenfalls denselben Bug auf seine Weise behebt.
-
-Die breite Arbeitsmotivation hat allerdings ebenfalls den Product Owner etwas nachlässig werden lassen. So wurden die Tasks anfangs auch etwas ungenau spezifiziert. 
-So wurde grob beschrieben was gemacht werden soll, aber nicht sehr detailliert, da man sich meistens darauf verlassen konnte, dass im Zweifel oft mehr als nötig gemacht wurde. 
-Jedoch wurden manchmal auch mehrere Personen für eine Task zugewiesen, da die Kommunikation dieser aufgrund der überschneidenden Code-Gebiete zwingend nötig war. 
-Hier führte es dann bei unschönen Aufgaben teilweise dazu, dass dann jeder der beteiligten dachte, dass die jeweils andere Person die Task macht, und sich bei Problemen meldet. Dies ist meist rechtzeitig aufgefallen, damit nicht viel Zeit verloren geht, jedoch hat es gezeigt, dass hier Verbesserungsbedarf bei der Task-Beschreibung besteht. 
-So musste der Product Owner die Tasks in Github detaillierter und klarer beschreiben, damit auch 4 Tage nach der Task-Vergebung noch alle, und besonders die Developer, wissen, was darin gefordert ist.
+)
 
 Abseits dieser eher kleinen Probleme hat dem Scrum Master das gute Arbeitsumfeld auch sehr viel Arbeit abgenommen. 
 So hat die stetige allgemeine Motivation dafür gesorgt, dass sich alle in die Projektarbeit einbringen und eigenverantwortlich die Produktentwicklung mitgestalten. 
@@ -51,22 +47,23 @@ So haben wir uns auch wöchentlich getroffen, um über unseren Fortschritt zu re
 Jedoch haben unsere Stand-Ups jede Woche 60-90 Minuten in Anspruch genommen, was überhaupt nicht mit der in der Vorlesung empfohlenen Menge von 15 Minuten übereinstimmt
 Dies hatte mehrere Gründe, daher ist dies auch als Misserfolg (siehe <<Schlechte Organisation der Weekly Meetings>>) gelistet und ausführlich beschrieben, da uns dies in der Entwicklung sehr eingeschränkt hat.
 
-Dadurch haben wir dann in der darauf folgenden Iteration unseren Ablauf verändert:
-Nachdem unser Team neuen Input von den Stakeholdern in Form von User Stories erhalten hat, welche von einer Person während des Treffens protokolliert wurden, wurde unser Backlog, inklusive der neuen User Stories, refinet.
+Dieses große Problem haben wir, wie im Misserfolg beschrieben, durch den Projektmanagement-Fachaustausch als solches erkannt.
+Und so haben wir in der darauf folgenden Iteration unseren Ablauf verändert:
+Nachdem unser Team neuen Input von den Stakeholdern in Form von User Stories erhalten hat, welche von einer Person während des Treffens protokolliert wurden, wurde unser Backlog, inklusive der neuen User Stories, im Team refinet.
 Dabei wurde die Komplexität der Items im Product Backlog geschätzt, sowie deren Priorität (stark beeinflusst durch den PO) festgelegt. 
 So werden die User Stories und PBIs evaluiert, die in der gesamten kommenden Iteration bearbeitet und fertig gestellt werden.
 
-Nach dem Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den zu bearbeitenden Items aus dem Backlog sowie aus anderweitigen Anforderungen(z.B. Anwender-Dokumentation erstellen). 
-So enstehen abhängig vom Umfang der Tasks ca. 3-5 Tasks pro Person pro Iteration.
+Nach diesem Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den zu bearbeitenden Items aus dem Backlog sowie aus anderweitigen Anforderungen(z.B. Anwender-Dokumentation erstellen). 
+So enstehen abhängig vom Umfang der Tasks ca. 3-6 Tasks pro Person pro Iteration.
 
-In einem zusätzlich festgelegten Meeting über Discord, 2 Tage nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. 
+In einem zusätzlich festgelegten Meeting über Discord, ein Tag nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. 
 Dieses Treffen sollte nicht länger als 15 Minuten dauern.
 
 Das Weekly StandUp verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. 
 Falls ein Problem besteht wird dies sehr kurz besprochen, oder es wird im Team eine Ansprechperson für die Problemlösung gefunden, an welche sich die Person wenden kann. 
 Falls es neue Pull Requests gibt, weil eine Task fertig bearbeitet wurde, wurden diese bereits von einem anderen Developer im CodeReview auf Richtigkeit kontrolliert. 
 So müssen diese Pull Requests nur nochmal grob angeschaut werden und können ohne viel Diskussion gemergt werden.
-Das einzige, was nun noch neu vergeben wird, ist die Bearbeitung von Bugs, falls Sie eines dringenden Fixes bedürfen.
+Das einzige, was nun noch neu vergeben wird, ist die Bearbeitung von Bugs, falls sie eines dringenden Fixes bedürfen.
 
 So konnten wir die Dauer der Meetings auf 15-30 Minuten einkürzen, womit wir sehr zufrieden sind. Auch sonst hat die Veränderung keine Probleme verursacht, sondern ist auf sehr positives Feedback im Team gestoßen, auch, da klar definiert ist, was jeder bis zum Ende der Iterationzu tun hat.
 
@@ -81,22 +78,26 @@ Am Ende bleibt nur das Problem, das wir mit dieser neuen Ordnung erst in unserer
 Womit wir zum Glück sehr früh angefangen haben, war das Beschäftigen mit sorgfältigem Code-Testing. 
 So hat ein Teammitglied sich bereits nach dem ersten Praktikum, in welchem Tests behandelt wurde, dafür gemeldet, das Software-Testing übernehmen zu wollen. 
 Da wir wussten, dass Software-Testing ein elementarer Bestandteil des Software Engineering ist, waren alle dafür, damit möglichst früh anzufangen. 
-So hatten wir eine neue Rolle im Team: den Test-Verantwortlichen. 
+So hatten wir eine neue Rolle im Team: die Test-Verantwortliche. 
 
-Während andere Developer in unserem Team damit beschäftigt sind, Features zu implementieren, sorgt die Test-Verantwortliche dafür, dass der entwickelte Code in Tests auch wie gewünscht performt. 
-Wenn der Test Fehler ausgibt, hält die Test-Verantwortliche Rücksprache mit den Entwicklern des Codes, ob der Fehler auf der Seite der Tests oder doch im Quellcode liegt. 
+Während andere Developer in unserem Team damit beschäftigt sind, Features zu implementieren, sorgt die Test-Verantwortliche dafür, dass der entwickelte Code getestet werden kann und somit wie von den Anforderungen gewünscht performt. 
+Dafür entwickelt sie Integrations-und Unittests für den entwickelten Quellcode der Developer.
+Wenn ein Test Fehler ausgibt, hält die Test-Verantwortliche Rücksprache mit den Entwicklern des Codes, ob der Fehler auf der Seite der Tests oder doch im Quellcode liegt. 
 Falls ein Fehler im Quellcode entdeckt wurde, wird dafür ein Bug-Issue auf Github erstellt.
 Die Testverantwortliche sorgt hauptsächlich für die Implementation von Unit-Tests und Integrationstests im Backend. 
 Systemtests werden von allen Teammitgliedern beiläufig beim Durchklicken der Software, zum Beispiel durch Ansehen und Schnelltesten neuer Features, durchgeführt.
 
 Da unsere Test-Verantwortliche über den gesamten Backend-Code verteilt arbeitet und testet, ist es nötig, dass die Code-Struktur des entwickelten Quellcodes in sich schlüssig und leicht verständlich ist, damit sie verstehen kann, was getestet werden muss. 
-Somit werden ebenfalls die Entwickler dazu gedrängt, ihren Code gut zu dokumentieren und sinnvoll zu strukturieren bzw. zu modularisieren. Dies könnte auch hilfreich für die spätere Einbindung von neuen Backend-Entwicklern werden, falls dafür Bedarf besteht.
+Somit werden ebenfalls die Entwickler dazu gedrängt, ihren Code gut zu dokumentieren und sinnvoll zu strukturieren bzw. zu modularisieren. 
+Dies könnte auch hilfreich für die spätere Einbindung von neuen Backend-Entwicklern werden, falls dafür Bedarf besteht.
 
-Das wichtigste ist jedoch, dass nun sichergestellt wird, dass ein immer größerer Teil des Quellcodes korrekt funktioniert, wodurch sich die Entwickler mehr auf neue Produkt-Features konzentrieren können. Ebenfalls lässt sich beim Entwickeln von neuem Code nun schnell testen, dass der alte Code noch funktioniert, und nicht durch die neuen Eingaben Fehler auswirft.
+Das wichtigste ist jedoch, dass nun sichergestellt wird, dass ein immer größerer Teil des Quellcodes korrekt funktioniert, wodurch sich die Entwickler mehr auf neue Produkt-Features konzentrieren können. 
+Ebenfalls lässt sich beim Entwickeln von neuem Code nun schnell testen, dass der alte Code noch funktioniert, und nicht durch die neuen Eingaben Fehler auswirft.
 
 Derzeit liegt die Testabdeckung bereits bei über 40% im Backend, womit wie sehr zufrieden sein können.
 
-Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests per Github Actions zu automatisieren, sodass beim Erstellen eines Pull Requests automatisch der Backend-Code getestet wird. So wird den Entwicklern noch mehr Arbeit abgenommen, die sie stattdessen in die Entwicklung von neuem Code stecken können.
+Gegen Ende unserer letzten Iteration ist es uns auch gelungen, die ersten Tests per Github Actions zu automatisieren, sodass beim Erstellen eines Pull Requests automatisch der Backend-Code getestet wird. 
+So wird den Entwicklern in Zukunft noch mehr Arbeit abgenommen, die sie stattdessen in die Entwicklung von neuem Code stecken können.
 
 == Top 3 Misserfolge
 
@@ -110,7 +111,8 @@ Gegen Ende dieser letzten Iteration ist es uns auch gelungen, die ersten Tests p
 Ein Problem, was bereits früh aufgetreten ist und bis zur Veränderung unserer Meeting-Struktur durchgängig existent gewesen ist, war, dass die Stand Ups fast jedes Mal 60 - 90 Minuten in Anspruch genommen haben (wenn kein Sprint Review/Retrospektive oder ähnliches stattgefunden hat). 
 Da wir uns gut verstanden haben, wurde dies in der Gruppe nicht als großes Problem angesehen, da die Zeit im regen Austausch schnell vergangen ist. 
 Jedoch konnte man schon erkennen, dass etwas nicht ganz richtig lief, wenn das Meeting 4-6 Mal mehr Zeit in Anspruch genommen hat, als die ursprünglich in der Vorlesung empfohlene Menge von 15 Minuten. 
-So könnte doch bei Durchführen eines optimierten StandUp allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen.
+
+So könnte doch bei Durchführen eines optimierten StandUp allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen, wenn man die StandUp-Dauer von 75-90 auf 15-30 Minuten verkürzt.
 
 Der Grund für die Länge des Meetings lag daran, dass wir den Weekly StandUp nicht so durchgeführt haben, wie es eigentlich gemacht werden soll. 
 So lief es wie folgt ab:
@@ -142,6 +144,7 @@ Diese Erkenntnis, das etwas falsch läuft, und die Einarbeitung in die neu organ
 Leider konnten wir diese neue Organisation erst in unserer letzten Iteration durchsetzen, und so hatten wir nicht viel Zeit, um von dem verbesserten Ablauf profitieren zu können.
 
 Ebenfalls besteht hier, auch im Sinne der kontinuierlichen Prozessverbessung, immernoch Verbesserungsbedarf, um auf die empfohlenen 15 Minuten zu kommen. 
+
 Daran müsste unser Scrum Master noch arbeiten, wenn noch mehr Zeit für die Produktentwicklung wäre.
 
 === Stakeholder-Wünsche im Review zu wenig angefochten
@@ -151,9 +154,9 @@ Dieses Treffen gab uns jedes Mal sehr konstruktiven und hilfreichen Input für d
 Jedoch gab es oft, vor allem am Anfang, sehr viel Input. 
 So haben wir nach dem Meeting meist darüber diskutiert, dass doch viel zu viel Entwicklungarbeit für manche Wunsch-Features zu investieren nötig ist, sie also praktisch in unserem kleinen Team nicht umsetzen ist.
 
-So haben wir viele User Stories gehabt, welche wohl nur teilweise umgesetzt werden im gesamten überiterativen Entwicklungsprozess.
+So haben wir viele User Stories gehabt, welche wohl nur sehr teilweise umgesetzt werden im gesamten überiterativen Entwicklungsprozess.
 
-Zum Einen lag unser Problem darin, dass wir uns vor der Entwicklung nicht viele Gedanken darüber gemacht haben, welche Anforderungen unsere App NICHT erfüllen soll, also 'out of Scope' sind. 
+Ein Problem lag darin, dass wir uns vor der Entwicklung nicht viele Gedanken darüber gemacht haben, welche Anforderungen unsere App NICHT erfüllen soll, also 'out of Scope' sind. 
 Daher konnten wir uns in den Reviews nicht einig sein, ob einige Wünsche der Stakeholder wirklich nötig sind, umzusetzen, oder ob sie zu sehr von den Hauptanforderungen an das Produkt abschweifen.
 
 Dieses Problem ist allen im Team aufgefallen, sodass wir uns einig waren, dass dort Verbesserungsbedarf besteht, und so haben wir uns bemüht, unsere Produktanforderungen besser zu beschreiben, damit alle dasselbe Entwicklungsziel für die Software haben.
@@ -168,9 +171,9 @@ Das wäre wichtig gewesen,um die zukünftigen Aufgaben des Teams schonmal vorab 
 Jedoch war der PO dafür zu zögerlich, da die Stakeholder meist sehr überzeugt von ihren Wünschen waren. 
 So konnte der PO auch nicht dabei helfen, das Product Backlog gering zu halten.
 
-Nach Absprache mit anderen Teams in SE ist uns dann aufgefallen, dass wir auch die Stakeholder stoppen können und sollten, wenn sie zu viele Feature-Wünsche haben. Dies konnten wir dann in den letzten beiden Iterationen noch umsetzen, sodass der PO deutlich sagt, falls es genug Input ist, bzw. die Developer zu Wort kommen, falls sie erkennen, dass ein Feature zu viel Zeit in Anspruch nehmen wird.
+Nach Besprechungen mit anderen Teams in SE ist uns dann aufgefallen, dass wir auch die Stakeholder stoppen können und auch sollten, wenn sie zu viele Feature-Wünsche haben. Dies konnten wir dann in den letzten beiden Iterationen noch umsetzen, sodass der PO deutlich sagt, falls es genug Input ist, bzw. die Developer zu Wort kommen, falls sie erkennen, dass ein Feature zu viel Zeit in Anspruch nehmen wird.
 
-So konnten wir unser User-Story-Backlog in den letzten Iteration verkleinern, was auch für das Refinement wichtig geworden ist.
+So konnten wir unser User-Story-Backlog in den letzten Iteration noch verkleinern, was auch für das Refinement wichtig geworden ist.
 So war es dort zum einen leichter zu entscheiden war, welche Priorität die User Storys haben, aber auch, wie sie zu schätzen sind, da dies mit weniger User Storys auch weniger Zeit in Anspruch nimmt.
 
 Dennoch wäre es gut gewesen, die Stakeholder schon viel früher Einzugrenzen, um weniger Zeit für die Diskussion über die Auswahl der User Stories zu investieren, damit das Team dann mehr Zeit hat, die wichtigen Features sorgfältig zu entwickeln
