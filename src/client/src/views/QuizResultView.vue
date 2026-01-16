@@ -46,19 +46,6 @@
         <div class="result-score">{{ correctAnswers }} / {{ totalQuestions }} richtig</div>
         <div class="result-percentage">({{ percentage }}%)</div>
       </div>
-      <ul class="result-list">
-        <li v-for="(result, idx) in results" :key="idx" class="result-item">
-          <div class="question">{{ result.question }}</div>
-          <div class="answers">
-            <span :class="['user-answer', result.isCorrect ? 'correct' : 'incorrect']">
-              Deine Antwort: {{ result.selected }}
-            </span>
-            <span v-if="!result.isCorrect" class="correct-answer">
-              (Richtig: {{ result.correct }})
-            </span>
-          </div>
-        </li>
-      </ul>
       <div class="button-row">
         <button class="btn btn-primary" @click="restartQuiz">Quiz erneut starten</button>
         <button class="btn btn-secondary" @click="goToOverview">Zur Quiz Übersicht</button>
@@ -84,7 +71,6 @@ const route = useRoute()
 const loading = ref(true)
 const error = ref(null)
 
-const results = ref([])
 const quizId = ref(route.query.quizId)
 
 const correctAnswers = ref(0)
@@ -156,10 +142,6 @@ function animateBar() {
  * Loads quiz results from local storage and notifies the server of quiz completion.
  */
 onMounted(async () => {
-  const stored = localStorage.getItem('quizResults')
-  if (stored) {
-    results.value = JSON.parse(stored)
-  }
   
   // Notify server of quiz completion
   if (quizId.value) {
