@@ -221,7 +221,7 @@ const userLevel = computed(() => {
   return getIQLevel(user.value.iq_score)
 })
 const levelProgress = computed(() => {
-  return getIQPoints(user.value.iq_score) / getMaxPointsPerLevel() * 100
+  return Math.floor(getIQPoints(user.value.iq_score) / getMaxPointsPerLevel() * 100)
 })
 
 const currentWeekStreak = ref([])
