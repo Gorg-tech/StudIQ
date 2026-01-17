@@ -66,12 +66,38 @@ class QuizSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
+        # Validate for create
         if self.instance is None:
             questions = data.get('questions', [])
             if len(questions) < 3:
                 raise serializers.ValidationError({
                     'questions': 'Ein Quiz muss mindestens 3 Fragen enthalten.'
                 })
+            return data
+
+        # Validate for update: ensure resulting number of questions stays >= 3
+        questions_data = data.get('questions', None)
+        # If no questions provided in update payload, nothing to validate regarding count
+        if questions_data is None:
+            return data
+
+        existing_count = self.instance.questions.count()
+        resulting_count = existing_count
+
+        for q in questions_data:
+            status = q.get('_status')
+            if status == 'new':
+                resulting_count += 1
+            elif status == 'deleted':
+                qid = q.get('id')
+                if qid and self.instance.questions.filter(id=qid).exists():
+                    resulting_count -= 1
+
+        if resulting_count < 3:
+            raise serializers.ValidationError({
+                'questions': 'Ein Quiz muss mindestens 3 Fragen enthalten.'
+            })
+
         return data
 
     def create(self, validated_data):
