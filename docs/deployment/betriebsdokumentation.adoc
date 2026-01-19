@@ -108,7 +108,7 @@ cd studiq
 [source,bash]
 ----
 cd src/server
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/macOS
 # oder: venv\Scripts\activate  # Windows
 pip install -r requirements.txt
