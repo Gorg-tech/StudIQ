@@ -108,7 +108,7 @@ cd studiq
 [source,bash]
 ----
 cd src/server
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/macOS
 # oder: venv\Scripts\activate  # Windows
 pip install -r requirements.txt
@@ -190,13 +190,13 @@ IMPORTANT: Für Produktion unbedingt einen neuen `DJANGO_SECRET_KEY` generieren 
 [source,bash]
 ----
 # Datenbank-Migrationen ausführen
-python manage.py migrate
+python3 manage.py migrate
 
 # Initiale Daten laden (Studiengänge, Module etc. aus bereitgestellten JSON-Dateien)
-python scraper/populate_db.py
+python3 scraper/populate_db.py
 
 # Admin-Benutzer erstellen
-python manage.py createsuperuser
+python3 manage.py createsuperuser
 ----
 
 NOTE: Die initialen Daten sind bereits als JSON-Dateien im Repository enthalten. Um aktuelle Daten von Modulux zu laden, muss zuerst `modulux_scraper.py` ausgeführt werden, danach `populate_db.py` um die Datenbank zu aktualisieren.
@@ -206,14 +206,18 @@ NOTE: Die initialen Daten sind bereits als JSON-Dateien im Repository enthalten.
 Entwicklungsserver:
 [source,bash]
 ----
-python manage.py runserver 0.0.0.0:8000
+python3 manage.py runserver 0.0.0.0:8000
 ----
 
-Für Produktion wird ein WSGI-Server wie Gunicorn empfohlen:
+Für Produktion wird ein WSGI-Server wie Gunicorn empfohlen.
+
+NOTE: Da Gunicorn keine statischen Dateien (CSS, Bilder, JavaScript für Admin-Panel) ausliefert, wird in diesem Projekt **WhiteNoise** verwendet. Dies ermöglicht es der Python-Anwendung, ihre eigenen statischen Dateien effizient auszuliefern. WhiteNoise ist in der `requirements.txt` enthalten und in den `settings.py` bereits konfiguriert.
+
+Um den Server im Hintergrund auszuführen (Daemon-Modus):
 [source,bash]
 ----
 pip install gunicorn
-gunicorn config.wsgi:application --bind 0.0.0.0:8000
+gunicorn config.wsgi:application --bind 0.0.0.0:8000 --daemon
 ----
 
 === Frontend-Einrichtung
@@ -398,14 +402,14 @@ Nach einem Update des Quellcodes:
 ----
 cd src/server
 source venv/bin/activate
-python manage.py migrate
+python3 manage.py migrate
 ----
 
 ==== Statische Dateien sammeln (Produktion)
 
 [source,bash]
 ----
-python manage.py collectstatic
+python3 manage.py collectstatic
 ----
 
 == Weiterführende Dokumentation

@@ -9,3 +9,4 @@ django-cors-headers
 #   sudo apt-get install build-essential default-libmysqlclient-dev
 # Then:
 #   pip install mysqlclient
+whitenoise==6.11.0
