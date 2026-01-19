@@ -19,14 +19,6 @@ Durch die freiwillige Arbeit wurden wieder andere Teammitglieder dazu motiviert,
 Dies hat sowohl den Fortschritt der Produkt-Entwicklung stark vorangebracht, als auch, die Arbeit für den Product Owner leichter gemacht.
 So hatte dieser weniger Tasks zu verteilen (da weniger zur Verfügung standen), und zusätzlich konnte dieser ein gut ausgearbeitetes Produkt den Stakeholdern vorweisen.
 
-(
-Das übernehmen nicht zugewiesener Tasks hat jedoch auch zu Problemen geführt. 
-So wurden Implementier-Tasks auch von anderen (über-)motivierten Developern übernommen, so dass dann zwei Personen am selben Feature geschrieben hatten, aber unterschiedliche Codes. 
-So wurde doch wertvolle Arbeitszeit verschwendet und zusätzlich kam es zu Merge-Conflicts beim ausführen der Pull Requests. 
-Diesem Problem haben wir nun vorgebeugt, indem wir einen Textkanal erschaffen haben, indem man sich melden soll, falls man eine unzugewiesene Aufgabe erledigt, welche sich mit dem Code-Gebiet eines anderen Developers überschneiden könnte.
-Ebenfalls sollten auf Github 'Bug'-Issues erstellt werden, falls man einen Bug findet, und sich diesen zuweisen, falls man diesen bearbeitet, damit keine zweite Person ebenfalls denselben Bug auf seine Weise behebt.
-)
-
 Abseits dieser eher kleinen Probleme hat dem Scrum Master das gute Arbeitsumfeld auch sehr viel Arbeit abgenommen. 
 So hat die stetige allgemeine Motivation dafür gesorgt, dass sich alle in die Projektarbeit einbringen und eigenverantwortlich die Produktentwicklung mitgestalten. 
 Ebenfalls gab es, wie bereits erwähnt, keine Scheu vor Kommunikation mit anderen Teammitgliedern auch im Meeting, sodass der Scrum Master sich auch darum großen keine Sorgen machen musste, wie in der Hinsicht unsere Arbeit optimiert werden kann. So ist dies laut Erfahrungen anderer Teams meist ein großes Problem bei der Softwareentwicklung, wenn sich die Teammitglieder nicht verstehen und eine konstruktive Kommunikation verhindert wird.
