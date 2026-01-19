@@ -4,30 +4,31 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
 
 concurrency:
   group: pages-deploy
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build frontend and docs
     runs-on: ubuntu-latest
-    outputs:
-      site-path: site
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: src/client/package-lock.json
 
       - name: Install client dependencies
         working-directory: src/client
@@ -54,23 +55,26 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
+          bundler-cache: true
+          working-directory: docs
 
       - name: Build AsciiDoc docs and copy assets
         run: |
-          gem install asciidoctor
           mkdir -p site/docs
           # Convert each .adoc to HTML, preserving structure under site/docs/
-          find docs -type f -name '*.adoc' -print0 | while IFS= read -r -d '' f; do
-            out="site/docs/${f#docs/}"
-            out="${out%.*}.html"
-            mkdir -p "$(dirname "$out")"
-            asciidoctor -b html5 -a allow-uri-read -o "$out" "$f"
-          done
+          find docs -type f -name '*.adoc' -print0 \
+            | xargs -0 -n 1 -P "$(nproc)" bash -lc '
+                f="$1"
+                out="site/docs/${f#docs/}"
+                out="${out%.*}.html"
+                mkdir -p "$(dirname "$out")"
+                (cd docs && bundle exec asciidoctor -b html5 -a allow-uri-read -o "../$out" "../$f")
+              ' _
           # Copy non-.adoc assets (images, pdfs, etc.) to site/docs/
           rsync -av --exclude='*.adoc' docs/ site/docs/ || true
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
@@ -82,6 +86,8 @@ jobs:
     permissions:
       pages: write
       id-token: write
+    environment:
+      name: github-pages
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
