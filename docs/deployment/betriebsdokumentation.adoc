@@ -209,7 +209,11 @@ Entwicklungsserver:
 python3 manage.py runserver 0.0.0.0:8000
 ----
 
-Für Produktion wird ein WSGI-Server wie Gunicorn empfohlen. Um den Server im Hintergrund auszuführen (Daemon-Modus):
+Für Produktion wird ein WSGI-Server wie Gunicorn empfohlen.
+
+NOTE: Da Gunicorn keine statischen Dateien (CSS, Bilder, JavaScript für Admin-Panel) ausliefert, wird in diesem Projekt **WhiteNoise** verwendet. Dies ermöglicht es der Python-Anwendung, ihre eigenen statischen Dateien effizient auszuliefern. WhiteNoise ist in der `requirements.txt` enthalten und in den `settings.py` bereits konfiguriert.
+
+Um den Server im Hintergrund auszuführen (Daemon-Modus):
 [source,bash]
 ----
 pip install gunicorn
