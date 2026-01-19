@@ -26,8 +26,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
           cache-dependency-path: src/client/package-lock.json
 
       - name: Install client dependencies
@@ -37,6 +37,8 @@ jobs:
       - name: Build frontend (Vite)
         working-directory: src/client
         run: npm run build -- --base ./
+        env:
+          VITE_API_URL: http://172.238.119.183:8000
 
       - name: Prepare site directory
         run: |
@@ -54,7 +56,7 @@ jobs:
       - name: Set up Ruby (Asciidoctor)
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
+          ruby-version: "3.1"
           bundler-cache: true
           working-directory: docs
 
