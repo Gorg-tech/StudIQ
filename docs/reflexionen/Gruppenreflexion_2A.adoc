@@ -38,7 +38,7 @@ Hier konnte jeder offen Kritik aussprechen, woraufhin wir konstruktiv darüber r
 Um den freundschaftlichen Umgang weiter zu fördern, hat unser Scrum Master auch einen gemeinsamen Billiard-Abend in den Sommerferien organisiert, wo wir uns noch besser kennlernen konnten und für noch mehr Motivation für die Arbeit im und für das Team gesorgt haben.
 
 
-=== 2. Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden
+=== 2. Drastische Änderung des Arbeitsprozesses hin zu besserer Umsetzung des Scrum-Prinzips
 
 Wir haben von Beginn an versucht, uns an das Scrum-Prinzip zuhalten bei der Software-Entwicklung, mit regelmäßigen Treffen für Sprint Review, Retrospektive, Weekly Standup etc. und einer klaren Aufgabenstruktur und Aufteilung PO - SM - Dev.
 
@@ -102,9 +102,26 @@ So wird den Entwicklern in Zukunft noch mehr Arbeit abgenommen, die sie stattdes
 == Top 3 Misserfolge
 
 === Fehlende Architektur-Dokumentation
-- Fehlende Dokumentation über Backend
-- Entwickler haben sich nicht getraut, Backend zu bearbeiten
-- Wenig Beachtung YAGNI-Prinzip
+
+Leider haben wir zu Beginn der Code-Entwicklung die Dokumentation unseres entwickelten Codes vernachlässigt. 
+So wurde sehr viel, vermutlich zu viel, Wert darauf gelegt, einen vorzeigbaren Prototypen mit den entsprechenden Features zu entwickeln, wodurch mehr Zeit in neu entwickelten Code investiert wurde, anstatt diese in eine verständliche Dokumentation des bisher entwickelten Codes zu stecken.
+Dies hat sich besonders im Programmieren unseres Backend ausgeprägt, da dort am meisten neuer Code produziert werden musste, um die entsprechenden Features zu implementieren.
+So hat dort eine Person das Grund-Framework errichtet und dann bereits einige neuer Funktionen programmiert, welche noch benötigt wurden. 
+So gab es dann eine große Menge an Python-Code-Files im Backend, welche aufgrund mangelnder Zeit nicht gut kommentiert oder dokumentiert wurden.
+
+Dies hat dazu geführt, dass Entwickler, die erst später Code im Backend entwickeln sollten, sich nicht so recht getraut haben, diesen zu entwickeln. So wussten sie nicht genau, wo der benötigte Quellcode zu stehen hat bzw. wieviel davon bereits als wiederverwertbare Funktion einfach aufrufbar ist.
+So mussten die Entwickler sehr viel Zeit damit verbrauchen, zuerst den bestehenden undokumentierten Code zu verstehen. Ebenfalls kontaktierten sie die Person, die den bestehenden Code entwickelt hat, um Ihnen bei verstehen zu helfen. 
+Dies ist zwar eine sinnvolle Maßnahme seitens der Entwickler, um die Entwicklungs-Task gut zu bearbeiten, jedoch hat sie den Entwickler des bestehenden Codes davon abgehalten, seine ihm zugeteilten Tasks zu bearbeiten. 
+Meist hatte dieser den Backend-Teil der Task vom unsicheren Entwickler sogar abgenommen, da er der Ansicht war, dass dies schneller ginge, anstatt den Code ausführlich zu erklären.
+
+So ehrenwert es war, dass er die Aufgabe übernommen hatte, war dies jedoch nicht im Sinne des Taskmanagements, da so dieser Backend-Entwickler weniger Zeit für seine zugewiesenen Tasks hatte, bzw. am Ende mit der Zeit für die Absprache insgesamt allgemein ein höheres Arbeitspensum als geplant hatte.
+Langfristig war dies ebenfalls nicht förderlich, da der unsichere neue Entwickler so nie gelernt hat, wie der Backend-Code funktioniert, und somit auch in Zukunft nicht in der Lage sein wird, diesen zu bearbeiten.
+
+So hätte man diesem Problem vorbeugen können, wenn der Entwickler des bestehenden Codes bereits ausführlich kommentiert bzw. eine Dokumentation angelegt hätte, damit sich neue Entwickler schnell in den neuen Code einlesen können, und auch noch in Zukunft keine große Hilfe von Entwicklern des bestehenden Codes benötigen. 
+
+So kann dann neben der investierten Zeit der neuen Entwickler in das Verstehen des Code auch die investierte Zeit der bestehenden Entwickler in das Erklären des Codes verringert werden.Diese Zeitersparnis wird insbesondere langfristig mit dem neu hinzukommen jedes weiteren Backend-Entwicklers immer größer.
+
+Leider wurde dieses Problem in den ersten Retrospektiven nicht von den betroffenen Entwicklern angesprochen, vermutlich, weil sie sich gewusst haben selbst zu helfen durch Kontaktieren des Code-Urhebers. Jedoch ist so dem Scrum Master dieses Hindernis nicht aufgefallen, bis zu einem beiläufigen Gespräch mit einem Entwickler mehrere Iterationen nach Entwicklungsbeginn
 
 === Schlechte Organisation der Weekly Meetings
 
