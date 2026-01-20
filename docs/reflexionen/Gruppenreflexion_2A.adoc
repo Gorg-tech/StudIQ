@@ -124,7 +124,7 @@ So wurden für __jedes__ Stand-up neue Aufgaben vom PO herausgesucht, die dieser
 Falls Teammitglieder ihre Task zum Stand-up fertig gestellt haben, wurden ihnen von diesen erstellten Tasks neue zugewiesen, wobei noch einmal abgesprochen wurden, zu wem diese Aufgaben am Besten passen.
 
 Fall die Bearbeitung einer neuen User Story angefangen werden soll, wurde mit dem Team diskutiert, ob die vom PO herausgesuchte User Story vom Umfang her umsetzbar ist in der Task, bzw. welcher Developer dafür mitarbeiten müsste.
-Ein geordnetes Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität dieser wurde bei dieser Diskussion festgelegt.
+Ein geordnetes Backlog Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität dieser wurde bei dieser Diskussion festgelegt.
 So wurde jede User Story einzeln in verschiedenen Stand-Ups refinet und die, welche es nicht in das Stand-Up geschafft haben, wurden gar nicht refinet, sodass auch eine vielleicht schnell umsetzbare User Story nicht bearbeitet wurde, wenn der PO diese nicht ausgewählt hat.
 Dies hat auch für eine unklare Struktur gesorgt, welche User Stories wie in der Iteration schaffen wollen, und wie viele wir zwischen den Sprint Reviews für die Stakeholder verwirklichen können
 
@@ -133,7 +133,7 @@ Nachdem über eventuell neue zu bearbeitende User Stories geprochen wurde, wurde
 Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns ineffizienze Bewerung von User Stories neben der langen Meeting-Zeit ebenfalls nicht als wichtiges Problem aufzufallen.
 Im Fachaustausch mit anderen Teams haben wir dann (endlich) herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
 
-So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass unter anderm die Aufgaben jede Iteration bereits an dessen Anfang verteilt werden, wobei der PO diese vorbereiten muss.
+So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass unter anderem bereits am Anfang jeder Iteration im neu eingeführten Sprint Planning ein Backlog Refinement aller PBIs stattfand und im mächsten Meeting darauf basierend die Tasks verteilt werden, wobei der PO diese vorbereiten muss.
 Dies hat unser Stand-Up - Zeit deutlich verbessert auf nur noch ca. 20-30 Minuten pro Meeting.
 
 Diese Erkenntnis, das etwas falsch läuft, und die Einarbeitung in die neu organisierte Struktur empfanden wir aufgrund der guten Funktonsweise als großen Erfolg unseres Arbeitsprozesses. Daher ist diese in <<Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden>> noch einmal detaillierter aufgeführt.
