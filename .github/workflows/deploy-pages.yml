@@ -38,7 +38,7 @@ jobs:
         working-directory: src/client
         run: npm run build -- --base ./
         env:
-          VITE_API_URL: http://172.238.119.183:8000
+          VITE_API_URL: https://172.238.119.183:8000
 
       - name: Prepare site directory
         run: |
