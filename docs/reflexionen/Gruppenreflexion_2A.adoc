@@ -2,7 +2,7 @@
 
 == Top 3 Erfolge
 
-=== 1. Aufrechterhalten einer harmonischen Arbeitsatmosphäre
+=== Aufrechterhalten einer harmonischen Arbeitsatmosphäre
 
 Vermutlich das Wichtigste für eine erfolgreiche Entwicklung eines Produkts ist, dass sich alle beteiligten Entwickler gut verstehen und miteinander arbeiten können. 
 In unserer Gruppe hat ein außerordentlich gutes Arbeitsklima geherrscht
@@ -24,8 +24,7 @@ So hat die stetige allgemeine Motivation dafür gesorgt, dass sich alle in die P
 
 Um den freundschaftlichen Umgang weiter zu fördern, hat unser Scrum Master auch einen gemeinsamen Billiard-Abend in den Sommerferien organisiert, wo wir uns noch besser kennlernen konnten und für noch mehr Motivation für die Arbeit im und für das Team gesorgt haben.
 
-
-=== 2. Drastische Änderung des Arbeitsprozesses hin zu besserer Umsetzung des Scrum-Prinzips
+=== Drastische Änderung des Arbeitsprozesses hin zu besserer Umsetzung des Scrum-Prinzips
 
 Wir haben uns wöchentlich getroffen, um über unseren Fortschritt zu reden, ähnlich zum Ablauf eines Weekly Stand-ups. Am Ende jeder Iteration gab es ein Sprint Review und anschließend eine Retrospektive immer mit dem gesamten Team. 
 
@@ -35,10 +34,9 @@ Dies hatte mehrere Gründe, daher ist dies auch als Misserfolg (siehe <<Schlecht
 Dieses große Problem haben wir, wie im Misserfolg beschrieben, durch den Projektmanagement-Fachaustausch als solches erkannt.
 Und so haben wir in der darauf folgenden Iteration unseren Ablauf verändert:
 Nachdem unser Team neuen Input von den Stakeholdern in Form von User Stories erhalten hat, welche von einer Person während des Treffens protokolliert wurden, wurde unser Backlog, inklusive der neuen User Stories, im Team refinet.
-Dabei wurde die Komplexität der Items im Product Backlog geschätzt, sowie deren Priorität (stark beeinflusst durch den PO) festgelegt. 
-So werden die User Stories und PBIs evaluiert, die in der gesamten kommenden Iteration bearbeitet und fertig gestellt werden.
-
-Nach diesem Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den zu bearbeitenden Items aus dem Backlog sowie aus anderweitigen Anforderungen(z.B. Anwender-Dokumentation erstellen). 
+Dabei wurde die Komplexität der Items im Product Backlog geschätzt, sowie deren Priorität (stark beeinflusst durch den PO) festgelegt und im Status festgelegt, ob dieses Item 'Ready' ist, in der kommenden Iteration bearbeitet zu werden (also unsere 'Definition of Ready' erfüllt), oder noch im 'Backlog' verbleiben muss.
+Mithilfe dieser festgelegten 'Definition of Ready' kann dann der PO im Github-Board deutlich besser sehen, welche Aufgaben für die kommende Iteration zu erledigen sind.
+Nach diesem Review- und Refinement-Meeting erstellt der PO zahlreiche Tasks, abgeleitet aus den Items mit einer erfüllten 'Definition of Ready', sowie aus anderweitigen Anforderungen(z.B. Anwender-Dokumentation erstellen). 
 So enstehen abhängig vom Umfang der Tasks ca. 3-6 Tasks pro Person pro Iteration.
 
 In einem zusätzlich festgelegten Meeting über Discord, ein Tag nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. 
@@ -52,11 +50,9 @@ So konnten wir die Dauer der Meetings auf 15-30 Minuten einkürzen, womit wir se
 
 Wir finden, wir können Stolz mit uns sein, dass wir nach so vielen Wochen gemeinsamem arbeiten eingesehen haben, dass unsere bisherige Organisation nicht richtig funktioniert, und den Mut gefunden haben, diese komplett umzukrempeln. 
 Ebenfalls, dass jeder im Team diesen Schritt mitgegangen ist und diese neue Meeting-Struktur mit einem zusätzlichen Meeting pro Iteration unterstützt hat, ist sehr lobenswert.
-
 Am Ende bleibt nur das Problem, das wir mit dieser neuen Ordnung erst in unserer letzten Iteration anfangen konnten. So hätten wir vermutlich noch deutlich mehr schaffen können, wenn wir eher damit angefangen hätten.
 
-
-=== 3. Schnelle und frühe Organisation eines funktionierenden Code-Test-Systems
+=== Schnelle und frühe Organisation eines funktionierenden Code-Test-Systems
 
 Womit wir zum Glück sehr früh angefangen haben, war das Beschäftigen mit sorgfältigem Code-Testing. 
 So hat ein Teammitglied sich bereits nach dem ersten Praktikum, in welchem Tests behandelt wurde, dafür gemeldet, das Software-Testing übernehmen zu wollen. 
@@ -135,7 +131,6 @@ Im Fachaustausch mit anderen Teams haben wir dann (endlich) herausgefunden, dass
 
 So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass unter anderem bereits am Anfang jeder Iteration im neu eingeführten Sprint Planning ein Backlog Refinement aller PBIs stattfand und im mächsten Meeting darauf basierend die Tasks verteilt werden, wobei der PO diese vorbereiten muss.
 Dies hat unser Stand-Up - Zeit deutlich verbessert auf nur noch ca. 20-30 Minuten pro Meeting.
-
 Diese Erkenntnis, das etwas falsch läuft, und die Einarbeitung in die neu organisierte Struktur empfanden wir aufgrund der guten Funktonsweise als großen Erfolg unseres Arbeitsprozesses. Daher ist diese in <<Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden>> noch einmal detaillierter aufgeführt.
 
 Hier besteht allerdings immernoch Verbesserungsbedarf, um auf die empfohlenen 15 Minuten zu kommen. 
@@ -157,7 +152,6 @@ Das wäre wichtig gewesen, um die zukünftigen Aufgaben des Teams schonmal vorab
 Jedoch war der PO dafür zu zögerlich, da die Stakeholder meist sehr überzeugt von ihren Wünschen waren und uns nicht klar war, wie weit wir ihre Wunsch-'Fantasie' beschränken können. 
 
 Nach Besprechungen mit anderen SE-Teams ist uns dann aufgefallen, dass wir auch die Stakeholder stoppen können und auch sollten, wenn sie zu viele Feature-Wünsche haben. Dies konnten wir dann in den letzten beiden Iterationen noch umsetzen, sodass der PO deutlich sagt, falls es genug Input ist, bzw. die Developer zu Wort kommen, falls sie erkennen, dass ein Feature zu viel Zeit in Anspruch nehmen wird.
-
 So konnten wir unser User-Story-Backlog in den letzten Iteration noch verkleinern, was auch für das Refinement wichtig geworden ist.
 So war es dort zum einen leichter zu entscheiden war, welche Priorität die User Storys haben, aber auch, wie sie zu schätzen sind, da dies mit weniger User Storys auch weniger Zeit in Anspruch nimmt.
 
