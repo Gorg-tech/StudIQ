@@ -265,21 +265,98 @@ Alle Endpunkte liefern und akzeptieren JSON. Die konkrete Form der Payloads ist 
 
 Die Zusammenarbeit zwischen Frontend und Backend wird anhand mehrerer Sequenzdiagramme modelliert und als Bilder in die Projektdokumentation integriert.
 
-### Login-Flow
+## Login
 
-Ablauf von App-Start → `GET /api/auth/me/` → optional `POST /api/auth/login/` → User-Store aktualisieren.
+### Sequendiagramm Login
+:::Mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as Browser (Vue SPA)
+    participant API as ApiClient (Fetch)
+    participant AUTH as Auth API (accounts.urls)
+    
+    %% Initialer App-Start: Prüfen, ob eingeloggt
+    U->>FE: App öffnen
+    FE->>API: GET /api/auth/me/
+    API->>AUTH: GET /api/auth/me/ (Session-Cookie)
+    AUTH-->>API: 200 OK + User JSON / 401 Unauthorized
+    API-->>FE: User-Daten oder Fehler
+    alt User ist eingeloggt
+        FE->>FE: userStore.setUser(user)
+        FE-->>U: Dashboard / Startseite mit User-Info
+    else Nicht eingeloggt
+        FE-->>U: Login-Form anzeigen
+    end
 
-### Quiz spielen & abschließen (serverseitig, seit 31.12.2025)
+    %% Login
+    U->>FE: Login-Formular ausfüllen + "Login"
+    FE->>API: POST /api/auth/login/ (username, password)
+    API->>AUTH: LoginView.validate + authenticate + login()
+    AUTH-->>API: 200 OK + User JSON (Session-Cookie gesetzt)
+    API-->>FE: User JSON
+    FE->>FE: userStore.setUser(user)
+    FE-->>U: Weiterleitung auf Startseite / vorherige Route
+:::
+
+## Quiz spielen 
 
 - Laden des Quizzes: `GET /api/quizzes/:id/`
 - Starten des Quizzes und Holen der ersten Frage: `POST /api/quizzes/:id/start/`
 - Senden der vom User ausgewählten Antwort + Bewertung + Empfang der nächsten Frage: `POST /api/quizzes/:id/answer`
 - Abschluss (und Empfang der Auswertung) via `POST /api/quizzes/:id/complete/`
 - Nachladen der Statistiken: `GET /api/users/me/stats/`
+### Sequenzdiagramm
 
-Die Diagramme zeigen jeweils die Lifelines (User, Browser/Vue, API-Client, Django-Router, Views/ViewSets, Datenbank) und die Abfolge der REST-Aufrufe. Sie dienen dazu, die Interaktion der Komponenten verständlich und konsistent zur Implementierung darzustellen.
+:::Mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as Browser (QuizView/ResultView)
+    participant API as ApiClient
+    participant QS as Quiz API (QuizViewSet Actions)
+    participant DB as MySQL
 
----
+    %% Quiz starten
+    U->>FE: Quiz öffnen
+    FE->>API: POST /api/quizzes/:quizId/start/
+    API->>QS: QuizViewSet.start()
+    QS->>DB: create QuizSession (start_time=now, end_time=null)
+    DB-->>QS: session_id
+    QS->>DB: load first question + options
+    DB-->>QS: question payload
+    QS-->>API: 200 OK + {session_id, question, progress...}
+    API-->>FE: first question
+    FE-->>U: Frage anzeigen
+
+    %% Fragen beantworten (serverseitig)
+    loop for each question
+        U->>FE: Antwort auswählen
+        FE->>API: POST /api/quizzes/:quizId/answer (session_id, answer_id)
+        API->>QS: QuizViewSet.answer()
+        QS->>DB: validate answer + update QuizSession progress
+        QS->>DB: load next question (or finish)
+        DB-->>QS: result + next question (optional)
+        QS-->>API: 200 OK + {is_correct, correct_answers?, next_question?}
+        API-->>FE: feedback + next question
+        FE-->>U: Feedback + nächste Frage
+    end
+
+    %% Quiz abschließen
+    U->>FE: Quiz abschließen
+    FE->>API: POST /api/quizzes/:quizId/complete/ (session_id)
+    API->>QS: QuizViewSet.complete()
+    QS->>DB: set QuizSession.end_time = now
+    QS->>DB: compute & persist stats updates (iq_score, streak via StudyDay, solved counts, etc.)
+    DB-->>QS: persisted results
+    QS-->>API: 200 OK + {summary, points, iq_score_delta?, ...}
+    API-->>FE: completion summary
+
+    %% Stats nachladen
+    FE->>API: GET /api/users/me/stats/
+    API->>DB: aggregate stats query
+    DB-->>API: stats payload
+    API-->>FE: stats payload
+    FE-->>U: ResultView anzeigen
+:::
 
 ## 9. Wichtige technische Entscheidungen
 
@@ -307,7 +384,7 @@ Die Diagramme zeigen jeweils die Lifelines (User, Browser/Vue, API-Client, Djang
 ### Dokumentation
 
 - Automatische Generierung der Klassen-/Modulreferenz mit Doxygen.
-- Manuelle Entwurfsdokumentation (dieses Dokument) + Diagramme.
+- Manuelle Entwurfsdokumentation (dieses Dokument) 
 
 ---
 
