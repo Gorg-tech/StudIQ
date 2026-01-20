@@ -30,18 +30,31 @@ Risiken werden festgehalten in einem Riskboard über Github:
 https://github.com/users/Gorg-tech/projects/7/views/10[Riskboard]
 
 
-*Backup: jedem issue wird, wenn nötig, ein zusätzlicher assigne zugeteilt*
+Am Anfang der Iteration erfolgt im ersten Weekly mit allen Teammitgliedern ein Refinement des Backlogs, in dem neue User Stories und Bugs aus dem https://github.com/users/Gorg-tech/projects/7/views/1[Product Backlog] geschätzt werden, und wo entschieden wird, welche User Stories umgesetzt werden bzw. welche Bugs noch nicht bearbeiteten gefixt werden sollten. Wenn User Stories zur Bearbeitung ausgewählt, wird ihr Status auf 'Ready' gesetzt.
 
-Aufgaben sind in Github festgehalten und ergeben sich aus dem Backlog : https://github.com/users/Gorg-tech/projects/7/views/1[Backlog] .Dort sollte jeder wöchentlich nachgucken, was er zu tun hat, dies tun und sich so auf das Meeting vorbereiten.
+Kurz nach dem Refinement werden auf Basis der User Stories und Bugs (auf Github) im Status 'Ready', sowie unter Beachtung organisatorischer Nötigkeiten, vom PO Tasks erstellt, welche man auf dem Github Project im Reiter https://github.com/users/Gorg-tech/projects/7/views/11[Meeting-Tasks] einsehen kann.
+Beim Meeting am *Mittwoch nach dem Refinement um 17:30 im Discord* mit allen Teammitgliedern werden die Aufgaben zugeteilt, welche die Mitglieder für die derzeitige neue Iteration bearbeiten. Mit der Zuweisung wird der Bearbeitungsstand auf 'In Progress' gesetzt. 
+Die Zuweisung erfolgt möglichst so, dass der Workload im Team gleich verteilt ist.
+
+*Backup: jedem Issue wird, wenn nötig, ein zusätzlicher Assigne zugeteilt*
+
+Jedes Mitglied eröffnet eine Branch zum Bearbeiten der zugeteilten Aufgabe. Die Branches sind wie folgt zu benennen: 
+art/kurze-beschreibung-der-aufgabe
+Die Aufgabe kann die folgenden Arten haben: feature, bugfix, update, documentation
+Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem Mergen von mindestens einem anderen Teammitglied überprüft wird.
+
+Zum jedem Weekly nach dem ersten bis zum Ende der Iteration wird der Stand der Taskbearbeitung abgefragt. Falls Kommunikationsbedarf mit einem großen Teil des Teams wegen einer Aufgabe, wird das Weekly zur kurzen Absprache darüber verwendet. 
+Das Weekly sollte nicht länger als 25 Minuten dauern.
+
+Am Ende der Iteration werden die Stakeholder zu einem Treffen eingeladen, wo der Entwicklungs-Fortschritt der Iteration reviewt wird, und das Team neuen Input an User-Stories und auftretenden Bugs bekommt, die in der nächsten Iteration bearbeitet werden können (nicht müssen).
+
 
 Jedes Mitglied eröffnet eine Branch zum Bearbeiten der zugeteilten Aufgabe. Die Branches sind wie folgt zu benennen: 
 art/kurze-beschreibung-der-aufgabe
 Die Aufgabe kann die folgenden Arten haben: feature, bugfix, update
 Funktioniert der veränderte Code, wird ein Pull-Request erstellt, der vor dem Mergen von einem anderen Teammitglied überprüft wird.
 
-Zum Meeting werden die gemachten Aufgaben vorgestellt und besprochen und, falls sie fertig erledigt sind, neue zugeteilt. Dies erfolgt in Abstimmung mit den Teammitgliedern.
-
-Falls jemand noch zusätzliche Ausgaben übernimmt, welche nicht durch Tasks klar definiert sind, werden dies zusammen mit den Files auf denen man dafür arbeitet, im Discord-Kanal "Git-Überschneidungen" kommuniziert, damit keine Doppelarbeit entsteht.
+Falls jemand noch zusätzliche Aufgaben übernimmt, welche nicht durch Tasks klar definiert sind, werden dies zusammen mit den Files auf denen man dafür arbeitet, im Discord-Kanal "Git-Überschneidungen" kommuniziert, damit keine Doppelarbeit entsteht.
 
 Falls Bugs bearbeitet werden, wird vorher ein Issue dafür erstellt, damit klar ist, wer woran arbeitet. Bei Bugs, deren Fixzeit >10min liegt, wird vorher im nächsten Meeting kommuniziert, ob und von wem er gefixt wird.
 
@@ -67,12 +80,18 @@ Der Status wird auf dem Github-Issue auf "Ready" gesetzt und kann zur Bearbeitun
 
 Für Erfüllung geschriebener Code lässt sich ausführen ohne Kompilierfehler und erfüllt die im entsprechenden Issue gegebenen Kriterien
 
+*Für eine Task:*
 Coding-Task:
-- Code entspricht Struktur- und Dokumentationsrichtlinien des Projekts.
-- Code wurde im Teammeting grob vorgestellt und als ok abgesegnet.
-- Neu Implementierter Code im Backend muss zu 50% durch Unit-Tests abgedeckt sein
+    - Code entspricht Struktur- und Dokumentationsrichtlinien des Projekts.
+    - Code wurde im Teammeting grob vorgestellt und als ok abgesegnet.
 
--> Kann auf GitHub als "Done" markiert werden
+    -> Kann auf GitHub als "Done" markiert werden
+
+*Für eine User Story:*
+- Laufendes System wird (im Sprint Review) den Stakeholdern zum selbst ausprobieren übergeben
+    * Sie bekommen Aufgabe, selbstständig zum neu implememntierten Feature zu navigieren und dieses zu testen
+- Keine Kritik an neuem Feature -> User Story kann als 'Done' markiert werden
+- Es existiert noch Verbesserungsbedarf -> User Story bleibt auf 'In Progress' für nächste Iteration
 
 == Deployment
 Projekt wird auf einem Webserver deployed, der von Eric bereitgestellt wird. Zugangsdaten werden im Teammeeting kommuniziert.
