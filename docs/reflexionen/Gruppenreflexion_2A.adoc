@@ -4,11 +4,11 @@
 
 === 1. Aufrechterhalten einer harmonischen Arbeitsatmosphäre
 
-Vermutlich das wichtigste für eine erfolgreiche Entwicklung eines Produkts ist, dass sich alle beteiligten Entwickler gut verstehen und miteinander arbeiten können. 
+Vermutlich das Wichtigste für eine erfolgreiche Entwicklung eines Produkts ist, dass sich alle beteiligten Entwickler gut verstehen und miteinander arbeiten können. 
 In unserer Gruppe hat ein außerordentlich gutes Arbeitsklima geherrscht
 
-Begünstigt wurde dies unter anderem dadurch, dass wir uns dazu entschieden haben, unsere wöchentlichen Meetings bereits von Beginn an in Präsenz in der HTW stattfinden zu lassen. 
-So wurden wir, anders als zum Beispiel über Discord, dazu gedrängt, mehr miteinander zu reden und uns so gut kennenzulernen, aber auch dazu, dass jeder zur aktiven Mitarbeit gebracht wurde, damit man nicht als einziger im Team tatenlos dabeisitzt. 
+Begünstigt wurde unter anderem, dass bereits von Beginn an die wöchentlichen Meetings in Präsenz in der HTW stattgefunden haben. 
+Im Gegensatz zu Plattformen wie Discord hat diese Form der Zusammenarbeit dazu geführt, dass wir mehr miteinander ins Gespräch kamen, uns besser kennenlernten und alle aktiv mitarbeiteten, weil das Feedback auf Aufgaben unmittelbarer und persönlicher erfolgte.
 
 Ebenfalls (und vielleicht auch durch die analogen Meetings) war jeder motiviert, an der Entwicklung unserer Quiz-App beteiligt sein, und hat sich mit eigenen Ideen eingebracht. 
 Dadurch konnten wir uns schnell auf einen groben Rahmen einigen, wie die App funktionieren soll und auf welchen architektonischen Strukturen sie gebaut wird.
@@ -27,7 +27,7 @@ Um den freundschaftlichen Umgang weiter zu fördern, hat unser Scrum Master auch
 
 === 2. Drastische Änderung des Arbeitsprozesses hin zu besserer Umsetzung des Scrum-Prinzips
 
-Wir haben uns wöchentlich getroffen, um über unseren Fortschritt zu reden, ähnlich zum Ablauf eines Weekly Standups. Am Ende jeder Iteration gab es ein Sprint Review und anschließend eine Retrospektive immer mit dem gesamten Team. 
+Wir haben uns wöchentlich getroffen, um über unseren Fortschritt zu reden, ähnlich zum Ablauf eines Weekly Stand-ups. Am Ende jeder Iteration gab es ein Sprint Review und anschließend eine Retrospektive immer mit dem gesamten Team. 
 
 Jedoch haben unsere "Stand-Up's" jede Woche 60-90 Minuten in Anspruch genommen, was überhaupt nicht mit der in der Vorlesung empfohlenen Menge von 15 Minuten übereinstimmt
 Dies hatte mehrere Gründe, daher ist dies auch als Misserfolg (siehe <<Schlechte Organisation der Weekly Meetings>>) gelistet und ausführlich beschrieben, da uns dies in der Entwicklung sehr eingeschränkt hat.
@@ -44,11 +44,11 @@ So enstehen abhängig vom Umfang der Tasks ca. 3-6 Tasks pro Person pro Iteratio
 In einem zusätzlich festgelegten Meeting über Discord, ein Tag nach dem Stakeholder-Treffen, werden die Tasks dann an das Team zugewiesen, damit es möglichst schnell wieder mit arbeiten beginnen kann. 
 Dieses Treffen sollte nicht länger als 15 Minuten dauern.
 
-Das Weekly StandUp verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. 
+Das Weekly Stand-up verläuft nun deutlich kürzer: Jeder im Team reihum spricht kurz an, was er bisher gemacht hat, und woran er demnächst arbeitet. 
 Falls ein Problem besteht wird dies sehr kurz besprochen, oder es wird im Team eine Ansprechperson für die Problemlösung gefunden, an welche sich die Person wenden kann. 
 Das einzige, was nun noch neu vergeben wird, ist die Bearbeitung von Bugs, falls sie eines dringenden Fixes bedürfen.
 
-So konnten wir die Dauer der Meetings auf 15-30 Minuten einkürzen, womit wir sehr zufrieden sind. Auch sonst hat die Veränderung keine Probleme verursacht, sondern ist auf sehr positives Feedback im Team gestoßen, auch, da klar definiert ist, was jeder bis zum Ende der Iterationzu tun hat.
+So konnten wir die Dauer der Meetings auf 15-30 Minuten einkürzen, womit wir sehr zufrieden sind. Auch sonst hat die Veränderung keine Probleme verursacht, sondern ist auf sehr positives Feedback im Team gestoßen, auch, da klar definiert ist, was jeder bis zum Ende der Iteration zu tun hat.
 
 Wir finden, wir können Stolz mit uns sein, dass wir nach so vielen Wochen gemeinsamem arbeiten eingesehen haben, dass unsere bisherige Organisation nicht richtig funktioniert, und den Mut gefunden haben, diese komplett umzukrempeln. 
 Ebenfalls, dass jeder im Team diesen Schritt mitgegangen ist und diese neue Meeting-Struktur mit einem zusätzlichen Meeting pro Iteration unterstützt hat, ist sehr lobenswert.
@@ -74,7 +74,7 @@ Da unsere Test-Verantwortliche über den gesamten Backend-Code verteilt arbeitet
 Somit werden ebenfalls die Entwickler dazu gedrängt, ihren Code gut zu dokumentieren und sinnvoll zu strukturieren bzw. zu modularisieren. 
 Dies könnte auch hilfreich für die spätere Einbindung von neuen Backend-Entwicklern werden, falls dafür Bedarf besteht.
 
-Das wichtigste ist jedoch, dass nun sichergestellt wird, dass ein immer größerer Teil des Quellcodes korrekt funktioniert, wodurch sich die Entwickler mehr auf neue Produkt-Features konzentrieren können. 
+Das Wichtigste ist jedoch, dass nun sichergestellt wird, dass ein immer größerer Teil des Quellcodes korrekt funktioniert, wodurch sich die Entwickler mehr auf neue Produkt-Features konzentrieren können. 
 Ebenfalls lässt sich beim Entwickeln von neuem Code nun schnell testen, dass der alte Code noch funktioniert, und nicht durch die neuen Eingaben Fehler auswirft.
 
 Derzeit liegt die Testabdeckung bereits bei über 40% im Backend, womit wie sehr zufrieden sein können.
@@ -92,7 +92,7 @@ Dies hat sich besonders im Programmieren unseres Backend ausgeprägt, da dort am
 So hat dort eine Person das Grund-Framework errichtet und dann bereits einige neuer Funktionen programmiert, welche noch benötigt wurden. 
 So gab es dann eine große Menge an Python-Code-Files im Backend, welche aufgrund mangelnder Zeit nicht gut kommentiert oder dokumentiert wurden.
 
-Dies hat dazu geführt, dass Entwickler, die erst später Code im Backend entwickeln sollten, sich nicht so recht getraut haben, diesen zu entwickeln. So wussten sie nicht genau, wo der benötigte Quellcode zu stehen hat bzw. wieviel davon bereits als wiederverwertbare Funktion einfach aufrufbar ist.
+Dies hat dazu geführt, dass Entwickler, die erst später Code im Backend entwickeln sollten, sich nicht so recht getraut haben, diesen zu entwickeln. So wussten sie nicht genau, wo der benötigte Quellcode zu stehen hat bzw. wie viel davon bereits als wiederverwertbare Funktion einfach aufrufbar ist.
 So mussten die Entwickler sehr viel Zeit damit verbrauchen, zuerst den bestehenden undokumentierten Code zu verstehen. Ebenfalls kontaktierten sie die Person, die den bestehenden Code entwickelt hat, um Ihnen bei verstehen zu helfen. 
 Dies ist zwar eine sinnvolle Maßnahme seitens der Entwickler, um die Entwicklungs-Task gut zu bearbeiten, jedoch hat sie den Entwickler des bestehenden Codes davon abgehalten, seine ihm zugeteilten Tasks zu bearbeiten. 
 Meist hatte dieser den Backend-Teil der Task vom unsicheren Entwickler sogar abgenommen, da er der Ansicht war, dass dies schneller ginge, anstatt den Code ausführlich zu erklären.
@@ -109,20 +109,23 @@ Leider wurde dieses Problem in den ersten Retrospektiven nicht von den betroffen
 So konnten wir erst spät dieses Problem ausbessern, indem wir in einer Iteration die Entwicklung von Features deutlich zurückschraubten und dafür die fehlende Dokumentation und Kommentierung des bestehenden Codes nachgeholt haben, nach klar festgelegten Richtlinien.
 Ebenfalls wurde festgelegt, dass neu programmierter Code nach diesen Richtlinien sauber dokumentiert sein muss, damit sich in Zukunft jeder leicht in den Quellcode einfinden kann.
 
+So haben wir gelernt, dass Dokumentation genauso wichtig ist wie funktionierender Code.
+
 === Schlechte Organisation der Weekly Meetings
 
-Ein Problem, was bereits früh aufgetreten ist und bis zur Veränderung unserer Meeting-Struktur durchgängig existent gewesen ist, war, dass die Stand Ups fast jedes Mal 60 - 90 Minuten in Anspruch genommen haben (wenn kein Sprint Review/Retrospektive oder ähnliches stattgefunden hat). 
+Ein Problem, was bereits früh aufgetreten ist und bis zur Veränderung unserer Meeting-Struktur durchgängig existent gewesen ist, war, dass die Stand-ups fast jedes Mal 60 - 90 Minuten in Anspruch genommen haben (wenn kein Sprint Review/Retrospektive oder ähnliches stattgefunden hat). 
 Da wir uns gut verstanden haben, wurde dies in der Gruppe nicht als großes Problem angesehen, da die Zeit im regen Austausch schnell vergangen ist. 
 Jedoch konnte man schon erkennen, dass etwas nicht ganz richtig lief, wenn das Meeting 4-6 Mal mehr Zeit in Anspruch genommen hat, als die ursprünglich in der Vorlesung empfohlene Menge von 15 Minuten. 
 
-So könnte doch bei Durchführen eines optimierten StandUp allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen, wenn man die StandUp-Dauer von 75-90 auf 15-30 Minuten verkürzt.
+So könnte doch bei Durchführen eines optimierten Stand-up allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen, wenn man die Stand-up-Dauer von 75-90 auf 15-30 Minuten verkürzt.
 
-Der Grund für die Länge des Meetings lag daran, dass wir den Weekly StandUp nicht so durchgeführt haben, wie es eigentlich gemacht werden soll:
-So wurden für __jedes__ Standup neue Aufgaben vom PO herausgesucht, die dieser aus gut passenden User Stories bzw. gefundenen Bugs hergeleitet hat. 
-Falls Teammitglieder ihre Task zum StandUp fertig gestellt haben, wurden ihnen von diesen erstellten Tasks neue zugewiesen, wobei noch einmal abgesprochen wurden, zu wem diese Aufgaben am Besten passen.
+Der Grund für die Länge des Meetings lag daran, dass wir den Weekly Stand-up nicht so durchgeführt haben, wie es eigentlich gemacht werden soll:
+So wurden für __jedes__ Stand-up neue Aufgaben vom PO herausgesucht, die dieser aus gut passenden User Stories bzw. gefundenen Bugs hergeleitet hat. 
+Falls Teammitglieder ihre Task zum Stand-up fertig gestellt haben, wurden ihnen von diesen erstellten Tasks neue zugewiesen, wobei noch einmal abgesprochen wurden, zu wem diese Aufgaben am Besten passen.
 
 Fall die Bearbeitung einer neuen User Story angefangen werden soll, wurde mit dem Team diskutiert, ob die vom PO herausgesuchte User Story vom Umfang her umsetzbar ist in der Task, bzw. welcher Developer dafür mitarbeiten müsste.
-Ein geordnetes Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität dieser wurde bei dieser Diskussion festgelegt.So wurde jede User Story einzeln in verschiedenen StandUps refinet und die, welche es nicht in das StandUp geschafft haben, wurden gar nicht refinet, sodass auch eine vielleicht schnell umsetzbare User Story nicht bearbeitet wurde, wenn der PO diese nicht ausgewählt hat.
+Ein geordnetes Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität dieser wurde bei dieser Diskussion festgelegt.
+So wurde jede User Story einzeln in verschiedenen Stand-Ups refinet und die, welche es nicht in das Stand-Up geschafft haben, wurden gar nicht refinet, sodass auch eine vielleicht schnell umsetzbare User Story nicht bearbeitet wurde, wenn der PO diese nicht ausgewählt hat.
 Dies hat auch für eine unklare Struktur gesorgt, welche User Stories wie in der Iteration schaffen wollen, und wie viele wir zwischen den Sprint Reviews für die Stakeholder verwirklichen können
 
 Nachdem über eventuell neue zu bearbeitende User Stories geprochen wurde, wurden neue Tasks werden dann __im__ Meeting fertig ausformuliert und zugewiesen, was ebenfalls etwas Zeit beansprucht hat.
@@ -131,7 +134,7 @@ Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben
 Im Fachaustausch mit anderen Teams haben wir dann (endlich) herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
 
 So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass unter anderm die Aufgaben jede Iteration bereits an dessen Anfang verteilt werden, wobei der PO diese vorbereiten muss.
-Dies hat unser StandUp - Zeit deutlich verbessert auf nur noch ca. 20-30 Minuten pro Meeting.
+Dies hat unser Stand-Up - Zeit deutlich verbessert auf nur noch ca. 20-30 Minuten pro Meeting.
 
 Diese Erkenntnis, das etwas falsch läuft, und die Einarbeitung in die neu organisierte Struktur empfanden wir aufgrund der guten Funktonsweise als großen Erfolg unseres Arbeitsprozesses. Daher ist diese in <<Drastische Änderung des Arbeitsprozesses hin zu mehr scrum-artigen SE-Methoden>> noch einmal detaillierter aufgeführt.
 
@@ -143,8 +146,7 @@ Daran müsste unser Scrum Master für die zukünftige Iteration noch arbeiten, w
 Wir haben regelmäßig, am Ende jeder Iteration, ein Review mit den Stakeholdern durchgeführt. 
 Dieses Treffen gab uns jedes Mal sehr konstruktiven und hilfreichen Input für die Entwicklung unseres Software-Produkts. 
 Jedoch gab es oft, vor allem am Anfang, sehr viel Input. 
-So haben wir nach dem Meeting meist darüber diskutiert, dass doch viel zu viel Entwicklungarbeit für manche Wunsch-Features zu investieren nötig ist, sie also praktisch in unserem kleinen Team nicht umsetzen ist.
-
+Dadurch haben wir nach dem Meeting meist darüber diskutiert, dass doch viel zu viel Entwicklungarbeit für manche Wunsch-Features zu investieren nötig ist, sie also praktisch in unserem kleinen Team nicht umsetzen ist.
 So haben wir viele User Stories gehabt, welche wohl nur sehr teilweise umgesetzt werden im gesamten überiterativen Entwicklungsprozess.
 
 Zum einen hatten wir zu Beginn noch einen unausgereiften Product-Scope, durch welches wir noch nicht genau wussten, welche Features auch in unserem Plan stehen, noch zu implementieren, und welche Features überhaupt nicht zu unserer Software gehören sollten.
