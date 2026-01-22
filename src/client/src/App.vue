@@ -3,10 +3,15 @@ import { RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 import BottomNavigation from './components/layout/BottomNavigation.vue'
 import apiClient from '@/services/api/client'
+import { onMounted } from 'vue' 
 
 const route = useRoute()
 
-apiClient.ensureCsrf()
+// Move ensureCsrf to onMounted so it runs AFTER the initial paint
+onMounted(() => {
+  apiClient.ensureCsrf().catch(err => console.warn('Background CSRF fetch failed:', err))
+})
+
 </script>
 
 <template>
