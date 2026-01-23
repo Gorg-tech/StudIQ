@@ -91,7 +91,7 @@ Zum anderen hatten wir keine einheitichen Dokumentationsstandards, wie zum Beisp
 
 Dies hat dazu geführt, dass Entwickler, die erst später Code im Backend entwickeln sollten, sich nicht so recht getraut haben, diesen zu entwickeln. So wussten sie nicht genau, wo der benötigte Quellcode zu stehen hat bzw. wie viel davon bereits als wiederverwertbare Funktion einfach aufrufbar ist.
 So mussten die Entwickler sehr viel Zeit damit verbrauchen, zuerst den bestehenden undokumentierten Code zu verstehen, und kontaktierten dafür auch oft die Person, die den bestehenden Code entwickelt hat, um Ihnen beim Verstehen zu helfen. 
-Oft haben die beiden Entwickler sich dann gemeinsam an den Code gesetzt, teilweise aber hatte dieser auch den Backend-Teil der Task vom unsicheren Entwickler komplett abgenommen, da er der Ansicht war, dass dies schneller ginge, anstatt den Code ausführlich zu erklären.
+Oft haben die beiden Entwickler sich dann gemeinsam an den Code gesetzt, teilweise aber hatte dieser auch den Backend-Teil der Task vom unsicheren Entwickler komplett abgenommen, um den Zeitplan einhalten zu können.
 So ehrenwert es war, dass er die Aufgabe übernommen hatte, war dies jedoch langfristig nicht förderlich, da der unsichere neue Entwickler so nie gelernt hat, wie der Backend-Code funktioniert, und somit auch in Zukunft nicht in der Lage sein wird, diesen zu bearbeiten.
 
 Diesem Problem hätte man vorbeugen können, wenn wir uns bereits früh auf Kommentier-Standards geeinigt hätten, was ebenfalls später in der Erstellung der Betriebsdokumentation sehr hilfreich gewesen wäre.
