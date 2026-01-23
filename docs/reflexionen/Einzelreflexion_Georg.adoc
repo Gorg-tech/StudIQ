@@ -1,6 +1,39 @@
 = Einzelreflexion Georg Richter
 
-Ich habe in unserem Team die Rolle des Product Owners übernommen.
-Dafür habe ich die Entwicklung des Software-Produkts geleitet. Bei Gesprächsbedarf mit team-externen Personen, wie zum Beispiel den Stake-Holdern, unserem Coach oder Prof. Anke habe ich den Kontakt mit diesen aufgesucht und bei Bedarf ein Treffen mit unserem Team geplant.
+== Ausgangssituation und Einordnung in den SE-Prozess
 
-Ebenfalls habe ich, abgeleitet von den User Stories, die wir in der Iteration bearbeiten wollten, Tasks für alle Teammitglieder erstellt, die diese in der kommenden Zeit bearbeiten sollten. 
+Im Projekt habe ich die Rolle des Product Owners (PO) übernommen. Meine Hauptaufgabe bestand darin, die inhaltliche und organisatorische Steuerung der Produktentwicklung zu übernehmen und als Schnittstelle zwischen Entwicklungsteam und externen Beteiligten zu agieren. Dazu zählten insbesondere die Stakeholder, unser Coach sowie Prof. Anke.
+
+Im Softwareentwicklungsprozess war ich vor allem den Bereichen Projektmanagement und Anforderungsmanagement zuzuordnen. Konkret umfasste dies die Abstimmung mit Stakeholdern im Rahmen der Sprint Reviews, die Pflege und Priorisierung des Product Backlogs, die Ableitung von Tasks aus User Stories und Organisation der Arbeit innerhalb einer Iteration sowie die Bewertung fertiggestellter Tasks im Teamkontext
+
+== Eigene Beiträge und Lösungsweg
+
+=== Kommunikation mit Stakeholdern und Sprint Reviews
+
+Ich habe regelmäßig den Kontakt zu team-externen Personen gesucht und Sprint Reviews mit den Stakeholdern organisiert und moderiert. In diesen Reviews wurden die neu entwickelten Features präsentiert und gemeinsam evaluiert. Die Stakeholder erhielten dabei bewusst die Aufgabe, neue Funktionen selbst in der Anwendung zu finden und zu testen.
+
+Auf Basis ihres Feedbacks wurde entschieden, ob eine User Story als abgeschlossen gilt oder weiterbearbeitet werden muss. Zusätzlich floss das qualitative Feedback der Stakeholder in das Product Backlog ein.
+
+Ebenfalls habe ich, auf Grundlage des https://github.com/users/Gorg-tech/projects/7/views/1[Product-Backlogs], anfangs für jedes StandUp, im späteren Entwicklungsprozess nur noch für jede Iteration konkrete Tasks für alle Teammitglieder erstellt und diese über https://github.com/users/Gorg-tech/projects/7/views/11[GitHub Projects] verwaltet.
+Fertiggestellte Tasks wurden im Weekly Stand-up vorgestellt. Gemeinsam mit dem Team habe ich das Ergebnis begutachtet und anschließend entschieden, ob die Task als erledigt gilt oder noch Nachbesserungen (z.B. Bugfixes) notwendig sind.
+
+Da diese Schwäche bereits ausführlich in der Gruppenreflexion (als Misserfolg 'Schlechte Organisation der Weekly Meetings')behandelt wurde, fokussiere ich mich hier auf meine Rolle im Stakeholder-Management, da dies meiner Meinung nach die Arbeitsmethode war, wo ich die größten Probleme hatte.
+
+== Kritische Bewertung meines Vorgehens
+
+Rückblickend habe ich meine Rolle als Product Owner in Bezug auf das Stakeholder-Management nicht konsequent genug ausgefüllt. In den frühen Iterationen habe ich zu viele Feature-Wünsche der Stakeholder ungefiltert aufgenommen. Dies führte zu einem stark wachsenden Backlog und erschwerte die Priorisierung erheblich.
+
+Ein Grund dafür war, dass die https://github.com/Gorg-tech/StudIQ/blob/main/docs/requirements/vision.pdf[Produktvision] und die Anforderungen zu Beginn noch nicht ausreichend konkretisiert waren. Dadurch fehlte mir eine klare argumentative Grundlage, um Wünsche abzulehnen, die nicht zum Produkt passten oder den Rahmen des Projekts gesprengt hätten.
+
+Ein weiterer Faktor war meine Unsicherheit, ob ein abgelehntes Feature möglicherweise von einzelnen Teammitgliedern gewünscht worden wäre. Aus Rücksicht auf das Team und die Stakeholder habe ich daher zu selten klare Entscheidungen getroffen.
+
+Erst nach dem Fachaustausch zum Projektmanagement wurde mir bewusst, dass es explizit zur Rolle des PO gehört, klare Prioritäten zu setzen, Grenzen zu ziehen und diese Entscheidungen zu verantworten. In späteren Sprint Reviews habe ich – unterstützt durch das Team – deutlich klarer kommuniziert, welche User Stories umgesetzt werden und welche bewusst zurückgestellt oder verworfen werden.
+
+So habe ich gelernt, dass ich als PO mutiger auftreten muss, insbesondere im Gespräch über das Software-Produkt meines Teams, da nur so eine fokussierte Produktentwicklung und eine realistische Umsetzungsplanung möglich sind.
+
+== Fazit
+
+Zusammenfassend habe ich gelernt, meine Rolle als Product Owner aktiver und entscheidungsstärker auszufüllen. Insbesondere das konsequente Stakeholder-Management, sauberes Backlog-Refinement und eine strukturierte Iterationsplanung sind entscheidend für einen effizienten Entwicklungsprozess. 
+Ich finde jedoch, dass ich zukünftig doch lieber in die Rolle eines Entwicklers schlüpfen würde, da ich die reine Code-Entwicklung deutlich angenehmer finde, als die ganze Planung für das gesamte Team und darüber hinaus übernehmen zu müssen.
+
+Dennoch war es für mich eine wertvolle Erfahrung, auch mal die Sicht eines Product Owners kennenzulernen.
