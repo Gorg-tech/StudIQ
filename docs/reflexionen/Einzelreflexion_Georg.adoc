@@ -1,10 +1,78 @@
 = Einzelreflexion Georg Richter
+== Ausgangssituation und Einordnung in den SE-Prozess
 
-Ich habe in unserem Team die Rolle des Product Owners übernommen.
-Dafür habe ich die Entwicklung des Software-Produkts geleitet. Bei Gesprächsbedarf mit team-externen Personen, wie zum Beispiel den Stake-Holdern, unserem Coach oder Prof. Anke habe ich den Kontakt mit diesen aufgesucht und bei Bedarf ein Treffen mit unserem Team geplant. Dies war zum Beispiel bei den Stakeholdern für die Sprint Reviews von Nöten.
+Im Projekt habe ich die Rolle des **Product Owners (PO)** übernommen. Meine Hauptaufgabe bestand darin, die inhaltliche und organisatorische Steuerung der Produktentwicklung zu übernehmen und als Schnittstelle zwischen Entwicklungsteam und externen Beteiligten zu agieren. Dazu zählten insbesondere die Stakeholder, unser Coach sowie Prof. Anke.
 
-Ebenfalls habe ich, abgeleitet von den User Stories, die wir in der Iteration bearbeiten wollten, Tasks für alle Teammitglieder erstellt, die diese in der kommenden Zeit bearbeiten sollten. Diese wurden auf Github verfasst 
+Im Softwareentwicklungsprozess war ich vor allem den Bereichen Projektmanagement und Anforderungsmanagement zuzuordnen. Konkret umfasste dies:
 
-Falls ein Mitglied seine Task (zum Beispiel ein Software-Feature) fertig bearbeitet hat, wurde dies im StandUp dem Team vorgestellt. Das Team hat dieses begutachtet und ich habe dann darüber entschieden, ob die Task abgeschlossen ist, oder ob noch Verbesserungsbedarf besteht, zum Beispiel, wenn ein Bug beim implementierten Feature entdeckt wurde.
+* Abstimmung mit Stakeholdern im Rahmen der Sprint Reviews
+* Pflege und Priorisierung des Product Backlogs
+* Ableitung von Tasks aus User Stories und Organisation der Arbeit innerhalb einer Iteration
+* Bewertung fertiggestellter Tasks im Teamkontext
 
-Am Ende der Iteration habe ich das Sprint Review mit den Stakeholdern vorgestellt. Dort haben wir ihnen unser Software-Produkt mit den neu entwickelten Features vorgestellt. Dabei haben wir den Stakeholdern die Aufgabe gegeben, das neue Feature durch Softwarebenutzung zu finden und zu testen. 
+Die operative Entwicklung (Implementierung und Test) lag überwiegend bei den Entwicklern, während ich die Planung, Koordination und Abnahme verantwortete.
+
+
+== Eigene Beiträge und Lösungsweg
+
+=== Kommunikation mit Stakeholdern und Sprint Reviews
+
+Ich habe regelmäßig den Kontakt zu team-externen Personen gesucht und Sprint Reviews mit den Stakeholdern organisiert und moderiert. In diesen Reviews wurden die neu entwickelten Features präsentiert und gemeinsam evaluiert. Die Stakeholder erhielten dabei bewusst die Aufgabe, neue Funktionen selbst in der Anwendung zu finden und zu testen.
+
+Auf Basis ihres Feedbacks wurde entschieden, ob eine User Story als abgeschlossen gilt oder weiterbearbeitet werden muss. Zusätzlich floss das qualitative Feedback der Stakeholder in das Product Backlog ein.
+
+=== Task-Erstellung und Organisation über GitHub Projects
+
+Auf Grundlage des https://github.com/users/Gorg-tech/projects/7/views/1[Product-Backlogs] habe ich anfangs für jedes StandUp, im späteren Entwicklungsprozess nur noch für jede Iteration konkrete Tasks für alle Teammitglieder erstellt und diese über https://github.com/users/Gorg-tech/projects/7/views/11[GitHub Projects] verwaltet.
+
+Fertiggestellte Tasks wurden im Weekly Stand-up vorgestellt. Gemeinsam mit dem Team habe ich das Ergebnis begutachtet und anschließend entschieden, ob die Task als erledigt gilt oder noch Nachbesserungen (z.B. Bugfixes) notwendig sind.
+
+Dieser Ansatz funktionierte grundsätzlich, zeigte jedoch im Projektverlauf deutliche Schwächen.
+
+== Kritische Bewertung meines Vorgehens
+
+=== Umgang mit Stakeholder-Wünschen
+
+Rückblickend habe ich meine Rolle als Product Owner in Bezug auf das Stakeholder-Management nicht konsequent genug ausgefüllt. In den frühen Iterationen habe ich zu viele Feature-Wünsche der Stakeholder ungefiltert aufgenommen. Dies führte zu einem stark wachsenden Backlog und erschwerte die Priorisierung erheblich.
+
+Ein Grund dafür war, dass die https://github.com/Gorg-tech/StudIQ/blob/main/docs/requirements/vision.pdf[Produktvision] und die Anforderungen zu Beginn noch nicht ausreichend konkretisiert waren. Dadurch fehlte mir eine klare argumentative Grundlage, um Wünsche abzulehnen, die nicht zum Produkt passten oder den Rahmen des Projekts gesprengt hätten.
+
+Ein weiterer Faktor war meine Unsicherheit, ob ein abgelehntes Feature möglicherweise von einzelnen Teammitgliedern gewünscht worden wäre. Aus Rücksicht auf das Team und die Stakeholder habe ich daher zu selten klare Entscheidungen getroffen.
+
+Erst nach dem Fachaustausch zum Projektmanagement wurde mir bewusst, dass es explizit zur Rolle des PO gehört, klare Prioritäten zu setzen, Grenzen zu ziehen und diese Entscheidungen zu verantworten. In späteren Sprint Reviews habe ich – unterstützt durch das Team – deutlich klarer kommuniziert, welche User Stories umgesetzt werden und welche bewusst zurückgestellt oder verworfen werden.
+
+=== Unzureichende Iterationsplanung und Task-Verteilung
+
+Ein zweiter zentraler Schwachpunkt meines Vorgehens lag in der Aufgabenverteilung innerhalb der Iterationen. 
+Dies und die Haupt-Ursache dafür ist in der Gruppenreflexion auch als Punkt __Schlechte Organisation der Weekly Meetings__ beschrieben.
+Zu Beginn des Projekts habe ich vor jedem Weekly StandUp neue User Stories ausgewählt und daraus ad hoc Tasks erstellt. Entwickler, die ihre Aufgaben abgeschlossen hatten, erhielten im StandUp direkt neue Tasks.
+
+Dieses Vorgehen hatte mehrere Nachteile:
+
+* Es fand kein systematisches Backlog-Refinement statt
+* Der Umfang von User Stories war schlecht einschätzbar
+* Tasks mussten wöchentlich neu erstellt werden
+* Es fehlte mir der Überblick, welche Features innerhalb einer Iteration tatsächlich abgeschlossen werden sollten
+* Gegen Ende einer Iteration war sinnvolle Task-Erstellung kaum noch möglich
+
+Trotz dieser Probleme habe ich zu lange an diesem Vorgehen festgehalten, da es oberflächlich funktionierte („Never change a running system“). Die Ineffizienz wurde erst spät im Fachaustausch als strukturelles Problem erkannt wurde, und das ein organisiertes Backlog-Refinement dringend notwendig ist.
+
+
+== Erkenntnisse und Verbesserungen
+
+Nach der Umstrukturierung unseres Arbeitsprozesses wurden die User Stories zu Beginn einer Iteration vollständig refinet, priorisiert und geschätzt. Darauf aufbauend habe ich alle Tasks einer Iteration im Voraus erstellt und zugewiesen.
+
+Dieses Vorgehen führte zu deutlichen Verbesserungen:
+
+* Klare Zielsetzung für jede Iteration
+* Bessere Übersicht über den Entwicklungsstand
+* Kürzere und fokussiertere StandUps
+* Höhere Planungssicherheit für das Team
+
+Hieraus ziehe ich die Erfahrung, dass ich mutiger sein sollte, auch mal ein funktionierendes System umzukrempeln, wenn dadurch die Arbeit für mich deutlich erleichtert werden kann.
+
+== Fazit
+
+Zusammenfassend habe ich gelernt, meine Rolle als Product Owner aktiver und entscheidungsstärker auszufüllen. Insbesondere das konsequente Stakeholder-Management, sauberes Backlog-Refinement und eine strukturierte Iterationsplanung sind entscheidend für einen effizienten Entwicklungsprozess. 
+Ich finde jedoch, dass ich zukünftig doch lieber in die Rolle eines Entwicklers schlüpfen würde, da ich die reine Code-Entwicklung deutlich angenehmer finde, als die ganze Planung für das gesamte Team und darüber hinaus übernehmen zu müssen.
+Dennoch war es für mich eine wertvolle Erfahrung, auch mal die Sicht eines Product Owners kennenzulernen.
