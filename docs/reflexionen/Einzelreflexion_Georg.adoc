@@ -1,0 +1,6 @@
+= Einzelreflexion Georg Richter
+
+Ich habe in unserem Team die Rolle des Product Owners übernommen.
+Dafür habe ich die Entwicklung des Software-Produkts geleitet. Bei Gesprächsbedarf mit team-externen Personen, wie zum Beispiel den Stake-Holdern, unserem Coach oder Prof. Anke habe ich den Kontakt mit diesen aufgesucht und bei Bedarf ein Treffen mit unserem Team geplant.
+
+Ebenfalls habe ich, abgeleitet von den User Stories, die wir in der Iteration bearbeiten wollten, Tasks für alle Teammitglieder erstellt, die diese in der kommenden Zeit bearbeiten sollten. 
