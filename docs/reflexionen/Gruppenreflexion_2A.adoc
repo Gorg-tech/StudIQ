@@ -82,34 +82,31 @@ So wird den Entwicklern in Zukunft noch mehr Arbeit abgenommen, die sie stattdes
 
 === Fehlende systematisierte Architektur-Dokumentation
 
-Leider wurde bei uns zu Beginn zu viel Wert darauf gelegt, einen vorzeigbaren Prototypen mit den entsprechenden Features zu entwickeln, wodurch mehr Zeit in neu entwickelten Code investiert wurde, anstatt diese in eine verständliche Dokumentation des bisher entwickelten Codes zu stecken.
-Dies hat sich besonders im Programmieren unseres Backend ausgeprägt, da dort am meisten neuer Code produziert werden musste, um die entsprechenden Features zu implementieren.
+Für unser Softwaresystem wurde ein deutlich größerer Teil des Codes im Backend als im Frontend entwickelt. Eine systematische Architektur- und Code-Dokumentation wäre daher frühzeitig notwendig gewesen, wurde jedoch erst sehr spät eingeführt.
 
-So hat dort eine Person das Grund-Framework errichtet und dann bereits einige neue Funktionen programmiert, welche noch benötigt wurden. 
-Diese Person hat zwar die wichtisten Funktionen kommentiert, jedoch gab es immer noch einen hohen Einarbeitungsaufwand bei neu hinzukommenden Backend-Entwicklern.
+So hat dort initial eine Person das Django-Framework errichtet und dann bereits einige neue Funktionen programmiert. 
+Diese Person hat zwar die wichtisten Funktionen kommentiert, jedoch gab es immer noch einen hohen Einarbeitungsaufwand bei den dann neu hinzukommenden Backend-Entwicklern.
 Dies lag daran, dass zum einen das Django-Framework an sich ein großer 'Quellcode-Batzen' ist, der erstmal verstanden werden muss.
-Zum anderen hatten wir keine Dokumentationsstandards, wie zum Beispiel Docstrings an jeder Funktion, da wir uns der Existenz dieser damals noch nicht bewusst waren, und, weil wir, wie bereits erwähnt, zu Beginn relativ schnell unseren Prototyp fertig stellen wollten.
+Zum anderen hatten wir keine einheitichen Dokumentationsstandards, wie zum Beispiel Docstrings an jeder Funktion, da wir uns der Existenz dieser damals noch nicht bewusst waren, und, weil wir zu Beginn zu viel Wert darauf gelegt haben, einen vorzeigbares Softwareprodukt mit den entsprechenden Features zu entwickeln, wofür mehr Zeit in neuen Code investiert werden musste. 
 
 Dies hat dazu geführt, dass Entwickler, die erst später Code im Backend entwickeln sollten, sich nicht so recht getraut haben, diesen zu entwickeln. So wussten sie nicht genau, wo der benötigte Quellcode zu stehen hat bzw. wie viel davon bereits als wiederverwertbare Funktion einfach aufrufbar ist.
 So mussten die Entwickler sehr viel Zeit damit verbrauchen, zuerst den bestehenden undokumentierten Code zu verstehen, und kontaktierten dafür auch oft die Person, die den bestehenden Code entwickelt hat, um Ihnen beim Verstehen zu helfen. 
 Oft haben die beiden Entwickler sich dann gemeinsam an den Code gesetzt, teilweise aber hatte dieser auch den Backend-Teil der Task vom unsicheren Entwickler komplett abgenommen, da er der Ansicht war, dass dies schneller ginge, anstatt den Code ausführlich zu erklären.
-
 So ehrenwert es war, dass er die Aufgabe übernommen hatte, war dies jedoch langfristig nicht förderlich, da der unsichere neue Entwickler so nie gelernt hat, wie der Backend-Code funktioniert, und somit auch in Zukunft nicht in der Lage sein wird, diesen zu bearbeiten.
 
-Diesem Problem hätte man vorbeugen können, wenn wir uns bereits früh auf Dokumentier-Standards geeinigt hätten, was ebenfalls später in der Erstellung der Betriebsdokumentation sehr hilfreich gewesen wäre.
+Diesem Problem hätte man vorbeugen können, wenn wir uns bereits früh auf Kommentier-Standards geeinigt hätten, was ebenfalls später in der Erstellung der Betriebsdokumentation sehr hilfreich gewesen wäre.
 So wurde für diese Doxygen benutzt, wodurch die Einhaltung dieser Formatierungsstandards zwingend notwendig war, um eine übersichtliche Dokumentation zu erhalten.
 
-Diese Dokumentier-Standards zum Einen damals bereits ein bisschen mehr beim Verstehen des Code helfen können.
+Diese Kommentier-Standards zum Einen damals bereits ein bisschen mehr beim Verstehen des Code helfen können.
 Andererseits hätten wir auch bereits viel eher mit einer schnellen systematischen Erstellung einer Dokumentation des Codes beginnen können und sollen. 
-Dafür spricht, dass die nun damit erstellte Betriebsdoku laut einigen unserer Entwickler die Backend-Struktur sehr gut verdeutlicht und zu Beginn der Software-Entwicklung sehr hilfreich gewesen wäre, um den Code schnell zu verstehen.
-So hätten auch im späteren Prozess neue Backend-Entwickler keine große Hilfe von Entwicklern des bestehenden Codes benötigt. 
-
-So kann dann neben der investierten Zeit der neuen Entwickler in das Verstehen des Code auch die investierte Zeit der bestehenden Entwickler in das Erklären des Codes verringert werden, auch wenn diese etwas mehr Zeit in die Dokumentation investieren müssen. 
+Dafür spricht, dass die nun erstellte Betriebsdoku laut unseren Entwicklern die Backend-Struktur sehr gut verdeutlicht und zu Beginn der Software-Entwicklung sehr hilfreich gewesen wäre, um den Code schnell zu verstehen.
+So hätten auch im späteren Prozess neue Backend-Entwickler keine große Hilfe von Entwicklern des bestehenden Codes benötigt, wenn wir eine solche Doku gehabt hätten. 
+Dadurch kann dann neben der investierten Zeit der neuen Entwickler in das Verstehen des Code auch die investierte Zeit der bestehenden Entwickler in das Erklären des Codes verringert werden, auch wenn diese etwas mehr Zeit in die Dokumentation investieren müssen. 
 Diese Zeitersparnis wird insbesondere langfristig mit dem neu hinzukommen jedes weiteren Backend-Entwicklers immer größer.
 
 Dieses Problem mit der unzurechenden Dokumentation ist uns dann im Fachaustausch aufgefallen.
 So konnten wir erst spät (in der letzten Iteration) dieses Problem ausbessern, indem wir die Entwicklung von Features deutlich zurückschraubten und dafür die fehlende Dokumentation und Kommentierung des bestehenden Codes nachgeholt haben, nach klar festgelegten Richtlinien.
-Ebenfalls wurde eine Person festgelegt, welche sich mit einem Dokumentationstool wie Doxygen beschäftigen sollte, um damit den entwicklten Code verständlich, auch mit Diagrammen, erklären zu können.
+Ebenfalls wurde eine Person festgelegt, welche sich mit einem Dokumentationstool wie Doxygen beschäftigen sollte, damit so der entwicklten Code verständlich, auch mit Diagrammen, erklärt werden kann.
 
 So haben wir gelernt, dass eine systematisierte Dokumentation genauso wichtig ist wie funktionierender Code.
 
@@ -124,13 +121,12 @@ So könnte doch bei Durchführen eines optimierten Stand-up allen beteiligten Te
 Der Grund für die Länge des Meetings lag daran, dass wir den Weekly Stand-up etwas falsch verstanden haben und nicht so durchgeführt haben, wie es eigentlich gemacht werden soll:
 So wurden für __jedes__ Stand-up neue Aufgaben vom PO herausgesucht, die dieser aus gut passenden User Stories bzw. gefundenen Bugs hergeleitet hat. 
 Falls Teammitglieder ihre Task zum Stand-up fertig gestellt haben, wurden ihnen von diesen erstellten Tasks neue zugewiesen, wobei noch einmal abgesprochen wurden, zu wem diese Aufgaben am Besten passen.
-
 Fall die Bearbeitung einer neuen User Story angefangen werden soll, wurde mit dem Team diskutiert, ob die vom PO herausgesuchte User Story vom Umfang her umsetzbar ist in der Task, bzw. welcher Developer dafür mitarbeiten müsste.
 Ein geordnetes Backlog Refinement der User Stories gab es bei uns nicht wirklich, die Priorität und Komplexität dieser wurde bei dieser Diskussion festgelegt.
 So wurde jede User Story einzeln in verschiedenen Stand-Ups refinet und die, welche es nicht in das Stand-Up geschafft haben, wurden gar nicht refinet, sodass auch eine vielleicht schnell umsetzbare User Story nicht bearbeitet wurde, wenn der PO diese nicht ausgewählt hat.
 Dies hat auch für eine unklare Struktur gesorgt, welche User Stories wie in der Iteration schaffen wollen, und wie viele wir zwischen den Sprint Reviews für die Stakeholder verwirklichen können
 
-Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns die ineffiziente Bewertung von User Stories neben der langen Meeting-Zeit ebenfalls nicht als wichtiges Problem aufzufallen.
+Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns die ineffiziente Bewertung von User Stories, sowie die lange Meeting-Zeit nicht als wichtiges Problem aufzufallen.
 Im Fachaustausch mit anderen Teams haben wir dann (endlich) herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
 
 So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass unter anderem bereits am Anfang jeder Iteration im neu eingeführten Sprint Planning ein Backlog Refinement aller PBIs stattfand und im mächsten Meeting darauf basierend die Tasks verteilt werden, wobei der PO diese vorbereiten muss.
@@ -159,4 +155,4 @@ Nach Besprechungen mit anderen SE-Teams ist uns dann aufgefallen, dass wir auch 
 So konnten wir unser User-Story-Backlog in den letzten Iteration noch verkleinern, was auch für das Refinement wichtig geworden ist.
 So war es dort zum einen leichter zu entscheiden war, welche Priorität die User Storys haben, aber auch, wie sie zu schätzen sind, da dies mit weniger User Storys auch weniger Zeit in Anspruch nimmt.
 
-Dennoch wäre es gut gewesen, die Stakeholder schon viel früher Einzugrenzen, um weniger Zeit für die Diskussion über die Auswahl der User Stories zu investieren, damit das Team dann mehr Zeit hat, die wichtigen Features sorgfältig zu entwickeln
+Dennoch wäre es gut gewesen, die Stakeholder schon viel früher einzugrenzen, um weniger Zeit für die Diskussion über die Auswahl der User Stories zu investieren, damit das Team dann mehr Zeit hat, die wichtigen Features sorgfältig zu entwickeln
