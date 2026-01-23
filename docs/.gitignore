@@ -3,5 +3,4 @@
 # Asciidoctor
 **/.asciidoctor/
 **/images/diagrams/
-*.pdf
 *.html
