@@ -1,6 +1,10 @@
 = Einzelreflexion Georg Richter
 
 Ich habe in unserem Team die Rolle des Product Owners übernommen.
-Dafür habe ich die Entwicklung des Software-Produkts geleitet. Bei Gesprächsbedarf mit team-externen Personen, wie zum Beispiel den Stake-Holdern, unserem Coach oder Prof. Anke habe ich den Kontakt mit diesen aufgesucht und bei Bedarf ein Treffen mit unserem Team geplant.
+Dafür habe ich die Entwicklung des Software-Produkts geleitet. Bei Gesprächsbedarf mit team-externen Personen, wie zum Beispiel den Stake-Holdern, unserem Coach oder Prof. Anke habe ich den Kontakt mit diesen aufgesucht und bei Bedarf ein Treffen mit unserem Team geplant. Dies war zum Beispiel bei den Stakeholdern für die Sprint Reviews von Nöten.
 
-Ebenfalls habe ich, abgeleitet von den User Stories, die wir in der Iteration bearbeiten wollten, Tasks für alle Teammitglieder erstellt, die diese in der kommenden Zeit bearbeiten sollten. 
+Ebenfalls habe ich, abgeleitet von den User Stories, die wir in der Iteration bearbeiten wollten, Tasks für alle Teammitglieder erstellt, die diese in der kommenden Zeit bearbeiten sollten. Diese wurden auf Github verfasst 
+
+Falls ein Mitglied seine Task (zum Beispiel ein Software-Feature) fertig bearbeitet hat, wurde dies im StandUp dem Team vorgestellt. Das Team hat dieses begutachtet und ich habe dann darüber entschieden, ob die Task abgeschlossen ist, oder ob noch Verbesserungsbedarf besteht, zum Beispiel, wenn ein Bug beim implementierten Feature entdeckt wurde.
+
+Am Ende der Iteration habe ich das Sprint Review mit den Stakeholdern vorgestellt. Dort haben wir ihnen unser Software-Produkt mit den neu entwickelten Features vorgestellt. Dabei haben wir den Stakeholdern die Aufgabe gegeben, das neue Feature durch Softwarebenutzung zu finden und zu testen. 
