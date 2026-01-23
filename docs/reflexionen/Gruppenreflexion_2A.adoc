@@ -80,32 +80,38 @@ So wird den Entwicklern in Zukunft noch mehr Arbeit abgenommen, die sie stattdes
 
 == Top 3 Misserfolge
 
-=== Fehlende Architektur-Dokumentation
+=== Fehlende systematisierte Architektur-Dokumentation
 
-Leider haben wir zu Beginn der Code-Entwicklung die Dokumentation unseres entwickelten Codes vernachlässigt. 
-So wurde sehr viel, vermutlich zu viel, Wert darauf gelegt, einen vorzeigbaren Prototypen mit den entsprechenden Features zu entwickeln, wodurch mehr Zeit in neu entwickelten Code investiert wurde, anstatt diese in eine verständliche Dokumentation des bisher entwickelten Codes zu stecken.
+Leider wurde bei uns zu Beginn zu viel Wert darauf gelegt, einen vorzeigbaren Prototypen mit den entsprechenden Features zu entwickeln, wodurch mehr Zeit in neu entwickelten Code investiert wurde, anstatt diese in eine verständliche Dokumentation des bisher entwickelten Codes zu stecken.
 Dies hat sich besonders im Programmieren unseres Backend ausgeprägt, da dort am meisten neuer Code produziert werden musste, um die entsprechenden Features zu implementieren.
-So hat dort eine Person das Grund-Framework errichtet und dann bereits einige neuer Funktionen programmiert, welche noch benötigt wurden. 
-So gab es dann eine große Menge an Python-Code-Files im Backend, welche aufgrund mangelnder Zeit nicht gut kommentiert oder dokumentiert wurden.
+
+So hat dort eine Person das Grund-Framework errichtet und dann bereits einige neue Funktionen programmiert, welche noch benötigt wurden. 
+Diese Person hat zwar die wichtisten Funktionen kommentiert, jedoch gab es immer noch einen hohen Einarbeitungsaufwand bei neu hinzukommenden Backend-Entwicklern.
+Dies lag daran, dass zum einen das Django-Framework an sich ein großer 'Quellcode-Batzen' ist, der erstmal verstanden werden muss.
+Zum anderen hatten wir keine Dokumentationsstandards, wie zum Beispiel Docstrings an jeder Funktion, da wir uns der Existenz dieser damals noch nicht bewusst waren, und, weil wir, wie bereits erwähnt, zu Beginn relativ schnell unseren Prototyp fertig stellen wollten.
 
 Dies hat dazu geführt, dass Entwickler, die erst später Code im Backend entwickeln sollten, sich nicht so recht getraut haben, diesen zu entwickeln. So wussten sie nicht genau, wo der benötigte Quellcode zu stehen hat bzw. wie viel davon bereits als wiederverwertbare Funktion einfach aufrufbar ist.
-So mussten die Entwickler sehr viel Zeit damit verbrauchen, zuerst den bestehenden undokumentierten Code zu verstehen. Ebenfalls kontaktierten sie die Person, die den bestehenden Code entwickelt hat, um Ihnen bei verstehen zu helfen. 
-Dies ist zwar eine sinnvolle Maßnahme seitens der Entwickler, um die Entwicklungs-Task gut zu bearbeiten, jedoch hat sie den Entwickler des bestehenden Codes davon abgehalten, seine ihm zugeteilten Tasks zu bearbeiten. 
-Meist hatte dieser den Backend-Teil der Task vom unsicheren Entwickler sogar abgenommen, da er der Ansicht war, dass dies schneller ginge, anstatt den Code ausführlich zu erklären.
+So mussten die Entwickler sehr viel Zeit damit verbrauchen, zuerst den bestehenden undokumentierten Code zu verstehen, und kontaktierten dafür auch oft die Person, die den bestehenden Code entwickelt hat, um Ihnen beim Verstehen zu helfen. 
+Oft haben die beiden Entwickler sich dann gemeinsam an den Code gesetzt, teilweise aber hatte dieser auch den Backend-Teil der Task vom unsicheren Entwickler komplett abgenommen, da er der Ansicht war, dass dies schneller ginge, anstatt den Code ausführlich zu erklären.
 
-So ehrenwert es war, dass er die Aufgabe übernommen hatte, war dies jedoch nicht im Sinne des Taskmanagements, da so dieser Backend-Entwickler weniger Zeit für seine zugewiesenen Tasks hatte, bzw. am Ende mit der Zeit für die Absprache insgesamt allgemein ein höheres Arbeitspensum als geplant hatte.
-Langfristig war dies ebenfalls nicht förderlich, da der unsichere neue Entwickler so nie gelernt hat, wie der Backend-Code funktioniert, und somit auch in Zukunft nicht in der Lage sein wird, diesen zu bearbeiten.
+So ehrenwert es war, dass er die Aufgabe übernommen hatte, war dies jedoch langfristig nicht förderlich, da der unsichere neue Entwickler so nie gelernt hat, wie der Backend-Code funktioniert, und somit auch in Zukunft nicht in der Lage sein wird, diesen zu bearbeiten.
 
-So hätte man diesem Problem vorbeugen können, wenn der Entwickler des bestehenden Codes bereits ausführlich kommentiert bzw. eine Dokumentation angelegt hätte, damit sich neue Entwickler schnell in den neuen Code einlesen können, und auch noch in Zukunft keine große Hilfe von Entwicklern des bestehenden Codes benötigen. 
+Diesem Problem hätte man vorbeugen können, wenn wir uns bereits früh auf Dokumentier-Standards geeinigt hätten, was ebenfalls später in der Erstellung der Betriebsdokumentation sehr hilfreich gewesen wäre.
+So wurde für diese Doxygen benutzt, wodurch die Einhaltung dieser Formatierungsstandards zwingend notwendig war, um eine übersichtliche Dokumentation zu erhalten.
 
-So kann dann neben der investierten Zeit der neuen Entwickler in das Verstehen des Code auch die investierte Zeit der bestehenden Entwickler in das Erklären des Codes verringert werden.Diese Zeitersparnis wird insbesondere langfristig mit dem neu hinzukommen jedes weiteren Backend-Entwicklers immer größer.
+Diese Dokumentier-Standards zum Einen damals bereits ein bisschen mehr beim Verstehen des Code helfen können.
+Andererseits hätten wir auch bereits viel eher mit einer schnellen systematischen Erstellung einer Dokumentation des Codes beginnen können und sollen. 
+Dafür spricht, dass die nun damit erstellte Betriebsdoku laut einigen unserer Entwickler die Backend-Struktur sehr gut verdeutlicht und zu Beginn der Software-Entwicklung sehr hilfreich gewesen wäre, um den Code schnell zu verstehen.
+So hätten auch im späteren Prozess neue Backend-Entwickler keine große Hilfe von Entwicklern des bestehenden Codes benötigt. 
 
-Leider wurde dieses Problem in den ersten Retrospektiven nicht von den betroffenen Entwicklern angesprochen, vermutlich, weil sie sich gewusst haben selbst zu helfen durch Kontaktieren des Code-Urhebers. Jedoch ist so dem Scrum Master dieses Hindernis nicht aufgefallen, bis zu einem beiläufigen Gespräch mit einem Entwickler mehrere Iterationen nach Entwicklungsbeginn
+So kann dann neben der investierten Zeit der neuen Entwickler in das Verstehen des Code auch die investierte Zeit der bestehenden Entwickler in das Erklären des Codes verringert werden, auch wenn diese etwas mehr Zeit in die Dokumentation investieren müssen. 
+Diese Zeitersparnis wird insbesondere langfristig mit dem neu hinzukommen jedes weiteren Backend-Entwicklers immer größer.
 
-So konnten wir erst spät dieses Problem ausbessern, indem wir in einer Iteration die Entwicklung von Features deutlich zurückschraubten und dafür die fehlende Dokumentation und Kommentierung des bestehenden Codes nachgeholt haben, nach klar festgelegten Richtlinien.
-Ebenfalls wurde festgelegt, dass neu programmierter Code nach diesen Richtlinien sauber dokumentiert sein muss, damit sich in Zukunft jeder leicht in den Quellcode einfinden kann.
+Dieses Problem mit der unzurechenden Dokumentation ist uns dann im Fachaustausch aufgefallen.
+So konnten wir erst spät (in der letzten Iteration) dieses Problem ausbessern, indem wir die Entwicklung von Features deutlich zurückschraubten und dafür die fehlende Dokumentation und Kommentierung des bestehenden Codes nachgeholt haben, nach klar festgelegten Richtlinien.
+Ebenfalls wurde eine Person festgelegt, welche sich mit einem Dokumentationstool wie Doxygen beschäftigen sollte, um damit den entwicklten Code verständlich, auch mit Diagrammen, erklären zu können.
 
-So haben wir gelernt, dass Dokumentation genauso wichtig ist wie funktionierender Code.
+So haben wir gelernt, dass eine systematisierte Dokumentation genauso wichtig ist wie funktionierender Code.
 
 === Schlechte Organisation der Weekly Meetings
 
@@ -115,7 +121,7 @@ Jedoch konnte man schon erkennen, dass etwas nicht ganz richtig lief, wenn das M
 
 So könnte doch bei Durchführen eines optimierten Stand-up allen beteiligten Teammitgliedern mindestens 60 Minuten pro Woche mehr Zeit für die Produktentwicklung zur Verfügung zustehen, wenn man die Stand-up-Dauer von 75-90 auf 15-30 Minuten verkürzt.
 
-Der Grund für die Länge des Meetings lag daran, dass wir den Weekly Stand-up nicht so durchgeführt haben, wie es eigentlich gemacht werden soll:
+Der Grund für die Länge des Meetings lag daran, dass wir den Weekly Stand-up etwas falsch verstanden haben und nicht so durchgeführt haben, wie es eigentlich gemacht werden soll:
 So wurden für __jedes__ Stand-up neue Aufgaben vom PO herausgesucht, die dieser aus gut passenden User Stories bzw. gefundenen Bugs hergeleitet hat. 
 Falls Teammitglieder ihre Task zum Stand-up fertig gestellt haben, wurden ihnen von diesen erstellten Tasks neue zugewiesen, wobei noch einmal abgesprochen wurden, zu wem diese Aufgaben am Besten passen.
 
@@ -124,9 +130,7 @@ Ein geordnetes Backlog Refinement der User Stories gab es bei uns nicht wirklich
 So wurde jede User Story einzeln in verschiedenen Stand-Ups refinet und die, welche es nicht in das Stand-Up geschafft haben, wurden gar nicht refinet, sodass auch eine vielleicht schnell umsetzbare User Story nicht bearbeitet wurde, wenn der PO diese nicht ausgewählt hat.
 Dies hat auch für eine unklare Struktur gesorgt, welche User Stories wie in der Iteration schaffen wollen, und wie viele wir zwischen den Sprint Reviews für die Stakeholder verwirklichen können
 
-Nachdem über eventuell neue zu bearbeitende User Stories geprochen wurde, wurden neue Tasks werden dann __im__ Meeting fertig ausformuliert und zugewiesen, was ebenfalls etwas Zeit beansprucht hat.
-
-Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns ineffizienze Bewerung von User Stories neben der langen Meeting-Zeit ebenfalls nicht als wichtiges Problem aufzufallen.
+Da wir dennoch stetig Fortschritte in der Entwicklung von Features gemacht haben, schien uns die ineffiziente Bewertung von User Stories neben der langen Meeting-Zeit ebenfalls nicht als wichtiges Problem aufzufallen.
 Im Fachaustausch mit anderen Teams haben wir dann (endlich) herausgefunden, dass wir unsere Meeting-Organisation deutlich umstrukturieren müssen, wodurch wir dann um einiges effektiver Arbeit verteilen und erledigen können.
 
 So hat unser Scrum Master den Ablauf unserer Meetings drastisch verändert, sodass unter anderem bereits am Anfang jeder Iteration im neu eingeführten Sprint Planning ein Backlog Refinement aller PBIs stattfand und im mächsten Meeting darauf basierend die Tasks verteilt werden, wobei der PO diese vorbereiten muss.
