@@ -160,15 +160,11 @@ const error = ref(null)
 // Keep existing quizHistory/dummy fallback if needed
 const quizHistory = ref([])
 
-// ensure currentRunIndex exists early so loader can set it
-const currentRunIndex = ref(0)
-
 // helper to load per-quiz history (try server first, fallback to localStorage)
 async function loadHistoryFromStorage() {
   const qid = route.params.quizId
   if (!qid) {
     quizHistory.value = []
-    currentRunIndex.value = 0
     return
   }
 
@@ -188,7 +184,6 @@ async function loadHistoryFromStorage() {
           percentage
         }
       })
-      currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
       return
     }
   } catch (err) {
@@ -236,6 +231,7 @@ watch(() => route.fullPath, () => {
 })
 
 const current = computed(() => {
+  console.log()
   if (!Array.isArray(quizHistory.value) || quizHistory.value.length === 0) {
     return {
       timestamp: null,
@@ -245,7 +241,7 @@ const current = computed(() => {
       percentage: 0
     }
   }
-  const idx = Math.min(Math.max(currentRunIndex.value || 0, 0), quizHistory.value.length - 1)
+  const idx = quizHistory.value.length - 1
   const entry = quizHistory.value[idx] || { results: [] }
   const resultsArr = Array.isArray(entry.results) ? entry.results : []
   const correctAnswers = resultsArr.filter(r => r.isCorrect).length
