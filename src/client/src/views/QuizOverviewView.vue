@@ -25,10 +25,6 @@
               <div>{{ quiz.questions.length }}</div>
             </div>
             <div class="meta-item">
-              <strong>Ø Zeit</strong>
-              <div>{{ quiz.avg_time_spent ? quiz.avg_time_spent + 's' : '-' }}</div>
-            </div>
-            <div class="meta-item">
               <strong>Lernset</strong>
               <div>{{ quiz.lernset?.title || '-' }}</div>
             </div>
@@ -343,7 +339,7 @@ const canEdit = computed(() => {
 
 /* Meta */
 .meta-row { display:flex; gap: .75rem; flex-wrap:wrap; margin-top:6px; }
-.meta-item { background: rgba(15,23,42,0.03); padding:.5rem .7rem; border-radius:10px; min-width:120px; }
+.meta-item { background: rgba(15,23,42,0.03); padding:.5rem .7rem; border-radius:10px; min-width:150px; }
 .meta-item strong { display:block; color:#6b7280; font-size:0.78rem; margin-bottom:4px; }
 .meta-item div { font-weight:600; color:#0f172a; }
 
@@ -401,6 +397,6 @@ const canEdit = computed(() => {
 @media (max-width: 900px) {
   .hero-card { flex-direction:column; }
   .hero-right { width:auto; }
-  .meta-item { min-width:120px; flex:1 1 45%; }
+  .meta-item { min-width:150px; flex:1 1 45%; }
 }
 </style>
