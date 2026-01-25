@@ -26,7 +26,7 @@
             </div>
             <div class="meta-item">
               <strong>Lernset</strong>
-              <div>{{ quiz.lernset?.title || '-' }}</div>
+              <div>{{ quiz.lernset_title || '-' }}</div>
             </div>
           </div>
 
