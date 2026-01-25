@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component.puml>
+!include <C4/C4_Container.puml>
+
+title C4 Component Diagram — StudIQ Backend (API)
+
+Container_Boundary(api, "Backend (API)") {
+    Component(quizzes_models, "Quiz Models", "Django ORM", "Datenmodelle für Quizzes, Fragen und Antworten")
+    Component(quizzes_serializers, "Quiz Serializers", "Django REST Framework", "Konvertiert Quiz-Modelle in JSON für API")
+    Component(quizzes_views, "Quiz Views", "Django REST Framework", "API-Endpunkte für Quiz-Sessions und Feedback")
+    
+    Component(accounts_models, "User Models", "Django ORM", "Benutzer- und Studiengang-Modelle")
+    Component(accounts_serializers, "User Serializers", "Django REST Framework", "Serialisierung für Registrierung und Login")
+    Component(accounts_views, "User Views", "Django REST Framework", "Auth-Endpunkte und Benutzerverwaltung")
+    
+    Component(scraper, "Scraper", "Python", "Lädt Studiengänge und Module von HTW Modulux")
+}
+
+System_Ext(htw_auth, "HTW Modulux")
+ContainerDb(db, "Datenbank", "SQLite", "Persistiert alle Daten")
+
+' Relations within API
+Rel(quizzes_views, quizzes_serializers, "Verwendet Serializers")
+Rel(quizzes_serializers, quizzes_models, "Serialisiert Modelle")
+Rel(accounts_views, accounts_serializers, "Verwendet Serializers")
+Rel(accounts_serializers, accounts_models, "Serialisiert Modelle")
+
+' External relations
+Rel(scraper, htw_auth, "Lädt Daten herunter", "Python/HTTP")
+Rel(quizzes_models, db, "Speichert/Liest Daten", "SQL")
+Rel(accounts_models, db, "Speichert/Liest Daten", "SQL")
+
+@enduml
