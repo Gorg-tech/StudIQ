@@ -172,23 +172,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Recent Quizzes -->
-      <div class="suggested-quizzes">
-        <h3>Zuletzt bearbeitete Quizze</h3>
-        <div class="quiz-suggestions-row">
-          <div v-for="(quiz, index) in recentQuizzes" :key="index" class="quiz-suggestion-item">
-            <div class="quiz-suggestion-icon" :style="{ backgroundColor: '#2196f3' + '1A' }">
-              <IconCode />
-            </div>
-            <div class="quiz-suggestion-content">
-              <h4>{{ quiz.title }}</h4>
-              <p class="quiz-meta">{{ quiz.score }}/{{ quiz.total }} - {{ quiz.date }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </template>
@@ -205,7 +188,6 @@ import LogoStudIQ from '@/components/LogoStudIQ.vue'
 import Penguin from '@/components/Penguin.vue'
 import IconFlame from '@/components/icons/IconFlame.vue'
 import IconSettings from '@/components/icons/IconSettings.vue'
-import IconCode from '@/components/icons/IconCode.vue'
 import IconTrashcan from '@/components/icons/IconTrashcan.vue'
 
 const router = useRouter()
@@ -808,15 +790,20 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
 }
-
 .streak-card {
   background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
-  padding: 20px;
+  /* percent-based sizing relative to the card width */
+  --streak-gap: 2%;
+  --streak-padding: 3%;
+  --flame-size: 8%; /* percentage of card width */
+  padding: var(--streak-padding);
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* min-height scales with flame size and padding */
+  min-height: calc(var(--flame-size) * 2 + var(--streak-padding));
 }
 
 .streak-card.full-width {
@@ -825,21 +812,38 @@ onMounted(async () => {
 
 .week-row {
   display: flex;
-  padding-left: 100px;
-  padding-right: 100px;
-  gap: 8px;
+  gap: var(--streak-gap);
   justify-content: center;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  align-items: center;
+  padding: 0 var(--streak-padding);
+  margin-top: var(--streak-gap);
+  margin-bottom: var(--streak-gap);
   cursor: pointer;
+  flex-wrap: nowrap; /* keep streak on one line */
+  overflow-x: auto; /* allow horizontal scroll when space is tight */
+  -webkit-overflow-scrolling: touch;
 }
 
 .day-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: calc(var(--streak-gap) / 2);
   z-index: 0;
+  /* allow shrinking when the row gets narrow */
+  flex: 0 1 auto;
+  min-width: calc(var(--flame-size) * 0.9);
+  width: calc(var(--flame-size) * 1.6);
+}
+
+/* Scale flame SVGs inside the day boxes */
+.day-box > svg,
+.day-box .flame-box svg,
+.day-box svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-width: 100%;
 }
 
 .day-label {
@@ -856,61 +860,6 @@ onMounted(async () => {
   font-weight: 500;
   margin-top: 8px;
   text-align: center;
-}
-
-/* Suggested quizzes layout (bottom section) */
-.suggested-quizzes {
-  margin-top: 24px;
-}
-
-.suggested-quizzes h3 {
-  margin-bottom: 16px;
-  color: var(--color-accent);
-}
-
-.quiz-suggestions-row {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-}
-
-.quiz-suggestion-item {
-  background-color: var(--card-bg);
-  border-radius: 10px;
-  padding: 16px;
-  min-width: 180px;
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quiz-suggestion-item:hover {
-  background-color: color-mix(in oklab, var(--card-bg) 80%, #888 20%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.quiz-suggestion-icon {
-  color: var(--color-primary);
-  background-color: rgba(33, 150, 243, 0.1);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.quiz-suggestion-content h4 {
-  margin: 0 0 4px 0;
-  font-size: 1rem;
-  color: var(--color-text);
 }
 
 .quiz-meta {

@@ -44,7 +44,7 @@ body {
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 1.5rem;
+  padding: 1.0rem;
   padding-top: 0.8rem;
   font-family: 'Ubuntu', 'Roboto', 'Helvetica Neue', sans-serif;
 }

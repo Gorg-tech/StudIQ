@@ -679,17 +679,97 @@ onMounted(() => {
 }
 
 @media (max-width: 600px) {
+  .search-view {
+    padding: 0;
+    max-width: 100%;
+    overflow-x: visible; /* Allow tags to show if they pop out slightly, but layout should contain them */
+  }
+
+  .search-heading {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .search-input {
+    font-size: 0.95rem;
+  }
+
+  .filter-buttons {
+    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .filter-buttons .btn {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    flex-grow: 1; /* Make buttons fill available space */
+    text-align: center;
+    justify-content: center;
+  }
+
+  .btn-create {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+
+  .quiz-list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding-top: 8px; /* Extra space for top tags */
+  }
+
+  .quiz-item {
+    margin-top: 0; /* Reset generic margin if any */
+    padding: 16px; /* Comfortable touch padding */
+    width: 100%;
+  }
+
+  /* Ensure tags are visible and positioned correctly */
+  .item-type {
+    top: -10px;
+    right: 12px;
+    font-size: 0.75rem;
+  }
+
+  /* Adjust stats layout for narrow screens */
+  .stats-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .text-truncate {
+    max-width: 150px; /* Smaller truncation limit on mobile */
+  }
+
   .card-footer {
     justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   
   .hierarchy-info {
     justify-content: flex-start;
     flex-wrap: wrap;
+    width: 100%;
   }
   
   .hierarchy-text {
     max-width: 100%;
+    white-space: normal; /* Allow text wrapping on very small screens if needed */
+  }
+  
+  /* Dialog adjustments */
+  .dialog-content {
+    width: 95%;
+    padding: 16px;
+    max-height: 85vh;
+  }
+  
+  .dialog-list {
+    max-height: 40vh;
   }
 }
 
@@ -736,7 +816,7 @@ onMounted(() => {
 .btn-create {
   margin-left: auto;
   background-color: var(--color-accent);
-  color: white;
+  color: var(--color-accent-foreground);
   border-color: var(--color-accent);
 }
 

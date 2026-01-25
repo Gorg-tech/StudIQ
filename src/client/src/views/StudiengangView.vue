@@ -17,12 +17,12 @@ onMounted(async () => {
   try {
     const studiengangId = route.params.studiengangId
     const sg = await getStudiengangById(studiengangId)
-console.log('Studiengang data:', sg)
+    console.log('Studiengang data:', sg)
     // Beschreibung parsen
     if (sg.description) {
       const degreeMatch = sg.description.match(/Abschluss:\s*([^,]+)/)
       const durationMatch = sg.description.match(/Regelstudienzeit:\s*(\d+)\s*Semester/)
-      
+
       sg.degree = degreeMatch ? degreeMatch[1].trim() : ''
       sg.duration = durationMatch ? Number(durationMatch[1]) : null
     } else console.error('Description error')
@@ -35,7 +35,6 @@ console.log('Studiengang data:', sg)
     loading.value = false
   }
 })
-
 
 const goToModul = (modulId) => {
   router.push({ name: 'modul', params: { modulId } })
@@ -72,9 +71,7 @@ const goToModul = (modulId) => {
         </a>
 
         <div class="studiengang-info">
-          <p class="semester" v-if="studiengang?.semester">
-            {{ studiengang.semester }}. Semester
-          </p>
+          <p class="semester" v-if="studiengang?.semester">{{ studiengang.semester }}. Semester</p>
           <p class="department" v-if="studiengang?.department">
             Fachbereich: {{ studiengang.department }}
           </p>
@@ -102,21 +99,18 @@ const goToModul = (modulId) => {
       </section>
 
       <section class="module-list" v-if="studiengang?.module?.length">
-          <h2>Module</h2>
-            <div class="modules-grid">
-            <div
-              v-for="modul in studiengang.module"
-                :key="modul.modulId"
-                class="module-card"
-                @click="goToModul(modul.modulId)"
-              >
-          <h3>{{ modul.name }}</h3>
-            
-              
+        <h2>Module</h2>
+        <div class="modules-grid">
+          <div
+            v-for="modul in studiengang.module"
+            :key="modul.modulId"
+            class="module-card"
+            @click="goToModul(modul.modulId)"
+          >
+            <h3>{{ modul.name }}</h3>
           </div>
         </div>
       </section>
-
     </div>
   </div>
 </template>
@@ -125,23 +119,22 @@ const goToModul = (modulId) => {
 .studiengang-view {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  background: var(--color-bg);
+  padding: clamp(0.75rem, 3vw, 2rem);
 }
 
 .logo {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  margin-bottom: clamp(0.75rem, 2vw, 1.5rem);
 }
 
 .studiengang-header {
-  margin-bottom: 2rem;
+  margin-bottom: clamp(1rem, 4vw, 2rem);
   border-bottom: 2px solid var(--color-primary);
   padding-bottom: 1rem;
   background: var(--card-bg);
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(25,118,210,0.1);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
 }
 
 .studiengang-header h1 {
@@ -152,14 +145,17 @@ const goToModul = (modulId) => {
 
 .studiengang-info {
   display: flex;
-  gap: 17rem;
+  gap: clamp(0.5rem, 6vw, 3rem);
   color: var(--color-muted, #666);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
   margin: 1rem 0;
 }
 
@@ -168,7 +164,7 @@ const goToModul = (modulId) => {
   padding: 1.5rem;
   border-radius: 12px;
   border: 1px solid var(--color-border);
-  box-shadow: 0 1px 3px rgba(25,118,210,0.05);
+  box-shadow: 0 1px 3px rgba(25, 118, 210, 0.05);
 }
 
 .info-item strong {
@@ -179,8 +175,8 @@ const goToModul = (modulId) => {
 
 .modules-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
   margin-top: 1rem;
 }
 
@@ -188,14 +184,16 @@ const goToModul = (modulId) => {
   background: var(--card-bg);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .module-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(25,118,210,0.15);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
   border-color: var(--color-primary, #1976d2);
 }
 
@@ -211,6 +209,33 @@ const goToModul = (modulId) => {
   background: var(--color-bg-light);
   border-radius: 8px;
   font-weight: 500;
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .studiengang-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .logo {
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  }
+  .studiengang-header {
+    padding: clamp(0.75rem, 2.5vw, 1rem);
+  }
+  .modules-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .studiengang-view { padding: 0.5rem; }
+  .studiengang-info { gap: 0.4rem; }
+  .studiengang-number { display: block; margin-top: 0.4rem; }
+  .studiengang-header h1 { font-size: 1.1rem; }
+  .studiengang-header { padding: 0.5rem; }
+  .module-card { padding: 0.6rem; }
 }
 
 .studiengang-description {
@@ -241,6 +266,6 @@ section h2 {
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(25,118,210,0.1);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
 }
 </style>

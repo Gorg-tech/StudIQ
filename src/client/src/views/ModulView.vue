@@ -576,5 +576,135 @@ onMounted(() => {
   background: #e0e0e0;
   color: #555;
 }
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .module-overview {
+    max-width: 640px;
+    padding: 20px 14px 0 14px;
+    gap: 20px;
+  }
+
+  .module-title {
+    font-size: 1.85rem;
+  }
+
+  .lernsets-list {
+    gap: 12px;
+  }
+
+  .lernset-item {
+    padding: 11px 14px;
+    font-size: 1.02rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .module-overview {
+    margin: 0 12px;
+    padding: 16px 12px 12px 12px;
+    gap: 16px;
+  }
+
+  .module-title-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .link-btn {
+    align-self: flex-end;
+    padding-left: 0;
+  }
+
+  .module-title {
+    font-size: 1.6rem;
+    word-break: break-word;
+  }
+
+  .desc-title {
+    font-size: 1rem;
+  }
+
+  .module-description {
+    font-size: 0.98rem;
+  }
+
+  .module-subsection {
+    padding: 10px;
+  }
+
+  .lernsets-section.card {
+    padding: 16px;
+  }
+
+  .lernsets-title-row {
+    gap: 10px;
+  }
+
+  .plus-btn svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .lernsets-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .lernset-item {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .lernset-quiz-count {
+    font-size: 0.88rem;
+  }
+
+  /* Modal: make full-width / bottom-sheet on small screens */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 8px;
+  }
+
+  .modal-content {
+    width: 100%;
+    min-width: unset;
+    border-radius: 12px 12px 0 0;
+    padding: 18px;
+    box-shadow: 0 -6px 30px rgba(34,34,34,0.12);
+    max-height: 92vh;
+    overflow: auto;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+  }
+
+  .modal-btn.cancel {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1000px) {
+  .lernsets-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .module-overview {
+    max-width: 980px;
+  }
+}
 </style>
 ```
