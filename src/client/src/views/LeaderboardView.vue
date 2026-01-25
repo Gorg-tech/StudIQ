@@ -85,18 +85,24 @@ onMounted(async () => {
       <div v-if="isLoading" class="loading">
         Lade Leaderboard...
       </div>
-      
+
       <div v-else-if="error" class="error">
         {{ error }}
       </div>
-      
+
      <div v-else class="leaderboard-list">
      <!-- Top N -->
      <div v-if="selfUser && leaderboard.length > 0">
         <div v-for="(user, index) in leaderboard.slice(0, TOP_COUNT)"
         :key="user.username + '-top-' + index"
         class="leaderboard-item"
-        :class="{'top-three': index < TOP_COUNT, 'current-user': selfUser.id == user.id}">
+        :class="{
+          'top-three': index < TOP_COUNT,
+          'first-place': index === 0,
+          'second-place': index === 1,
+          'third-place': index === 2,
+          'current-user': selfUser.id == user.id
+        }">
             <div class="rank">#{{ user.rank }}</div>
             <div class="user-info">
                 <div class="username">{{ user.username }}</div>
@@ -209,16 +215,16 @@ onMounted(async () => {
 .leaderboard-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .leaderboard-item {
   display: flex;
   align-items: center;
-  padding: 16px;
+  padding: 20px;
   background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
 }
 
 .rank {
@@ -260,8 +266,11 @@ onMounted(async () => {
 }
 
 .top-three {
-  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--card-bg) 100%);
-  border: 2px solid var(--color-primary-light);
+  /* Same styling as regular items */
+}
+
+.first-place, .second-place, .third-place {
+  /* No special styling */
 }
 
 .loading, .error {
@@ -305,16 +314,47 @@ onMounted(async () => {
 
 @media (max-width: 600px) {
   .leaderboard-view {
-    padding: 16px;
+    padding: 12px;
   }
-  
-  .stats {
-    flex-direction: column;
-    gap: 4px;
+
+  .leaderboard-header h1 {
+    font-size: 1.8rem;
   }
-  
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .leaderboard-tabs {
+    gap: 8px;
+  }
+
+  .leaderboard-tab {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+
   .leaderboard-item {
     padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .rank {
+    font-size: 1.2rem;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .username {
+    font-size: 1.05rem;
+  }
+
+  .stats {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
   }
 }
 </style>

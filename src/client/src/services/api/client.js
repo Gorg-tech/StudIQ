@@ -1,7 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-import { handleApiError } from './errors';
-import { API_ENDPOINTS } from './endpoints';
+import { handleApiError } from './errors'
+import { API_ENDPOINTS } from './endpoints'
 
 /**
  * Notiz zu CSRF in Django:
@@ -36,119 +36,118 @@ import { API_ENDPOINTS } from './endpoints';
 
 export class ApiClient {
   constructor(baseURL = API_URL) {
-    this.baseURL = baseURL;
+    this.baseURL = baseURL
   }
 
   getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(';').shift()
   }
 
   async request(endpoint, method = 'GET', data = null, customHeaders = {}) {
-    let url = `${this.baseURL}/${endpoint}`;
+    let url = `${this.baseURL}/${endpoint}`
     const headers = {
       'Content-Type': 'application/json',
-      ...customHeaders
-    };
+      ...customHeaders,
+    }
 
     // For non-GET requests, get CSRF token from cookie
     if (method !== 'GET') {
-      const csrfToken = this.getCookie('csrftoken');
+      const csrfToken = this.getCookie('csrftoken')
       if (csrfToken) {
-        headers['X-CSRFToken'] = csrfToken;
+        headers['X-CSRFToken'] = csrfToken
       }
     }
 
     // this necessary for work with JWT
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token')
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers['Authorization'] = `Bearer ${token}`
     }
 
     const options = {
       method,
       headers,
       credentials: 'include', // This is critical - it ensures cookies are sent with requests
-    };
+    }
 
     // Add body for non-GET requests
     if (data && method !== 'GET') {
-      options.body = JSON.stringify(data);
+      options.body = JSON.stringify(data)
     }
 
     // Handle query params for GET requests
     if (data && method === 'GET') {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams()
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          params.append(key, value);
+          params.append(key, value)
         }
-      });
+      })
 
-      const queryString = params.toString();
+      const queryString = params.toString()
       if (queryString) {
-        url += `?${queryString}`;
+        url += `?${queryString}`
       }
     }
 
     try {
-      const response = await fetch(url, options);
+      const response = await fetch(url, options)
 
       // Handle 401 Unauthorized globally
       if (response.status === 401) {
         // Only redirect if not already on /login
         if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
+          window.location.href = '/login'
         }
-        throw new Error('Session expired. Please log in again.');
+        throw new Error('Session expired. Please log in again.')
       }
 
       // Check for other HTTP errors
       if (!response.ok) {
-        return handleApiError(response);
+        return handleApiError(response)
       }
 
       // Handle empty responses
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
-        return await response.json();
+        return await response.json()
       }
 
-      return await response.text();
+      return await response.text()
     } catch (error) {
-      console.error('API request error:', error);
-      throw error;
+      console.error('API request error:', error)
+      throw error
     }
   }
 
-
   //Ruft den CSRF-Endpoint auf, um das CSRF-Cookie zu setzen.
   async ensureCsrf() {
-    await this.get(API_ENDPOINTS.AUTH.CSRF);
+    await this.get(API_ENDPOINTS.AUTH.CSRF)
   }
 
   // Convenience methods remain the same
   get(endpoint, params) {
-    return this.request(endpoint, 'GET', params);
+    return this.request(endpoint, 'GET', params)
   }
 
   post(endpoint, data) {
-    return this.request(endpoint, 'POST', data);
+    return this.request(endpoint, 'POST', data)
   }
 
   put(endpoint, data) {
-    return this.request(endpoint, 'PUT', data);
+    return this.request(endpoint, 'PUT', data)
   }
 
   patch(endpoint, data) {
-    return this.request(endpoint, 'PATCH', data);
+    return this.request(endpoint, 'PATCH', data)
   }
 
   delete(endpoint, data) {
-    return this.request(endpoint, 'DELETE', data);
+    return this.request(endpoint, 'DELETE', data)
   }
 }
 
 // Create and export default instance
-export default new ApiClient();
+export default new ApiClient()
