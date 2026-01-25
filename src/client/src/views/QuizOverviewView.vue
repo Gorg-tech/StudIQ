@@ -114,7 +114,7 @@
                 </div>
               </div>
             </div>
-            <div class="muted" style="margin-top:.5rem">Versuche: {{ aggregate.attempts }}</div>
+            <div class="muted attempts-text" style="margin-top:.5rem">Versuche: {{ aggregate.attempts }}</div>
           </div>
 
           <footer class="modal-footer">
@@ -524,7 +524,7 @@ const canEdit = computed(() => {
 }
 
 .modal-content {
-  width: min(880px, 96%);
+  width: min(500px, 96%);
   background: var(--bg-color);
   border-radius: 12px;
   padding: 1rem 1.15rem;
@@ -539,11 +539,14 @@ const canEdit = computed(() => {
 }
 
 .modal-body {
+  display: flex;
+  flex-direction: column;
   margin-top: .9rem;
 }
 
 .stats-grid {
   display: flex;
+  margin: auto;
   gap: .75rem;
 }
 
@@ -573,6 +576,10 @@ const canEdit = computed(() => {
 .muted {
   color: var(--color-muted);
   font-size: .9rem;
+}
+
+.attempts-text {
+  margin-left: 15px;
 }
 
 /* small helpers */
