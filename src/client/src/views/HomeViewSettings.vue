@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
 import { useUserStore } from '@/stores/user'
-import { logout } from '@/services/auth'
 import { getSelfUser } from '@/services/user'
 
 const router = useRouter()
@@ -13,9 +12,9 @@ const userStore = useUserStore()
 const username = ref('')
 const password = ref('••••••••')   // niemals echtes Passwort laden
 const email = ref('')
-const language = ref('Deutsch')
 
 const showPassword = ref(false)
+const showCreditsModal = ref(false)
 
 onMounted(async () => {
   try {
@@ -31,10 +30,8 @@ onMounted(async () => {
 // Aktionen
 const goBack = () => router.push('/')
 const toggleDarkmode = () => themeStore.toggleTheme()
-const changePassword = () => alert('Passwort ändern (noch Dummy)')
-const changeLanguage = () => alert('Sprache ändern (noch Dummy)')
-const togglePasswordVisibility = () => (showPassword.value = !showPassword.value)
-const showCredits = () => alert('Team: StudIQ-Entwicklerteam\nVersion: 1.0.0')
+const showCredits = () => showCreditsModal.value = true
+const closeCreditsModal = () => showCreditsModal.value = false
 
 const handleLogout = async () => {
   try {
@@ -89,6 +86,56 @@ const handleLogout = async () => {
         <button class="btn btn-primary login-btn" @click="handleLogout">Ausloggen</button>
       </div>
     </main>
+
+    <!-- Credits Modal -->
+    <div v-if="showCreditsModal" class="modal-overlay" @click="closeCreditsModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2>Rechtliche Hinweise</h2>
+          <button class="modal-close" @click="closeCreditsModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="legal-section">
+            <h3>1. Verantwortliche Stelle</h3>
+            <p>Diese Quiz-App wird im Rahmen eines studentischen Projekts vom StudIQ-Entwicklerteam betrieben.</p>
+            <p>Kontakt: s86430@htw-dresden.de</p>
+          </div>
+
+          <div class="legal-section">
+            <h3>2. Welche Daten werden verarbeitet?</h3>
+            <p>Wir verarbeiten nur Daten, die für den Betrieb der App notwendig sind:</p>
+            <ul>
+              <li>Benutzername (Pseudonym)</li>
+              <li>Studiengang</li>
+              <li>Quiz-Ergebnisse, Punkte, Streaks und Lernfortschritt</li>
+              <li>Erstellte Quizzes und Bewertungen</li>
+              <li>Technisch notwendige Daten (z. B. Login-Status)</li>
+            </ul>
+          </div>
+
+          <div class="legal-section">
+            <h3>3. Zweck der Datenverarbeitung</h3>
+            <p>Die Daten werden verwendet, um:</p>
+            <ul>
+              <li>Quizze durchzuführen und auszuwerten</li>
+              <li>Punkte, Streaks und Lernfortschritte zu berechnen</li>
+              <li>ein studiengangsbezogenes Leaderboard anzuzeigen</li>
+              <li>selbst erstellte Quizzes zu verwalten</li>
+            </ul>
+          </div>
+
+          <div class="legal-section">
+            <h3>4. Rechtsgrundlage</h3>
+            <p>Die Verarbeitung erfolgt gemäß Art. 6 Abs. 1 b DSGVO sowie Art. 6 Abs. 1 f DSGVO.</p>
+          </div>
+
+          <div class="legal-section">
+            <h3>5. Speicherung & Löschung</h3>
+            <p>Daten werden nur so lange gespeichert, wie das Nutzerkonto besteht.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -272,5 +319,95 @@ input:checked + .slider:before {
 
 .btn.btn-secondary:hover {
   background-color: #bdbdbd;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-color, #fff);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color, #eee);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--text-color, #333);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.modal-close:hover {
+  background-color: var(--hover-color, #f5f5f5);
+}
+
+.modal-body {
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.legal-section {
+  margin-bottom: 24px;
+}
+
+.legal-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color, #333);
+}
+
+.legal-section p {
+  margin: 8px 0;
+  color: var(--text-color, #555);
+}
+
+.legal-section ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.legal-section li {
+  margin: 4px 0;
+  color: var(--text-color, #555);
 }
 </style>
