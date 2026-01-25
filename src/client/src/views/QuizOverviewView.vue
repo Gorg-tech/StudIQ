@@ -114,19 +114,6 @@
               </div>
             </div>
             <div class="muted" style="margin-top:.5rem">Versuche: {{ aggregate.attempts }}</div>
-
-            <h4>Antworten</h4>
-            <ul class="results-list">
-              <li v-for="(r, idx) in current.results" :key="idx" class="result-item">
-                <div class="q-text">{{ r.question }}</div>
-                <div class="a-row">
-                  <span :class="['tag', r.isCorrect ? 'tag-good' : 'tag-bad']">
-                    {{ r.isCorrect ? 'Richtig' : 'Falsch' }}
-                  </span>
-                  <div class="muted">Gewählte: {{ r.selected ?? '-' }}</div>
-                </div>
-              </li>
-            </ul>
           </div>
 
           <footer class="modal-footer">
