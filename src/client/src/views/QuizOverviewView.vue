@@ -65,16 +65,13 @@
         <h3>Verlauf</h3>
         <div v-if="quizHistory.length === 0" class="no-history">Keine bisherigen Durchläufe</div>
         <ul v-else class="history-list">
-          <li v-for="(h, i) in quizHistory.slice().reverse()" :key="i" class="history-item" @click="showRun(quizHistory.length - 1 - i); showStats = true">
+          <li v-for="(h, i) in quizHistory.slice().reverse()" :key="i" class="history-item">
             <div class="history-left">
               <div class="history-percent">{{ h.percentage ?? '-' }}%</div>
               <div class="history-info">
                 <div class="muted">{{ formatDate(h.timestamp) }}</div>
                 <div>{{ h.correctAnswers ?? 0 }} / {{ h.totalQuestions ?? 0 }} richtig</div>
               </div>
-            </div>
-            <div class="history-right">
-              <button class="btn btn-sm" @click.stop="showRun(quizHistory.length - 1 - i); showStats = true">Anzeigen</button>
             </div>
           </li>
         </ul>
@@ -146,7 +143,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getQuiz, getQuizSessions } from '@/services/quizzes'    // <-- added getQuizSessions
 import IconSettings from '@/components/icons/IconSettings.vue'
@@ -199,21 +196,7 @@ async function loadHistoryFromStorage() {
       return
     }
   } catch (err) {
-    // server call failed -> fallback to localStorage silently
-    console.warn('Failed to fetch quiz sessions from server, falling back to localStorage', err)
-  }
-
-  // Fallback: localStorage key
-  const key = `quizHistory_${qid}`
-  try {
-    const raw = localStorage.getItem(key)
-    const parsed = raw ? JSON.parse(raw) : []
-    quizHistory.value = Array.isArray(parsed) ? parsed : []
-    currentRunIndex.value = Math.max(quizHistory.value.length - 1, 0)
-  } catch (err) {
-    console.error('Error loading quizHistory from localStorage', err)
-    quizHistory.value = []
-    currentRunIndex.value = 0
+    console.warn('Failed to fetch quiz sessions from server', err)
   }
 }
 
@@ -255,15 +238,6 @@ watch(showStats, (val) => {
 watch(() => route.fullPath, () => {
   loadHistoryFromStorage()
 })
-
-// also listen to storage events (other tabs) to keep UI in sync
-function onStorageEvent(e) {
-  const qid = route.params.quizId
-  if (!qid) return
-  if (e.key === `quizHistory_${qid}`) loadHistoryFromStorage()
-}
-window.addEventListener('storage', onStorageEvent)
-onBeforeUnmount(() => window.removeEventListener('storage', onStorageEvent))
 
 const current = computed(() => {
   if (!Array.isArray(quizHistory.value) || quizHistory.value.length === 0) {
@@ -307,12 +281,6 @@ const aggregate = computed(() => {
   return { attempts: runs.length, correctAnswers: totalCorrect, totalQuestions: totalQ, avgPercentage, runs }
 })
 
-const errorRate = computed(() =>
-  current.value.totalQuestions > 0
-    ? 100 - Math.round((current.value.correctAnswers / current.value.totalQuestions) * 100)
-    : 0
-)
-
 function startQuiz() {
   if (!quiz.value || !quiz.value.id) {
     error.value = 'Quiz konnte nicht gestartet werden (ID fehlt)'
@@ -342,11 +310,6 @@ function goToEditQuiz() {
     quizEdit.setLernset(lernsetId)
   }
   router.push({ name: 'edit-quiz', params: { quizId: quiz.value.id, lernsetId } })
-}
-
-function showRun(idx) {
-  const clamped = Math.min(Math.max(idx, 0), Math.max(quizHistory.value.length - 1, 0))
-  currentRunIndex.value = clamped
 }
 
 function formatDate(ts) {
@@ -405,7 +368,7 @@ const canEdit = computed(() => {
 /* History */
 .history-section { margin-top:1.25rem; }
 .history-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.6rem; }
-.history-item { display:flex; justify-content:space-between; align-items:center; padding:.75rem; border-radius:10px; background:#fff; border:1px solid rgba(15,23,42,0.03); transition:transform .12s, box-shadow .12s; cursor:pointer; }
+.history-item { display:flex; justify-content:space-between; align-items:center; padding:.75rem; border-radius:10px; background:#fff; border:1px solid rgba(15,23,42,0.03); transition:transform .12s, box-shadow .12s;}
 .history-item:hover { transform:translateY(-4px); box-shadow: 0 12px 30px rgba(16,24,40,0.06); }
 .history-left { display:flex; gap:.75rem; align-items:center; }
 .history-percent { font-weight:700; color:#ff6a00; font-size:1.05rem; margin-right:.6rem; }
