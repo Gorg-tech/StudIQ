@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
 import { useUserStore } from '@/stores/user'
-import { logout } from '@/services/auth'
 import { getSelfUser } from '@/services/user'
 
 const router = useRouter()
@@ -13,7 +12,6 @@ const userStore = useUserStore()
 const username = ref('')
 const password = ref('••••••••')   // niemals echtes Passwort laden
 const email = ref('')
-const language = ref('Deutsch')
 
 const showPassword = ref(false)
 const showCreditsModal = ref(false)
@@ -32,9 +30,6 @@ onMounted(async () => {
 // Aktionen
 const goBack = () => router.push('/')
 const toggleDarkmode = () => themeStore.toggleTheme()
-const changePassword = () => alert('Passwort ändern (noch Dummy)')
-const changeLanguage = () => alert('Sprache ändern (noch Dummy)')
-const togglePasswordVisibility = () => (showPassword.value = !showPassword.value)
 const showCredits = () => showCreditsModal.value = true
 const closeCreditsModal = () => showCreditsModal.value = false
 
