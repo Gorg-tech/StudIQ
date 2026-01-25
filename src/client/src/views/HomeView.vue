@@ -21,11 +21,13 @@ const userStats = ref({
   rank: null
 })
 
-// Calculate days until exam period
-const examPeriodStart = new Date('2026-02-01');
+// Calculate days until the next exam period from a list of known dates
+const examPeriods = [new Date('2026-02-01'), new Date('2026-07-06')];
 const daysUntilExams = computed(() => {
   const today = new Date();
-  const diffTime = examPeriodStart - today;
+  // find the next exam period strictly after today
+  const next = examPeriods.find(d => d > today) || examPeriods[0];
+  const diffTime = next - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 })
@@ -116,7 +118,7 @@ const startQuiz = (quizId) => {
         
         <!-- Mobile layout rows -->
         <div class="stats-row mobile-row top-row">
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/profile')">
             <span class="stat-icon flame">
               <IconFlame />
             </span>
@@ -132,7 +134,7 @@ const startQuiz = (quizId) => {
         </div>
         
         <div class="stats-row mobile-row bottom-row">
-          <div class="stat-square">
+          <div class="stat-square" @click="router.push('/leaderboard')">
             <span class="stat-icon leaderboard">
               <IconLeaderboard />
             </span>

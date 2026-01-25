@@ -1,4 +1,4 @@
-@import './base.css'; 
+@import './base.css';
 
 :root {
   --bg-color: #ffffff;
@@ -18,7 +18,7 @@
   --color-primary: #fc7960;
   --color-red: #f44336;
   --color-secondary: #2196f3;
-  --color-shadow: 0 2px 8px rgba(34,34,34,0.08);
+  --color-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
   --color-text: #333;
   --color-selected: #ffe0b2;
   --color-correct: #c8e6c9;
@@ -26,27 +26,25 @@
   --color-question-bg: #f9fbff;
   --color-question-hover: #f2f8fd;
   --color-question-border: #e3f2fd;
-  --color-modal-backdrop: rgba(0,0,0,0.18);
-   --bg-gradient:
-    linear-gradient(120deg,
-      rgba(255,140,66,0.25) 0%,
-      rgba(255,255,255,0) 35%,
-      rgba(0,180,255,0.25) 65%,
-      rgba(255,255,255,0) 100%
+  --color-modal-backdrop: rgba(0, 0, 0, 0.18);
+  --bg-gradient:
+    linear-gradient(
+      120deg,
+      rgba(255, 140, 66, 0.25) 0%,
+      rgba(255, 255, 255, 0) 35%,
+      rgba(0, 180, 255, 0.25) 65%,
+      rgba(255, 255, 255, 0) 100%
     ),
-    radial-gradient(
-      500px 400px at 80% 85%,
-      rgba(255,200,140,0.35),
-      transparent 65%
-    );
+    radial-gradient(500px 400px at 80% 85%, rgba(255, 200, 140, 0.35), transparent 65%);
 
   --bg-base: #ffffff;
+  --color-accent-foreground: #ffffff; /* text color when using --color-accent as background */
 }
 
 .dark {
-  --bg-color: #1e1e2e; 
-  --text-color: #e0e0e0; 
-  --card-bg: #2a2a3a; 
+  --bg-color: #1e1e2e;
+  --text-color: #e0e0e0;
+  --card-bg: #2a2a3a;
   --card-shadow: rgba(0, 0, 0, 0.5);
   --color-accent: #e0e0e0;
   --color-bg: #1e1e2e;
@@ -60,7 +58,7 @@
   --color-muted: #aaa;
   --color-red: #ef5350;
   --color-secondary: #64b5f6;
-  --color-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  --color-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   --color-text: #e0e0e0;
   --color-selected: #4a4a4a;
   --color-correct: #2e4a2e;
@@ -68,26 +66,20 @@
   --color-question-bg: #2a2a3a;
   --color-question-hover: #333344;
   --color-question-border: #444;
-  --color-modal-backdrop: rgba(0,0,0,0.4);
-  --bg-gradient:
-    radial-gradient(
-      600px 400px at 80% 85%,
-      rgba(252, 121, 96, 0.12),
-      transparent 65%
-    );
+  --color-modal-backdrop: rgba(0, 0, 0, 0.4);
+  --bg-gradient: radial-gradient(600px 400px at 80% 85%, rgba(252, 121, 96, 0.12), transparent 65%);
 
   --bg-base: #1e1e2e;
-
+  --color-accent-foreground: #111111; /* darker text for light accent in dark mode */
 }
 
-html, body {
+html,
+body {
   min-height: 100%;
 }
 
 body {
-  background:
-    var(--bg-gradient),
-    var(--bg-base);
+  background: var(--bg-gradient), var(--bg-base);
 
   color: var(--text-color);
   transition:
@@ -134,11 +126,16 @@ a,
 .card {
   background-color: var(--card-bg);
   box-shadow: 0 2px 8px var(--card-shadow);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 button {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Penguin glow in dark mode */
