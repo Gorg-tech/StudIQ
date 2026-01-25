@@ -230,16 +230,11 @@ const current = computed(() => {
   }
   const idx = quizHistory.value.length - 1
   const entry = quizHistory.value[idx] || { results: [] }
-  const resultsArr = Array.isArray(entry.results) ? entry.results : []
-  const correctAnswers = resultsArr.filter(r => r.isCorrect).length
-  const totalQuestions = resultsArr.length
-  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : (entry.percentage || 0)
   return {
-    ...entry,
-    results: resultsArr,
-    correctAnswers,
-    totalQuestions,
-    percentage
+    correctAnswers: entry.correctAnswers || 0,
+    totalQuestions: entry.totalQuestions || 0,
+    percentage: entry.percentage || 0,
+    timestamp: entry.timestamp || null
   }
 })
 
@@ -252,9 +247,8 @@ const aggregate = computed(() => {
   let totalCorrect = 0
   let totalQ = 0
   runs.forEach(run => {
-    const results = Array.isArray(run.results) ? run.results : []
-    totalCorrect += results.filter(r => r.isCorrect).length
-    totalQ += results.length
+    totalCorrect += run.correctAnswers || 0
+    totalQ += run.totalQuestions || 0
   })
   const avgPercentage = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0
   return { attempts: runs.length, correctAnswers: totalCorrect, totalQuestions: totalQ, avgPercentage, runs }
