@@ -9,9 +9,9 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Einleitung
 
-Diese Dokumentation richtet sich an Administratoren und unterstützt bei der Einrichtung, Konfiguration und Betreuung des {project-name}-Systems.
+Diese Dokumentation richtet sich an Administratoren und unterstützt bei der Einrichtung, Konfiguration und Betreuung des StudIQ-Systems.
 
-{project-name} ist eine webbasierte Lernplattform zur Prüfungsvorbereitung für HTW-Studierende. Das System besteht aus:
+StudIQ ist eine webbasierte Lernplattform zur Prüfungsvorbereitung für HTW-Studierende. Das System besteht aus:
 
 * **Frontend**: Vue.js 3 Single-Page-Application
 * **Backend**: Django 5.2 REST-API
@@ -269,7 +269,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 === Browser-Einstellungen
 
-Für die korrekte Nutzung von {project-name} müssen folgende Browser-Einstellungen aktiv sein:
+Für die korrekte Nutzung von StudIQ müssen folgende Browser-Einstellungen aktiv sein:
 
 * **JavaScript**: Aktiviert
 * **Cookies**: Erlaubt für die Domain des Systems
