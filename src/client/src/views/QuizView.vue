@@ -12,27 +12,30 @@
           <p class="quiz-description">{{ quizDescription }}</p>
         </div>
         <div class="quiz-card-penguin">
-          <Penguin style="width: 80px; height: 80px;" />
+          <Penguin style="width: 80px; height: 80px" />
         </div>
       </div>
       <div class="progress-bar">
         <div class="progress-fill" :style="{ width: progress + '%' }"></div>
       </div>
       <div class="quiz-content">
-        <div v-if="loading" class="loading-state">
-          Quiz wird geladen...
-        </div>
+        <div v-if="loading" class="loading-state">Quiz wird geladen...</div>
         <div v-else-if="!currentQuestion">
-          <div class="error-message">
-            Keine Fragen im Quiz vorhanden.
-          </div>
+          <div class="error-message">Keine Fragen im Quiz vorhanden.</div>
         </div>
         <div v-else class="question-block">
           <div class="question-header-info">
             <span class="instruction-text">
-              {{ currentQuestion.type === 'SINGLE_CHOICE' ? 'Wähle die richtige Antwort.' : 'Wähle alle richtigen Antworten.' }}
+              {{
+                currentQuestion.type === 'SINGLE_CHOICE'
+                  ? 'Wähle die richtige Antwort.'
+                  : 'Wähle alle richtigen Antworten.'
+              }}
             </span>
-            <span class="type-badge" :class="currentQuestion.type === 'SINGLE_CHOICE' ? 'badge-single' : 'badge-multiple'">
+            <span
+              class="type-badge"
+              :class="currentQuestion.type === 'SINGLE_CHOICE' ? 'badge-single' : 'badge-multiple'"
+            >
               <span v-if="currentQuestion.type === 'SINGLE_CHOICE'" class="badge-icon">◉</span>
               <span v-else class="badge-icon">☑</span>
               {{ currentQuestion.type === 'SINGLE_CHOICE' ? 'Single Choice' : 'Multiple Choice' }}
@@ -47,8 +50,11 @@
             :class="{
               selected: selectedAnswerIds.includes(option.id),
               correct: answered && lastCorrectAnswerIds.includes(option.id),
-              incorrect: answered && selectedAnswerIds.includes(option.id) && !lastCorrectAnswerIds.includes(option.id),
-              hoverable: !answered && !selectedAnswerIds.includes(option.id)
+              incorrect:
+                answered &&
+                selectedAnswerIds.includes(option.id) &&
+                !lastCorrectAnswerIds.includes(option.id),
+              hoverable: !answered && !selectedAnswerIds.includes(option.id),
             }"
             :role="currentQuestion.type === 'SINGLE_CHOICE' ? 'radio' : 'checkbox'"
             :aria-checked="selectedAnswerIds.includes(option.id).toString()"
@@ -60,16 +66,29 @@
             <div class="checkmark" v-if="selectedAnswerIds.includes(option.id)">✓</div>
           </div>
           <div class="button-row">
-            <button class="btn btn-primary" v-if="!answered" @click="checkAnswer" :disabled="selectedAnswerIds.length === 0 || submitting">
+            <button
+              class="btn btn-primary"
+              v-if="!answered"
+              @click="checkAnswer"
+              :disabled="selectedAnswerIds.length === 0 || submitting"
+            >
               {{ submitting ? 'Wird verarbeitet...' : 'Antwort abgeben' }}
             </button>
-            <button class="btn btn-secondary" v-if="answered" @click="nextQuestion" :disabled="submitting">
+            <button
+              class="btn btn-secondary"
+              v-if="answered"
+              @click="nextQuestion"
+              :disabled="submitting"
+            >
               {{ isLastQuestion ? 'Beenden' : 'Weiter' }}
             </button>
           </div>
           <div v-if="answered" class="result-message">
             <span v-if="lastIsCorrect" class="user-answer correct">Richtig!</span>
-            <span v-else-if="selectedAnswerIds.some(id => lastCorrectAnswerIds.includes(id))" class="user-answer partial">
+            <span
+              v-else-if="selectedAnswerIds.some((id) => lastCorrectAnswerIds.includes(id))"
+              class="user-answer partial"
+            >
               Fast richtig! Die richtigen Antworten sind: {{ getCorrectAnswerTexts() }}
             </span>
             <span v-else class="user-answer incorrect">
@@ -117,12 +136,12 @@ const isLastQuestion = computed(() => {
 })
 
 /**
- * Sends a start request to the server and loads the quiz and the first question 
+ * Sends a start request to the server and loads the quiz and the first question
  */
 onMounted(async () => {
   try {
     const data = await startQuiz(quizId.value)
-    
+
     sessionId.value = data.session_id
     quizTitle.value = data.title || ''
     quizDescription.value = data.description || ''
@@ -142,8 +161,8 @@ onMounted(async () => {
 function getCorrectAnswerTexts() {
   if (!currentQuestion.value) return ''
   return currentQuestion.value.answer_options
-    .filter(opt => lastCorrectAnswerIds.value.includes(opt.id))
-    .map(opt => opt.text)
+    .filter((opt) => lastCorrectAnswerIds.value.includes(opt.id))
+    .map((opt) => opt.text)
     .join(', ')
 }
 
@@ -152,12 +171,12 @@ function getCorrectAnswerTexts() {
  */
 async function checkAnswer() {
   if (!currentQuestion.value || submitting.value) return
-  
+
   submitting.value = true
   try {
     const response = await submitAnswer(quizId.value, {
       question_id: currentQuestion.value.id,
-      selected_option_ids: selectedAnswerIds.value
+      selected_option_ids: selectedAnswerIds.value,
     })
 
     lastIsCorrect.value = response.is_correct
@@ -184,8 +203,8 @@ async function nextQuestion() {
       router.push({
         name: 'quiz-result',
         query: {
-          quizId: quizId.value
-        }
+          quizId: quizId.value,
+        },
       })
     } catch (err) {
       console.error('Error completing quiz:', err)
@@ -340,15 +359,65 @@ function selectAnswer(answerId) {
 }
 
 @media (max-width: 600px) {
+  .quiz-overview-container {
+    padding: 0 12px;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .quiz-header {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .quiz-header h2 {
+    font-size: 1.4rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .quiz-progress {
+    margin-left: 0;
+    margin-top: 4px;
+    font-size: 0.9rem;
+  }
+
+  .quiz-card-penguin {
+    display: none;
+  }
+
   .question-header-info {
     display: flex;
     flex-direction: column-reverse;
     gap: 8px;
     align-items: center;
   }
-  
+
+  .instruction-text {
+    white-space: normal;
+  }
+
   .type-badge {
     align-self: flex-end;
+  }
+
+  .question-title {
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .button-row {
+    flex-direction: column;
+    width: 100%;
   }
 }
 
