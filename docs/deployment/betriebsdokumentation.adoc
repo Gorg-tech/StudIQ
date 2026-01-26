@@ -5,7 +5,7 @@ include::../_includes/default-attributes.inc.adoc[]
 :toc: left
 :toclevels: 3
 
-= Betriebsdokumentation: {project-name}
+= Betriebsdokumentation: StudIQ
 
 == Einleitung
 
