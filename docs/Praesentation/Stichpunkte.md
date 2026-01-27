@@ -1,16 +1,21 @@
 ## Hans
 ->Meme
 
+- Ausgangssituation
+- benoetigen eine Moeglichkeit die Konsistenz leicht macht
+- dazu haben wir uns folgendes konzept 
 
-Dieses Problem haben wir versucht zu lösen mit StudIQ: eine gamifizierte Lernwebsite für HTW-Studenten
-Von Studenten für Studenten, denn wir wissen wie es ist wenn man lieber mit seinen Freunden zocken will als Uni zu machen?
- Warum also nicht verbinden?
+Produktkonzept -> 
+- nah am Htw studenten 
+- schneller spielrischer zugriff
+- ohne viel ablenkung
 
-Produktkonzept -> Auswahl schon während Vortrag begründen!:
-Für Studenten der HTW, damit man schnell zu den Modulen kommt -> schneller Zugriff auf Quizze von Studenten aus höheren Semestern, die genau das gleiche Modul hatten
-Persönliche Lernstatistik und Leaderboard für einen spielerischen Ansatz, der das Lernen vereinfacht/um Lernen anreizen soll/damit sich Lernen Leichter anfühlt
 
-Ziel:  ein konsistentes Lernen gefördert wird, und es Leichter fällt mehr als 2 Tage vorher anzufangen mit dem lernen ( Consistency over Intesity, vllt fällt euch noch ein anderer Slogan ein?)
+Features:
+- Kern Feature Quizz
+bedienen uns klassischer Spiele Methoden 
+- Lernstatistik eigene Fortschritte
+- Leaderboard vergleich zu anderen Wettbewerb
 
 Z.B. beim Warten auf die Bahn -> man ist eh am Handy, App öffnen und fix ein Quiz machen
 
