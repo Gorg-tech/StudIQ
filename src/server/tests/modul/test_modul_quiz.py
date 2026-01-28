@@ -342,3 +342,11 @@ class TestCaseQuiz(TestCase):
         self.assertIn("questions", serializer.errors)
 
 
+    def test_unauthenticated_user_cannot_edit_quiz(self):
+        """Attempt to edit the quiz without authentication"""
+
+        serializer = QuizSerializer(instance=self.quiz)
+        self.assertTrue(serializer.is_valid())
+
+        with self.assertRaises(PermissionError):
+            serializer.save()
