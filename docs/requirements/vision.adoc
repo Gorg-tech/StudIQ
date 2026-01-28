@@ -100,6 +100,8 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 
 | Implementierung eines Quizsystems | hoch | Quizsystem mit Quizzes in unterschiedlichen Kategorien, die sich beantworten und lösen lassen | 1.0
 
+| Erstellung von Quizzes | hoch | Quizzes mit den entsprechenden Quizfragen lassen sich einfach zu einem Thema erstellen | 1.0
+
 | Orientierung an Studienstruktur
 | hoch
 | Strukturierung der Inhalte nach Studiengang, Modul und Lernset
@@ -110,6 +112,7 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 | Anzeige von Statistiken (richtige/falsche Antworten, Erfolgsquote, Bewerungssystem) | 1.1
 
 | Förderung von Kollaborativem Lernen | mittel | Bewertungssystem auch innerhalb bestimmter Personengruppen, Erstellung eigener Fragen | 1.2
+
 |===
 
 
@@ -120,7 +123,7 @@ Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mi
 [%header, cols="4,1,1"]
 |===
 | Anforderung | Priorität | Geplantes Release
-| Unterstützung aktueller Browser: Firefox, Chrome, Chromium, Opera, Edge, Safari, Brave | hoch | 1.0
+| Unterstützung aktueller Browser: Firefox, Chrome, Chromium, Opera, Edge, Safari, Brave, | hoch | 1.0
 | Minimalismus | hoch | Templates, Algorithmik zur Fragenbestimmung | 1.0
 
 | Responsive Design für mobile Endgeräte | mittel | 1.1
