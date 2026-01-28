@@ -2,7 +2,7 @@
 
 == Ausgangssituation und Einordnung in den SE-Prozess
 
-Im Projekt StudIQ habe ich als Full-Stack-Entwickler sowohl im Frontend, Backend als auch in der Infrastruktur gearbeitet. Meine Hauptaufgaben lagen in der Analyse & Entwurf (Datenmodell, Systemarchitektur), der Implementierung (Projekt-Setup, Scraper-Modul, Frontend-Teile) sowie technischen Entscheidungen und Deployment-Vorbereitung.
+Im Projekt StudIQ habe ich als Full-Stack-Entwickler sowohl im Frontend, Backend als auch in der Infrastruktur gearbeitet. Unsere Arbeitsweise folgte einem **iterativen Ansatz** (Sprints), wobei wir **GitHub Projects** für das Backlog-Management nutzten. Meine Hauptaufgaben lagen in der Analyse & Entwurf (Datenmodell, Systemarchitektur), der Implementierung (Projekt-Setup, Scraper-Modul, Frontend-Teile) sowie technischen Entscheidungen und Deployment-Vorbereitung.
 
 == Ausgewählte Aufgaben
 
@@ -22,7 +22,7 @@ Um die App mit echten Inhalten zu füllen, entwickelte ich ein Scraper-Modul (li
 
 === 3. Frontend-Entwicklung und Responsive Design
 
-Ich implementierte wesentliche UI-Komponenten wie die Navigation und die Startseite (link:https://github.com/Gorg-tech/StudIQ/commit/c5d55a75daea3cb9579cca10a79ed25fc24ba2d0[Commit `c5d55a7`]). Dabei nutzte ich CSS-Variablen für Dark-Mode-Fähigkeit und Flexbox/Grid für Responsivität.
+Ich implementierte wesentliche UI-Komponenten wie die Navigation und die Startseite (link:https://github.com/Gorg-tech/StudIQ/commit/c5d55a75daea3cb9579cca10a79ed25fc24ba2d0[Commit `c5d55a7`]). Grundlage hierfür waren die **User Stories** und **Personas** aus der Anforderungsphase, um die UX gezielt auf Studierende auszurichten. Dabei nutzte ich CSS-Variablen für Dark-Mode-Fähigkeit und Flexbox/Grid für Responsivität.
 
 Besonders wichtig waren emotionale Designelemente: Ich gestaltete den Pinguin (link:https://github.com/Gorg-tech/StudIQ/blob/main/src/client/src/components/Penguin.vue[Penguin.vue]) als Maskottchen  und die Flammen (Streak-Indikator), um durch Gamification-Elemente die Motivation der Nutzer zu erhöhen und die App persönlicher wirken zu lassen.
 
@@ -36,12 +36,14 @@ Besonders wichtig waren emotionale Designelemente: Ich gestaltete den Pinguin (l
 
 * Der Umstieg von SQLite auf MySQL (link:https://github.com/Gorg-tech/StudIQ/pull/244[PR #244]) und das Deployment liefen reibungslos.
 * Durch das schnelle Setup konnte das Team früh echte Features bauen.
+* **Code Reviews** via Pull Requests etablierten sich als wichtiges Werkzeug zur Qualitätssicherung und Wissensverteilung.
 
 
 **Herausforderungen:**
 
 * Der häufige Kontextwechsel zwischen Backend und Frontend kostete viel Energie, fokussierte Blöcke hätten mir gutgetan.
 * Wir hätten uns früher auf einen Dokumentationsstandard (z.B. Doxygen) einigen sollen. Da wir das erst spät definierten, mussten wir bestehende Funktionen und APIs nachträglich dokumentieren, ein zeitaufwändiger Prozess, der hätte vermieden werden können, wenn die Dokumentation von Anfang an parallel zur Implementierung entstanden wäre.
+* Tests wurden erst spät in den Entwicklungsprozess integriert. Hätten wir von Anfang an **Test-Driven Development** (TDD) praktiziert und Tests in die GitHub Actions CI/CD-Pipeline eingebunden, wären viele Bugs früher aufgefallen.
 
-**Wichtigstes Learning:** Ein gutes Fundament, Walking Skeleton, klares Design-System, solide Test-Abdeckung, zahlt sich am Ende massiv aus. Was anfangs wie "Umweg" wirkt, spart echte Zeit und Kopfschmerzen. Für zukünftige Projekte: Standards früh definieren, gemeinsam einhalten und so groß angelegte Refactorings von vornherein vermeiden :)
+**Wichtigstes Learning:** Ein gutes Fundament (Walking Skeleton, Tests, Dokumentierungen), klares Design-System und solide Test-Abdeckung zahlen sich am Ende massiv aus. Was anfangs wie "Umweg" wirkt, spart echte Zeit und Kopfschmerzen. Für zukünftige Projekte: Standards früh definieren, gemeinsam einhalten und so groß angelegte Refactorings von vornherein vermeiden :)
 
