@@ -1,0 +1,30 @@
+= Einzelreflexion Carmina Langer
+== Ausgangssituation und Aufgaben
+
+Mir war von Anfang an klar, ich in meinem Team mit Abstand die wenigste Expertise im technischen Bereich habe.
+Im Vergleich zu den anderen Mitgliedern des Developer-Teams hatte ich zu Beginn des Projekts deutlich weniger technisches Vorwissen. 
+Besonders im ersten Semester fiel es mir schwer, aktiv an technischen Diskussionen teilzunehmen oder Verständnisfragen zu stellen. 
+Obwohl wir noch längere wöchentliche Meetings hatten, in denen gemeinsam am Projekt gearbeitet wurde, 
+habe ich mich zurückgehalten bei Fragen. Dennoch war es mir wichtig, einen erkennbaren und sinnvollen Beitrag zum Projekt zu leisten. Da das Dev-Team im Backend teilweise bereits vorgearbeitet hatte und ich dort nur schwer aufholen konnte, 
+habe ich mich bewusst auf Aufgaben konzentriert, bei denen ich meine Stärken einbringen konnte. 
+Im ersten Semester habe ich vor allem im Bereich Analyse und Entwurf gearbeitet. Dazu gehörten das Design und das konzeptionelle Grundgerüst der Website sowie die Erstellung von Diagrammen (C4 Modell, Domainmodell).
+
+== Erstes Semester
+Ausgehend von den erarbeiteten User Stories und Personas habe ich mich intensiv in die Perspektive des Nutzers hineinversetzt. Da ich selbst regelmäßig mit Lernplattformen, Anki und Quiz-Apps arbeite, konnte ich eigene Nutzererfahrungen einbringen und konkrete Verbesserungsvorschläge entwickeln. 
+So entstanden unter anderem kreative Konzepte wie das Maskottchen und die IQ-Points, die später Teil der Anwendung wurden. 
+Ich habe mehrere Designvarianten für die Website entworfen, an denen sich die technische Umsetzung im weiteren Projektverlauf stark orientiert hat. 
+Diese Arbeit lag klar im Bereich Software-Entwurf (Design) und bildete eine wichtige Grundlage für die nachgelagerte Implementierung durch andere Teammitglieder. 
+Rückblickend war es für mich besonders motivierend zu sehen, dass unser Design bei den Stakeholdern sehr gut ankam. Parallel dazu habe ich im ersten Semester bereits zugesagt, das Testen im Projekt zu übernehmen (Qualitätssicherung). 
+Aktiv umgesetzt habe ich diese Aufgabe jedoch erst im zweiten Semester, nachdem wir im Praktikum das Thema Testen behandelt hatten. 
+
+== Zweites Semester
+Im zweiten Semester habe ich mich dann verstärkt auf die Qualitätssicherung konzentriert.
+Dazu gehörte die Planung und Durchführung von Tests sowie die Dokumentation der Ergebnisse.
+Ich habe Testpläne erstellt, Testfälle definiert und die Tests selbst durchgeführt.
+Dabei habe ich verschiedene Testmethoden angewendet, angelehnt an die Testpyramide, die wir in der Vorlesung kennengelernt hatten.
+Zu Beginn der Testphase stellte sich heraus, dass mir meine geringe Erfahrung im Backend zunächst im Weg stand. Zusätzlich wurden im zweiten Semester noch größere Änderungen vorgenommen (z. B. der Wechsel von SQLite zu MySQL über einen Server), weshalb ich mit einigen Tests bewusst gewartet habe, bis die Implementierung stabil war. Dadurch entstand zeitweise ein hoher Testaufwand in kurzer Zeit. Trotzdem konnte ich mich überraschend gut in den bestehenden Code einarbeiten. Durch die zuvor sehr ausführlichen Meetings wusste ich genau, welches Teammitglied für welche Teile zuständig war, und konnte gezielt Nachfragen bei Problemen.
+ Dieses Vorgehen hat sich als sehr effektiv erwiesen. Nach den ersten gefundenen Fehlern entwickelte ich ein gutes Verständnis für das System und war schließlich in der Lage, Tests für Code zu schreiben, den ich selbst nicht implementiert hatte. Die gefunden Fehler habe ich in Github getrackt. [link: https://github.com/users/Gorg-tech/projects/7/views/4]
+ 
+== Bewertung und Lernerfahrungen
+
+Meine Beiträge im Bereich Design, Konzeption und Testen haben aus meiner Sicht gut funktioniert. Besonders das frühe Design hatte einen nachhaltigen Einfluss auf das Projekt, da es die spätere Implementierung stark geprägt hat. Das strukturierte Testen hat mir gezeigt, wie wichtig Verständnis für das Gesamtsystem ist – auch ohne selbst alle Teile entwickelt zu haben. Rückblickend hätte ich mir gut vorstellen können, die Rolle des Product Owners zu übernehmen, da ich bereits viele Lernplattformen kenne und ein gutes Gespür für Nutzerbedürfnisse habe. Gleichzeitig bin ich froh, durch dieses Projekt neue Bereiche kennengelernt zu haben. Vor allem das systematische Testen haben mir sehr gefallen. Zukünftig würde ich mir eher zutrauen Aufgaben zu übernehmen, obwohl ich das technische Wissen nur teilweise habe. Ich habe gelernt, dass es oft wichtiger ist, aktiv zu sein und Fragen zu stellen, anstatt auf ein vollständiges Verständnis zu warten. 
