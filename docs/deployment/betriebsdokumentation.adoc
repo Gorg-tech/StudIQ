@@ -17,6 +17,12 @@ StudIQ ist eine webbasierte Lernplattform zur Prüfungsvorbereitung für HTW-Stu
 * **Backend**: Django 5.2 REST-API
 * **Datenbank**: MySQL/MariaDB
 
+== Produktionssystem
+
+Die aktuelle liveversion des Systems ist verfügbar unter:
+
+https://studiq.oceanbound.io/
+
 == Systemvoraussetzungen
 
 === Hardware-Mindestanforderungen
@@ -102,6 +108,46 @@ cd studiq
 ----
 
 === Backend-Einrichtung
+
+==== MySQL/MariaDB installieren und konfigurieren
+
+IMPORTANT: Django erstellt **keine** Datenbank automatisch. MySQL/MariaDB muss manuell installiert und die Datenbank samt Benutzer erstellt werden.
+
+**Installation (Ubuntu/Debian):**
+
+[source,bash]
+----
+sudo apt update
+sudo apt install mysql-server
+sudo mysql_secure_installation  # Empfohlen: Root-Passwort setzen, Test-DB entfernen
+----
+
+NOTE: Weitere Informationen zur MySQL-Installation finden Sie in der https://dev.mysql.com/doc/refman/8.0/en/installing.html[offiziellen MySQL-Dokumentation].
+
+**Datenbank und Benutzer erstellen:**
+
+[source,bash]
+----
+# Als MySQL-Root-Benutzer anmelden
+sudo mysql -u root -p
+
+# In der MySQL-Konsole:
+CREATE DATABASE studiq_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'studiq_user'@'localhost' IDENTIFIED BY 'IHR_SICHERES_PASSWORT';
+GRANT ALL PRIVILEGES ON studiq_db.* TO 'studiq_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+----
+
+IMPORTANT: Ersetzen Sie `IHR_SICHERES_PASSWORT` durch ein sicheres Passwort und verwenden Sie dasselbe Passwort in der `.env`-Datei!
+
+**Verbindung testen:**
+
+[source,bash]
+----
+mysql -u studiq_user -p studiq_db
+# Passwort eingeben - sollte ohne Fehler verbinden
+----
 
 ==== Python-Umgebung erstellen
 
@@ -247,6 +293,84 @@ npm run build
 ----
 
 Die kompilierten Dateien befinden sich in `src/client/dist/` und können von einem Webserver (z.B. Nginx) ausgeliefert werden.
+
+=== Webserver-Konfiguration (Produktion)
+
+Für den Produktionsbetrieb wird empfohlen, einen Reverse-Proxy wie Nginx zu verwenden.
+
+==== Nginx-Beispielkonfiguration
+
+Erstellen Sie eine Konfigurationsdatei `/etc/nginx/sites-available/studiq`:
+
+[source,nginx]
+----
+server {
+    listen 80;
+    server_name ihre-domain.de;  # Beispiel für StudIQ-Produktionssystem: studiq.oceanbound.io
+    
+    # Weiterleitung zu HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name ihre-domain.de;  # Beispiel für StudIQ-Produktionssystem: studiq.oceanbound.io
+    
+    # SSL-Zertifikate (z.B. von Let's Encrypt)
+    ssl_certificate /etc/letsencrypt/live/ihre-domain.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ihre-domain.de/privkey.pem;
+    
+    # Frontend (statische Dateien)
+    location / {
+        root /var/www/studiq/client/dist;
+        try_files $uri $uri/ /index.html;
+    }
+    
+    # Backend API
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # Django Admin
+    location /admin/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # Statische Django-Dateien
+    location /static/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+}
+----
+
+Aktivieren Sie die Konfiguration:
+
+[source,bash]
+----
+sudo ln -s /etc/nginx/sites-available/studiq /etc/nginx/sites-enabled/
+sudo nginx -t  # Konfiguration testen
+sudo systemctl reload nginx
+----
+
+NOTE: Weitere Informationen zur Nginx-Konfiguration finden Sie in der https://nginx.org/en/docs/[offiziellen Nginx-Dokumentation].
+
+==== SSL-Zertifikate mit Let's Encrypt
+
+[source,bash]
+----
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d ihre-domain.de  # Beispiel: studiq.oceanbound.io
+----
+
+Weitere Informationen: https://certbot.eff.org/[Certbot-Dokumentation]
 
 === CORS-Konfiguration
 
@@ -418,3 +542,6 @@ python3 manage.py collectstatic
 * https://vuejs.org/guide/introduction.html[Vue.js Dokumentation]
 * https://dev.mysql.com/doc/refman/8.0/en/[MySQL Dokumentation]
 * https://docs.gunicorn.org/en/stable/[Gunicorn Dokumentation]
+* https://nginx.org/en/docs/[Nginx Dokumentation]
+* https://docs.docker.com/[Docker Dokumentation]
+* https://letsencrypt.org/de/docs/[Let's Encrypt Dokumentation]
