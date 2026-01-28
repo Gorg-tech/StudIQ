@@ -126,3 +126,47 @@ class TestIntegrationAccounts(TestCase):
         get_resp = self.client.get(f"/api/quizzes/{quiz_id}/")
         self.assertEqual(get_resp.status_code, 200)
         self.assertEqual(get_resp.data["title"], "Sample Quiz")
+
+        
+        
+    def test_send_friend_request_succeeds(self):
+        """Sending a friend request works"""
+        self.client.login(username="user1", password="pass1")
+        response = self.client.post("/api/auth/me/friend-requests/", {"username": "user2"})
+        self.assertEqual(response.status_code, 201)
+
+    def test_friend_request_to_self_fails(self):
+        """Sending a friend request to oneself fails"""
+        self.client.login(username="user1", password="pass1")
+        response = self.client.post("/api/auth/me/friend-requests/", {"username": "user1"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_duplicate_friend_request_fails(self):
+        """Sending a duplicate friend request fails"""
+        self.client.login(username="user1", password="pass1")
+        self.client.post("/api/auth/me/friend-requests/", {"username": "user2"})
+        response = self.client.post("/api/auth/me/friend-requests/", {"username": "user2"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_accept_friend_request_succeeds(self):
+        """Accepting a friend request works"""
+        self.client.login(username="user2", password="pass2")
+        self.client.post("/api/auth/me/friend-requests/", {"username": "user1"})
+
+        self.client.logout()
+        self.client.login(username="user1", password="pass1")
+        response = self.client.post("/api/auth/me/friend-requests/", {"username": "user2"})
+
+        self.assertEqual(response.status_code, 200)
+    
+    def test_get_friends_list_succeeds(self):
+        """Getting the friends list works"""
+        self.user1.friends.add(self.user2)
+
+        self.client.login(username="user1", password="pass1")
+        response = self.client.get("/api/auth/me/friends/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["username"], "user2")
+
+
+
