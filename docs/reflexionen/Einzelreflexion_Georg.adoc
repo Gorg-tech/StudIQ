@@ -2,34 +2,44 @@
 
 == Ausgangssituation und Einordnung in den SE-Prozess
 
-Im Projekt habe ich die Rolle des Product Owners (PO) übernommen. Meine Hauptaufgabe bestand darin, die inhaltliche und organisatorische Steuerung der Produktentwicklung zu übernehmen und als Schnittstelle zwischen Entwicklungsteam und externen Beteiligten zu agieren. Dazu zählten insbesondere die Stakeholder, unser Coach sowie Prof. Anke.
-
-Im Softwareentwicklungsprozess war ich vor allem den Bereichen Projektmanagement und Anforderungsmanagement zuzuordnen. Konkret umfasste dies die Abstimmung mit Stakeholdern im Rahmen der Sprint Reviews, die Pflege und Priorisierung des Product Backlogs, die Ableitung von Tasks aus User Stories und Organisation der Arbeit innerhalb einer Iteration sowie die Bewertung fertiggestellter Tasks im Teamkontext
-
-== Eigene Beiträge und Lösungsweg
-
-=== Kommunikation mit Stakeholdern und Sprint Reviews
+Im Projekt habe ich die Rolle des Product Owners (PO) übernommen. 
+Meine Hauptaufgabe bestand darin, die inhaltliche Steuerung der Produktentwicklung zu übernehmen und als Schnittstelle zwischen Entwicklungsteam und externen Beteiligten zu agieren. 
+Dazu zählten insbesondere die Stakeholder, unser Coach sowie Prof. Anke.
 
 Ich habe regelmäßig den Kontakt zu team-externen Personen gesucht und Sprint Reviews mit den Stakeholdern organisiert und moderiert. In diesen Reviews wurden die neu entwickelten Features präsentiert und gemeinsam evaluiert. Die Stakeholder erhielten dabei bewusst die Aufgabe, neue Funktionen selbst in der Anwendung zu finden und zu testen.
 
-Auf Basis ihres Feedbacks wurde entschieden, ob eine User Story als abgeschlossen gilt oder weiterbearbeitet werden muss. Zusätzlich floss das qualitative Feedback der Stakeholder in das Product Backlog ein.
+Auf Basis ihres Feedbacks wurde entschieden, ob eine User Story als abgeschlossen gilt oder weiterbearbeitet werden muss. 
+Zusätzlich haben die Stakeholder noch weiteren Input für neue Features und somit neue User Stories geliefert. 
+Diese wurden im https://miro.com/app/board/uXjVICkDR1A=/?moveToWidget=3458764630503514501&cot=14[Miro-Board] festgehalten und dann von für unsere Entwicklung nicht sinnvollen Features bereinigt. 
+Anschließend wurden diese von mir als https://github.com/users/Gorg-tech/projects/7/views/9[User Stories] formuliert.
 
-Ebenfalls habe ich, auf Grundlage des https://github.com/users/Gorg-tech/projects/7/views/1[Product-Backlogs], anfangs für jedes StandUp, im späteren Entwicklungsprozess nur noch für jede Iteration konkrete Tasks für alle Teammitglieder erstellt und diese über https://github.com/users/Gorg-tech/projects/7/views/11[GitHub Projects] verwaltet.
-Fertiggestellte Tasks wurden im Weekly Stand-up vorgestellt. Gemeinsam mit dem Team habe ich das Ergebnis begutachtet und anschließend entschieden, ob die Task als erledigt gilt oder noch Nachbesserungen (z.B. Bugfixes) notwendig sind.
+Im Softwareentwicklungsprozess war ich vor allem den Bereichen Anforderungsmanagement zuzuordnen. Konkret umfasste dies neben den oben beschriebenen Sprint Reviews die Abstimmung mit Stakeholdern im Rahmen der Sprint Reviews, die Pflege und Priorisierung des https://github.com/users/Gorg-tech/projects/7/views/1[Product-Backlogs], die Ableitung von Tasks aus User Stories und Organisation der Arbeit innerhalb einer Iteration sowie die Bewertung fertiggestellter Tasks im Teamkontext.
+Lange Zeit in unserem Entwicklungsprozess haben wir kein Refinement durchgeführt, wodurch nicht alle User Stories organisiert mit den Entwicklern geschätzt wurden. Daher habe ich die Schätzung ebenfalls anhand eigener Kriterien übernommen.
+Dass dies nicht der richtige Ansatz von Scrum ist, haben wir nach dem Projekt-Managements-Fachaustausch bemerkt, wodurch unser Scrum Master ein Backlog Refinement eingeführt hat, was mir die Schätzung abgenommen hat, weshalb ich mich dann neben der Priorisierung mehr mit der Pflege des Backlogs beschäftigt habe.
 
-Da diese Schwäche bereits ausführlich in der Gruppenreflexion (als Misserfolg 'Schlechte Organisation der Weekly Meetings')behandelt wurde, fokussiere ich mich hier auf meine Rolle im Stakeholder-Management, da dies meiner Meinung nach die Arbeitsmethode war, wo ich die größten Probleme hatte.
+Ebenfalls habe ich, auf Grundlage des Product Backlog anfangs für jedes StandUp, mit dem Einführen des Refinements nur noch für jede Iteration konkrete Tasks für alle Teammitglieder erstellt und diese über https://github.com/users/Gorg-tech/projects/7/views/11[GitHub Projects] verwaltet.
+Die Tasks hat jedes Teammitglied benötigt, um zu wissen, woran es in der kommenden Zeit zu arbeiten hat. Hier ist auch eine klare Formulierung jeder Task sehr wichtig gewesen, damit ich mich als PO z.B. bei der Entwickluing eines Features darauf verlassen konnte, dass das Ergebnis meinen Erwartungen entspricht.
+
+Fertiggestellte Tasks wurden im Weekly Stand-up vorgestellt. Gemeinsam mit dem Team habe ich das Ergebnis begutachtet und anschließend entschieden, ob die Task als erledigt gilt oder noch Nachbesserungen (z.B. Bugfixes) notwendig sind.  
+Dabei wurden die funktionalen sowie die Qualitätsanforderungen an z.B. das entsprechende Feature überprüft, welche in der Task beschrieben wurden.
 
 == Kritische Bewertung meines Vorgehens
 
-Rückblickend habe ich meine Rolle als Product Owner in Bezug auf das Stakeholder-Management nicht konsequent genug ausgefüllt. In den frühen Iterationen habe ich zu viele Feature-Wünsche der Stakeholder ungefiltert aufgenommen. Dies führte zu einem stark wachsenden Backlog und erschwerte die Priorisierung erheblich.
+Trotz des stetigen großen Fortschritts unserer Software, habe ich an manchen Stellen Probleme gehabt meine Rolle als Product Owner korrekt auszuführen, was zu einigem an Mehrarbeit für mich und auch das Team gesorgt hat.
+
+So finde ich, habe ich rückblickend habe ich meine Arbeit in Bezug auf das Stakeholder-Management nicht konsequent genug ausgefüllt. In den frühen Iterationen habe ich zu viele Feature-Wünsche der Stakeholder im Sprint Review ungefiltert aufgenommen. 
+Dies führte zum Einen dazu, dass wir nach dem Sprint Review noch einmal bereden mussten, welche Features wirklich so umzusetzen sind und welche nicht im Scope unserer Software-Anforderungen liegt.
+Zum Anderen sorgte dies dafür, dass wir es gar nicht geschafft haben, immer alle Wünsche und Ideen im Miro-Board festzuhalten, wodurch sich dann an einige Features bei der User-Story-Erstellung nicht mehr erinnert werden konnte und diese ignoriert wurden. 
+Ebenfalls befüllte die große Masse an neuen Features sehr schnell unser Backlog, was auch die Priorisierung erheblich erschwerte . 
 
 Ein Grund dafür war, dass die https://github.com/Gorg-tech/StudIQ/blob/main/docs/requirements/vision.pdf[Produktvision] und die Anforderungen zu Beginn noch nicht ausreichend konkretisiert waren. Dadurch fehlte mir eine klare argumentative Grundlage, um Wünsche abzulehnen, die nicht zum Produkt passten oder den Rahmen des Projekts gesprengt hätten.
-
 Ein weiterer Faktor war meine Unsicherheit, ob ein abgelehntes Feature möglicherweise von einzelnen Teammitgliedern gewünscht worden wäre. Aus Rücksicht auf das Team und die Stakeholder habe ich daher zu selten klare Entscheidungen getroffen.
 
-Erst nach dem Fachaustausch zum Projektmanagement wurde mir bewusst, dass es explizit zur Rolle des PO gehört, klare Prioritäten zu setzen, Grenzen zu ziehen und diese Entscheidungen zu verantworten. In späteren Sprint Reviews habe ich – unterstützt durch das Team – deutlich klarer kommuniziert, welche User Stories umgesetzt werden und welche bewusst zurückgestellt oder verworfen werden.
+Erst nach dem Fachaustausch zum Projektmanagement wurde mir bewusst, dass es explizit zur Rolle des PO gehört, klare Prioritäten zu setzen, Grenzen zu ziehen und diese Entscheidungen zu verantworten. In späteren Sprint Reviews habe ich – auch unterstützt durch das Team – deutlich klarer kommuniziert, welche User Stories umgesetzt werden und welche bewusst zurückgestellt oder verworfen werden.
+So kamen wir aus unserem letzten https://miro.com/app/board/uXjVICkDR1A=/?moveToWidget=3458764651788272347&cot=14[Sprint Review] mit sehr viel weniger zu implementierenden Features aus, welche auch nicht noch einmal bereinigt werden mussten.
 
-So habe ich gelernt, dass ich als PO mutiger auftreten muss, insbesondere im Gespräch über das Software-Produkt meines Teams, da nur so eine fokussierte Produktentwicklung und eine realistische Umsetzungsplanung möglich sind.
+Dadurch habe ich gelernt, dass ich als PO mutiger auftreten muss, insbesondere im Gespräch über das Software-Produkt meines Teams, weil nur so eine fokussierte Produktentwicklung und eine realistische Umsetzungsplanung möglich sind.
+
 
 == Fazit
 
