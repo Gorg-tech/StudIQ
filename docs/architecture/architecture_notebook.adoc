@@ -40,12 +40,12 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 . **Datenmodell:** Angelehnt an das Domänenmodell (siehe Glossar), um die Anforderungen der Stakeholder direkt abzubilden.
 . **Keine HTW-only-Restriktion:** Die App ist offen für alle, da die Daten keine hochsensiblen Inhalte enthalten und der Aufwand für eine exklusive HTW-Authentifizierung zu hoch wäre.
 . **Automatisierte Tests:** Unit- und Integrationstests für Backend und Frontend, um Wartbarkeit und Zuverlässigkeit zu gewährleisten.
-. **Deployment:** Entwicklung auf SQLite, Produktion auf PostgreSQL/MySQL möglich. Nutzung von CI/CD für automatisierte Deployments.
+. **Deployment:** Entwicklung auf SQLite, Produktion auf MySQL . Nutzung von CI/CD für automatisierte Deployments.
 
 == Schichten oder Architektur-Framework
 * **Client:** Vue.js SPA, Kommunikation ausschließlich über REST-API.
 * **Backend:** Django REST Framework, Schichten: ViewSets/Serializers → Business Logic → Models → Datenbank.
-* **Datenbank:** Relational (SQLite für Entwicklung, PostgreSQL/MySQL für Produktion).
+* **Datenbank:** Relational (SQLite für Entwicklung, MySQL für Produktion).
 * **Schnittstellen:** REST-API, OpenAPI/Swagger-Dokumentation.
 * **Authentifizierung:** Django Sessions, ggf. Token für API-Zugriffe.
 
@@ -60,20 +60,20 @@ plantuml::images/c4-lvl1.puml[format="svg", alt="C4 Modell Level 1"]
 
 * **Web-Frontend:** Vue.js SPA, läuft im Browser.
 * **Backend:** Django REST Framework, läuft auf Webserver.
-* **Datenbank:** SQLite/PostgreSQL/MySQL.
+* **Datenbank:** MySQL.
 * **Scraper:** Python-Skript, das regelmäßig Modulux-Daten abruft und als JSON bereitstellt.
 
 plantuml::images/c4-lvl2.puml[format="svg", alt= "C4 Modell Level 2"]
 
 === Components (C4 Level 3)
 * **Frontend-Komponenten:** QuizView, ModulView, LernsetView, SearchView, ProfileView, Leaderboard, etc.
-* **Backend-Komponenten:** User-Management, Quiz-API, Lernset-API, Modul-API, Fortschritt-API, Feedback-API, Authentifizierung, Admin-Panel.
+* **Backend-Komponenten:** User-Management, Quiz-API, Lernset-API, Modul-API, Fortschritt-API, Feedback-API, Authentifizierung.
 * **Scraper-Komponenten:** ModuluxScraper, JSON-Export.
 
 === Verteilungsdiagramm (Deployment Diagramm)
 * **Client:** Browser auf beliebigen Endgeräten.
 * **Server:** Webserver (z.B. Gunicorn, uWSGI) mit Django-App.
-* **Datenbank:** Separater Datenbankserver oder lokal beim Backend.
+* **Datenbank:** Separater Datenbankserver .
 * **Scraper:** Läuft periodisch auf dem Server oder als CI-Job.
 
 
