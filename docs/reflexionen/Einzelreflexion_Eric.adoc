@@ -10,9 +10,11 @@ Im Projekt StudIQ habe ich als Full-Stack-Entwickler sowohl im Frontend, Backend
 
 Zu Projektbeginn habe ich das initiale Setup für Django (Backend), Vue.js (Frontend) und die API-Verbindung übernommen (link:https://github.com/Gorg-tech/StudIQ/issues/30[Issue #30]). Dies ermöglichte dem Team, sofort mit echten API-Endpunkten zu arbeiten statt auf Mock-Daten angewiesen zu sein.
 
-Der Lösungsweg orientierte sich an der **Schichtenarchitektur**: Django-Models und Serializer nach **Domain-driven Design** (link:https://github.com/Gorg-tech/StudIQ/commit/1a9dca3[Commit `1a9dca3`]), REST-API mit ViewSets und Frontend-Service-Modulen (link:https://github.com/Gorg-tech/StudIQ/tree/main/src/client/src/services/[services/]), sowie Umgebungsvariablen für sauberes Konfigurationsmanagement.
+Der Lösungsweg orientierte sich an der **Schichtenarchitektur**: Django-Models und Serializer nach **Domain-driven Design** (link:https://github.com/Gorg-tech/StudIQ/commit/1a9dca3[Commit `1a9dca3`]), REST-API mit ViewSets und Frontend-Service-Modulen (link:https://github.com/Gorg-tech/StudIQ/tree/main/src/client/src/services/[services/]), sowie Umgebungsvariablen für sauberes Konfigurationsmanagement. 
 
-**Learning:** Ein minimaler "Walking Skeleton" ist extrem hilfreich für agiles Arbeiten. Rückblickend hätte ich das Setup früher dokumentieren sollen, da unterschiedliche Erfahrungshintergründe im Team ein gemeinsames Systemverständnis erschwerten.
+Ein wichtiger Meilenstein war die vollständige Definition der Client-Server-Schnittstelle (link:https://github.com/Gorg-tech/StudIQ/commit/e3b8bb3[Commit `e3b8bb3`]): Ich implementierte ein strukturiertes API-Service-Modul im Frontend mit zentraler Endpunkt-Verwaltung (`endpoints.js`), einem wiederverwendbaren API-Client mit CSRF-Handling (`client.js`) und Error-Management (`errors.js`). Parallel dazu passte ich das Backend-Datenmodell an die UML-Spezifikationen an und erweiterte die REST-API. Die Dokumentation im Server-README listete alle verfügbaren Endpunkte, HTTP-Methoden und Berechtigungen auf.
+
+**Learning:** Ein minimaler "Walking Skeleton" ist extrem hilfreich für agiles Arbeiten. Die zentrale Definition und Dokumentation der API-Endpunkte in `endpoints.js` schafft Klarheit darüber, welche Schnittstellen verfügbar sind und wie diese zu nutzen sind.
 
 === 2. Automatisierte Datenbeschaffung (Modulux-Scraper)
 
@@ -22,9 +24,7 @@ Um die App mit echten Inhalten zu füllen, entwickelte ich ein Scraper-Modul (li
 
 === 3. Frontend-Entwicklung und Responsive Design
 
-Ich implementierte wesentliche UI-Komponenten wie die Navigation und die Startseite (link:https://github.com/Gorg-tech/StudIQ/commit/c5d55a75daea3cb9579cca10a79ed25fc24ba2d0[Commit `c5d55a7`]). Grundlage hierfür waren die **User Stories** und **Personas** aus der Anforderungsphase, um die UX gezielt auf Studierende auszurichten. Dabei nutzte ich CSS-Variablen für Dark-Mode-Fähigkeit und Flexbox/Grid für Responsivität.
-
-Besonders wichtig waren emotionale Designelemente: Ich gestaltete den Pinguin (link:https://github.com/Gorg-tech/StudIQ/blob/main/src/client/src/components/Penguin.vue[Penguin.vue]) als Maskottchen  und die Flammen (Streak-Indikator), um durch Gamification-Elemente die Motivation der Nutzer zu erhöhen und die App persönlicher wirken zu lassen.
+Ich implementierte wesentliche UI-Komponenten wie die Navigation und die Startseite (link:https://github.com/Gorg-tech/StudIQ/commit/c5d55a75daea3cb9579cca10a79ed25fc24ba2d0[Commit `c5d55a7`]). Grundlage hierfür waren die **User Stories** und **Personas** aus der Anforderungsphase, sowie die Wireframes und Design-Konzepte aus dem Team. Ich setzte diese in Vue.js um, mit Fokus auf Responsivität durch Flexbox/Grid sowie die Umsetzung von Gamification-Elementen wie dem Pinguin-Maskottchen (link:https://github.com/Gorg-tech/StudIQ/blob/main/src/client/src/components/Penguin.vue[Penguin.vue]) und den Flammen (Streak-Indikator), um die Nutzermotivation zu erhöhen.
 
 **Challenge:** Das Team arbeitete ohne einheitliches Design-System. Verschiedene Entwickler implementierten Features mit ganz unterschiedlichen Stilen, von minimalistische bis zu knalligen Gradients. Am Ende erforderte das ein großes UI-Refactoring, um alle Komponenten konsistent zu gestalten. 
 
