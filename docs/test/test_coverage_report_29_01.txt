@@ -1,0 +1,26 @@
+Name                                                                                Stmts   Miss  Cover
+-------------------------------------------------------------------------------------------------------
+accounts/admin.py                                                                      14      0   100%
+accounts/apps.py                                                                        4      0   100%
+accounts/migrations/0001_initial.py                                                    11     11     0%
+accounts/migrations/0002_user_studiengang.py                                            5      5     0%
+accounts/migrations/0003_friendship_pendingfriendrequest.py                             6      6     0%
+accounts/migrations/0004_user_friends_delete_friendship.py                              5      5     0%
+accounts/migrations/0005_alter_user_streak_rename_streak_user__streak_and_more.py       4      4     0%
+accounts/migrations/__init__.py                                                         0      0   100%
+accounts/models.py                                                                     71      7    90%
+accounts/serializers.py                                                                41      0   100%
+accounts/urls.py                                                                        3      0   100%
+accounts/views.py                                                                     135     51    62%
+quizzes/__init__.py                                                                     0      0   100%
+quizzes/admin.py                                                                       38      0   100%
+quizzes/apps.py                                                                         4      0   100%
+quizzes/migrations/0001_initial.py                                                      8      8     0%
+quizzes/migrations/0002_alter_quizattempt_unique_together_and_more.py                   6      6     0%
+quizzes/migrations/__init__.py                                                          0      0   100%
+quizzes/models.py                                                                      86      8    91%
+quizzes/serializers.py                                                                162     15    91%
+quizzes/urls.py                                                                        14      0   100%
+quizzes/views.py                                                                      342    104    70%
+-------------------------------------------------------------------------------------------------------
+TOTAL                                                                                 959    230    76%
