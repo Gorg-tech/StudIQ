@@ -1,0 +1,17 @@
+= StudIQ
+
+== Link zur Anwendung
+
+https://studiq.oceanbound.io
+
+== Login-Daten
+
+*Name:* Juergen
+
+*Password:* Fisch2002
+
+== Registrierung
+
+Oder neu registrieren unter:
+
+https://studiq.oceanbound.io/register
