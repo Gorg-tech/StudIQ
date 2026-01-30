@@ -1,0 +1,27 @@
+== Test Case 1
+
+Dieser Test Case überprüft die Grundfunktionalität der Benutzerregistrierung. Es wird getestet, ob ein neuer Benutzer erfolgreich registriert werden kann und ob die erforderlichen Felder korrekt validiert werden.
+
+=== Testschritte
+1. Navigiere zur Registrierungsseite.
+2. Fülle das Registrierungsformular mit gültigen Daten aus (eindeutigen Benutzername, E-Mail, Passwort und Studiengang wählen).
+3. Klicke auf die Schaltfläche "Registrieren".  
+
+=== Erwartetes Ergebnis
+Der Benutzer wird erfolgreich registriert und zur Login-Seite weitergeleitet.
+
+Ergebnis: Bestanden
+
+== Test Case 2
+
+Dieser Test Case überprüft die Funktionalität der Quiz-Durchführung. Es wird getestet, ob ein Benutzer ein Quiz erfolgreich durchführen kann und ob die Antworten korrekt ausgewertet werden.
+
+=== Testschritte
+1. Melde dich mit einem registrierten Benutzerkonto an.
+2. Navigiere zum Profil (untere Leiste ganz rechts) und überprüfe welcher IQ-Score angezeigt wird.
+3. Navigiere zur Suche.
+4. Filter nach Quiz und wähle ein Quiz aus der Liste aus.
+5. Starte das Quiz und beantworte alle Fragen.
+
+=== Erwartetes Ergebnis
+Das Quiz wird erfolgreich abgeschlossen und die Ergebnisse werden korrekt angezeigt. Der IQ-Score erhoht sich entsprechend der erreichten Punktzahl.
