@@ -1,13 +1,13 @@
 // Betriebsdokumentation für StudIQ
 include::../_includes/default-attributes.inc.adoc[]
-:doctype: book
+:doctype: article
 :sectnums:
 :toc: left
 :toclevels: 3
 
-= Betriebsdokumentation: StudIQ
+== Betriebsdokumentation: StudIQ
 
-== Einleitung
+=== Einleitung
 
 Diese Dokumentation richtet sich an Administratoren und unterstützt bei der Einrichtung, Konfiguration und Betreuung des StudIQ-Systems.
 
@@ -17,15 +17,15 @@ StudIQ ist eine webbasierte Lernplattform zur Prüfungsvorbereitung für HTW-Stu
 * **Backend**: Django 5.2 REST-API
 * **Datenbank**: MySQL/MariaDB
 
-== Produktionssystem
+=== Produktionssystem
 
 Die aktuelle liveversion des Systems ist verfügbar unter:
 
 https://studiq.oceanbound.io/
 
-== Systemvoraussetzungen
+=== Systemvoraussetzungen
 
-=== Hardware-Mindestanforderungen
+==== Hardware-Mindestanforderungen
 
 [cols="1,2,2"]
 |===
@@ -48,9 +48,9 @@ https://studiq.oceanbound.io/
 |1 Gbit/s
 |===
 
-=== Softwareanforderungen
+==== Softwareanforderungen
 
-==== Server
+===== Server
 
 [cols="1,2,2"]
 |===
@@ -74,7 +74,7 @@ https://studiq.oceanbound.io/
 
 |===
 
-==== Client (Browser)
+===== Client (Browser)
 
 [cols="1,2"]
 |===
@@ -95,9 +95,9 @@ https://studiq.oceanbound.io/
 
 NOTE: JavaScript muss aktiviert sein. Cookies müssen für die Authentifizierung erlaubt sein.
 
-== Systemeinrichtung
+=== Systemeinrichtung
 
-=== Quellcode beziehen
+==== Quellcode beziehen
 
 Das Repository klonen:
 
@@ -107,9 +107,9 @@ git clone https://github.com/Gorg-tech/StudIQ studiq
 cd studiq
 ----
 
-=== Backend-Einrichtung
+==== Backend-Einrichtung
 
-==== MySQL/MariaDB installieren und konfigurieren
+===== MySQL/MariaDB installieren und konfigurieren
 
 IMPORTANT: Django erstellt **keine** Datenbank automatisch. MySQL/MariaDB muss manuell installiert und die Datenbank samt Benutzer erstellt werden.
 
@@ -160,7 +160,7 @@ source venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt
 ----
 
-==== Umgebungsvariablen konfigurieren
+===== Umgebungsvariablen konfigurieren
 
 Erstellen Sie eine `.env`-Datei im Verzeichnis `src/server/`:
 
@@ -231,7 +231,7 @@ IMPORTANT: Für Produktion unbedingt einen neuen `DJANGO_SECRET_KEY` generieren 
 |_leer_
 |===
 
-==== Datenbank initialisieren
+===== Datenbank initialisieren
 
 [source,bash]
 ----
@@ -247,7 +247,7 @@ python3 manage.py createsuperuser
 
 NOTE: Die initialen Daten sind bereits als JSON-Dateien im Repository enthalten. Um aktuelle Daten von Modulux zu laden, muss zuerst `modulux_scraper.py` ausgeführt werden, danach `populate_db.py` um die Datenbank zu aktualisieren.
 
-==== Backend starten
+===== Backend starten
 
 Entwicklungsserver:
 [source,bash]
@@ -266,9 +266,9 @@ pip install gunicorn
 gunicorn config.wsgi:application --bind 0.0.0.0:8000 --daemon
 ----
 
-=== Frontend-Einrichtung
+==== Frontend-Einrichtung
 
-==== Abhängigkeiten installieren
+===== Abhängigkeiten installieren
 
 [source,bash]
 ----
@@ -276,7 +276,7 @@ cd src/client
 npm install
 ----
 
-==== Entwicklungsserver starten
+===== Entwicklungsserver starten
 
 [source,bash]
 ----
@@ -285,7 +285,7 @@ npm run dev
 
 Das Frontend ist dann erreichbar unter: http://localhost:5173
 
-==== Produktions-Build erstellen
+===== Produktions-Build erstellen
 
 [source,bash]
 ----
@@ -294,11 +294,11 @@ npm run build
 
 Die kompilierten Dateien befinden sich in `src/client/dist/` und können von einem Webserver (z.B. Nginx) ausgeliefert werden.
 
-=== Webserver-Konfiguration (Produktion)
+==== Webserver-Konfiguration (Produktion)
 
 Für den Produktionsbetrieb wird empfohlen, einen Reverse-Proxy wie Nginx zu verwenden.
 
-==== Nginx-Beispielkonfiguration
+===== Nginx-Beispielkonfiguration
 
 Erstellen Sie eine Konfigurationsdatei `/etc/nginx/sites-available/studiq`:
 
@@ -362,7 +362,7 @@ sudo systemctl reload nginx
 
 NOTE: Weitere Informationen zur Nginx-Konfiguration finden Sie in der https://nginx.org/en/docs/[offiziellen Nginx-Dokumentation].
 
-==== SSL-Zertifikate mit Let's Encrypt
+===== SSL-Zertifikate mit Let's Encrypt
 
 [source,bash]
 ----
@@ -372,7 +372,7 @@ sudo certbot --nginx -d ihre-domain.de  # Beispiel: studiq.oceanbound.io
 
 Weitere Informationen: https://certbot.eff.org/[Certbot-Dokumentation]
 
-=== CORS-Konfiguration
+==== CORS-Konfiguration
 
 Für den Produktionsbetrieb müssen die CORS-Einstellungen in `src/server/config/settings.py` angepasst werden:
 
@@ -391,7 +391,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 ----
 
-=== Browser-Einstellungen
+==== Browser-Einstellungen
 
 Für die korrekte Nutzung von StudIQ müssen folgende Browser-Einstellungen aktiv sein:
 
@@ -399,9 +399,9 @@ Für die korrekte Nutzung von StudIQ müssen folgende Browser-Einstellungen akti
 * **Cookies**: Erlaubt für die Domain des Systems
 * **Third-Party-Cookies**: Bei Cross-Domain-Setups ggf. erlauben
 
-== Systembetreuung
+=== Systembetreuung
 
-=== Admin-Panel
+==== Admin-Panel
 
 Das Django Admin-Panel ist erreichbar unter:
 
@@ -415,7 +415,7 @@ Hier können verwaltet werden:
 * Studiengänge und Module
 * Freundschaftsanfragen
 
-=== FAQ für Benutzersupport
+==== FAQ für Benutzersupport
 
 [qanda]
 Benutzer kann sich nicht anmelden::
@@ -433,9 +433,9 @@ Daten werden nicht synchronisiert::
   * CORS-Einstellungen überprüfen
   * Browser-Entwicklertools → Netzwerk-Tab prüfen
 
-=== Fehlerdiagnose
+==== Fehlerdiagnose
 
-==== Log-Dateien
+===== Log-Dateien
 
 Django-Logs werden standardmäßig auf der Konsole ausgegeben. Für Produktion empfiehlt sich die Konfiguration einer Log-Datei:
 
@@ -462,13 +462,13 @@ LOGGING = {
 }
 ----
 
-==== Test-Logs
+===== Test-Logs
 
 Testausführungen werden protokolliert in: `src/server/test_logs/`
 
 Format: `test_results_<typ>_<modul>_<datum>.txt`
 
-==== Typische Fehlermeldungen
+===== Typische Fehlermeldungen
 
 [cols="2,3"]
 |===
@@ -487,9 +487,9 @@ Format: `test_results_<typ>_<modul>_<datum>.txt`
 |`pip install -r requirements.txt` ausführen
 |===
 
-=== Datensicherung
+==== Datensicherung
 
-==== Datenbank-Backup
+===== Datenbank-Backup
 
 MySQL/MariaDB:
 [source,bash]
@@ -497,14 +497,14 @@ MySQL/MariaDB:
 mysqldump -u studiq_user -p studiq_db > backup_$(date +%Y%m%d).sql
 ----
 
-==== Datenbank-Wiederherstellung
+===== Datenbank-Wiederherstellung
 
 [source,bash]
 ----
 mysql -u studiq_user -p studiq_db < backup_YYYYMMDD.sql
 ----
 
-==== Automatisierte Backups
+===== Automatisierte Backups
 
 Beispiel Cron-Job für tägliche Backups (Linux):
 
@@ -516,9 +516,9 @@ Beispiel Cron-Job für tägliche Backups (Linux):
 
 IMPORTANT: Bewahren Sie Backups an einem sicheren, vom Server getrennten Ort auf.
 
-=== Wartungsarbeiten
+==== Wartungsarbeiten
 
-==== Datenbank-Migrationen nach Updates
+===== Datenbank-Migrationen nach Updates
 
 Nach einem Update des Quellcodes:
 
@@ -529,14 +529,14 @@ source venv/bin/activate
 python3 manage.py migrate
 ----
 
-==== Statische Dateien sammeln (Produktion)
+===== Statische Dateien sammeln (Produktion)
 
 [source,bash]
 ----
 python3 manage.py collectstatic
 ----
 
-== Weiterführende Dokumentation
+=== Weiterführende Dokumentation
 
 * https://docs.djangoproject.com/en/5.2/[Django Dokumentation]
 * https://vuejs.org/guide/introduction.html[Vue.js Dokumentation]
