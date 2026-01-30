@@ -73,10 +73,7 @@ Dies könnte auch hilfreich für die spätere Einbindung von neuen Backend-Entwi
 Das Wichtigste ist jedoch, dass nun sichergestellt wird, dass ein immer größerer Teil des Quellcodes korrekt funktioniert, wodurch sich die Entwickler mehr auf neue Produkt-Features konzentrieren können. 
 Ebenfalls lässt sich beim Entwickeln von neuem Code nun schnell testen, dass der alte Code noch funktioniert, und nicht durch die neuen Eingaben Fehler auswirft.
 
-Derzeit liegt die Testabdeckung bereits bei über 40% im Backend, womit wie sehr zufrieden sein können.
-
-Gegen Ende unserer letzten Iteration ist es uns auch gelungen, die ersten Tests per Github Actions zu automatisieren, sodass beim Erstellen eines Pull Requests automatisch der Backend-Code getestet wird. 
-So wird den Entwicklern in Zukunft noch mehr Arbeit abgenommen, die sie stattdessen in die Entwicklung von neuem Code stecken können.
+Derzeit liegt die Testabdeckung bereits bei über 75% im Backend, womit wie sehr zufrieden sein können.
 
 == Top 3 Misserfolge
 
