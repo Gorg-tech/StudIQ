@@ -1,0 +1,17 @@
+\usepackage[a4paper,margin=2cm]{geometry}
+
+% verhindert "Überschrift unten, Inhalt nächste Seite"
+\usepackage{needspace}
+\let\oldsection\section
+\renewcommand{\section}{\needspace{6\baselineskip}\oldsection}
+\let\oldsubsection\subsection
+\renewcommand{\subsection}{\needspace{5\baselineskip}\oldsubsection}
+\let\oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\needspace{4\baselineskip}\oldsubsubsection}
+
+% Figures nicht "wegfloaten" lassen (verhindert Leerraum wie auf S.8)
+\usepackage{float}
+
+% sauberere Umbrüche
+\widowpenalty=10000
+\clubpenalty=10000
