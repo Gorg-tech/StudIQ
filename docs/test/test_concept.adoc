@@ -7,14 +7,12 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Allgemeine Informationen
 
-=== Ziel und Einordnung der Tests
-
-Dieses Dokument beschreibt die Test Cases für das Projekt {project-name}. Es enthält detaillierte Informationen zu den einzelnen Testfällen, deren Durchführung und die erzielten Ergebnisse. Ziel ist es, die Qualität der Software sicherzustellen und mögliche Fehler frühzeitig zu identifizieren.
+Dieses Dokument beschreibt die Test Cases für das Projekt {project-name}. Es enthält detaillierte Informationen zu den einzelnen Testfällen, deren Durchführung und die erzielten Ergebnisse. Ziel ist es, durch systematische Tests die funktionale Korrektheit, Stabilität und Wartbarkeit der Software sicherzustellen sowie kritische Fehler frühzeitig zu identifizieren.
 
 Die Teststrategie orientiert sich an der Testpyramide, wobei der Fokus auf Unit-Tests liegt, gefolgt von Integrationstests und abschließend Systemtests. Dies gewährleistet eine umfassende Abdeckung der Softwarekomponenten und deren Zusammenspiel.
 
-=== Testkonzept
-==== Testarten und Testmethoden
+== Testkonzept
+=== Testarten und Testmethoden
 Bei der Entwicklung der Testfälle für {project-name} wurde sich stark an der Testpyramide orientiert. Der Schwerpunkt liegt demnach auf Unit-Tests zum Testen der einzelnen Komponenten. Ergänzt werden diese durch Integrationstests zum Testen der zentralen Schnittstellen. 
 [cols="1,1,1,1", options="header"]    
 |=== 
@@ -27,7 +25,7 @@ Bei der Entwicklung der Testfälle für {project-name} wurde sich stark an der T
 Unit-Tests wurden als Whiteboxtests implementiert und prüfen die Funktionen isoliert. 
 Integrationstest prüfen die REST-API-Endpunkte und Authentifizierung. Sie werden als BlackboxTests durchgeführt.
 
-==== Testumgebung und Testwerkzeuge
+== Testumgebung und Testwerkzeuge
 Die Tests wurden in einer lokalen Entwicklungsumgebung durchgeführt. 
 
 .Verwendete Werkzeuge und Frameworks: 
@@ -37,13 +35,16 @@ Die Tests wurden in einer lokalen Entwicklungsumgebung durchgeführt.
 
 
 
-==== Testen im Entwicklungsprozess
-Die Testphase hat erst gegen Ende der Entwicklungsphase begonnen, als die meisten Funktionen implementiert waren. Dies ermöglichte es, die Tests auf eine stabile Codebasis anzuwenden und sicherzustellen, dass die Kernfunktionen der Software abgedeckt sind. Ein frueherer Beginn der Testphase waere vorteilhaft gewesen, um die Vorteile von Test-Driven Development zu nutzen (TDD). 
+== Testen im Entwicklungsprozess
+Die Testphase hat erst gegen Ende der Entwicklungsphase begonnen, als die meisten Funktionen implementiert waren. Dies ermöglichte es, die Tests auf eine stabile Codebasis anzuwenden und sicherzustellen, dass die Kernfunktionen der Software abgedeckt sind (kein Test Driven Design).
+
 Die Testfälle wurden vom Tester der Gruppe geschrieben und durchgeführt. Sie sind abgelegt unter 
-`src/server/tests/`. Bei jeder Durchfuehrung der Tests werden automatisch Testlogs angelegt, welche im Falle von Fehlern zur Analyse herangezogen werden koennen. Sie sind abgelegt unter `src/server/test_logs/`.
+`src/server/tests/`. Bei jeder Durchführung laufen die Tests automatisch durch. Es kann angegeben werden welcher Unterordner getestet werden soll, um z.B. nur Modultests durchzufuehren:
+python manage.py test tests.integration 
+Zusätzlich werden automatische Testlogs angelegt, welche im Falle von Fehlern zur Analyse herangezogen werden können. Sie sind abgelegt unter `src/server/test_logs/`.
 
 
-==== Bekannte Abweichungen / Bugs
+== Bekannte Abweichungen / Bugs
 Während der Tests wurden mehrere Bugs identifiziert, welche in Github dokumentiert sind unter dem Label 'Bug'.
 https://github.com/users/Gorg-tech/projects/7/views/4
 Einer der wichtigsten gefunden Bugs ist ein Fehler in der Quiz-update-Funktionalität, welcher dazu führt, dass Änderungen an einem Quiz nicht korrekt gespeichert werden. Dieser Bug konnte behoben werden und ist in der aktuellen Version nicht mehr vorhanden.
@@ -55,4 +56,4 @@ Der aktuelle Qualitätsstand der Software ist insgesamt zufriedenstellend.
 Die Kernfunktionalitäten des Systems werden durch Unit- und Integrationstests
 abgedeckt und zeigen ein stabiles Verhalten. Kritische Bugs wurden identifiziert,
 dokumentiert und größtenteils behoben. Restrisiken bestehen vor allem in Randfällen
-und nicht-kritischen Funktionen, die in zukünftigen Iterationen adressiert werden können.
+und nicht-kritischen Funktionen, die in zukünftigen Iterationen adressiert werden können. Aktuelle Bugs wurden dem Team mitgeteilt und in der Priorisierung vorerst niedrig eingestuft.
