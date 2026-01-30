@@ -1,0 +1,59 @@
+:doctype: article
+:docs: ../docs
+include::{docs}/_includes/default-attributes.inc.adoc[]
+
+// --- 1. Projektthema -------------------------
+== Projektreflexion Team 2.A
+// ---
+:toc:
+:toclevels: 2
+:toc-title: Inhaltsverzeichnis
+:icons: font
+
+
+// --- 2. Teammitglieder -----------------------
+
+
+include::../docs/_includes/members.adoc[]
+
+// --- 3. Abgabedatum --------------------------
++30. Januar 2026
+
+// ---------------------------------------------
+
+//:source-highlighter: highlightjs
+:source-highlighter: rouge
+:rouge-style: github
+:xrefstyle: full
+:experimental:
+:chapter-signifier:
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:listing-caption: Listing
+:!example-caption:
+:experimental:
+// Folders
+:imagesdir-reset: {imagesdir}
+:docs-reflexion: {docs}/reflexionen
+
+
+// --- 4. include Pfade anpassen ---------------
+
+
+
+// Gruppenreflexion
+include::{docs-reflexion}/Gruppenreflexion_2A.adoc[leveloffset=+2]
+// --- Projektdokumentation ---
+=== Einzelreflexionen
+
+:imagesdir: {docs-project-management}/images
+
+
+
+// Einzelreflexionen
+include::{docs-reflexion}/Einzelreflexion_Carmina.adoc[lines=1..1;4..-1,leveloffset=+2]
+include::{docs-reflexion}/Einzelreflexion_Eric.adoc[lines=1..1;4..-1,leveloffset=+2]
+include::{docs-reflexion}/Einzelreflexion_Gabriel.adoc[lines=1..1;4..-1,leveloffset=+2]
+include::{docs-reflexion}/Einzelreflexion_Georg.adoc[lines=1..1;4..-1,leveloffset=+2]
+include::{docs-reflexion}/Einzelreflexion_Hans.adoc[lines=1..1;4..-1,leveloffset=+2]
+include::{docs-reflexion}/Einzelreflexion_Vincent.adoc[lines=1..1;4..-1,leveloffset=+2]
